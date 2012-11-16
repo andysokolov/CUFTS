@@ -1,0 +1,1 @@
+ALTER TABLE journals_auth ADD COLUMN rss VARCHAR(1024);

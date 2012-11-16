@@ -1,0 +1,89 @@
+/* Journal Auth Editting */
+
+div.journal-auth-titles {
+    margin: 5px;
+    background: #DDDDDD;
+    padding: 2px;
+}
+
+div#journal-auth-titles-heading {
+    font-weight: bold;
+}
+
+div.journal-auth-rss {
+    margin: 5px;
+    background: #DDDDDD;
+    padding: 2px;
+}
+
+div#journal-auth-rss-heading {
+    font-weight: bold;
+}
+
+
+div.journal-auth-global-resources {
+    margin: 5px;
+    background: #DDDDDD;
+    padding: 2px;
+}
+
+div.journal-auth-record table td {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+div#journal-auth-global-resources-heading {
+    font-weight: bold;
+}
+
+div.journal-auth-local-resources {
+    margin: 5px;
+    background: #DDDDDD;
+    padding: 2px;
+}
+
+div#journal-auth-local-resources-heading {
+    font-weight: bold;
+}
+
+div.journal-auth-record {
+    margin-top: 10px;
+    background: #EEEEEE;
+    padding: 5px;
+}
+
+div.journal-auth-marc-dump {
+	margin-left: 10px;
+	margin-right: 10px;
+	background: #D0DEED;
+	padding: 3px;
+}
+	
+
+div#journal-auth-alt-titles-container {
+	margin-top: 1em;
+	border: 1px solid #004997;
+}
+
+div.journal-auth-marc-fields {
+	margin-top: 1em;
+	border: 1px solid #004997;
+}
+
+div#journal-auth-edit-issns {
+    margin-top: 1em;
+    border: 1px solid #004997;
+    background: #EEEEEE;
+}
+
+div#journal-auth-edit-titles {
+    margin-top: 1em;
+    border: 1px solid #004997;
+    background: #EEEEEE;
+}
+
+div#journal-auth-edit-rss {
+    margin-top: 1em;
+    border: 1px solid #004997;
+    background: #EEEEEE;
+}

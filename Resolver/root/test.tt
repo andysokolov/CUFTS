@@ -1,0 +1,98 @@
+<html>
+<head>
+	<title>CUFTS resolver test</title>
+	<link rel="StyleSheet" href="[% c.uri_for_static('css/test.css') %]" type="text/css" media="screen, print" />
+	<script src="[% c.uri_for_static('js/test.js') %]" type="text/javascript"></script>
+	<script src="[% c.uri_for_static('js/jquery.js') %]" type="text/javascript"></script>
+</head>
+
+<body>
+[% INCLUDE main_header.tt %]
+[%- SET display_templates = [ ['main', 'human'], ['xml', 'XML'], ['opensearch', 'OpenSearch'], ] -%]
+[%- SET genres = [ 'article', 'book', 'bookitem', 'journal' ] -%]
+<div id="test">
+	<form name="testform" action="[% url_base %]/test/do" method="post">
+		<label for="_site">site</label>
+		<select name="_site" id="_site">
+			[% FOREACH site IN sites.sort('name') %]
+				<option value="[% site.key %]" [% 'SELECTED' IF site.key == current_site_key %]>[% site.name %] ([% site.key %])</option>
+			[% END %]
+		</select><br />
+		
+		<label for="_template">template</label>
+		<select name="_template" id="_template">
+			[% FOREACH display_template IN display_templates %]
+				<option value="[% display_template.0 %]">[% display_template.1 %]</option>
+			[% END %]
+		</select><br />
+
+		<label for="genre">genre</label>
+		<select name="genre" id="genre">
+			[% FOREACH genre IN genres %]
+				<option value="[% genre %]">[% genre %]</option>
+			[% END %]
+		</select><br />
+		
+		<label for="atitle">article title</label>
+		<input type="text" name="atitle" id="atitle" size="50" maxlength="256"/><br />
+
+		<label for="title">source/title</label>
+		<input type="text" name="title" id="title" size="50" maxlength="256"/><br />
+
+		<div class="labels"><label for="aulast" class="col1">author (last</label>, <label for="aufirst" class="col2">first</label>)</div>
+		<input type="text" name="aulast" id="aulast" />, <input type="text" name="aufirst" id="aufirst" /><br />
+
+		<div class="labels"><label for="issn" class="col1">ISSN</label> / <label for="eissn" class="col2">eISSN</label> / <label for="isbn" class="col3">ISBN</label></div>
+		<input type="text" name="issn" id="issn" class="col1" size="10" maxlength="9" /> / <input type="text" name="eissn" id="eissn" class="col2" size="10" maxlength="9" /> / <input type="text" name="isbn" id="isbn" class="col3" size="10" maxlength="16" /> <br />
+
+		<div class="labels"><label for="volume" class="col1">volume</label> / <label for="issue" class="col2">issue</label> / <label for="date" class="col3">date</label></div>
+		<input type="text" name="volume" id="volume" class="col1" size="10" maxlength="9" /> / <input type="text" name="issue" id="issue" class="col2" size="10" maxlength="9" /> / <input type="text" name="date" id="date" class="col3" size="10" maxlength="16" /> <br />
+
+		<div class="labels"><label for="pages" class="col1">pages</label> / <label for="spage" class="col2">start</label> / <label for="pages" class="col3">end</label></div>
+		<input type="text" name="pages" id="pages" class="col1" size="10" maxlength="9" /> / <input type="text" name="spage" id="spage" class="col2" size="10" maxlength="9" /> / <input type="text" name="epage" id="epage" class="col3" size="10" maxlength="16" /> <br />
+		
+		<label for="doi">DOI</label>
+		<input type="text" name="doi" id="doi" /><br />
+
+		<label for="doi">PMID</label>
+		<input type="text" name="pmid" id="pmid" /><br />
+		
+		<input type="submit" name="_submit" value="submit" class="submit"/>
+		
+		<hr />
+
+		[% SET tests = [] %]
+		[% PROCESS test_data.tt %]
+		[% FOREACH test IN tests %]
+			<input type="submit" value="fillin" onClick="[%- INCLUDE create_test_js test = test -%] return false;" />[% PROCESS describe_test %]<br />
+		[% END %]
+		
+	</form>
+</div>
+</body>
+</html>
+[% BLOCK describe_test -%]
+	[% SET descriptions = [] -%]
+	[% FOREACH field IN ['atitle', 'title', 'issn', 'date', 'volume', 'issue', 'spage', 'pages', '_resources'] %]
+		[% NEXT UNLESS test.$field.defined -%]
+		[%- descriptions.push(test.$field) -%]
+	[%- END %]
+	[%- descriptions.join(', ') -%]
+[%- END %]
+
+[% BLOCK create_test_js -%]
+	[%- FOREACH key IN test.keys -%]
+		[%- NEXT IF key == 'description' -%]
+		[%- NEXT IF key == '_resources' -%]
+		[%- IF key == 'genre' -%]
+			[%- FOREACH genre IN genres -%]
+				[%- IF genre == test.$key -%]
+document.forms['testform'].genre.options[[% loop.index %]].selected = 1; 
+					[%- LAST -%]
+				[%- END -%]
+			[%- END -%]
+		[%- ELSE -%]
+document.forms['testform'].[% key %].value='[% test.$key %]';
+		[%- END -%]
+	[%- END -%]
+[%- END -%]

@@ -1,0 +1,279 @@
+[% USE HTML %]
+
+[%# Inline style for now.. if we get more of these kind of forms, try to make
+    this more general for the main CSS file.
+%]
+
+<style>
+ div.form-heading {
+     float: left;
+     width: 35em;
+     padding: 3px;
+     background: #d0deed;
+ }
+ div.form-heading label.delete {
+     float: left;
+     width: 4.2em;
+     text-align: center;
+ }
+ div.form-heading label.field {
+     float: left;
+ }
+ 
+ div.data div.delete {
+     width: 4.2em;
+     float: left;
+ }
+ 
+ div.data input.delete {
+    margin-left: 2em;
+ }
+ 
+ div.data label.new {
+     width: 4.2em;
+     text-align: center;
+ }
+</style>
+
+<form method="post">
+
+<div>
+ <input type="submit" name="submit" value="submit"> <input type="submit" name="cancel" value="cancel">
+</div>
+
+<fieldset>
+ <legend>ERM Consortia</legend>
+
+<div class="form-heading">
+ <label class="delete">delete</label>
+ <label class="field">consortia</label>
+</div>
+
+ [% SET count = 0 %]
+ [% FOREACH consortia_item IN consortia %]
+  <div class="field">
+   <div class="data">
+     <div class="delete">
+      <input class="delete" [% 'disabled="disabled"' IF consortia_count.$count > 0 %] type="checkbox" name="consortia_delete" value="[% consortia_item.id %]"  />
+     </div>
+     <input maxlength="1024" size="50" type="text" name="consortia_[% consortia_item.id %]" value="[% consortia_item.consortia | html %]" />
+   </div>
+   <div class="help">
+    [% IF consortia_count.$count > 0 %]
+     This consortia is used in <span class="no-highlight">[% consortia_count.$count %]</span> ERM record(s) and <span class="no-highlight">cannot</span> be deleted until those are changed.
+    [% ELSE %]
+     This consortia is not used in any ERM and <span class="yes-highlight">can</span> be deleted.
+    [% END %]
+   </div>
+  </div>
+  [% SET count = count + 1 %]
+ [% END %]
+
+ <div class="field">
+  <div class="data">
+   <label for="consortia_new" class="new">new</label>
+   <input type="text" maxlength="1024" size="50" name="consortia_new" id="consortia_new" value="" />
+  </div>
+  <div class="help">Add a new ERM consortia record.</div>
+ </div>
+ 
+</fieldset>
+
+<fieldset>
+ <legend>ERM Content Types</legend>
+
+<div class="form-heading">
+ <label class="delete">delete</label>
+ <label class="field">content type</label>
+</div>
+
+ [% SET count = 0 %]
+ [% FOREACH content_type IN content_types %]
+  <div class="field">
+   <div class="data">
+    <div class="delete">
+     <input class="delete" [% 'disabled="disabled"' IF content_type_count.$count %] type="checkbox" name="content_types_delete" value="[% content_type.id %]"  />
+    </div>
+    <input maxlength="1024" size="50" type="text" name="content_types_[% content_type.id %]" value="[% content_type.content_type | html %]" />
+   </div>
+   <div class="help">
+    [% IF content_types_count.$count > 0 %]
+     This content type is used in <span class="no-highlight">[% content_types_count.$count %]</span> ERM record(s) and <span class="no-highlight">cannot</span> be deleted until those are changed.
+    [% ELSE %]
+     This content type is not used in any ERM and <span class="yes-highlight">can</span> be deleted.
+    [% END %]
+   </div>
+  </div>
+  [% SET count = count + 1 %]
+ [% END %]
+
+ <div class="field">
+  <div class="data">
+   <label for="content_type_new" class="new">new</label>
+   <input type="text" maxlength="1024" size="50" name="content_types_new" id="content_type_new" value="" />
+  </div>
+  <div class="help">Add a new ERM content type record.</div>
+ </div>
+ 
+</fieldset>
+
+<fieldset>
+ <legend>ERM Resource Types</legend>
+
+<div class="form-heading">
+ <label class="delete">delete</label>
+ <label class="field">resource type</label>
+</div>
+
+ [% SET count = 0 %]
+ [% FOREACH resource_type IN resource_types %]
+  <div class="field">
+   <div class="data">
+    <div class="delete">
+     <input class="delete" [% 'disabled="disabled"' IF resource_type_count.$count %] type="checkbox" name="resource_types_delete" value="[% resource_type.id %]"  />
+    </div>
+    <input maxlength="1024" size="50" type="text" name="resource_types_[% resource_type.id %]" value="[% resource_type.resource_type | html %]" />
+   </div>
+   <div class="help">
+    [% IF resource_types_count.$count > 0 %]
+     This resource type is used in <span class="no-highlight">[% resource_types_count.$count %]</span> ERM record(s) and <span class="no-highlight">cannot</span> be deleted until those are changed.
+    [% ELSE %]
+     This resource type is not used in any ERM and <span class="yes-highlight">can</span> be deleted.
+    [% END %]
+   </div>
+  </div>
+  [% SET count = count + 1 %]
+ [% END %]
+
+ <div class="field">
+  <div class="data">
+   <label for="resource_type_new" class="new">new</label>
+   <input type="text" maxlength="1024" size="50" name="resource_types_new" id="resource_type_new" value="" />
+  </div>
+  <div class="help">Add a new ERM resource type record.</div>
+ </div>
+ 
+</fieldset>
+
+<fieldset>
+ <legend>ERM Resource Mediums</legend>
+
+<div class="form-heading">
+ <label class="delete">delete</label>
+ <label class="field">resource medium</label>
+</div>
+
+ [% SET count = 0 %]
+ [% FOREACH resource_medium IN resource_mediums %]
+  <div class="field">
+   <div class="data">
+    <div class="delete">
+     <input class="delete" [% 'disabled="disabled"' IF resource_medium_count.$count %] type="checkbox" name="resource_mediums_delete" value="[% resource_medium.id %]"  />
+    </div>
+    <input maxlength="1024" size="50" type="text" name="resource_mediums_[% resource_medium.id %]" value="[% resource_medium.resource_medium | html %]" />
+   </div>
+   <div class="help">
+    [% IF resource_mediums_count.$count > 0 %]
+     This resource medium is used in <span class="no-highlight">[% resource_mediums_count.$count %]</span> ERM record(s) and <span class="no-highlight">cannot</span> be deleted until those are changed.
+    [% ELSE %]
+     This resource medium is not used in any ERM and <span class="yes-highlight">can</span> be deleted.
+    [% END %]
+   </div>
+  </div>
+  [% SET count = count + 1 %]
+ [% END %]
+
+ <div class="field">
+  <div class="data">
+   <label for="resource_medium_new" class="new">new</label>
+   <input type="text" maxlength="1024" size="50" name="resource_mediums_new" id="resource_mediums_new" value="" />
+  </div>
+  <div class="help">Add a new ERM resource medium record.</div>
+ </div>
+ 
+</fieldset>
+
+
+<fieldset>
+ <legend>ERM Pricing Models</legend>
+
+<div class="form-heading">
+ <label class="delete">delete</label>
+ <label class="field">cost base</label>
+</div>
+
+ [% SET count = 0 %]
+ [% FOREACH pricing_model IN pricing_models %]
+  <div class="field">
+   <div class="data">
+    <div class="delete">
+     <input class="delete" [% 'disabled="disabled"' IF pricing_model_count.$count %] type="checkbox" name="pricing_models_delete" value="[% pricing_model.id %]"  />
+    </div>
+    <input maxlength="1024" size="50" type="text" name="pricing_models_[% pricing_model.id %]" value="[% pricing_model.pricing_model | html %]" />
+   </div>
+   <div class="help">
+    [% IF pricing_models_count.$count > 0 %]
+     This cost base is used in <span class="no-highlight">[% pricing_models_count.$count %]</span> ERM record(s) and <span class="no-highlight">cannot</span> be deleted until those are changed.
+    [% ELSE %]
+     This cost base is not used in any ERM and <span class="yes-highlight">can</span> be deleted.
+    [% END %]
+   </div>
+  </div>
+  [% SET count = count + 1 %]
+ [% END %]
+
+ <div class="field">
+  <div class="data">
+   <label for="pricing_model_new" class="new">new</label>
+   <input type="text" maxlength="1024" size="50" name="pricing_models_new" id="pricing_model_new" value="" />
+  </div>
+  <div class="help">Add a new ERM cost base record.</div>
+ </div>
+ 
+</fieldset>
+
+
+<fieldset>
+ <legend>ERM Subjects</legend>
+
+<div class="form-heading">
+ <label class="delete">delete</label>
+ <label class="field">subject</label>
+</div>
+
+ [% SET count = 0 %]
+ [% FOREACH subject IN subjects %]
+  <div class="field">
+   <div class="data">
+    <div class="delete">
+     <input class="delete" [% 'disabled="disabled"' IF subject_count.$count %] type="checkbox" name="subjects_delete" value="[% subject.id %]"  />
+    </div>
+    <input maxlength="1024" size="50" type="text" name="subjects_[% subject.id %]" value="[% subject.subject | html %]" />
+   </div>
+   <div class="help">
+    [% IF subjects_count.$count > 0 %]
+     This subject is used in <span class="no-highlight">[% subjects_count.$count %]</span> ERM record(s) and <span class="no-highlight">cannot</span> be deleted until those are changed.
+    [% ELSE %]
+     This subject is not used in any ERM and <span class="yes-highlight">can</span> be deleted.
+    [% END %]
+   </div>
+  </div>
+  [% SET count = count + 1 %]
+ [% END %]
+
+ <div class="field">
+  <div class="data">
+   <label for="subject_new" class="new">new</label>
+   <input type="text" maxlength="1024" size="50" name="subjects_new" id="subject_new" value="" />
+  </div>
+  <div class="help">Add a new ERM subject record.</div>
+ </div>
+ 
+</fieldset>
+
+<div>
+ <input type="submit" name="submit" value="submit"> <input type="submit" name="cancel" value="cancel">
+</div>
+
+</form>
+

@@ -1,0 +1,166 @@
+<form method="post" id="site-settings-crdb-form">
+
+<table class="outlined">
+<tr><td class="heading-bar" colspan="3">CRDB full display fields</td></tr>
+<tr><td class="heading-bar">all fields</td><td class="heading-bar">active fields</td><td class="heading-bar" style="text-align: right">staff view | edit</td></tr>
+<tr>
+ <td id="site-settings-crdb-all-fields">
+  <div id="site-settings-crdb-all-fields-drop">
+   [% FOREACH field IN all_fields.keys.sort %]
+    [% SET is_active = active_fields.$field %]
+    <div class="site-settings-crdb-all-fields-field" id="crdb-field-[% field %]" style="float: left; [% IF is_active %]display: none;[% END %]"><div style="float: left">[% field %]</div><div style="float: right"><input type="submit" value=">>" fieldname="[% field %]"/></div></div>
+   [% END %]
+  </div>
+ </td>
+ <td id="site-settings-crdb-active-fields" colspan="2">
+  <div id="site-settings-crdb-active-fields-drop">
+   [% FOREACH record IN active_ordered %]
+    [% field = record.field %]
+    [% SET active_field = active_fields.$field %]
+    [% PROCESS show_active_field %]
+   [% END %]
+   [% FOREACH field IN all_fields.keys.sort %]
+    [% SET active_field = active_fields.$field %]
+    [% UNLESS active_field %]
+     [% PROCESS show_active_field %]
+    [% END %]
+   [% END %]
+  </div>
+ </td>
+</tr>
+</table>
+<br />
+
+<input type="submit" name="submit" value="submit" /> <input type="submit" name="cancel" value="cancel" />
+</form>
+
+
+[% BLOCK show_active_field %]
+ <div class="site-settings-crdb-active-fields-field" id="crdb-field-active-[% field %]" style="float: left; [% UNLESS active_field %]display: none;[% END %]">
+  <div style="float: left; width: 20em">
+      <input type="submit" class="remove" fieldname="[% field %]" value="<<" /><input class="up" type="submit" value="^" /><input class="down" type="submit" value="v" />
+      [% field %]
+  </div>
+  <div style="float: right; width: 3em">
+   <input type="hidden"   name="show_field-[% field %]" [% UNLESS active_field %]disabled="disabled"[% END %] />
+   <input type="checkbox" name="staff_only-[% field %]" value="1" [% IF active_field %][% IF active_field.staff_view %] checked="checked" [% END %][% ELSE %]disabled="disabled"[% END %] />
+   [% IF all_fields.$field == 1 %]  [%# Skip editing if it's not a real ERM Main field %]
+    <input type="checkbox" name="staff_edit-[% field %]" value="1" [% IF active_field %][% IF active_field.staff_edit %] checked="checked" [% END %][% ELSE %]disabled="disabled"[% END %] />
+   [% END %]
+  </div>
+ </div>
+[% END %]
+
+<script>
+$( function() {
+
+ $('#site-settings-crdb-all-fields-drop input').click( function(event) {
+  event.preventDefault();
+  var field = $(this).attr('fieldname');
+  $('#crdb-field-' + field).hide();
+  $('#crdb-field-active-' + field).show().find('input').attr('disabled', '');
+ });
+
+ $('#site-settings-crdb-active-fields-drop input.remove').click( function(event) {
+  event.preventDefault();
+  var field = $(this).attr('fieldname');
+  $('#crdb-field-' + field).show();
+  $('#crdb-field-active-' + field).hide().find('input').attr('disabled', 'disabled');
+ })
+
+ $('#site-settings-crdb-active-fields-drop input.up').click( function(event) {
+  event.preventDefault();
+  var row = $(this).parent().parent();
+  var prevrow = row;
+  
+  if ( event.shiftKey ) {
+
+      // Move to end
+      
+      var firstrow;
+      
+      while ( prevrow = prevrow.prev() ) {
+          if ( prevrow.length == 0 ) {
+              break;
+          }
+          firstrow = prevrow;
+      };
+      
+      if ( firstrow ) {
+          firstrow.before(row);
+          return;
+      }
+
+  }
+  else {
+      while ( prevrow = prevrow.prev() ) {
+
+          if ( prevrow.length == 0 ) {
+              break;
+          }
+          if ( prevrow.is(':visible') ) {
+              prevrow.before(row);
+              return;
+          }
+
+      }
+  }
+ });
+
+ $('#site-settings-crdb-active-fields-drop input.down').click( function(event) {
+  event.preventDefault();
+  var row = $(this).parent().parent();
+  var nextrow = row;
+  
+  if ( event.shiftKey ) {
+
+      // Move to end
+      
+      var lastrow;
+      
+      while ( nextrow = nextrow.next() ) {
+          if ( nextrow.length == 0 ) {
+              break;
+          }
+          lastrow = nextrow;
+      };
+      
+      if ( lastrow ) {
+          lastrow.after(row);
+          return;
+      }
+
+  }
+  else {
+
+      // Move down 1
+
+      while ( nextrow = nextrow.next() ) {
+          if ( nextrow.length == 0 ) {
+              break;
+          }
+          if ( nextrow.is(':visible') ) {
+              nextrow.after(row);
+              return;
+          }
+      }
+  
+  }
+  
+ });
+
+ // Set the value of the hidden fields to the order the user has chosen before submitting
+ 
+ $('#site-settings-crdb-form').submit( function(event) {
+     var x = 0;
+     $(this)
+     .find('input:hidden')
+     .filter(':enabled')
+     .each( function() {
+         $(this).val( x );
+         x = x + 1;
+     })
+ } );
+ 
+} );
+</script>

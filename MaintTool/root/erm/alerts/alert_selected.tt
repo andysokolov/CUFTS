@@ -1,0 +1,51 @@
+[% USE url %]
+
+<form name="alert-selected" id="alert-selected" method="post">
+
+ <fieldset>
+  <legend>Add Alert</legend>
+
+  <div class="field">
+   <div class="data">
+    <label for="alert-selected-message">Message</label><textarea id="alert-selected-message" name="message"></textarea>
+   </div>
+   <div class="help">
+    This alert message will be set for all currently selected resources, overwriting any current alerts.
+   </div>
+  </div>
+
+  <div class="field">
+   <div class="data">
+    <label for="alert-selected-expiry">Expires</label><input id="alert-selected-expiry" name="expiry" value="">
+   </div>
+   <div class="help">
+    Alerts expire the morning of this date.<br /><br />Format: YYYY-MM-DD
+   </div>
+  </div>
+
+  <input type="submit" name="save" value="save" />
+
+ </fieldset>
+
+</form>
+
+<div id="alert-selected-resources">
+ [% FOREACH resource IN resources %]
+  <div class="alert-selected-resource">
+   <div class="alert-selected-resource-name">[% resource.name %]</div>
+   <div class="alert-selected-resource-alert">
+   [% IF resource.alert %]
+    [% resource.alert %]
+    <br />Expires:
+    [% IF resource.alert_expiry %]
+     [% resource.alert_expiry %]
+    [% ELSE %]
+     Never
+    [% END %]
+   [% ELSE %]
+    No alert.
+   [% END %] 
+   </div>
+  </div>
+ [% END %]
+</div>

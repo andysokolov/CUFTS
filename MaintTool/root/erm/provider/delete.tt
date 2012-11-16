@@ -1,0 +1,25 @@
+[% IF error %]
+ There was an error while attempting to delete the ERM provider: [% error %].
+[% ELSE %]
+
+    [% IF result %]
+     [% result %]
+    [% ELSE %]
+
+    <div id="erm-delete-linked-list">
+    This ERM provider record is linked to [% erm_mains.size %] ERM records.  Do you really want to delete it?
+    <form method="post">
+     <input type="hidden" name="erm_provider_id" value="[% erm_provider.id %]" />
+     <input type="submit" name="confirm" value="yes" />
+     <input type="submit" name="cancel" value="no" />
+    </form>
+     <ul>
+     [% FOREACH erm_main IN erm_mains %]
+      <li>[% erm_main.key %]</li>
+     [% END %]
+     </ul>
+    </div>
+
+    [% END %]
+
+[% END %]

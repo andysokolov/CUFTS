@@ -1,0 +1,14 @@
+[% USE url %]
+
+<div id="azmenu">
+<span class="highlight">Browse</span> journals by title:
+<p>
+<a href="[% url("$url_base/browse/show", search_terms='[0-9]', search_type='advstartswith', browse_field='title') %]">0-9</a> - 
+[% FOREACH letter IN ['A' .. 'Z'] %]
+ <a href="[% url("$url_base/browse/show", search_terms=letter, search_type='startswith', browse_field='title') %]">[% letter %]</a>
+ [%- IF NOT loop.last -%]
+  - 
+ [%- END -%]
+[% END %]
+</p>
+</div>

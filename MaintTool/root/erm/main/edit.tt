@@ -1,0 +1,1885 @@
+[% USE url %]
+
+<script type="text/javascript">
+$( function() {
+    $('#pages-container').tabs();
+} );
+
+var new_subjects_count = 0;
+var new_names_count    = 0;
+var new_keywords_count = 0;
+
+$( function() {
+
+    /* Create new subject entries on demand */
+
+    $('#erm-edit-input-subject-addbutton').bind( 'click', function(event) {
+        event.preventDefault();
+        var new_subject = $('#subject-add-subject-factory').clone();
+
+        new_subject.attr( 'id', "subject-add-" + new_subjects_count );
+
+        new_subject.find('select[@name=erm-edit-input-subject-add-subject-]').attr( 'name', 'erm-edit-input-subject-add-subject-' + new_subjects_count );
+        new_subject.find('input[@name=erm-edit-input-subject-add-rank-]').attr( 'name', 'erm-edit-input-subject-add-rank-' + new_subjects_count );
+        new_subject.find('textarea[@name=erm-edit-input-subject-add-description-]').attr( 'name', 'erm-edit-input-subject-add-description-' + new_subjects_count );
+        
+        new_subjects_count = new_subjects_count + 1;
+
+        $('#erm-edit-input-subject-addbutton').parent().parent().before( new_subject );
+    
+        new_subject.show();
+        new_subject.parent('fieldset:not(.nostripe)').find('div.field').removeClass('alt').filter(':odd').addClass('alt');
+    });
+    
+/* Visibly disable a subject if it is going to be deleted */
+
+    $('#page-subjects select.subject').livequery( 'change', function(event) {
+        if ( $(this).val() == 'delete' ) {
+            $(this).parent().parent().addClass('to_delete').find('input, textarea').attr('disabled', 'disabled');
+        }
+        else {
+            $(this).parent().parent().removeClass('to_delete').find('input, textarea').removeAttr('disabled');
+        }
+    });
+
+});
+
+$( function() {
+
+    /* Create new name entries on demand */
+
+    $('#erm-edit-input-names-addbutton').bind( 'click', function(event) {
+        event.preventDefault();
+
+        var new_name = $('#names-add-name-factory').clone();
+        new_name.attr( 'id', "names-add-" + new_names_count );
+        var input    = new_name.find('input');
+        var input_id = input.attr( 'name' ) + new_names_count;
+        
+        input.attr( 'id', input_id ).attr( 'name', input_id );
+        new_name.find('label').attr( 'for', input_id );
+
+        new_names_count = new_names_count + 1;
+        
+        $('#erm-edit-input-names-addbutton').parent().parent().after( new_name );
+        new_name.addClass('field').show();
+        
+        new_name.parent('fieldset:not(.nostripe)').find('div.field').removeClass('alt').filter(':odd').addClass('alt');
+    });
+    
+    /* Visibly disable a name if it is going to be deleted */
+
+    $('#page-general input.altname').livequery( 'blur', function(event) {
+        if ( $(this).val() == '' ) {
+            $(this).parent().parent().addClass('to_delete');
+        }
+        else {
+            $(this).parent().parent().removeClass('to_delete');
+        }
+    });
+
+
+    /* Create new keyword entries on demand */
+
+    $('#erm-edit-input-keywords-addbutton').bind( 'click', function(event) {
+        event.preventDefault();
+
+        var new_keyword = $('#keywords-add-keyword-factory').clone();
+        new_keyword.attr( 'id', "keywords-add-" + new_keywords_count );
+        var input    = new_keyword.find('input');
+        var input_id = input.attr( 'name' ) + new_keywords_count;
+        
+        input.attr( 'id', input_id ).attr( 'name', input_id );
+        new_keyword.find('label').attr( 'for', input_id );
+
+        new_keywords_count = new_keywords_count + 1;
+        
+        $('#erm-edit-input-keywords-addbutton').parents('fieldset').append( new_keyword );
+        new_keyword.addClass('field').show();
+        
+        new_keyword.parent('fieldset:not(.nostripe)').find('div.field').removeClass('alt').filter(':odd').addClass('alt');
+    });
+    
+    /* Visibly disable a keyword if it is going to be deleted */
+
+    $('#page-general input.altkeyword').livequery( 'blur', function(event) {
+        if ( $(this).val() == '' ) {
+            $(this).parent().parent().addClass('to_delete');
+        }
+        else {
+            $(this).parent().parent().removeClass('to_delete');
+        }
+    });
+
+
+
+});
+
+
+
+</script>
+
+<style>
+    div.to_delete {
+        background: #ccc;
+    }
+</style>
+
+<div id="erm-edit-key">[% erm.key | html %] <a style="margin-left: 15px;" href="[% url("$url_base/erm/main/delete/?erm_main_id=$erm.id") %]">delete</a></div>
+
+<div id="pages-container" class="tabs-nav" style="width: 100%;">
+
+<ul>
+ <li><a href="#page-general"><span>General</span></a></li>
+ <li><a href="#page-datescosts"><span>Dates/Costs</span></a></li>
+ <li><a href="#page-stats"><span>Statistics</span></a></li>
+ <li><a href="#page-admin"><span>Admin</span></a></li>
+ <li><a href="#page-subjects"><span>Subjects</span></a></li>
+ <li><a href="#page-links"><span>Links</span></a></li>
+ <li><a href="#page-files"><span>Files</span></a></li>
+ <li><a href="#page-marc"><span>MARC</span></a></li>
+</ul>
+
+<form method="post" name="main-form" id="main-form">
+
+<div id="page-general" class="tabs-nav-page">
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+<fieldset>
+
+<legend>Basic</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-key">resource identifier</label>
+  <input id="erm-edit-input-key" name="key" value="[% erm.key | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  A unique identifier for this resource that is used when attaching to resources, journals, and subjects.
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-main_name">main title</label>
+  <input id="erm-edit-input-main_name" name="main_name" value="[% erm.main_name | html %]" style="width: 30em;" />
+  <a id="erm-edit-input-names-addbutton" href="[% url("$url_base/erm/edit/add_name/1979") %]"><img src="[% image_dir %]/icons/plus.png" style="width: 20px; height: 20px;" alt="add new alternate name" /></a>
+ </div>
+ <div class="help">
+  The main title displayed for this resource.
+ </div>
+</div>
+
+[% FOREACH name IN erm.names %]
+ [% NEXT IF name.main == 1 %]
+ <div class="field" style="padding: 5px 0px;">
+  <div class="data">
+   <label for="erm-edit-alt_name_[% loop.count %]">alternate title</label>
+   <input id= "erm-edit-alt_name_[% loop.count %]" type="text" class="altname" name="erm-edit-input-names-[% name.id %]" value="[% name.name | html %]"/>
+  </div>
+  <div class="help">
+   Change an alternate title for the resource here.
+  </div>
+ </div>
+[% END %]
+
+<div id="names-add-name-factory" style="padding: 5px 0px; display: none">
+ <div class="data">
+  <label>alternate title</label>
+  <input type="text" class="altname" name="erm-edit-input-names-add-name-" value="" />
+ </div>
+ <div class="help">
+  Add any alternate titles for the resource here.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-internal_name">internal title</label>
+  <input id="erm-edit-input-internal_name" name="internal_name" value="[% erm.internal_name | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Internal title for this resource, not generally shown publicly.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-vendor">vendor</label>
+  <input id="erm-edit-input-vendor" name="vendor" value="[% erm.vendor | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  The entity which bills for this subscription.  This may be a database creator, database provider or any other entity you wish to include.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-publisher">publisher</label>
+  <input id="erm-edit-input-publisher" name="publisher" value="[% erm.publisher | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  The company that publishes the resource (if different than vendor).
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-provider_name">provider name</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.provider_name | html %]</span><br />[% END %]
+  <input id="erm-edit-provider_name" name="provider_name" value="[% erm.provider_name | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  The provider name for this resource.
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-url">URL</label>
+  <input id="erm-edit-input-url" name="url" value="[% erm.url | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  The URL to access the resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-access">Access</label>
+  <input id="erm-edit-input-access" name="access" value="[% erm.access | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  How to access the resource if not through the URL above.  This can be something simple like "Standalone CDROMs, 3rd floor."
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-resource_type">resource type</label>
+  <select id="erm-edit-input-resource_type" name="resource_type" style="width: 19em">
+   [% IF resource_type_options.defined %]
+    <option value=""></option>
+    [% FOREACH resource_type_option IN resource_type_options %]
+     <option value="[% resource_type_option.id %]" [% 'selected="selected"' IF erm.resource_type.id == resource_type_option.id %]>[% resource_type_option.resource_type | html %]</option>
+    [% END %]
+   [% ELSE %]
+    <option value="">None available</option>
+   [% END %]
+  </select>
+ </div>
+ <div class="help">
+  Type of resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-resource_medium">resource medium</label>
+  <select id="erm-edit-input-resource_medium" name="resource_medium" style="width: 19em">
+   [% IF resource_medium_options.defined %]
+    <option value=""></option>
+    [% FOREACH resource_medium_option IN resource_medium_options %]
+     <option value="[% resource_medium_option.id %]" [% 'selected="selected"' IF erm.resource_medium.id == resource_medium_option.id %]>[% resource_medium_option.resource_medium | html %]</option>
+    [% END %]
+   [% ELSE %]
+    <option value="">None available</option>
+   [% END %]
+  </select>
+ </div>
+ <div class="help">
+  Type of medium for this resource.
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-content_types">content types</label>
+  <select id="erm-edit-input-content_types" name="erm-edit-input-content_types" style="width: 19em" multiple="multiple">
+   [% IF content_type_options.defined %]
+    [% FOREACH content_type_option IN content_type_options %]
+     [% SET content_type_id = content_type_option.id %]
+     <option value="[% content_type_id %]" [% 'selected="selected"' IF active_content_types.$content_type_id %]>[% content_type_option.content_type | html %]</option>
+    [% END %]
+   [% ELSE %]
+    <option value="">None available</option>
+   [% END %]
+  </select>
+ </div>
+ <div class="help">
+  Type of content found in this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-file_type">file type</label>
+  <input id="erm-edit-input-file_type" name="file_type" value="[% erm.file_type | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Description of the type of file(s) utilized in this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-group_records">group records</label>
+  <input id="erm-edit-input-group_records" name="group_records" value="[% erm.group_records | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  If this is a special group record, enter the resource ids for the grouped records here.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-public_list">public list?</label>
+  <select id="erm-edit-input-public_list" name="public_list" style="width: 4em;">
+   <option value=""></option>
+   <option value="1" [% 'selected="selected"' IF erm.public_list == 1 %]>Yes</option>
+   <option value="0" [% 'selected="selected"' IF erm.public_list == 0 %]>No</option>
+  </select>
+ </div>
+ <div class="help">
+  Display on public lists?
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-public">public?</label>
+  <select id="erm-edit-input-public" name="public" style="width: 4em;">
+   <option value=""></option>
+   <option value="1" [% 'selected="selected"' IF erm.public == 1 %]>Yes</option>
+   <option value="0" [% 'selected="selected"' IF erm.public == 0 %]>No</option>
+  </select>
+ </div>
+ <div class="help">
+  Public can view this ERM record?
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-description_brief">brief description</label>
+  <input id="erm-edit-input-description_brief" name="description_brief" value="[% erm.description_brief | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Used to provide brief information on the public display.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-proxy">proxy?</label>
+  <select id="erm-edit-input-proxy" name="proxy" style="width: 4em;">
+   <option value=""></option>
+   <option value="1" [% 'selected="selected"' IF erm.proxy == 1 %]>Yes</option>
+   <option value="0" [% 'selected="selected"' IF erm.proxy == 0 %]>No</option>
+  </select>
+ </div>
+ <div class="help">
+  Prepend the site proxy to the URL for this record?
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-description_full">full description</label>
+  <textarea id="erm-edit-input-description_full" name="description_full">[% erm.description_full | html %]</textarea>
+ </div>
+ <div class="help">
+  Displays a message to users.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-public_message">public message</label>
+  <textarea id="erm-edit-input-public_message" name="public_message">[% erm.public_message | html %]</textarea>
+ </div>
+ <div class="help">
+  Displays a message to users.
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-alert">alert</label>
+  <textarea id="erm-edit-input-alert" name="alert">[% erm.alert | html %]</textarea>
+ </div>
+ <div class="help">
+  Displays an alert to users about this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-alert_expiry">alert expiry</label>
+  <input id="erm-edit-input-alert_expiry" name="alert_expiry" value="[% erm.alert_expiry | html %]" style="width: 10em" />
+ </div>
+ <div class="help">
+  Date that the current alert message will be removed.<br /><br />Format: YYYY-MM-DD
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-issn">ISSN</label>
+  <input id="erm-edit-input-issn" name="issn" value="[% erm.issn | html %]" style="width: 10em;" />
+ </div>
+ <div class="help">
+  ISSN.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-isbn">ISBN</label>
+  <input id="erm-edit-input-isbn" name="isbn" value="[% erm.isbn | html %]" style="width: 10em;" />
+ </div>
+ <div class="help">
+  ISBN.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-user_documentation">user documentation</label>
+  <textarea id="erm-edit-input-user_documentation" name="user_documentation">[% erm.user_documentation | html %]</textarea>
+ </div>
+ <div class="help">
+  Library created help, may link to other help resources (tutorials, viewlets, etc.)
+ </div>
+</div>
+
+
+</fieldset>
+
+
+<fieldset>
+
+<legend>Coverage</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-simultaneous_users">simultaneous users</label>
+  <input id="erm-edit-input-simultaneous_users" name="simultaneous_users" value="[% erm.simultaneous_users | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  How many simultaneous users can access this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-update_frequency">update frequency</label>
+  <input id="erm-edit-input-update_frequency" name="update_frequency" value="[% erm.update_frequency | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  How often the resource is updated by the vendor.
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-coverage">coverage</label>
+  <input id="erm-edit-input-coverage" name="coverage" value="[% erm.coverage | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Free text date range or coverage notes for the resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-embargo_period">embargo period</label>
+  <input id="erm-edit-input-embargo_period" name="embargo_period" value="[% erm.embargo_period | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Length of embargo period, if any.  Leave blank if there is no embargo period.
+ </div>
+</div>
+
+</fieldset>
+
+
+<fieldset>
+
+<legend>Subscription</legend>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-subscription_type">subscription type</label>
+  <input id="erm-edit-input-subscription_type" name="subscription_type" value="[% erm.subscription_type | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  For journals. Describes type of subscription - either Direct Subscription or Part of a Package.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-subscription_status">subscription status</label>
+  <select id="erm-edit-input-subscription_status" name="subscription_status" style="width: 30em;">
+   <option value=""></option>
+   [% FOREACH status IN subscription_statuses %]
+    <option value="[% status %]" [% 'selected="selected"' IF erm.subscription_status == status %]>[% status %]</option>
+   [% END %]
+  </select>
+ </div>
+ <div class="help">
+  Status of the subscription - Active, trial, cancelled etc.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-print_included">print included?</label>
+  <select id="erm-edit-input-print_included" name="print_included" style="width: 4em;">
+   <option value=""></option>
+   <option value="1" [% 'selected="selected"' IF erm.print_included == 1 %]>Yes</option>
+   <option value="0" [% 'selected="selected"' IF erm.print_included == 0 %]>No</option>
+  </select>
+ </div>
+ <div class="help">
+  Print subscription is included with online access?
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-subscription_notes">subscription notes</label>
+  <textarea id="erm-edit-input-subscription_notes" name="subscription_notes">[% erm.subscription_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Enter further information about the subscription here.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-subscription_ownership">subscription ownership</label>
+  <input id="erm-edit-input-subscription_ownership" name="subscription_ownership" value="[% erm.subscription_ownership | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Only for journals. Describes whether or not the resource is owned by the library and has three options – Subscription, Part of Core Package, Formerly Part of Core Package.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-subscription_ownership_notes">subscription ownership notes</label>
+  <textarea id="erm-edit-input-subscription_ownership_notes" name="subscription_ownership_notes">[% erm.subscription_ownership_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Enter further information about the subscription ownership here.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-cancellation_cap">cancellation cap?</label>
+  <select id="erm-edit-input-cancellation_cap" name="cancellation_cap" style="width: 4em;">
+   <option value=""></option>
+   <option value="1" [% 'selected="selected"' IF erm.cancellation_cap == 1 %]>Yes</option>
+   <option value="0" [% 'selected="selected"' IF erm.cancellation_cap == 0 %]>No</option>
+  </select>
+ </div>
+ <div class="help">
+  Does this resource have a cancellation cap?
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-cancellation_cap_notes">cancellation cap notes</label>
+  <textarea id="erm-edit-input-cancellation_cap_notes" name="cancellation_cap_notes">[% erm.cancellation_cap_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Notes about the cancellation cap.
+ </div>
+</div>
+
+
+</fieldset>
+
+
+<fieldset>
+
+<legend>Other</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-active_alert">active alert</label>
+  <input id="erm-edit-input-active_alert" name="active_alert" value="[% erm.active_alert | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  The email address(es) of the person(s) to receive notification of the resource activation.  If no address is given, email will be sent to the general site email address.  Seperate multiple email addresses with commas.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-pick_and_choose">pick and choose</label>
+  <select id="erm-edit-input-pick_and_choose" name="pick_and_choose" style="width: 4em;">
+   <option value=""></option>
+   <option value="1" [% 'selected="selected"' IF erm.pick_and_choose == 1 %]>Yes</option>
+   <option value="0" [% 'selected="selected"' IF erm.pick_and_choose == 0 %]>No</option>
+  </select>
+ </div>
+ <div class="help">
+  The field is used identify services that let you select the specific journals you wish to purchase form their full collection.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-marc_available">MARC available</label>
+  <select id="erm-edit-input-marc_available" name="marc_available" style="width: 4em;">
+   <option value=""></option>
+   <option value="1" [% 'selected="selected"' IF erm.marc_available == 1 %]>Yes</option>
+   <option value="0" [% 'selected="selected"' IF erm.marc_available == 0 %]>No</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether MARC records are available for this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-marc_alert">MARC download notification</label>
+  <input id="erm-edit-input-marc_alert" name="marc_alert" value="[% erm.marc_alert | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  The email address(es) of the person(s) to receive notification of last MARC download.  If no address is given, email will be sent to the general site email address.  Seperate multiple email addresses with commas.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-requirements">requirements</label>
+  <input id="erm-edit-input-requirements" name="requirements" value="[% erm.requirements | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Brief description of any software or hardware requirements.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-maintenance">maintenance</label>
+  <input id="erm-edit-input-maintenance" name="maintenance" value="[% erm.maintenance | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Brief description of the normal maintenance window.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-title_list_url">title list URL</label>
+  <input id="erm-edit-input-title_list_url" name="title_list_url" value="[% erm.title_list_url | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  URL for the current title list for this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-help_url">help URL</label>
+  <input id="erm-edit-input-help_url" name="help_url" value="[% erm.help_url | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  URL for the vendor help page for this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-status_url">status URL</label>
+  <input id="erm-edit-input-status_url" name="status_url" value="[% erm.status_url | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  URL for the current server status for this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-resolver_enabled">resolver enabled</label>
+  <select id="erm-edit-input-resolver_enabled" name="resolver_enabled" style="width: 4em;">
+   <option value=""></option>
+   <option value="1" [% 'selected="selected"' IF erm.resolver_enabled == 1 %]>Yes</option>
+   <option value="0" [% 'selected="selected"' IF erm.resolver_enabled == 0 %]>No</option>
+  </select>
+ </div>
+ <div class="help">
+  Does the resource work with GODOT and other resolvers?
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-refworks_compatible">RefWorks compatible</label>
+  <select id="erm-edit-input-refworks_compatible" name="refworks_compatible" style="width: 4em;">
+   <option value=""></option>
+   <option value="1" [% 'selected="selected"' IF erm.refworks_compatible == 1 %]>Yes</option>
+   <option value="0" [% 'selected="selected"' IF erm.refworks_compatible == 0 %]>No</option>
+  </select>
+ </div>
+ <div class="help">
+  Does the resource work with RefWorks?
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-refworks_info_url">RefWorks info URL</label>
+  <input id="erm-edit-input-refworks_info_url" name="refworks_info_url" value="[% erm.refworks_info_url | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Location of help pages specifically for RefWorks and this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-print_equivalents">print equivalents</label>
+  <textarea id="erm-edit-input-print_equivalents" name="print_equivalents">[% erm.print_equivalents | html %]</textarea>
+ </div>
+ <div class="help">
+  Information on any print equivalents to this resource.
+ </div>
+</div>
+
+</fieldset>
+
+<fieldset>
+
+<legend>Indexed Terms</legend>
+<div><a id="erm-edit-input-keywords-addbutton" href="[% url("$url_base/erm/edit/add_keyword/1979") %]"><img src="[% image_dir %]/icons/plus.png" style="width: 20px; height: 20px;" alt="add new indexed term" /> New indexed term</a></div>
+
+[% FOREACH keyword IN erm.keywords %]
+ <div class="field" style="padding: 5px 0px;">
+  <div class="data">
+   <label for="erm-edit-keywords_[% loop.count %]">index term</label>
+   <input id= "erm-edit-keywords_[% loop.count %]" type="text" class="altname" name="erm-edit-input-keywords-[% keyword.id %]" value="[% keyword.keyword | html %]"/>
+  </div>
+  <div class="help">
+   Change an indexed term for the resource here. These are used for searching but are not displayed to the public.
+  </div>
+ </div>
+[% END %]
+
+<div id="keywords-add-keyword-factory" style="padding: 5px 0px; display: none">
+ <div class="data">
+  <label>keyword</label>
+  <input type="text" class="altname" name="erm-edit-input-keywords-add-keyword-" value="" />
+ </div>
+ <div class="help">
+  Add any indexed terms for the resource here. These are used for searching but are not displayed to the public.
+ </div>
+</div>
+
+</fieldset>
+
+<div style="margin-bottom: 1em">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+</div> <!-- page-general -->
+
+<div id="page-datescosts" class="tabs-nav-page" style="width: 98%">
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+<fieldset>
+    
+<legend>Costs</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-cost">cost</label>
+  <input id="erm-edit-input-cost" name="cost" value="[% erm.cost | html %]" style="width: 10em;" />
+   <a style="padding-top: 3px; float: left; padding-left: 5px;" href="[% url("$url_base/erm/costs/view/$erm.id") %]">advanced costs</a>
+ </div>
+ <div class="help">
+  Cost
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-invoice_amount">invoice amount</label>
+  <input id="erm-edit-input-invoice_amount" name="invoice_amount" value="[% erm.invoice_amount | html %]" style="width: 10em;" />
+ </div>
+ <div class="help">
+  Amount invoiced
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-currency">currency</label>
+  <select id="erm-edit-input-currency" name="currency" style="width: 4em;">
+   <option value=""></option>
+   [% FOREACH currency IN currency_list %]
+    <option value="[% currency %]" [% 'selected="selected"' IF currency == erm.currency %]>[% currency %]</option>
+   [% END %]
+  </select>
+ </div>
+ <div class="help">
+  Currency code for invoice 
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-pricing_model">pricing model</label>
+  <select id="erm-edit-input-pricing_model" name="pricing_model" style="width: 15em">
+   [% IF pricing_model_options.defined %]
+    <option value=""></option>
+    [% FOREACH pricing_model_option IN pricing_model_options %]
+     <option value="[% pricing_model_option.id %]" [% 'selected="selected"' IF erm.pricing_model.id == pricing_model_option.id %]>[% pricing_model_option.pricing_model | html %]</option>
+    [% END %]
+   [% ELSE %]
+    <option value="">None available</option>
+   [% END %]
+  </select>
+ </div>
+ <div class="help">
+  Select the best description for how this resource was purchased.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-pricing_model_notes">pricing model notes</label>
+  <textarea id="erm-edit-input-pricing_model_notes" name="pricing_model_notes">[% erm.pricing_model_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Extra information about the product's pricing model.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-price_cap">price cap</label>
+   <select id="erm-edit-input-price_cap" name="price_cap" style="width: 4em;">
+    <option value=""></option>
+    <option value="1" [% 'selected="selected"' IF erm.price_cap == 1 %]>Yes</option>
+    <option value="0" [% 'selected="selected"' IF erm.price_cap == 0 %]>No</option>
+   </select>
+ </div>
+ <div class="help">
+  Is there a price cap for this product?
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-gst">GST</label>
+   <select id="erm-edit-input-gst" name="gst" style="width: 4em;">
+    <option value=""></option>
+    <option value="1" [% 'selected="selected"' IF erm.gst == 1 %]>Yes</option>
+    <option value="0" [% 'selected="selected"' IF erm.gst == 0 %]>No</option>
+   </select>
+ </div>
+ <div class="help">
+  Is GST charged for this product?
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-gst_amount">gst amount</label>
+  <input id="erm-edit-input-gst_amount" name="gst_amount" value="[% erm.gst_amount | html %]" style="width: 10em;" />
+ </div>
+ <div class="help">
+  Amount of GST
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-pst">PST</label>
+  <select id="erm-edit-input-pst" name="pst" style="width: 4em;">
+   <option value=""></option>
+   <option value="1" [% 'selected="selected"' IF erm.pst == 1 %]>Yes</option>
+   <option value="0" [% 'selected="selected"' IF erm.pst == 0 %]>No</option>
+  </select>
+ </div>
+ <div class="help">
+  Is PST charged for this product?
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-pst_amount">pst amount</label>
+  <input id="erm-edit-input-pst_amount" name="pst_amount" value="[% erm.pst_amount | html %]" style="width: 10em;" />
+ </div>
+ <div class="help">
+  Amount of PST
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-payment_status">payment status</label>
+  <select id="erm-edit-input-payment_status" name="payment_status" style="width: 8em;">
+   <option value=""></option>
+   <option value="paid"      [% 'selected="selected"' IF erm.payment_status == 'paid'      %]>Paid</option>
+   <option value="renewed"   [% 'selected="selected"' IF erm.payment_status == 'renewed'   %]>Renewed</option>
+   <option value="cancelled" [% 'selected="selected"' IF erm.payment_status == 'cancelled' %]>Cancelled</option>
+   <option value="delayed"   [% 'selected="selected"' IF erm.payment_status == 'delayed'   %]>Delayed</option>
+  </select>
+ </div>
+ <div class="help">
+  The current status of the product payment.
+ </div>
+</div>
+
+</fieldset>
+
+<fieldset>
+    
+<legend>Dates</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-order_date">order date</label>
+  <input id="erm-edit-input-order_date" name="order_date" value="[% erm.order_date | html %]" style="width: 10em;" />
+ </div>
+ <div class="help">
+  Date the order was placed.<br /><br />Format: YYYY-MM-DD
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-contract_start">contract start</label>
+  <input id="erm-edit-input-contract_start" name="contract_start" value="[% erm.contract_start | html %]" style="width: 10em;" />
+ </div>
+ <div class="help">
+  Beginning date of a specific subscription period.<br /><br />Format: YYYY-MM-DD
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-contract_end">contract end</label>
+  <input id="erm-edit-input-contract_end" name="contract_end" value="[% erm.contract_end | html %]" style="width: 10em;" />
+ </div>
+ <div class="help">
+  End date of a specific subscription period.<br /><br />Format: YYYY-MM-DD
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-original_term">original term</label>
+  <input id="erm-edit-input-original_term" name="original_term" value="[% erm.original_term | html %]" />
+ </div>
+ <div class="help">
+  Specific term or time period mentioned in the contract or agreement.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-license_start_date">license start date</label>
+  <input id="erm-edit-input-license_start_date" name="license_start_date" value="[% erm.license_start_date | html %]" style="width: 10em;" />
+ </div>
+ <div class="help">
+  Beginning date for new license.<br /><br />Format: YYYY-MM-DD
+ </div>
+</div>
+
+
+</fieldset>
+
+<fieldset>
+
+<legend>Local Numbers</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-local_bib">local bib number</label>
+  <input id="erm-edit-input-local_bib" name="local_bib" value="[% erm.local_bib | html %]" />
+ </div>
+ <div class="help">
+  The record number that is assigned by a local library management system to the bibliographic record for the resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-local_customer">local customer number</label>
+  <input id="erm-edit-input-local_customer" name="local_customer" value="[% erm.local_customer | html %]" />
+ </div>
+ <div class="help">
+  The record number that is assigned by a local library management system to the customer record for the resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-local_vendor">local vendor number</label>
+  <input id="erm-edit-input-local_vendor" name="local_vendor" value="[% erm.local_vendor | html %]" />
+ </div>
+ <div class="help">
+  Local vendor number used in other systems.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-local_vendor_code">local vendor code</label>
+  <input id="erm-edit-input-local_vendor_code" name="local_vendor_code" value="[% erm.local_vendor_code | html %]" />
+ </div>
+ <div class="help">
+  Local vendor code used in other systems.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-local_acquisitions">local acquisitions number</label>
+  <input id="erm-edit-input-local_acquisitions" name="local_acquisitions" value="[% erm.local_acquisitions | html %]" />
+ </div>
+ <div class="help">
+  The record number that is assigned by a local library management system to the order/acquisitions record for the resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-local_fund">local fund number</label>
+  <input id="erm-edit-input-local_fund" name="local_fund" value="[% erm.local_fund | html %]" />
+ </div>
+ <div class="help">
+  Local fund number used for this subscription.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-journal_auth">journal auth number</label>
+  <input id="erm-edit-input-journal_auth" name="journal_auth" value="[% erm.journal_auth | html %]" />
+ </div>
+ <div class="help">
+  CJDB journal auth number.  A more advanced linking system may be added in the future.
+ </div>
+</div>
+
+
+
+</fieldset>
+
+<fieldset>
+ <legend>Renewals</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-auto_renew">auto renew</label>
+  <select id="erm-edit-input-auto_renew" name="auto_renew" style="width: 4em;">
+   <option value=""></option>
+   <option value="1" [% 'selected="selected"' IF erm.auto_renew == 1 %]>Yes</option>
+   <option value="0" [% 'selected="selected"' IF erm.auto_renew == 0 %]>No</option>
+  </select>
+ </div>
+ <div class="help">
+  Subscription is automatically renewed following the initial contract period.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-renewal_notification">renewal notification</label>
+  <select id="erm-edit-input-renewal_notification" name="renewal_notification" style="width: 10em;">
+   <option value="">No notification</option>
+   <option value="30"  [% 'selected="selected"' IF erm.renewal_notification == '30'  %]>30 days</option>
+   <option value="60"  [% 'selected="selected"' IF erm.renewal_notification == '60'  %]>60 days</option>
+   <option value="90"  [% 'selected="selected"' IF erm.renewal_notification == '90'  %]>90 days</option>
+   <option value="120" [% 'selected="selected"' IF erm.renewal_notification == '120' %]>120 days</option>
+  </select>
+ </div>
+ <div class="help">
+  Number of days you wish to be notified prior to a renewal date.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-notification_email">notification email</label>
+  <input id="erm-edit-input-notification_email" name="notification_email" value="[% erm.notification_email | html %]" />
+ </div>
+ <div class="help">
+  An email address that renewal notifications for this ERM record should go to.
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-notice_to_cancel">notice to cancel</label>
+  <select id="erm-edit-input-notice_to_cancel" name="notice_to_cancel" style="width: 10em;">
+   <option value="">No notification</option>
+   <option value="30"  [% 'selected="selected"' IF erm.notice_to_cancel == '30'  %]>30 days</option>
+   <option value="60"  [% 'selected="selected"' IF erm.notice_to_cancel == '60'  %]>60 days</option>
+   <option value="90"  [% 'selected="selected"' IF erm.notice_to_cancel == '90'  %]>90 days</option>
+   <option value="120" [% 'selected="selected"' IF erm.notice_to_cancel == '120' %]>120 days</option>
+  </select>
+ </div>
+ <div class="help">
+  Number of days prior to the renewal date, as specified in the contract, that the library has to provide the vendor with a notice to cancel without pentalty.
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-requires_review">requires review</label>
+   <select id="erm-edit-input-requires_review" name="requires_review" style="width: 4em;">
+    <option value=""></option>
+    <option value="1" [% 'selected="selected"' IF erm.requires_review == 1 %]>Yes</option>
+    <option value="0" [% 'selected="selected"' IF erm.requires_review == 0 %]>No</option>
+   </select>
+ </div>
+ <div class="help">
+  Indicates if the subscription requires review by any internal or external person or group.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-review_by">review by</label>
+  <input id="erm-edit-input-review_by" name="review_by" value="[% erm.review_by | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Who should the review be done by.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-review_notes">review notes</label>
+  <textarea id="erm-edit-input-review_notes" name="review_notes">[% erm.review_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Notes on the subscription review.
+ </div>
+</div>
+
+
+</fieldset>
+
+<fieldset>
+    
+<legend>Consortia</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-consortia">consortia</label>
+  <select id="erm-edit-input-consortia" name="consortia" style="width: 15em">
+   [% IF consortia_options.defined %]
+    <option value=""></option>
+    [% FOREACH consortia_option IN consortia_options %]
+     <option value="[% consortia_option.id %]" [% 'selected="selected"' IF erm.consortia.id == consortia_option.id %]>[% consortia_option.consortia | html %]</option>
+    [% END %]
+   [% ELSE %]
+    <option value="">None available</option>
+   [% END %]
+  </select>
+ </div>
+ <div class="help">
+  Consortia this product was purchased through.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-consortia_notes">consortia notes</label>
+  <textarea id="erm-edit-input-consortia_notes" name="consortia_notes">[% erm.consortia_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Notes on consortial purchase.
+ </div>
+</div>
+
+</fieldset>
+
+
+<fieldset>
+    
+<legend>Miscellaneous</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-date_cost_notes">date/cost notes</label>
+  <textarea id="erm-edit-input-date_cost_notes" name="date_cost_notes">[% erm.date_cost_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Other information regarding the payment or date information about the subscription.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-misc_notes">miscellaneous notes</label>
+  <textarea id="erm-edit-input-misc_notes" name="misc_notes">[% erm.misc_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Any other notes not covered by other fields.
+ </div>
+</div>
+
+
+</fieldset>
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+
+</div> <!-- page-datescosts -->
+
+<div id="page-stats" class="tabs-nav-page" style="width: 98%">
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+<fieldset>
+    
+<legend>Statistics</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-stats_available">stats available</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.stats_available.defined ? provider_record.stats_available ? 'yes' : 'no' : '' | html %]</span><br />[% END %]
+   <select id="erm-edit-input-stats_available" name="stats_available" style="width: 4em;">
+    <option value=""></option>
+    <option value="1" [% 'selected="selected"' IF erm.stats_available == 1 %]>Yes</option>
+    <option value="0" [% 'selected="selected"' IF erm.stats_available == 0 %]>No</option>
+   </select>
+ </div>
+ <div class="help">
+  Indicates if usage statistics are available from the vendor.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-stats_url">usage stats URL</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.stats_url | html %]</span><br />[% END %]
+  <input id="erm-edit-input-stats_url" name="stats_url" value="[% erm.stats_url | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  URL for usage stats if available.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-stats_frequency">stats frequency</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.stats_frequency | html %]</span><br />[% END %]
+  <select id="erm-edit-input-stats_frequency" name="stats_frequency" style="width: 8em;">
+   <option value=""></option>
+   <option value="daily"     [% 'selected="selected"' IF erm.stats_frequency == 'daily'     %]>Daily</option>
+   <option value="monthly"   [% 'selected="selected"' IF erm.stats_frequency == 'monthly'   %]>Monthly</option>
+   <option value="quarterly" [% 'selected="selected"' IF erm.stats_frequency == 'quarterly' %]>Quarterly</option>
+   <option value="yearly"    [% 'selected="selected"' IF erm.stats_frequency == 'yearly'    %]>Yearly</option>
+  </select>
+ </div>
+ <div class="help">
+  Frequency which the vendor updates and makes statistics available.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-stats_delivery">stats delivery</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.stats_delivery | html %]</span><br />[% END %]
+  <select id="erm-edit-input-stats_delivery" name="stats_delivery" style="width: 8em;">
+   <option value=""></option>
+   <option value="email"  [% 'selected="selected"' IF erm.stats_delivery == 'email' %]>email</option>
+   <option value="web"    [% 'selected="selected"' IF erm.stats_delivery == 'web'   %]>web</option>
+   <option value="print"  [% 'selected="selected"' IF erm.stats_delivery == 'print' %]>print</option>
+   <option value="SUSHI"  [% 'selected="selected"' IF erm.stats_delivery == 'SUSHI' %]>SUSHI</option>
+  </select>
+ </div>
+ <div class="help">
+  How statistics are delivered or made available.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-stats_counter">COUNTER stats</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.stats_counter.defined ? provider_record.stats_counter ? 'yes' : 'no' : ''  | html %]</span><br />[% END %]
+   <select id="erm-edit-input-stats_counter" name="stats_counter" style="width: 4em;">
+    <option value=""></option>
+    <option value="1" [% 'selected="selected"' IF erm.stats_counter == 1 %]>Yes</option>
+    <option value="0" [% 'selected="selected"' IF erm.stats_counter == 0 %]>No</option>
+   </select>
+ </div>
+ <div class="help">
+  Indicates whether statics are COUNTER compliant.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-stats_user">stats username</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.stats_user | html %]</span><br />[% END %]
+  <input id="erm-edit-stats_user" name="stats_user" value="[% erm.stats_user | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Username required to access usage statistics.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-stats_password">stats password</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.stats_password | html %]</span><br />[% END %]
+  <input id="erm-edit-stats_password" name="stats_password" value="[% erm.stats_password | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Username required to access usage statistics.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-stats_notes">stats notes</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.stats_notes.replace("\n", "<br />\n") | html %]</span><br />[% END %]
+  <textarea id="erm-edit-input-stats_notes" name="stats_notes">[% erm.stats_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Enter further information about statistics for the resource here.
+ </div>
+</div>
+
+
+</fieldset>
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+</div> <!-- page-stats -->
+
+<div id="page-admin" class="tabs-nav-page" style="width: 98%">
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+<fieldset>
+    
+<legend>Admin</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-open_access">open access</label>
+  <select id="erm-edit-input-open_access" name="open_access" style="width: 8em;">
+   <option value=""></option>
+   <option value="yes"     [% 'selected="selected"' IF erm.open_access == 'yes'     %]>yes</option>
+   <option value="no"      [% 'selected="selected"' IF erm.open_access == 'no'      %]>no</option>
+   <option value="partial" [% 'selected="selected"' IF erm.open_access == 'partial' %]>partial</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates the degree to which the resource is Open Access.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-admin_subscription_no">subscription number</label>
+  <input id="erm-edit-admin_subscription_no" name="admin_subscription_no" value="[% erm.admin_subscription_no | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Publisher/Vendor assigned customer number to identify the subscription.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-admin_user">admin username</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.admin_user | html %]</span><br />[% END %]
+  <input id="erm-edit-admin_user" name="admin_user" value="[% erm.admin_user | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Username required to access the administrative module for this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-admin_password">admin password</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.admin_password | html %]</span><br />[% END %]
+  <input id="erm-edit-admin_password" name="admin_password" value="[% erm.admin_password | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Password required to access the administrative module for this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-admin_url">admin URL</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.admin_url | html %]</span><br />[% END %]
+  <input id="erm-edit-admin_url" name="admin_url" value="[% erm.admin_url | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  URL for accessing the administrative module for this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-support_url">support URL</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.support_url | html %]</span><br />[% END %]
+  <input id="erm-edit-support_url" name="support_url" value="[% erm.support_url | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  URL for accessing the vendor's support knowledgebase.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-access_url">access URL</label>
+  <input id="erm-edit-access_url" name="access_url" value="[% erm.access_url | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  URL for general access to this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-public_account_needed">account needed</label>
+   <select id="erm-edit-input-public_account_needed" name="public_account_needed" style="width: 4em;">
+    <option value=""></option>
+    <option value="1" [% 'selected="selected"' IF erm.public_account_needed == 1 %]>Yes</option>
+    <option value="0" [% 'selected="selected"' IF erm.public_account_needed == 0 %]>No</option>
+   </select>
+ </div>
+ <div class="help">
+  Indicates whether a user name and password are needed for public access to this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-public_user">public username</label>
+  <input id="erm-edit-public_user" name="public_user" value="[% erm.public_user | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Username required for public access to this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-public_password">public password</label>
+  <input id="erm-edit-public_password" name="public_password" value="[% erm.public_password | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Password required for public access to this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-training_user">training username</label>
+  <input id="erm-edit-training_user" name="training_user" value="[% erm.training_user | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Username required for public access to this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-training_password">training password</label>
+  <input id="erm-edit-training_password" name="training_password" value="[% erm.training_password | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Password required for public access to this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-marc_url">MARC URL</label>
+  <input id="erm-edit-marc_url" name="marc_url" value="[% erm.marc_url | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  URL for downloading MARC records for resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-ip_authentication">IP authentication</label>
+   <select id="erm-edit-input-ip_authentication" name="ip_authentication" style="width: 4em;">
+    <option value=""></option>
+    <option value="1" [% 'selected="selected"' IF erm.ip_authentication == 1 %]>Yes</option>
+    <option value="0" [% 'selected="selected"' IF erm.ip_authentication == 0 %]>No</option>
+   </select>
+ </div>
+ <div class="help">
+  Indicates whether the resource utilizes IP authentication.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-referrer_authentication">referrer authentication</label>
+   <select id="erm-edit-input-referrer_authentication" name="referrer_authentication" style="width: 4em;">
+    <option value=""></option>
+    <option value="1" [% 'selected="selected"' IF erm.referrer_authentication == 1 %]>Yes</option>
+    <option value="0" [% 'selected="selected"' IF erm.referrer_authentication == 0 %]>No</option>
+   </select>
+ </div>
+ <div class="help">
+  Indicates whether the resource utilizes referrer authentication.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-referrer_url">referrer URL</label>
+  <input id="erm-edit-referrer_url" name="referrer_url" value="[% erm.referrer_url | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Referrer URL given to the vendor.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-openurl_compliant">OpenURL compliant</label>
+   <select id="erm-edit-input-openurl_compliant" name="openurl_compliant" style="width: 4em;">
+    <option value=""></option>
+    <option value="1" [% 'selected="selected"' IF erm.openurl_compliant == 1 %]>Yes</option>
+    <option value="0" [% 'selected="selected"' IF erm.openurl_compliant == 0 %]>No</option>
+   </select>
+ </div>
+ <div class="help">
+  Indicates whether the resource is OpenURL compliant.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-breaches">breaches</label>
+  <textarea id="erm-edit-input-breaches" name="breaches">[% erm.breaches | html %]</textarea>
+ </div>
+ <div class="help">
+  Record here the details on any security or access breaches that may have occurred.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-access_notes">access notes</label>
+  <textarea id="erm-edit-input-access_notes" name="access_notes">[% erm.access_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Other access information.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-admin_notes">admin notes</label>
+  <textarea id="erm-edit-input-admin_notes" name="admin_notes">[% erm.admin_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Other administration information.
+ </div>
+</div>
+
+</fieldset>
+
+<fieldset>
+
+<legend>Provider Data</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-local_provider_name">local provider name</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.local_provider_name | html %]</span><br />[% END %]
+  <input id="erm-edit-local_provider_name" name="local_provider_name" value="[% erm.local_provider_name | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  The provider name for this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-support_email">support email</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.support_email | html %]</span><br />[% END %]
+  <input id="erm-edit-support_email" name="support_email" value="[% erm.support_email | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Support email address for the provider.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-support_phone">support phone</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.support_phone | html %]</span><br />[% END %]
+  <input id="erm-edit-support_phone" name="support_phone" value="[% erm.support_phone | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Support phone number for the provider.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-knowledgebase">knowledgebase</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.knowledgebase | html %]</span><br />[% END %]
+  <input id="erm-edit-knowledgebase" name="knowledgebase" value="[% erm.knowledgebase | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Knowledgebase name for the provider.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-customer_number">customer number</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.customer_number | html %]</span><br />[% END %]
+  <input id="erm-edit-customer_number" name="customer_number" value="[% erm.customer_number | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  The site customer number for this provider.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-provider_contact">provider contact</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.provider_contact.replace("\n", "<br />\n") %]</span><br />[% END %]
+  <textarea id="erm-edit-input-provider_contact" name="provider_contact">[% erm.provider_contact | html %]</textarea>
+ </div>
+ <div class="help">
+  Contact information for the provider.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-provider_notes">provider notes</label>
+  [% IF provider_record %]<span class="linked-data"><span class="linked-data-label">Provider:</span> [% provider_record.provider_notes.replace("\n", "<br />\n") %]</span><br />[% END %]
+  <textarea id="erm-edit-input-provider_notes" name="provider_notes">[% erm.provider_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Notes on this provider.
+ </div>
+</div>
+
+
+
+</fieldset>
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+</div> <!-- page-admin -->
+
+<div id="page-subjects" class="tabs-nav-page">
+
+    <div style="padding: 1em 0px;">
+     <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+    </div>
+
+    <fieldset>
+
+    <legend>Current Subjects</legend>
+
+    [% FOREACH subject IN erm.subjectsmain %]
+     <div class="field" style="padding: 5px 0px;">
+      <div class="data">
+        <select name="erm-edit-input-subject-[% subject.id %]-subject" class="subject" />
+         <option value="delete">Delete this subject entry</option>
+         [% FOREACH subject_option IN subject_options %]
+          <option value="[% subject_option.id %]" [% ' selected="selected"' IF subject.subject == subject_option.id %]>[% subject_option.subject | html %]</option>
+         [% END %]
+        </select>
+        <input style="margin-left: 5px; width: 3em; margin-top: 3px;" type="text" name="erm-edit-input-subject-[% subject.id %]-rank" value="[% subject.rank | html %]" />
+        <textarea name="erm-edit-input-subject-[% subject.id %]-description" style="clear: left; margin-top: 5px; width: 33.5em; height: 7.1em;">[% subject.description %]</textarea>
+      </div>
+      <div class="help">
+       Databases are ranked within the subject - the relative ranking on this page is irrelevant.
+      </div>
+     </div>
+    [% END %]
+
+    <div class="field">
+     <div class="data">
+      <a id="erm-edit-input-subject-addbutton" href="[% url("$url_base/erm/edit/add_subject/$erm.id") %]">Add</a>
+     </div>
+    </div>
+    
+    <div id="subject-add-subject-factory" class="field" style="padding: 5px 0px; display: none">
+     <div class="data">
+       <select name="erm-edit-input-subject-add-subject-" class="subject" />
+        <option value="delete">Delete this subject entry</option>
+        [% FOREACH subject_option IN subject_options %]
+         <option value="[% subject_option.id %]" [% 'selected="selected"' IF loop.first %]>[% subject_option.subject | html %]</option>
+        [% END %]
+       </select>
+       <input style="margin-left: 5px; width: 3em; margin-top: 3px;" type="text" name="erm-edit-input-subject-add-rank-" value="0" />
+       <textarea name="erm-edit-input-subject-add-description-" style="clear: left; margin-top: 5px; width: 33.5em; height: 7.1em;"></textarea>
+     </div>
+     <div class="help">
+      Databases are ranked within the subject - the relative ranking on this page is irrelevant.
+     </div>
+    </div>
+
+    </fieldset>
+
+    <div class="padding: 1em 0px;">
+     <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+    </div>
+    
+</div>
+
+<div id="page-links" class="tabs-nav-page">
+
+    <div style="padding: 1em 0px;">
+     <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+    </div>
+
+    <fieldset>
+
+    <legend>License Link</legend>
+
+        <select name="license">
+         <option value="">No linked license...</option>
+         [% FOREACH erm_license IN erm_licenses %]
+          <option value="[% erm_license.id %]" [% 'selected="selected"' IF erm.license == erm_license.id %]>[% erm_license.key | html %]</option>
+         [% END %]
+        </select>
+
+    </fieldset>
+
+    <fieldset>
+
+    <legend>Provider Link</legend>
+
+        <select name="provider">
+         <option value="">No linked provider...</option>
+         [% FOREACH erm_provider IN erm_providers %]
+          <option value="[% erm_provider.id %]" [% 'selected="selected"' IF erm.provider == erm_provider.id %]>[% erm_provider.key | html %]</option>
+         [% END %]
+        </select>
+
+    </fieldset>
+
+
+    <a href="[% url("$url_base/erm/main/link/$erm.id") %]">Resource and journal linking</a>
+
+
+    <div style="padding: 1em 0px;">
+     <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+    </div>
+    
+</div>
+
+</form>
+
+<div id="page-marc" class="tabs-nav-page">
+
+<div style="margin-bottom: 1em; border: 1px solid #aaa; background: #f6f6f6; padding: 3px; margin: 2px 2px 1em 2px;">
+ <pre><code>[% erm.as_marc.as_formatted %]</code></pre>
+</div>
+
+<a target="_blank" href="[% url("$url_base/erm/marc/$erm.id") %]">download as MARC file</a>
+
+    
+</div>
+
+
+<div id="page-files" class="tabs-nav-page">
+
+
+<table class="wide-outlined">
+ <tr><td class="heading-bar">&nbsp;</td><td class="heading-bar">description</td><td class="heading-bar">created</td><td class="heading-bar">extension</td></tr>
+ [% FOREACH main_file IN main_files %]
+ [%- SET filename = main_file.UUID _ '.' _ main_file.ext -%]
+ [%- SET file_id = main_file.id -%]
+ [%- SET class = 'field' _ loop.count % 2 -%]
+ <tr>
+  <td class="[% class %]"><a href="[% url("$url_base/static/erm_files/m/$filename") %]">view</a> | <a href="[% url("$url_base/erm/main/delete_file/$erm_id/$file_id") %]" onClick="return confirmDelete()">delete</td>
+  <td class="[% class %]">[% main_file.description %]</td>
+  <td class="[% class %]">[% main_file.created.substr(0,10) %]</td>
+  <td class="[% class %]">[% main_file.ext %]</td>
+ </tr>
+ [% END %]
+</table>
+
+<form method="post" enctype="multipart/form-data" name="main-form" id="main-form" action="[% url("$url_base/erm/main/edit/$erm_id") %]">
+<fieldset style="margin-top: 10px">
+<legend>Attach New File</legend>
+<div style="padding: 1em 0px;">
+ <div class="field">
+  <div class="data">
+   <label for="erm-main-file-description">Description</label>
+   <input id="erm-main-file-description" type="textfield" name="file_description" value="" />
+  </div>
+ </div>
+ <div class="field">
+  <div class="data">
+   <label for="erm-main-file-description">File</label>
+   <input type="file" name="file" value="" />
+  </div>
+ </div>
+</div>
+</fieldset>
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="upload" value="upload">
+</div>
+
+</form>
+
+</div>
+
+</div> <!-- tab-container -->
+

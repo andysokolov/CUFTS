@@ -1,0 +1,28 @@
+[% USE url %]
+
+<div>
+<span class="heading">[% account.name | html %]</span> &nbsp;&nbsp;<a href="[% url("$url_base/admin/account/edit/$account.id") %]">edit</a> | <a href="[% url("$url_base/admin/account/delete/$account.id") %]" onClick="return confirmDelete()">delete</a>
+</div>
+
+<div style="margin-top: 1em;">
+<table><tr><td>
+<table style="border: 1px solid #004997; width: 100%;">
+<tr><td class="heading-bar" align="left" colspan="2">general settings</td></tr>
+<tr><td class="label0" align="right">key</td><td class="field0">[% account.key | html %]</td></tr>
+<tr><td class="label1" align="right">email</td><td class="field1">[% account.email | html %]</td></tr>
+<tr><td class="label0" align="right">phone</td><td class="field0">[% account.phone | html %]</td></tr>
+<tr><td class="label1" align="right">administrator</td><td class="field1">[% account.administrator ? 'yes' : 'no' %]</td></tr>
+<tr><td class="label0" align="right">edit global</td><td class="field0">[% account.edit_global ? 'yes' : 'no' %]</td></tr>
+<tr><td class="label1" align="right">active</td><td class="field1">[% account.active ? 'yes' : 'no' %]</td></tr>
+<tr><td class="label0" align="right">modified</td><td class="field0">[% account.modified.substr(0, 19) %]</td></tr>
+<tr><td class="label1" align="right">created</td><td class="field1">[% account.created.substr(0, 19) %]</td></tr>
+</table></td></tr>
+<tr><td><br /></td></tr>
+<tr><td>
+<table style="border: 1px solid #004997; width: 100%;">
+<tr><td class="heading-bar" align="left" colspan="2">associated accounts</td></tr>
+[% FOREACH site IN account.sites %]
+ <tr><td class="field[% loop.count % 2 %]"><a href="[% url("$url_base/admin/site/view/$site.id") %]">[% site.name | html %] ([% site.key %])</a></td></tr>
+[% END %]
+</table></td></tr></table>
+</div>

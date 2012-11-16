@@ -1,0 +1,73 @@
+[% USE url %]
+<fieldset>
+ <legend>Linked ERM Summary</legend>
+ 
+<div class="field" style="margin: .8em 3px;">
+ <a href="[% url("$url_base/erm/main/edit/$erm_main.id") %]">Edit ERM record</a>
+</div>
+
+<div class="field">
+ <div class="data">    
+  <label>name</label>
+  <span class="data">[% erm_main.main_name | html %]</span>
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">    
+  <label>vendor</label>
+  <span class="data">[% erm_main.vendor | html %]</span>
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">    
+  <label>publisher</label>
+  <span class="data">[% erm_main.publisher | html %]</span>
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">    
+  <label>URL</label>
+  <span class="data">[% erm_main.url | html %]</span>
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">    
+  <label>contract end</label>
+  <span class="data">[% erm_main.contract_end | html %]</span>
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">    
+  <label>consortia</label>
+  <span class="data">[% erm_main.consortia.consortia | html %]</span>
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">    
+  <label>resource type</label>
+  <span class="data">[% erm_main.resource_type.resource_type | html %]</span>
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">    
+  <label>resource medium</label>
+  <span class="data">[% erm_main.resource_medium.resource_medium %]</span>
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">    
+  <label>content types</label>
+  <span class="data">[% IF erm_main.content_types.size; erm_main.content_types.map_join('content_type', ', '); END %]</span>
+ </div>
+</div>
+
+</fieldset>

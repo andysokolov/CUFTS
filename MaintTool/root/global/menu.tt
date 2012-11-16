@@ -1,0 +1,71 @@
+[% USE url %]
+
+<div id="global-menu-new"><a href="[% url_base %]/global/edit">New Resource</a></div>
+
+<div id="global-menu-control" style="margin: .5em 0;">
+<form action="[% url_base %]/global/menu"><input style="margin-right: 2em;" type="submit" name="show" value="[% show == 'show all' ? 'show active' : 'show all' %]"></form>
+<form action="[% url_base %]/global/menu">Filter: <input type="text" name="filter" value="[% filter | html %]"> <input type="submit" name="apply_filter" value="filter"></form>
+</div>
+
+<table class="grid">
+<tr><td class="heading" align="left">&nbsp;</td><td class="heading">id</td>
+ <td class="heading">
+  [% IF sort.defined AND sort != 'name' %]
+   <a href="[% url_base %]/global/menu?sort=name">resource</a>
+  [% ELSE %]
+   resource <img src="[% url_base %]/static/images/arrow-down.gif" style="vertical-align: bottom" />
+  [% END %]
+ </td>
+ <td class="heading">
+  [% IF sort != 'provider' %]
+   <a href="[% url_base %]/global/menu?sort=provider">provider</a>
+  [% ELSE %]
+   provider <img src="[% url_base %]/static/images/arrow-down.gif" style="vertical-align: bottom" />
+  [% END %]
+ </td>
+ <td class="heading">type</td>
+ <td align="left" class="heading">titles</td>
+ <td align="center" class="heading">active</td>
+ <td align="right" class="heading">
+  [% IF sort != 'scanned' %]
+   <a href="[% url_base %]/global/menu?sort=scanned">title list scanned</a>
+  [% ELSE %]
+   title list scanned <img src="[% url_base %]/static/images/arrow-down.gif" style="vertical-align: bottom" />
+  [% END %]
+ </td>
+</tr>
+[% FOREACH resource IN resources %]
+ [% SET class = (resource.active ? 'active-field' : 'inactive-field') _ (loop.count % 2) %]
+ <tr>
+ <td class="[% class %]" style="white-space: nowrap;">
+  <a href="[% url("$url_base/global/view/$resource.id") %]">view</a> | 
+  <a href="[% url("$url_base/global/edit/$resource.id") %]">edit</a> | 
+  <a href="[% url("$url_base/global/delete/$resource.id") %]" onClick="return confirmDelete()">delete</a>
+ </td>
+
+ <td class="[% class %]" style="text-align: right;">[% resource.id %]</td>
+
+ <td class="[% class %]">[% resource.name | html %]</td>
+
+ <td class="[% class %]">[% resource.provider | html %]</td>
+
+ <td class="[% class %]">[% resource.resource_type.type | html %]</td>
+
+ <td class="[% class %]">
+  [% IF resource.do_module('has_title_list') %]
+   <a href="[% url("$url_base/global/titles/$resource.id") %]">[% resource.title_count %]</a> (<a href="[% url("$url_base/global/bulk/$resource.id") %]">bulk</a>)
+  [% ELSE %]
+   N/A
+  [% END %]
+ </td>
+
+ <td class="[% class %]" align="center">
+  [% resource.active ? '<span style="color: green; font-weight: bold;">yes</span>' : 'no' %]
+ </td>
+
+ <td class="[% class %]" align="right">
+  [% resource.title_list_scanned.substr(0,10) IF resource.title_list_scanned %]
+ </td>
+ </tr>
+[% END %]
+</table>

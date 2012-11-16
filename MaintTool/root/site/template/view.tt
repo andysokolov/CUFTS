@@ -1,0 +1,15 @@
+[% USE HTML %]
+[% SET template_contents = HTML.escape(template_contents) %]
+[% SET template_contents = template_contents.replace(" ", "&nbsp;") %]
+[% SET template_contents = template_contents.replace("\n", "<br />\n") %]
+[% SET template_contents = template_contents.replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;") %]
+
+<div style="margin-bottom: .5em;"><span class="heading">[% template_name | html %]</span></div>
+
+<table class="outlined">
+<tr><td class="heading-bar">view template</td></tr>
+<tr><td class="field1">
+<div>[% template_contents %]</div>
+</td></tr>
+
+</table>

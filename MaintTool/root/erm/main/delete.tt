@@ -1,0 +1,39 @@
+[% IF error %]
+ There was an error while attempting to delete the ERM resource: [% error %].
+[% ELSE %]
+
+    [% IF result %]
+     [% result %]
+    [% ELSE %]
+
+ 
+     <div id="erm-delete-linked-list">
+      This ERM main record is linked to [% erm_links_resources.size + erm_links_journals.size %] resources and journals.  Do you really want to delete it?
+      <form method="post">
+       <input type="hidden" name="erm_license_id" value="[% erm_license.id %]" />
+       <input type="submit" name="confirm" value="yes" />
+       <input type="submit" name="cancel" value="no" />
+      </form>
+
+      [% IF erm_links_resources.size %]
+       <h3>Resources</h3>
+       <ul>
+       [% FOREACH link IN erm_links_resources.sort('linked_name') %]
+         <li>[% link.linked_name || 'Already deleted resource' %]</li>
+       [% END %]
+       </ul>
+      [% END %]
+
+      [% IF erm_links_journals.size %]
+       <h3>Journals</h3>
+       <ul>
+       [% FOREACH link IN erm_links_journals.sort('linked_name') %]
+         <li>[% link.linked_name || 'Already deleted journal' %]</li>
+       [% END %]
+       </ul>
+      [% END %]
+      </div>
+
+    [% END %]
+
+[% END %]

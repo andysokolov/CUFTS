@@ -1,0 +1,37 @@
+[% USE url %]
+
+[% message %]
+
+<form method="get" action="[% url("$url_base/public/compare/results") %]">
+<table class="outlined" style="margin-bottom: 10px;">
+ <tr><td class="heading">Compare resources...</td></tr>
+ <tr><td class="field1"><select name="compare1">
+  [% FOREACH resource IN resources %]
+   <option value="[% resource.id %]">[% resource.name %] - [% resource.provider %]</option>
+  [% END %]
+ </td></tr>
+ <tr><td class="field1"><select name="compare2">
+  [% FOREACH resource IN resources %]
+   <option value="[% resource.id %]">[% resource.name %] - [% resource.provider %]</option>
+  [% END %]
+ </td></tr>
+ <tr><td class="field1"><select name="compare3"><option value=""></option>
+  [% FOREACH resource IN resources %]
+   <option value="[% resource.id %]">[% resource.name %] - [% resource.provider %]</option>
+  [% END %]
+ </td></tr>
+ <tr><td class="field1"><select name="compare4"><option value=""></option>
+  [% FOREACH resource IN resources %]
+   <option value="[% resource.id %]">[% resource.name %] - [% resource.provider %]</option>
+  [% END %]
+ </td></tr>
+ 
+ 
+ <tr><td class="field1">Limit to fulltext: <input type="checkbox" name="fulltext" value="1" /></td></tr>
+ <tr><td class="field1">Format: <select name="format"><option value="html">HTML</option><option value="delimited">tab delimited</option></select></td></tr>
+ <tr>
+  <td class="field1" style="padding: 4px 5px;"><input type="submit" name="compare" value="compare" /></td>
+ </tr>
+</table>
+</form>
+

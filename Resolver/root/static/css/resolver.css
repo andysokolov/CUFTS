@@ -1,0 +1,51 @@
+body {
+	background: #D0DEED;
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+div#header {
+	width: 100%;
+	height: 105px;
+}
+
+div#request {
+	clear: both;
+	float: left;
+	padding: 3px 5px;
+	border: 1px solid #004997;
+	margin: 10px 5px;
+	background: #EEEEEE;
+}
+
+div#results {
+	clear: both;
+	margin: 5px;
+}
+
+div.request-label {
+	float: left;
+	clear: left;
+	width: 4em;
+	font-weight: bold;
+	font-size: 80%;
+}
+
+div.request-field {
+	float: left;
+	font-size: 80%;
+}
+
+
+span.results-from {
+}
+
+span.results-from-resource {
+	font-weight: bold;
+}
+
+span.results-others-available {
+	font-size: 60%;
+	text-decoration: none;
+}

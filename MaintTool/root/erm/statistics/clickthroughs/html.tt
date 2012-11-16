@@ -1,0 +1,31 @@
+<div id="erm-statistics-report-info">
+Start Date: [% start_date %]<br />
+End Date: [% end_date %]<br />
+</div>
+
+<div id="erm-statistics-report-clickthrough" class="erm-statistics-report">
+
+<table>
+ <thead>
+  <tr>
+   <th>&nbsp;</th>
+   [% FOREACH date IN dates %]
+    <th>[% date.display %]</th>
+   [% END %]
+  </tr>
+ </thead>
+ <tbody>
+  [% FOREACH resource IN resources %]
+   [% SET resource_id = resource.id %]
+   <tr class="[% loop.count % 2 ? 'alt' : '' %]">
+    <td class="label"><div class="force-width">[% resource.name %]</div></td>
+    [% FOREACH date IN dates %]
+     [% SET lookup_date = date.date %]
+     <td class="data">[% resources_hash.$resource_id.$lookup_date || 0 %]</td>
+    [% END %]
+   </tr>
+  [% END %]     
+ </tbody>
+<table>
+
+</div>

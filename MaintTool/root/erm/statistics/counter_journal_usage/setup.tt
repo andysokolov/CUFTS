@@ -1,0 +1,5 @@
+[% config_entry.help = BLOCK -%]
+This report shows the journal usage numbers from COUNTER sources.  If you select multiple resources that include different counter sources, the counts will be merged.
+[%- END %]
+[% SET config_entry.name = 'Counter Journal Usage (JR1)' %]
+[% SET config_entry.formats = [ 'html', 'tab' ] %]

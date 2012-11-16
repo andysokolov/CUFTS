@@ -1,0 +1,4 @@
+[% config_entry.help = BLOCK -%]
+This report counts the number of clickthroughs from the CRDB interface.  It does not include links directly to the vendor's site, and does not include any COUNTER statistics gathered from the vendor.
+[%- END %]
+[% SET config_entry.name = 'CRDB clickthroughs' %]

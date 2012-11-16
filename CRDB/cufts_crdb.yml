@@ -1,0 +1,60 @@
+---
+name: CUFTS::CRDB
+default_view: TT
+
+connect_info:
+    - 'dbi:Pg:dbname=CUFTS3'
+    - 'tholbroo'
+    - ''
+    - AutoCommit: 1
+
+Plugin::Cache:
+    backend:
+        store: FastMmap
+        share_file: '/tmp/CUFTS_CRDB_cache'
+        cache_size: 2m
+        expire_time: 1m
+
+session:
+    expires: 36000
+    rewrite: 0
+    storage: '/tmp/CUFTS_CJDB_sessions'
+
+View::JSON:
+    expose_stash: json
+    callback_param: json_callback
+    allow_callback: 1
+    encoding: iso-8859-1
+
+
+View::TT:
+    WRAPPER: layout.tt
+    TEMPLATE_EXTENSION: .tt
+    COMPILE_DIR: '/tmp/CUFTS_CRDB_template_cache'
+
+View::TTMobile:
+    TEMPLATE_EXTENSION: .tt
+    COMPILE_DIR: '/tmp/CUFTS_CRDB_template_cache'
+
+authentication:
+    default_realm: internal
+    realms:
+        internal:
+            credential:
+                class: Password
+                password_field: password
+                password_type: crypted
+            store:
+                class: 'DBIx::Class'
+                user_class: 'CJDB::Accounts'
+                role_relation: roles
+                role_field: role
+        preauthenticated:
+            credential:
+                class: Password
+                password_type: none
+            store:
+                class: 'DBIx::Class'
+                user_class: 'CJDB::Accounts'
+                role_relation: roles
+                role_field: role

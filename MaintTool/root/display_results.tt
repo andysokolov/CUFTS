@@ -1,0 +1,6 @@
+[%- RETURN UNLESS results -%]
+<div id="results"><ul>
+[% FOREACH result IN results %]
+ <li>[% result %]</li>
+[% END %]
+</ul></div>

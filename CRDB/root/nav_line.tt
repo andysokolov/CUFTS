@@ -1,0 +1,3 @@
+<div id="navline">
+[% PROCESS menu.tt %][% PROCESS loggedin.tt %]
+</div>

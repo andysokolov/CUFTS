@@ -1,0 +1,141 @@
+[% USE url %]
+
+<form method="post" name="cjdb-account-form" id="cjdb-account-form">
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+    
+    
+<fieldset>
+
+<legend>Account Details</legend>
+
+ <div class="field">
+  <div class="data">
+   <label for="cjdb-account-edit-input-id">id</label>
+   <input id="cjdb-account-edit-input-id" readonly="readonly" type="text" value="[% account.id %]" name="id" style="width: 5em;" />
+  </div>
+  <div class="help">
+   Internal id for this account.  This is read only.
+  </div>
+ </div>
+
+ <div class="field">
+  <div class="data">
+   <label for="cjdb-account-edit-input-key">key</label>
+   <input id="cjdb-account-edit-input-key" type="text" value="[% account.key %]" name="key" />
+   [% PROCESS form_results.tt frf='key' %]
+  </div>
+  <div class="help">
+   Login key, used in the "login" field.
+  </div>
+ </div>
+
+ <div class="field">
+  <div class="data">
+   <label for="cjdb-account-edit-input-name">name</label>
+   <input id="cjdb-account-edit-input-name" type="text" value="[% account.name %]" name="name" />
+   [% PROCESS form_results.tt frf='name' %]
+  </div>
+  <div class="help">
+   User name.
+  </div>
+ </div>
+
+ <div class="field">
+  <div class="data">
+   <label for="cjdb-account-edit-input-email">email</label>
+   <input id="cjdb-account-edit-input-email" type="text" value="[% account.email %]" name="email" />
+   [% PROCESS form_results.tt frf='email' %]
+  </div>
+  <div class="help">
+   Email to contact user if necessary.
+  </div>
+ </div>
+
+ <div class="field">
+  <div class="data">
+   <label for="cjdb-account-edit-input-level">level</label>
+   <input id="cjdb-account-edit-input-level" type="text" value="[% account.level %]" name="level" />
+  </div>
+  <div class="help">
+   User level, used to determine where the users tags show up.
+  </div>
+ </div>
+ 
+ <div class="field">
+  <div class="data">
+   <label for="cjdb-account-edit-input-password">password</label>
+   <input id="cjdb-account-edit-input-password" type="password" value="" name="new_password" />
+  </div>
+  <div class="help">
+   User password.  May not be used if a non-internal authentication system is in use.
+  </div>
+ </div>
+ 
+ <div class="field">
+  <div class="data">
+   <label for="cjdb-account-edit-input-active">active</label>
+   <input id="cjdb-account-edit-input-active" type="checkbox" name="active" value="1" [% 'checked="checked"' IF account.active %] />
+  </div>
+  <div class="help">
+   Users set as not active can not log in.
+  </div>
+ </div>
+ 
+</fieldset>
+
+<fieldset>
+
+<legend>Account Roles</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="cjdb-account-edit-role-edit_erm_records">edit ERM records</label>
+  <input id="cjdb-account-edit-role-edit_erm_records" type="checkbox" name="role-edit_erm_records" value="1" [% 'checked="checked"' IF account.roles.in( 'edit_erm_records', 'role' ) %] />
+ </div>
+ <div class="help">
+  Users with this role can edit ERM records in the CRDB, including assigning subjects and changing subject ranking.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="cjdb-account-edit-role-staff">staff</label>
+  <input id="cjdb-account-edit-role-staff" type="checkbox" name="role-staff" value="1" [% 'checked="checked"' IF account.roles.in( 'staff', 'role' ) %] />
+ </div>
+ <div class="help">
+  Users with this role can see extended ERM data in the CRDB.
+ </div>
+</div>
+
+</fieldset>
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+<table class="outlined">
+ <tr><td class="heading">tag</td><td class="heading">type</td><td class="heading">count</td></tr>
+ [% FOREACH tag IN tags %]
+  [% SET class = "field" _ (loop.count % 2) %]
+  <tr>
+   <td class="[% class %]">[% tag.0 %]</a></td>
+   <td class="[% class %]">
+    [%- SWITCH tag.1 -%]
+     [%- CASE 0 -%]
+     private
+     [%- CASE 1 -%]
+     public
+     [%- CASE 2 -%]
+     local public
+     [%- CASE -%]
+     error
+    [%- END -%]
+   </td>
+   <td class="[% class %]">[% tag.2 %]</td>
+  </tr>
+ [% END %]
+</table>

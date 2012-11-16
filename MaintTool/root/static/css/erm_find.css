@@ -1,0 +1,100 @@
+div.resource-brief-record {
+    background: #def;
+    padding: 5px;
+}
+
+div.resource-brief-record-alt {
+    background: #cdf;
+}
+
+div.resource-brief-field-name {
+    font-size: 120%;
+    font-weight: bold;
+    font-family: 'Trebuchet MS',Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    margin: 3px 1px;
+}
+
+div.resource-brief-details {
+    display: none;
+    position: absolute;
+    background: #ffc;
+    border: 1px solid #c93;
+    padding: 7px 10px;
+    width: 35em;
+    left: 18em;
+    margin-top: -60px;
+}
+
+div.resource-brief-record a.trigger {
+    line-height: 135%;
+}
+
+span.resource-brief-label {
+    width: 8.2em;
+    float: left;
+    font-weight: bold;
+}
+
+span.resource-brief-data {
+    float: left;
+    width: 25.5em;
+}
+
+div.resource-brief-field {
+    float: left;
+    clear: both;
+    padding: 4px 0px;
+    width: 34.8em;
+}
+
+div.ajax_loading {
+    background: #faa;
+}
+
+div#resources-brief-facets {
+    border: 1px solid blue;
+    margin-top: 40px;
+    font-size: 80%;
+}
+
+div#resources-brief-facets h2 {
+    font-family: 'Trebuchet MS',Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    margin: 5px 0px;
+}
+
+div#resources-current-facets {
+}
+
+div.resources-current-facets-row {
+    background: #cdf;
+    font-family: 'Trebuchet MS',Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    padding: 5px 3px;
+    font-size: 120%;
+}
+
+
+div#resources-brief-records {
+    clear: both;
+    padding-top: 10px;
+    font-size: 80%;
+}
+
+div.resources-facet-choice-container {
+    padding: 0px 5px;
+    width: 30%;
+    height: 22.5em;
+    float: left;
+}
+
+div.resources-facet-choice-list {
+    width: 99%;
+    height: 19.5em;
+    overflow: auto;
+}
+
+ul#chosen-facets {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+    height: 15em;
+}

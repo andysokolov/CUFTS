@@ -1,0 +1,7 @@
+[%- SET no_wrap = 1 -%]
+Start Date	[% start_date %]
+End Date	[% end_date %]
+[% FOREACH date IN dates %]	[% date.display %][% END %]
+[% FOREACH resource IN resources -%]
+[% SET resource_id = resource.id %][% resource.name %][% FOREACH date IN dates %][% SET lookup_date = date.date %]	[% resources_hash.$resource_id.$lookup_date || 0 %][% END %]
+[% END %]

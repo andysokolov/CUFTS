@@ -1,0 +1,1 @@
+ALTER TABLE erm_main ADD COLUMN internal_name VARCHAR(1024);

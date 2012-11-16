@@ -1,0 +1,1 @@
+[% INCLUDE open_flash_chart.tt data=data_url, width=chart_width %]

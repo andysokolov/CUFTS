@@ -1,0 +1,7 @@
+<form action="[% c.uri_for_site( c.controller('Account').action_for('login') ) %]" method="post">
+<table>
+<tr><td>Log in</td><td><input name="key" type="text" size="20" maxlength="128" /></td></tr>
+<tr><td>Password</td><td><input name="password" type="password" size="20" maxlength="128" /></td></tr>
+<tr><td colspan="2"><input type="submit" name="login" value="login" /></td></tr>
+</table>
+</form>

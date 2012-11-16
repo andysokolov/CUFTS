@@ -1,0 +1,40 @@
+<div id="request">
+<div class="request-label">title</div>
+<div class="request-field">
+[% IF request.atitle %]
+ [% request.atitle %]
+[% ELSE %]
+ [% UNLESS request.issn || request.eissn %]
+  [% request.title || request.stitle %]
+ [% END %]
+[% END %]
+</div>
+
+<div class="request-label">source</div>
+<div class="request-field">
+[% IF request.issn || request.eissn || request.genre == 'journal' || request.genre == 'article' %]
+ [% request.title || request.stitle %]
+[% END %]
+
+[% IF request.issn %][[% request.issn %]][% END %]
+[% IF request.eissn %][[% request.eissn %] (e-issn)][% END %]
+[% IF request.isbn %][[% request.isbn %]][% END %]
+
+
+<br />
+ 
+[% IF request.volume %]volume: [% request.volume %][% END %]
+[% IF request.issue %]issue: [% request.issue %][% END %]
+[% IF request.pages %]
+ pages: [% request.pages %]
+[% ELSIF request.spage && request.epage %]
+ pages: [% request.spage %]-[% request.epage %]
+[% ELSIF request.spage %]
+ start page: [% request.spage %]
+[% END %]
+[% IF request.date %]date: [% request.date %][% END %]
+</div>
+[% IF request.doi %]<div class="request-label">doi</div><div class="request-field">[% request.doi %]</div>[% END %]
+[% IF request.pmid %]<div class="request-label">pmid</div><div class="request-field">[% request.pmid %]</div>[% END %]
+[% IF request.oai %]<div class="request-label">doi</div><div class="request-field">[% request.oai %]</div>[% END %]
+</div>

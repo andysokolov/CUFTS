@@ -1,0 +1,36 @@
+[% 
+   SET selected_journals_data = {
+	'Anthropology' => ['anthropology'],
+        'Biology' => ['biology'],
+	'Business' => ['business'],
+	'Chemistry' => ['chemistry'],
+	'Communication' => ['communication'],
+        'Computer Science' => ['computer science'],
+        'Criminology' => ['criminology'],
+	'Education' => ['education'],
+	'English' => ['english'],
+        'Fine Arts' => ['fine arts'],
+	'French' => ['french'],
+	'Geography' => ['geography'],
+	'Health' => ['health'],
+        'History' => ['history'],
+	'Humanities' => ['humanities'],
+	'Kinesiology' => ['kinesiology'],
+	'Linguistics' => ['linguistics'],
+	'Mathematics' => ['mathematics'],
+	'Medicine' => ['medicine'],
+        'Music' => ['music'],
+	'Philosophy' => ['philosophy'],
+	'Physics' => ['physics'],
+        'Politics' => ['politics'],
+	'Psychology' => ['psychology'],
+        'Religion' => ['religion'],
+	'Resource & Environmental Management' => ['resource management', 'environmental management'],
+        'Sociology' => ['sociology'],
+	'Statistics' => ['statistics'],
+	'Womens Studies' => ['womens studies'],
+   }
+%]
+
+[% SET selected_journals_level   = 50 %]
+[% SET selected_journals_viewing = 4  %] [%# 4 == local and public for your site only %]

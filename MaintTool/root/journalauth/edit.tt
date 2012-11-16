@@ -1,0 +1,71 @@
+[% USE url %]
+[% USE MinMax %]
+
+[%# **** NOTE: If you change the HTML in this file, also change the javascript which creates new lines! **** %]
+
+<form method="post" name="journal_auth" action="[% url("$url_base/journalauth/edit/$journal_auth.id") %]">
+
+<input type="text" name="title" size="40" maxlength="1024" value="[% journal_auth.title | html %]" />
+
+<div id="journal-auth-edit-issns">
+<div class="heading">ISSNs
+<input style="margin-left: 10px; font-weight: normal; background: #D0DEED" name="add_field_issns" value="add" type="submit" onClick="return show_edit_line('issn');" />
+</div>
+[% SET max_field = 0 %]
+[% FOREACH issn IN journal_auth.issns %]
+ [% SET max_field = loop.count %]
+ <div class="row[% loop.count % 2 %]">
+  <input type="text" size="10" maxlength="9" name="[% issn.id %]_issn" value="[% issn.issn | html %]" />
+  <input type="text" size="30" maxlength="512" name="[% issn.id %]_info" value="[% issn.info | html %]" />
+ </div>
+[% END %]
+[% FOREACH x IN [ 1 .. 25 ] %]
+ <div class="row[% (x+1) % 2 %]" id="new[% x %]_issn" [% IF x > max_issn_field %]style="display: none"[% END %]>
+  <input type="text" size="10" maxlength="9" name="new[% x %]_issn" value="" />
+  <input type="text" size="30" maxlength="512" name="new[% x %]_info" value="" />
+ </div>
+[% END %]
+[% SET max_issn_field = max_issn_field + 1 %]
+</div>
+<script type="text/javascript">
+window['field_max'] = new Array();
+window['field_max']['issn'] = [% max_field.max(max_issn_field) %];
+</script>
+
+<div id="journal-auth-edit-titles">
+<div class="heading">Titles
+<input style="margin-left: 10px; font-weight: normal; background: #D0DEED" name="add_field_titles" value="add" type="submit" onClick="return show_edit_line('title');" />
+</div>
+[% SET max_field = 0 %]
+[% FOREACH title IN journal_auth.titles %]
+[% SET max_field = loop.count %]
+ <div class="row[% loop.count % 2 %]">
+  <input type="text" size="40" maxlength="1024" name="[% title.id %]_title" value="[% title.title | html %]" />
+  <input type="text" size="4" maxlength="3" name="[% title.id %]_count" value="[% title.title_count | html %]" />
+ </div>
+[% END %]
+[% FOREACH x IN [ 1 .. 25 ] %]
+<div class="row[% (x+1) % 2 %]" id="new[% x %]_title" [% IF x > max_title_field %]style="display: none"[% END %]>
+  <input type="text" size="40" maxlength="1024" name="new[% x %]_title" value="" />
+  <input type="text" size="4" maxlength="3" name="new[% x %]_count" value="" />
+ </div>
+[% END %]
+[% SET max_title_field = max_title_field + 1 %]
+</div>
+<script type="text/javascript">
+window['field_max']['title'] = [% max_field.max(max_title_field) %];
+</script>
+
+<div id="journal-auth-edit-rss">
+<div class="heading">RSS feed</div>
+<div class="row1">
+<input type="text" name="rss" size="80" maxlength="1024" value="[% journal_auth.rss | html %]" />
+</div>
+</div>
+
+<div id="submit" style="margin-top: 1em; margin-bottom: 1em;">
+<input type="submit" name="save" value="save" />
+<input type="submit" name="cancel" value="cancel" />
+</div>
+
+</form>

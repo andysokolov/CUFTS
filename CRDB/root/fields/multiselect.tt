@@ -1,0 +1,5 @@
+<form><select class="edit-in-place" name="[% field %]" multiple="multiple">
+[% FOREACH option IN options %]
+ <option value="[% option.id %]" [% value.in(option.id) ? 'selected="selected"' : '' %]>[% option.$display_field %]</option>
+[% END %]
+<input type="hidden" name="update_value" value="1" /></select></form>

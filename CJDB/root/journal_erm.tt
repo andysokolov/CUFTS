@@ -1,0 +1,6 @@
+[% IF erm %]
+ <div class="journal-label">ERM:</div>
+ <div class="journal-data">
+  ERM data here.
+ </div>
+[% END %]

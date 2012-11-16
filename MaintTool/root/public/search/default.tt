@@ -1,0 +1,42 @@
+[% USE url %]
+
+[% message %]
+
+<form method="post">
+<table class="outlined" style="margin-bottom: 10px;">
+ <tr><td class="heading">Search journals...</td></tr>
+ <tr>
+  <td class="field1">
+   Search:
+   <select name="search_field">
+    <option value="title">titles</option>
+    <option value="issn">ISSNs</option>
+   </select>
+   for
+   <input type="text" name="search_text" size="40" maxlength="255" />
+  </td>
+ </tr>
+<tr><td class="field1">Limit to fulltext: <input type="checkbox" name="fulltext" value="1" /></td></tr>
+ <tr>
+  <td class="field1" style="padding: 4px 5px;"><input type="submit" name="search" value="search" /></td>
+ </tr>
+</table>
+</form>
+
+[% IF journal_auths.defined %]
+ [% IF journal_auth.size == 0 %]
+  No journals were found.
+ [% END %]
+ [% FOREACH journal_auth IN journal_auths %]
+ <div style="margin-bottom: 3px;">
+    <a href="[% url("$url_base/public/search/journal/$journal_auth.id/$fulltext") %]">[% journal_auth.title %]</a>
+  [% SET issns = [] %]
+  [% FOREACH issn IN journal_auth.issns %]
+   [% issns.push(issn.issn_dash) %]
+  [% END %]
+  [% IF issns.size > 0 %]
+   <span class="public-journal-issns">[ [% issns.join(', ') %] ]</span>
+  [% END %]
+  </div>
+ [% END %]
+[% END %]

@@ -1,0 +1,10 @@
+[%- SWITCH link.link_type -%]
+ [% CASE 0 %]
+  [%- current_site.cjdb_print_link_label | html -%]
+ [%- CASE 1 -%]
+journal
+ [%- CASE 2 -%]
+database
+ [%- CASE DEFAULT -%]
+Unrecognized link type [% link.link_type -%]
+[%- END -%]

@@ -1,0 +1,13 @@
+[%- CALL c.response.content_type('text/plain') -%]
+[%- SET no_wrap = 1; 
+    SET columns = global_resource.do_module('title_list_fields');
+    SET columns = columns.merge(global_resource.do_module('overridable_title_list_fields')).unique;
+    SET columns = columns.simple_difference(['id']);
+-%]
+[% columns.join("\t") %]
+[% FOREACH global_title IN global_titles -%]
+[%- SET local_title = local_titles.shift -%]
+[%- FOREACH column IN columns -%]
+[%- (local_title.defined && local_title.$column.defined) ? local_title.$column : global_title.$column -%][%- UNLESS loop.last %]	[% END -%]
+[% END %]
+[% END -%]

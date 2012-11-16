@@ -1,0 +1,26 @@
+[%# Zebra striping and form handling (help box) %]
+
+<script type="text/javascript">
+$( function() {
+ $('fieldset:not(.nostripe)').find('div.field:odd').addClass('alt');
+
+ $('fieldset :input').livequery( 'focus',
+  function() { 
+      var help_div = $(this).parents('.data').siblings('.help');
+      if ( !help_div.is('.empty') || help_div.children( ':not(.help-pointer)' ).not(':hidden:').length > 0 ) {
+          help_div.show();
+      }
+  }
+ ).livequery( 'blur',
+  function() { $(this).parents('.data').siblings('.help').hide(); }
+ ).addClass("standard-input"
+ ).filter(':text'
+ ).addClass('text-input')
+
+$('fieldset select').addClass("select-input");
+
+$('div.help').hide().prepend('<span style="background: url([% image_dir %]help_pointer.gif) left top no-repeat;" class="help-pointer">&nbsp;</span>');
+
+});
+
+</script>

@@ -1,0 +1,12 @@
+<span class="heading">top 50 journals [% fulltext == 'yes' ? 'with' : 'without' %] fulltext from [% time | html %]</span>
+<table class="outlined">
+<tr><td class="heading-bar">issn</td><td class="heading-bar">title</td><td class="heading-bar">requests</td></tr>
+[% FOREACH row IN statistics %]
+ [% SET class = 'field' _ (loop.count % 2) %]
+ <tr>
+  <td class="[% class %]">[% row.0 %]</td>
+  <td class="[% class %]">[% row.1 | html %]</td>
+  <td class="[% class %]">[% row.2 %]</td>
+ </tr>
+[% END %]
+</table>

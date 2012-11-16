@@ -1,0 +1,37 @@
+li span.brief-description {
+    display: block;
+    margin-top: 3px;
+    font-size: 90%;
+    font-weight: normal;
+    color: black;
+    white-space: normal;
+}
+
+div#resources .ui-li-has-alt .ui-btn-inner {
+    padding-right: 55px;
+}
+
+div#full #resource {
+    font-size: 90%;
+}
+
+div#full #resource h3 {
+    margin-top: 7px;
+    margin-bottom: 3px;
+}
+
+div#full #resource p {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+div#full h2#resource-data-name {
+    color: #347;
+    font-size: 130%;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.crdb-loading {
+    display: block;
+}

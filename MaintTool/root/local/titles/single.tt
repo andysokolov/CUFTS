@@ -1,0 +1,27 @@
+[% USE url %]
+
+<div><span class="heading">[% global_title.title | html %]</span></div>
+
+<form method="post">
+<table class="grid" style="margin-top: 1em;">
+<tr>
+ <td class="heading">field</td>
+ <td class="heading">local value</td>
+ <td class="heading">global value</td>
+</tr>
+[% FOREACH field IN override_fields %]
+ <tr>
+  <td class="label[% loop.count % 2 %]">[% field.replace('_', ' ') | html %]</td>
+  <td class="field[% loop.count % 2 %]"><input name="[% field %]" value="[% local_title.$field | html %]" size="30" maxlength="1024" /></td>
+  <td class="field[% loop.count % 2 %]">[% global_title.$field | html %]</td>
+ </tr>
+[% END %]
+</table>
+<div style="margin-top: 1em;">
+<input type="submit" name="apply" value="apply" />
+</form>
+<form method="post" action="[% url("$url_base/local/titles/view/g$global_resource.id") %]">
+<input type="submit" name="cancel" value="cancel" />
+<input type="hidden" name="page" value="[% paging_page %]" />
+</form>
+</div>

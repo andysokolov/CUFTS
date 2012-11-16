@@ -1,0 +1,26 @@
+<form method="post">
+<table class="outlined">
+<tr><td class="heading-bar" colspan="2">Google Scholar options</td></tr>
+<tr><td class="label0">Google Scholar on</td><td class="field0"><select name="google_scholar_on">
+<option value="1" [% IF current_site.google_scholar_on %]selected="selected"[% END %]>Yes</option>
+<option value="0" [% IF !current_site.google_scholar_on.defined OR !current_site.google_scholar_on %]selected="selected"[% END %]>No</option>
+</select></td></tr>
+<tr><td class="label1">site keywords</td><td class="field1">
+<input type="text" name="google_scholar_keywords" value="[% current_site.google_scholar_keywords | html %]" maxlength="1024" size="60"/>
+</td></tr>
+<tr><td class="label0">electronic link label</td><td class="field0">
+<input type="text" name="google_scholar_e_link_label" value="[% current_site.google_scholar_e_link_label | html %]" maxlength="1024" size="60"/>
+</td></tr>
+<tr><td class="label1">other link label</td><td class="field1">
+<input type="text" name="google_scholar_other_link_label" value="[% current_site.google_scholar_other_link_label | html %]" maxlength="1024" size="60"/>
+</td></tr>
+<tr><td class="label0">OpenURL base</td><td class="field0">
+<input type="text" name="google_scholar_openurl_base" value="[% current_site.google_scholar_openurl_base | html %]" maxlength="1024" size="60"/>
+</td></tr>
+<tr><td class="label1">Extra XML</td><td class="field1">
+<textarea rows="10" cols="80" name="google_scholar_other_xml">[% current_site.google_scholar_other_xml | html %]</textarea>
+</td></tr>
+</table>
+<br />
+<input type="submit" name="submit" value="submit" /> <input type="submit" name="cancel" value="cancel" />
+</form>

@@ -1,0 +1,86 @@
+[% USE url %]
+
+<style>
+tr.no_ft    { background: #d99; }
+tr.unknown  { background: #dd9; }
+tr.equal    { background: #ddd; }
+tr.less     { background: #d99; }
+tr.more     { background: #9d9; }
+</style>
+
+<h2>New Titles in [% PROCESS resource_name %]</h2>
+
+<table id="public-compare-duplicates" class="public-compare">
+
+ <tr class="public-compare-heading">
+  <td>Title</td><td>ISSNs</td><td>Fulltext Start</td><td>Fulltext End</td><td>Embargo/Current</td><td>Citation Start</td><td>Citation End</td>
+ </tr>
+
+[% FOREACH journal IN unique %]
+ <tr>
+  <td>[% journal.title %]</td>
+  <td>[% journal.issn %] [% journal.e_issn %]</td>
+  <td>[% journal.ft_start_date %]</td>
+  <td>[% journal.ft_end_date %]</td>
+  <td>
+   [% IF journal.embargo_days %][% journal.embargo_days %] days embargo[% END %]
+   [% IF journal.embargo_months %][% journal.embargo_months %] months embargo[% END %]
+   [% IF journal.current_months %][% journal.current_months %] days current[% END %]
+   [% IF journal.current_years %][% journal.current_years %] months current[% END %]
+  </td>
+  <td>[% journal.cit_start_date %]</td>
+  <td>[% journal.cit_end_date %]</td>
+ </tr>
+[% END %]
+</table>
+
+<p>Found [% unique.size %] new titles in resource.<p>
+
+<h2>Duplicate Titles in [% PROCESS resource_name %]</h2>
+
+<table id="public-compare-duplicates" class="public-compare">
+
+ <tr class="public-compare-heading">
+  <td>Title</td><td>ISSNs</td><td>Fulltext Start</td><td>Fulltext End</td><td>Embargo/Current</td><td>Citation Start</td><td>Citation End</td>
+ </tr>
+
+[% FOREACH record IN dupes %]
+ [%- SET journal = record.0; SET class = record.1; SET others = record.2 -%]
+ <tr class="[% class %]" style="border-top: 2px solid black;">
+  <td><b>[% journal.title %]</b></td>
+  <td>
+    [% journal.issn %] [% journal.e_issn %]
+  </td>
+  <td>[% journal.ft_start_date %]</td>
+  <td>[% journal.ft_end_date %]</td>
+  <td>
+   [% IF journal.embargo_days %][% journal.embargo_days %] days embargo[% END %]
+   [% IF journal.embargo_months %][% journal.embargo_months %] months embargo[% END %]
+   [% IF journal.current_months %][% journal.current_months %] days current[% END %]
+   [% IF journal.current_years %][% journal.current_years %] months current[% END %]
+  </td>
+  <td>[% journal.cit_start_date %]</td>
+  <td>[% journal.cit_end_date %]</td>
+ </tr>
+ [% FOREACH other IN others %]
+  <tr style="background: #ccc">
+   <td colspan="2" style="padding-left: 20px;">[% other.resource.name %]</td>
+   <td>[% other.ft_start_date %]</td>
+   <td>[% other.ft_end_date %]</td>
+   <td>
+    [% IF other.embargo_days %][% other.embargo_days %] days embargo[% END %]
+    [% IF other.embargo_months %][% other.embargo_months %] months embargo[% END %]
+    [% IF other.current_months %][% other.current_months %] days current[% END %]
+    [% IF other.current_years %][% other.current_years %] months current[% END %]
+   </td>
+   <td>[% other.cit_start_date %]</td>
+   <td>[% other.cit_end_date %]</td>
+  </tr>
+ [% END %]
+[% END %]
+</table>
+
+<p>Found [% dupes.size %] titles with existing holdings.<p>
+
+
+[% BLOCK resource_name %][% resource.name || resource.resource.name %] - [% resource.provider || resource.resource.provider %][% END %]

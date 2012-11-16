@@ -1,0 +1,741 @@
+[% SET uses_ext_form = 1 %]
+[% USE url %]
+
+<div id="erm-main-find-form"></div>
+
+<div id="erm-main-results" style="margin-top: 8px;"></div>
+
+<div id="erm-main-selected" style="margin-top: 8px;"></div>
+
+</div>
+
+<script>
+
+// Don't UTF-8 encode
+encodeURIComponent=escape;
+decodeURIComponent=unescape;
+
+Ext.onReady( function() {
+    Ext.BLANK_IMAGE_URL = '[% image_dir _ '/default/s.gif' %]';
+
+
+    var hash_state = new HashState();
+
+    var handleEmptyCombo = function( combo, record, index ) {
+        var v = record.get('id');
+        if ( v===undefined || v === null || v==='' ) {
+            combo.clearValue();
+        }
+    };
+
+    var results_store = new Ext.data.JsonStore({
+        url: '[% url("$url_base/erm/main/find_json") %]',
+        method: 'GET',
+        root: 'results',
+        totalProperty: 'rowcount',
+        fields: [
+            'id',
+           { name: 'name', mapping: 'result_name' },
+           'description_brief',
+           'vendor'
+        ]
+    });
+    
+    var selected_store = new Ext.data.JsonStore({
+        url: '[% url("$url_base/erm/main/selected_json") %]',
+        method: 'GET',
+        root: 'results',
+        totalProperty: 'rowcount',
+        fields: [
+            'id',
+           { name: 'name', mapping: 'result_name' },
+           'description_brief',
+           'vendor'
+        ]
+    });
+    
+    var combo_stores = {};
+    [% FOREACH field_type IN [ 'subjects', 'content_types', 'resource_types', 'resource_mediums', 'consortias', 'subscription_statuses' ] %]
+    [%- SET field_type_data = "${field_type}_ext" %]
+    combo_stores.[% field_type %] = new Ext.data.SimpleStore({
+        fields: ['id', 'display'],
+        data: [% $field_type_data %]
+    });
+    [% END %]
+    
+    combo_stores.licenses = new Ext.data.JsonStore({
+        url: '[% url("$url_base/erm/license/find_json") %]',
+        root: 'results',
+        fields: [ 'id', 'key' ]
+        // data: [[ '', '' ]]
+    });
+
+    combo_stores.providers = new Ext.data.JsonStore({
+        url: '[% url("$url_base/erm/provider/find_json") %]',
+        root: 'results',
+        fields: [ 'id', 'key' ]
+        // data: [[ '', '' ]]
+    });
+    
+    combo_stores.boolean_type = new Ext.data.SimpleStore({
+        fields: [ 'id', 'display' ],
+        data: [ [ null,'&nbsp;' ], [ '1', 'Yes' ], [ '0', 'No' ] ]
+    });
+
+    combo_stores.open_access = new Ext.data.SimpleStore({
+        fields: [ 'id', 'display' ],
+        data: [ [ null,'&nbsp;' ], [ 'yes', 'Yes' ], [ 'no', 'No' ], [ 'partial', 'Partial' ] ]
+    });
+
+    var results_grid = new Ext.grid.GridPanel({
+        store: results_store,
+        columns: [
+           { header: 'title', dataIndex: 'name', width: 450 },
+           { header: 'vendor', dataIndex: 'vendor', width: 150 }
+        ],
+        sm: new Ext.grid.RowSelectionModel({singleSelect:false}),
+        title: 'Search Results',
+        width: 1000,
+        height: 300,
+        tbar: new Ext.Toolbar({
+            items: [
+                new Ext.Button({
+                    iconCls: 'add-button',
+                    text: 'Add to Selected',
+                    handler: addSelected
+                }),
+                new Ext.Button({
+                    iconCls: 'add-button',
+                    text: 'Add All Results to Selected',
+                    handler: addAllSelected
+                })
+            ]
+        }),
+        bbar: new Ext.ux.AdvancedPagingToolbar({
+            pageSize: 25,
+            displayInfo: true,
+            displayMsg: 'Displaying {0} - {1} of {2}',
+            emptyMsg: 'No records to display',
+            store: results_store,
+            hash_state: hash_state
+        }),
+        listeners: {
+            'rowdblclick': function(grid, rowIndex, e) {
+                var erm_id = grid.getStore().getAt(rowIndex).get('id');
+                window.location = '[% url("$url_base/erm/main/edit/") %]' + erm_id;
+            },
+            'rowcontextmenu': onContextClick
+        }
+    });
+
+    function onContextClick(grid, index, e) {
+        if(!grid.menu){ // create context menu on first right click
+            grid.menu = new Ext.menu.Menu({
+                id:'grid-ctx',
+                items: [
+                    {
+                        text: 'Edit',
+                        iconCls: 'table-edit-button',
+                        scope:grid,
+                        handler: function() {
+                            var erm_id = grid.getStore().getAt(index).get('id');
+                            window.location = '[% url("$url_base/erm/main/edit/") %]' + erm_id;
+                        }
+                    },
+                    {
+                        text: 'Link',
+                        iconCls: 'table-relationship-button',
+                        scope:grid,
+                        handler: function() {
+                            var erm_id = grid.getStore().getAt(index).get('id');
+                            window.location = '[% url("$url_base/erm/main/link/") %]' + erm_id;
+                        }
+                    }
+                ]
+            });
+            grid.menu.on('hide', onContextHide, grid);
+        }
+        e.stopEvent();
+        if(grid.ctxRow){
+            Ext.fly(grid.ctxRow).removeClass('x-node-ctx');
+            grid.ctxRow = null;
+        }
+        grid.ctxRow = grid.view.getRow(index);
+        grid.ctxRecord = grid.store.getAt(index);
+        Ext.fly(grid.ctxRow).addClass('x-node-ctx');
+        grid.menu.showAt(e.getXY());
+    }
+    
+    function onContextHide() {
+        if (this.ctxRow) {
+            Ext.fly(this.ctxRow).removeClass('x-node-ctx');
+            this.ctxRow = null;
+        }
+    }
+
+
+    var find_form = new Ext.FormPanel({
+        frame: false,
+        border: false,
+        style: 'padding: 5px 3px;',
+        id: 'erm-main-find-form',
+        items: [
+            {
+                layout: 'column',
+                border: false,
+                items: [
+                    {
+                        layout: 'form',
+                        columnWidth: .30,
+                        labelWidth: 120,
+                        border: false,
+                        items: [
+                            {
+                                name: 'name',
+                                fieldLabel: 'Title',
+                                value: hash_state.params['name'],
+                                xtype: 'textfield',
+                                anchor: '95%'
+                            },
+                            {
+                                name: 'keyword',
+                                fieldLabel: 'Keyword',
+                                value: hash_state.params['keyword'],
+                                xtype: 'textfield',
+                                anchor: '95%'
+                            },
+                            {
+                                name: 'publisher',
+                                fieldLabel: 'Publisher',
+                                value: hash_state.params['publisher'],
+                                xtype: 'textfield',
+                                anchor: '95%'
+                            },
+                            {
+                                name: 'vendor',
+                                fieldLabel: 'Vendor',
+                                value: hash_state.params['vendor'],
+                                xtype: 'textfield',
+                                anchor: '95%'
+                            },
+                            {
+                                fieldLabel: 'Subject',
+                                xtype: 'combo',
+                                hiddenName: 'subject',
+                                store: combo_stores.subjects,
+                                valueField: 'id',
+                                displayField: 'display',
+                                mode: 'local',
+                                triggerAction: 'all',
+                                editable: false,
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                value: hash_state.params['subject'],
+                                anchor: '95%'
+                            }
+                        ]
+                    },
+                    {
+                        layout: 'form',
+                        columnWidth: .30,
+                        labelWidth: 120,
+                        border: false,
+                        items: [
+                            {
+                                fieldLabel: 'Consortia',
+                                xtype: 'combo',
+                                hiddenName: 'consortia',
+                                store: combo_stores.consortias,
+                                valueField: 'id',
+                                displayField: 'display',
+                                mode: 'local',
+                                triggerAction: 'all',
+                                editable: false,
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                value: hash_state.params['consortia'],
+                                anchor: '95%'
+                            },
+                            {
+                                fieldLabel: 'Subscription Status',
+                                xtype: 'combo',
+                                hiddenName: 'subscription_status',
+                                store: combo_stores.subscription_statuses,
+                                displayField: 'display',
+                                valueField: 'id',
+                                mode: 'local',
+                                triggerAction: 'all',
+                                editable: false,
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                value: hash_state.params['subscription_status'],
+                                anchor: '95%'
+                            },
+                            {
+                                fieldLabel: 'License',
+                                xtype: 'combo',
+                                hiddenName: 'license',
+                                store: combo_stores.licenses,
+                                displayField: 'key',
+                                valueField: 'id',
+                                mode: 'remote',
+                                queryParam: 'key_start',
+                                minChars: 1,
+                                forceSelection: true,
+                                queryDelay: 250,
+                                triggerAction: 'all',
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                value: hash_state.params['license'],
+                                listWidth: 300,
+                                anchor: '95%'
+                            },
+                            {
+                                fieldLabel: 'Provider',
+                                xtype: 'combo',
+                                hiddenName: 'provider',
+                                store: combo_stores.providers,
+                                displayField: 'key',
+                                valueField: 'id',
+                                queryParam: 'key',
+                                minChars: 1,
+                                mode: 'remote',
+                                forceSelection: true,
+                                queryDelay: 250,
+                                triggerAction: 'all',
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                value: hash_state.params['provider'],
+                                listWidth: 300,
+                                anchor: '95%'
+                            },
+                            {
+                                fieldLabel: 'Print Included?',
+                                xtype: 'combo',
+                                hiddenName: 'print_included',
+                                store: combo_stores.boolean_type,
+                                valueField: 'id',
+                                displayField: 'display',
+                                mode: 'local',
+                                triggerAction: 'all',
+                                editable: false,
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                value: hash_state.params['print_included'],
+                                anchor: '95%'
+                            }
+                        ]
+                    },
+                    {
+                        layout: 'form',
+                        columnWidth: .20,
+                        labelWidth: 120,
+                        defaults: {
+                            listWidth: 200
+                        },
+                        border: false,
+                        items: [
+                            {
+                                fieldLabel: 'Open Access?',
+                                xtype: 'combo',
+                                hiddenName: 'open_access',
+                                store: combo_stores.open_access,
+                                valueField: 'id',
+                                displayField: 'display',
+                                mode: 'local',
+                                triggerAction: 'all',
+                                editable: false,
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                value: hash_state.params['open_access'],
+                                anchor: '95%'
+                            },
+                            {
+                                fieldLabel: 'Content Type',
+                                xtype: 'combo',
+                                hiddenName: 'content_type',
+                                store: combo_stores.content_types,
+                                valueField: 'id',
+                                displayField: 'display',
+                                mode: 'local',
+                                triggerAction: 'all',
+                                editable: false,
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                value: hash_state.params['content_type'],
+                                anchor: '95%'
+                            },
+                            {
+                                fieldLabel: 'Resource Type',
+                                xtype: 'combo',
+                                hiddenName: 'resource_type',
+                                store: combo_stores.resource_types,
+                                valueField: 'id',
+                                displayField: 'display',
+                                mode: 'local',
+                                triggerAction: 'all',
+                                editable: false,
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                value: hash_state.params['resource_type'],
+                                anchor: '95%'
+                                
+                            },
+                            {
+                                fieldLabel: 'Resource Medium',
+                                xtype: 'combo',
+                                hiddenName: 'resource_medium',
+                                store: combo_stores.resource_mediums,
+                                valueField: 'id',
+                                displayField: 'display',
+                                mode: 'local',
+                                triggerAction: 'all',
+                                editable: false,
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                value: hash_state.params['resource_medium'],
+                                anchor: '95%'
+                            },
+                            {
+                                fieldLabel: 'Public List?',
+                                xtype: 'combo',
+                                hiddenName: 'public_list',
+                                store: combo_stores.boolean_type,
+                                valueField: 'id',
+                                displayField: 'display',
+                                mode: 'local',
+                                triggerAction: 'all',
+                                editable: false,
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                value: hash_state.params['public_list'],
+                                anchor: '95%'
+                            }
+                        ]
+                    },
+                    {
+                        layout: 'form',
+                        columnWidth: .20,
+                        labelWidth: 120,
+                        border: false,
+                        items: [
+                            {
+                                fieldLabel: 'Allows ILL?',
+                                xtype: 'combo',
+                                hiddenName: 'license.allows_ill',
+                                store: combo_stores.boolean_type,
+                                valueField: 'id',
+                                displayField: 'display',
+                                mode: 'local',
+                                triggerAction: 'all',
+                                editable: false,
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                value: hash_state.params['license.allows_ill'],
+                                anchor: '95%'
+                            },
+                            {
+                                fieldLabel: 'Allows Walkins?',
+                                xtype: 'combo',
+                                hiddenName: 'license.allows_walkins',
+                                store: combo_stores.boolean_type,
+                                valueField: 'id',
+                                displayField: 'display',
+                                mode: 'local',
+                                triggerAction: 'all',
+                                editable: false,
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                value: hash_state.params['license.allows_walkins'],
+                                anchor: '95%'
+                            },
+                            {
+                                fieldLabel: 'Allows e-reserves?',
+                                xtype: 'combo',
+                                hiddenName: 'license.allows_ereserves',
+                                store: combo_stores.boolean_type,
+                                valueField: 'id',
+                                displayField: 'display',
+                                mode: 'local',
+                                triggerAction: 'all',
+                                editable: false,
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                value: hash_state.params['license.allows_ereserves'],
+                                anchor: '95%'
+                                
+                            },
+                            {
+                                fieldLabel: 'Allows Coursepacks?',
+                                xtype: 'combo',
+                                hiddenName: 'license.allows_coursepacks',
+                                store: combo_stores.boolean_type,
+                                valueField: 'id',
+                                displayField: 'display',
+                                mode: 'local',
+                                triggerAction: 'all',
+                                editable: false,
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                value: hash_state.params['license.allows_coursepacks'],
+                                anchor: '95%'
+                            },
+                            {
+                                fieldLabel: 'Perpetual Access?',
+                                xtype: 'combo',
+                                hiddenName: 'license.perpetual_access',
+                                store: combo_stores.boolean_type,
+                                valueField: 'id',
+                                displayField: 'display',
+                                mode: 'local',
+                                triggerAction: 'all',
+                                editable: false,
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                value: hash_state.params['license.perpetual_access'],
+                                anchor: '95%'
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        buttons: [
+            {
+                type: 'submit',
+                name: 'search',
+                text: 'Search',
+                handler: search_action
+            },
+            {
+                type: 'reset',
+                name: 'clear',
+                text: 'Clear',
+                handler: reset_action
+            }
+        ]
+        
+    });
+
+    find_form.addListener( 'render', 
+        function( ) {
+            new Ext.KeyMap( find_form.getEl(), {
+                key: Ext.EventObject.ENTER,
+                fn: search_action
+            });
+            find_form.getForm().findField(0).focus( false, 50 );
+        }
+    );
+    
+    var find_panel = new Ext.Panel({
+        title: 'Find ERM Main Records',
+        frame: false,
+        tbar: new Ext.Toolbar({
+            items: [
+                new Ext.Button({
+                    text: 'Create ERM Record',
+                    iconCls: 'add-button',
+                    handler: function() {
+                        window.location = '[% url("$url_base/erm/main/create") %]';
+                    }
+                })
+            ]
+        }),
+        items: [ find_form ],
+        width: 1000
+    })
+    
+    
+    function search_action() {
+        var params = find_form.getForm().getValues();
+        results_store.baseParams = params;
+        var paging = { start: 0, limit: 25 };
+        results_store.load( { params: paging } );
+        hash_state.params = params;
+        hash_state.paging = paging;
+        hash_state.setState();
+    }
+    
+    function reset_action() {
+        // CAUTION: items.items may not be safe, using private variable to get all fields 
+        Ext.each( find_form.getForm().items.items, function( field ) {
+            field.setValue('');
+        } );
+    }
+    
+    var selected_grid = new Ext.grid.GridPanel({
+        title: 'Currently Selected Records',
+        width: 1000,
+        height: 300,
+        frame: false,
+        store: selected_store,
+        tbar: new Ext.Toolbar({
+            items: [
+                new Ext.Button({
+                    text: 'Remove',
+                    iconCls: 'delete-button',
+                    handler: removeSelected
+                }),
+                new Ext.Button({
+                    text: 'Clear',
+                    iconCls: 'delete-button',
+                    handler: clearSelected
+                }),
+                new Ext.Button({
+                    text: 'Add Alerts',
+                    iconCls: 'alert-button',
+                    handler: alertSelected
+                }),
+                new Ext.Button({
+                    text: 'MARC Records',
+                    iconCls: 'table-button',
+                    handler: marcSelected
+                }),
+                new Ext.Button({
+                    text: 'Statistics',
+                    iconCls: 'chart-line-button',
+                    handler: statsSelected
+                }),
+                new Ext.Button({
+                    text: 'Export',
+                    menu: {
+                        items: [
+                            {
+                                text: 'JSON',
+                                handler: exportSelectedJSON
+                            },
+                            {
+                                text: 'CSV',
+                                handler: exportSelectedCSV
+                            },
+                            {
+                                text: 'HTML',
+                                handler: exportSelectedHTML
+                            }
+                        ]
+                    }
+                })
+                
+            ]
+        }),
+        columns: [
+            { header: 'title', dataIndex: 'name', width: 450 },
+            { header: 'vendor', dataIndex: 'vendor', width: 150 }
+        ],
+        listeners: {
+            'rowdblclick': function(grid, rowIndex, e) {
+                var erm_id = grid.getStore().getAt(rowIndex).get('id');
+                window.location = '[% url("$url_base/erm/main/edit/") %]' + erm_id;
+            }
+        }
+    });
+
+    find_panel.render('erm-main-find-form');
+    results_grid.render('erm-main-results');
+    selected_grid.render('erm-main-selected');
+    
+    function addSelected() {
+        var selections = results_grid.getSelectionModel().getSelections();
+        var ids = new Array();
+        Ext.each( selections, function(item) { ids.push(item.get('id') ) } );
+        Ext.Ajax.request({
+            url: '[% url("$url_base/erm/main/selected_add") %]',
+            success: function(response) {
+                if ( response.status == 200 ) {
+                    var results = Ext.decode( response.responseText );
+                    selected_store.loadData(results);
+                }
+            },
+            params: { ids: ids }
+        });
+    }
+
+    function addAllSelected() {
+        var params = find_form.getForm().getValues();
+        Ext.Ajax.request({
+            url: '[% url("$url_base/erm/main/selected_add_all") %]',
+            success: function(response) {
+                if ( response.status == 200 ) {
+                    var results = Ext.decode( response.responseText );
+                    selected_store.loadData(results);
+                }
+            },
+            params: params
+        });
+    }
+    
+    function removeSelected() {
+        var selections = selected_grid.getSelectionModel().getSelections();
+        var ids = new Array();
+        Ext.each( selections, function(item) { ids.push(item.get('id') ) } );
+        Ext.Ajax.request({
+            url: '[% url("$url_base/erm/main/selected_remove") %]',
+            success: function(response) {
+                if ( response.status == 200 ) {
+                    var results = Ext.decode( response.responseText );
+                    selected_store.loadData(results);
+                }
+            },
+            params: { ids: ids }
+        });
+    }
+
+    function clearSelected() {
+        Ext.Ajax.request({
+            url: '[% url("$url_base/erm/main/selected_clear") %]',
+            success: function(response) {
+                if ( response.status == 200 ) {
+                    var results = Ext.decode( response.responseText );
+                    selected_store.loadData(results);
+                }
+            }
+        });
+    }
+    
+    function alertSelected() {
+        window.location = '[% url("$url_base/erm/alerts/alert_selected") %]';
+    }
+
+    function marcSelected() {
+        if (selected_store.getCount()) {
+            window.location = '[% url("$url_base/erm/main/selected_marc") %]';
+        }
+        else {
+            Ext.MessageBox.alert('Error', 'You must have at least one currently selected record to use this function.')
+        }
+    }
+
+    function statsSelected() {
+        if (selected_store.getCount()) {
+            window.location = '[% url("$url_base/erm/statistics/") %]';
+        }
+        else {
+            Ext.MessageBox.alert('Error', 'You must have at least one currently selected record to use this function.')
+        }
+    }
+
+    function exportSelectedJSON() {
+        if (selected_store.getCount()) {
+            window.location = '[% url("$url_base/erm/main/selected_export/json") %]';
+        }
+        else {
+            Ext.MessageBox.alert('Error', 'You must have at least one currently selected record to use this function.')
+        }
+    }
+    
+    function exportSelectedCSV() {
+        if (selected_store.getCount()) {
+            window.location = '[% url("$url_base/erm/main/selected_export/csv") %]';
+        }
+        else {
+            Ext.MessageBox.alert('Error', 'You must have at least one currently selected record to use this function.')
+        }
+    }
+
+    function exportSelectedHTML() {
+        if (selected_store.getCount()) {
+            window.location = '[% url("$url_base/erm/main/selected_export/html") %]';
+        }
+        else {
+            Ext.MessageBox.alert('Error', 'You must have at least one currently selected record to use this function.')
+        }
+    }
+    
+    // Restore state
+    
+    results_store.baseParams = hash_state.params;
+    var paging = { start: 0, limit: 25 };
+    Ext.apply( paging, hash_state.paging );
+    results_store.load( { params: paging } );
+
+    selected_store.load();
+});
+
+</script>
+
+
+

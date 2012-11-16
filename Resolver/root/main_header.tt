@@ -1,0 +1,2 @@
+[% USE url %]
+<div id="header" style="background: url([% c.uri_for_static('images/resolver_tile.jpg') %]);"><img width="693" height="105" src="[% c.uri_for_static('images/resolver_header.jpg') %]" border="0" alt="CUFTS Resolver logo"/></div>

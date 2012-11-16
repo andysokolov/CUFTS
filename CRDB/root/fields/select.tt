@@ -1,0 +1,6 @@
+<form><select class="edit-in-place" name="[% field %]" [% IF multiselect %]multiple="multiple"[% END %]>
+<option value="" [% !value.defined ? 'selected="selected"' : '' %]"></option>
+[% FOREACH option IN options %]
+ <option value="[% option.id %]" [% value == option.id ? 'selected="selected"' : '' %]>[% option.$display_field %]</option>
+[% END %]
+<input type="hidden" name="update_value" value="1" /></select></form>

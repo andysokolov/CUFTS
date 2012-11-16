@@ -1,0 +1,68 @@
+[% USE url %]
+[% SET facet_browse_url = c.uri_for_site( c.controller('Browse').action_for('html_facets') ) %]
+
+<div id="main">
+
+<div class="main-box" id="main-subject">
+ <div class="main-box-heading">
+  <h2>Browse databases by subject area:</h2>
+ </div>
+ <div class="main-box-content">
+  <form action="[% c.uri_for_site( c.controller('Browse').action_for('facet_form') ) %]" method="GET">
+   <select name="subject">
+   [% FOREACH subject_id IN subjects_order %]
+    [% SET subject = subjects.$subject_id %]
+    <option value="[% subject_id %]">[% subject | html %]</option>
+   [% END %]
+   </select>
+   <input type="submit" name="browse" value="Browse" />
+  </form>
+ </div>
+</div>
+
+<div class="main-box" id="main-title">
+ <div class="main-box-heading">
+  <h2>Browse databases by title:</h2>
+ </div>
+ <div class="main-box-content">
+  [% FOREACH letter IN [ 'A' .. 'Z' ] %]
+   <a href="[% facet_browse_url _ '/name/' _ letter %]">[% letter %]</a>
+  [% END %]
+  <a href="[% facet_browse_url _ '/name_regex/%5E[%5Ea-z]' %]">0-9</a>
+  <a href="[% facet_browse_url %]">All</a>
+ </div>
+</div>
+
+
+<div id="main-google" class="main-box">
+ <div class="main-box-heading">
+  <h2>Keyword search for articles on the web:</h2>
+ </div>
+ <div class="main-box-content">
+  <div id="main-google-form">
+   <form method="post" action="http://proxy.lib.sfu.ca/form?qurl=http%3a%2f%2fscholar.google.com%2fscholar">
+    <img src="http://www.lib.sfu.ca/images/scholar_sm.gif" alt="Google Scholar" width="105" height="40" border="0" align="absmiddle" /></a>
+    <input type="hidden" name="hl" value="en">
+    <input type="text" name="q" size="25" maxlength="255" value="" />
+    <input type="submit" name="btnG" value="Search" />
+   </form>
+  </div>
+ </div>    
+</div>
+
+<div id="main-keyword" class="main-box">
+ <div class="main-box-heading">
+  <h2>Find databases by database title and description:</h2>
+ </div>
+ <div class="main-box-content">
+  <form method="POST" action="[% c.uri_for_site( c.controller('Browse').action_for('facet_form') ) %]">
+   <input name="keyword" value="" /> <input type="submit" name="search" value="Search" /> <input type="reset" name="reset" value="Clear form" />
+  </form>    
+ </div>
+</div>
+
+</div>
+
+<script>
+// $( function() { $('#main-keyword-search').hide(); } );
+</script>

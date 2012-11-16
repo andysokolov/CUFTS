@@ -1,0 +1,107 @@
+[% USE url %]
+
+<form method="post" name="journal_auth" action="[% url("$url_base/journalauth/create") %]">
+
+[% IF records %]
+
+Similar records found:<br />
+
+[% SET seen = {} %]
+[% FOREACH journal_auth IN records %]
+ [% ja_id = journal_auth.id %]
+ [% NEXT IF seen.$ja_id %] [% SET seen.$ja_id = 1 %]
+ <div class="journal-auth-record">
+  <span class="heading">[% journal_auth.title | html %]</span>
+  <span style="font-size: 80%">[% journal_auth.id %]</span>
+  [% FOREACH issn IN journal_auth.issns %]([% issn.issn.substr(0,4) %]-[% issn.issn.substr(4,4) %]) [% END %]
+  <a href="[% url("$url_base/journalauth/edit/$journal_auth.id") %]">edit JA record</a> | 
+  <a href="[% url("$url_base/journalauth/edit_marc/$journal_auth.id") %]">edit MARC</a><br />
+  <div class="journal-auth-titles">
+   <div id="journal-auth-titles-heading">Titles</div>
+   <table>
+   [% FOREACH found_title IN journal_auth.titles %]
+    <tr><td>[% found_title.title | html %]</td><td>[% found_title.title_count %]</td></tr>
+   [% END %]
+   </table>
+  </div>
+  [% IF journal_auth.rss.defined %]
+  <div class="journal-auth-rss">
+   <div id="journal-auth-rss-heading">RSS</div>
+   [% journal_auth.rss %]
+  </div>
+  [% END %]
+  <div class="journal-auth-global-resources">
+  <div id="journal-auth-global-resources-heading">Global Resources</div>
+   <table>
+   [% FOREACH journal IN journal_auth.global_journals %]
+    <tr><td>[% journal.resource.name | html %]</td><td>[% journal.resource.provider | html %]</td></tr> 
+   [% END %]
+   </table>
+  </div>
+  <div class="journal-auth-local-resources">
+   <div id="journal-auth-local-resources-heading">Local Resources</div>
+   <table>
+   [% FOREACH journal IN journal_auth.local_journals %]
+    <tr><td>[% journal.resource.name | html %]</td><td>[% journal.resource.provider | html %]</td><td>[% journal.resource.site.name | html %]</td></tr>
+   [% END %]
+   </table>
+  </div>
+  <div id="journal-auth-marc-[% journal_auth.id %]" class="journal-auth-marc-dump">
+   [% IF journal_auth.marc %]
+    <pre>[% journal_auth.marc_object.as_formatted | marc8 | html %]</pre>
+   [% ELSE %]
+    No MARC data
+   [% END %]
+  </div>
+ </div>
+[% END %]
+<br />Record to create: <br />
+<div id="journal-auth-edit-titles">
+<div class="heading">Title</div>
+<div class="row0">
+ [% title | html %]
+</div>
+</div>
+
+<div id="journal-auth-edit-issns">
+<div class="heading">ISSNs</div>
+<div class="row0">
+ [% issn1 | html %]
+</div>
+<div class="row1">
+ [% issn2 | html %]
+</div>
+</div>
+
+<input type="hidden" name="title" value="[% title %]" />
+<input type="hidden" name="issn1" value="[% issn1 %]" />
+<input type="hidden" name="issn2" value="[% issn2 %]" />
+<input type="hidden" name="confirm" value="1" />
+<div id="submit" style="margin-top: 1em; margin-bottom: 1em;">
+Create this record anyway: <input type="submit" name="create" value="create" />
+</div>
+
+[% ELSE %]
+<div id="journal-auth-edit-titles">
+<div class="heading">Title</div>
+<div class="row0">
+ <input type="text" size="60" maxlength="1024" name="title" value="[% title | html %]" />
+</div>
+</div>
+
+<div id="journal-auth-edit-issns">
+<div class="heading">ISSNs</div>
+<div class="row0">
+ <input type="text" size="10" maxlength="9" name="issn1" value="[% issn1 | html %]" />
+</div>
+<div class="row1">
+ <input type="text" size="10" maxlength="9" name="issn2" value="[% issn2 | html %]" />
+</div>
+</div>
+
+<div id="submit" style="margin-top: 1em; margin-bottom: 1em;">
+<input type="submit" name="create" value="create" />
+</div>
+[% END %]
+
+</form>

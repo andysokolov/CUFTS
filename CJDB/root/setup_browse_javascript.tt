@@ -1,0 +1,32 @@
+[% include_javascript = BLOCK %]
+ window['browse_search_labels'] = new Array();
+ [% FOREACH label IN search_labels.keys -%]
+  window['browse_search_labels']['[% label %]'] = '[% search_labels.$label %]';
+ [% END %]
+ window['browse_search_types'] = new Array();
+ [% FOREACH btype IN browse_search_types.keys -%]
+  window['browse_search_types']['[% btype %]'] = new Array();
+  [% FOREACH stype IN browse_search_types.$btype -%]
+   window['browse_search_types']['[% btype %]'][[% loop.count - 1 %]] = '[% stype %]';
+  [% END %]
+ [% END %]
+ function changeBrowse() {
+  var browse_field = document.forms['browse']['browse_field'];
+  var browse_field_value = browse_field.options[browse_field.selectedIndex].value;
+
+  var search_field = document.forms['browse']['search_type'];
+  for (var i = search_field.length; i--; i >= 0) {
+   search_field.options[i] = null;
+  }
+  for (var i = 0; i < window['browse_search_types'][browse_field_value].length; i++) {
+   var new_value = window['browse_search_types'][browse_field_value][i];
+   var new_label = window['browse_search_labels'][new_value];
+   search_field.options[i] = new Option(new_label, new_value);
+  }
+ }
+
+
+
+[% END %]
+
+

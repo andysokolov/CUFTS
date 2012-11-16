@@ -1,0 +1,20 @@
+[% USE url %]
+[% message %]
+
+<form method="get" action="[% url("$url_base/tools/newresource/results") %]">
+<table class="outlined" style="margin-bottom: 10px;">
+ <tr><td class="heading">Compare new resource...</td></tr>
+ <tr><td class="field1"><select name="compare1">
+  [% FOREACH resource IN globalresources %]
+   <option value="[% resource.id %]">[% PROCESS resource_name %]</option>
+  [% END %]
+ </td></tr>
+
+ <tr><td class="field1">Format: <select name="format"><option value="html">HTML</option><option value="delimited">tab delimited</option></select></td></tr>
+ <tr>
+  <td class="field1" style="padding: 4px 5px;"><input type="submit" name="compare" value="compare" /></td>
+ </tr>
+</table>
+</form>
+
+[% BLOCK resource_name %][% resource.name || resource.resource.name %] - [% resource.provider || resource.resource.provider %][% END %]

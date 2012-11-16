@@ -1,0 +1,117 @@
+[% USE url %]
+
+
+<h2>Duplicates</h2>
+
+<table id="public-compare-duplicates" class="public-compare">
+ <tr class="public-compare-heading">
+  <td colspan="2">&nbsp;</td>
+  [% FOREACH resource IN resources %]
+   <td class="public-compare-resource[% loop.count %]" colspan="5">[% resource.name %] - [% resource.provider %]</td>
+  [% END %]
+ </tr>
+ <tr class="public-compare-heading">
+  <td>title</td><td>issns</td>
+  [% FOREACH resource IN resources %]
+   <td class="public-compare-resource[% loop.count %]">citation start</td>
+   <td class="public-compare-resource[% loop.count %]">citation end</td>
+   <td class="public-compare-resource[% loop.count %]">fulltext start</td>
+   <td class="public-compare-resource[% loop.count %]">fulltext end</td>
+   <td class="public-compare-resource[% loop.count %]">embargo/current</td>
+  [% END %]
+ </tr>
+
+[% SET dupe_count = 0 %]
+[% FOREACH record IN order %]
+ [% SET id = record.1 %]
+ [% IF data.$id.resources.keys.size < 2 %]
+  [% NEXT %]
+ [% END %]
+ [% SET dupe_count = dupe_count + 1 %]
+ [% SET ja = data.$id.journal_auth %]
+ <tr>
+  <td>
+   [% ja.title %]
+  </td>
+  <td>
+   [% FOREACH issn IN ja.issns %]
+    [% issn.issn_dash %]
+   [% END %]
+  </td>
+  [% FOREACH resource IN resources %]
+   [% SET resource_id   = resource.id %]
+   [% SET journal       = data.$id.resources.$resource_id %]
+   <td class="public-compare-resource[% loop.count %]">[% journal.cit_start_date %]</td>
+   <td class="public-compare-resource[% loop.count %]">[% journal.cit_end_date %]</td>
+   <td class="public-compare-resource[% loop.count %]">[% journal.ft_start_date %]</td>
+   <td class="public-compare-resource[% loop.count %]">[% journal.ft_end_date %]</td>
+   <td class="public-compare-resource[% loop.count %]">
+    [% IF journal.embargo_days %][% journal.embargo_days %] days embargo[% END %]
+    [% IF journal.embargo_months %][% journal.embargo_months %] months embargo[% END %]
+    [% IF journal.current_months %][% journal.current_months %] days current[% END %]
+    [% IF journal.current_years %][% journal.current_years %] months current[% END %]
+   </td>
+
+  [% END %]  
+ </tr>
+[% END %]
+</table>
+
+<p>Found [% dupe_count %] duplicate holdings.<p>
+
+
+[%# Only do more details if we're just looking at two resources %]
+[% IF resources.size == 2 %]
+
+[% FOREACH resource IN resources %]
+ [% SET resource_id = resource.id %]
+ <h2>Resources unique to [% resource.name %] - [% resource.provider %]</h2>
+ 
+<table id="public-compare-duplicates" class="public-compare">
+ <tr class="public-compare-heading">
+  <td>title</td><td>issns</td>
+  <td class="public-compare-resource0">citation start</td>
+  <td class="public-compare-resource0">citation end</td>
+  <td class="public-compare-resource0">fulltext start</td>
+  <td class="public-compare-resource0">fulltext end</td>
+  <td class="public-compare-resource0">embargo/current</td>
+ </tr>
+
+[% SET record_count = 0 %]
+[% FOREACH record IN order %]
+ [% SET id = record.1 %]
+ [% IF data.$id.resources.keys.size > 1 || !data.$id.resources.$resource_id.defined %]
+  [% NEXT %]
+ [% END %]
+ [% SET record_count = record_count + 1 %]
+ [% SET ja = data.$id.journal_auth %]
+ <tr>
+  <td>
+   [% ja.title %]
+  </td>
+  <td>
+   [% FOREACH issn IN ja.issns %]
+    [% issn.issn_dash %]
+   [% END %]
+  </td>
+  [% SET resource_id   = resource.id %]
+  [% SET journal       = data.$id.resources.$resource_id %]
+  <td class="public-compare-resource0">[% journal.cit_start_date %]</td>
+  <td class="public-compare-resource0">[% journal.cit_end_date %]</td>
+  <td class="public-compare-resource0">[% journal.ft_start_date %]</td>
+  <td class="public-compare-resource0">[% journal.ft_end_date %]</td>
+  <td class="public-compare-resource0">
+   [% IF journal.embargo_days %][% journal.embargo_days %] days embargo[% END %]
+   [% IF journal.embargo_months %][% journal.embargo_months %] months embargo[% END %]
+   [% IF journal.current_months %][% journal.current_months %] days current[% END %]
+   [% IF journal.current_years %][% journal.current_years %] months current[% END %]
+  </td>
+ </tr>
+[% END %]
+</table>
+
+<p>Found [% record_count %] unique holdings.<p>
+
+[% END %]
+
+[% END %]

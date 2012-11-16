@@ -1,0 +1,22 @@
+[% SET journal_relations = journal.relations.force_list %]
+[% IF journal_relations.size > 0 && journal_relations.first != '' %]
+ <div id="relations" class="details">
+  <div id="relations-heading" class="details-headings">Related Titles</div>
+  [% FOREACH relation IN journal_relations %]
+   <div class="relation">
+   [% SWITCH relation.relation %]
+    [% CASE 'preceeding' %]
+     Continues
+    [% CASE 'succeeding' %]
+     Continued by
+    [% CASE 'other' %]
+      Other edition:
+    [% END %]
+    <a href="[% url("$url_base/browse/show", browse_field='title', search_type='startswith', search_terms=relation.title) %]">[% relation.title | html %]</a>
+    [% IF relation.issn %]
+     (<a href="[% url("$url_base/browse/journals", browse_field='issn',search_terms=relation.issn) %]">[% relation.issn.substr(0,4) %]-[% relation.issn.substr(4,4) %]</a>)
+   [% END %]
+   </div>
+  [% END %]
+ </div> <!-- relations -->
+[% END %]

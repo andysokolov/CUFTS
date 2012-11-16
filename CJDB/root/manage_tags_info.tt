@@ -1,0 +1,16 @@
+<dl>
+ <dt>private</dt>
+ <dd>Private tags are only visible to you and can be used like bookmarks.</dd>
+ <dd>examples: favorite, recommended</dd>
+
+ <dt>public</dt>
+ <dd>Public tags can be seen by everyone, including users at other institutions.</dd>
+ <dd>These tags should be short, general terms expressing what the journal contains.</dd>
+ <dd>examples: chemistry, crystal structures, english, fiction</dd>
+
+ <dt>local public</dt>
+ <dd>Local public tags can only be seen by users at your institution.</dd>
+ <dd>These tags can be used to indicate journals that apply to a topic only at your institution such as an individual course</dd>
+ <dd>examples: soc101
+</dl>
+

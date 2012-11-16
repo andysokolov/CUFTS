@@ -1,0 +1,763 @@
+/*************************************************
+ 
+  General Settings that apply to the whole site 
+ 
+**************************************************/
+
+body {
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 80%;
+	margin: 0;
+}
+
+/* Prevent forms from forcing a line break */
+
+form {
+	display: inline;
+}
+
+/* Generic class for highlighting some text */
+
+.highlight {
+	font-weight: bold;
+}
+
+/* Page header background, useful for a repeating image/solid background colour */
+
+/* No longer used by default because the path to the image file isn't easy
+   to determine in a CSS file.  This is now in a style tag in the page_header
+   template 
+
+#page-header-background {
+	width: 100%;
+	background: url(../images/cjdb_header_repeat.gif) repeat-x;
+}
+
+*/
+
+/* Page title - words at the top of every page */
+
+#page-title {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	font-size: 200%;
+	font-variant: small-caps;
+	font-weight: bold;
+	color: #326EAD;
+}
+
+/*  Container for the general page content */
+
+#content {
+	clear: both;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+#page-footer {
+	font-family: Arial;
+	font-size: 80%;
+	text-align: center;
+	margin-top: 10em;
+}
+
+/* Link styling */
+
+a:link, a:visited {
+	 text-decoration: none;
+}
+
+a:active, a:hover {
+	text-decoration: underline;
+}
+
+a {
+	color: blue;
+}
+
+/* Heading styles for various things */
+
+h3 {
+	font-weight: bold;
+}
+
+
+/*********************************************
+
+	Search screen
+
+**********************************************/
+
+div#azmenu {
+	margin-bottom: 1em;
+}
+
+
+
+/*********************************************
+
+	Individual journal display
+
+**********************************************/
+
+
+/* Main journal title */
+
+div#journal-title {
+	font-size: 160%;
+	font-weight: bold;
+}
+
+/* Class for labels for journal data outside of deatils groups.  Used
+   only for ISSNs at this point. */
+
+.journal-label {
+	font-weight: bold;
+	float: left;
+	clear: left;
+}
+
+/* Class for journal data outside of deatils groups.  Used only for ISSNs at
+   this point. */
+
+.journal-data {
+	margin-left: 4em;
+}
+
+/* Journal details container */
+
+div#details {
+	margin-top: 1em;
+}
+
+/* Class for headings of each details section.  Can be overridden for
+   individual sections using the IDs below. */
+
+div.details-headings {
+	font-size: 120%;
+	font-weight: bold;
+	font-variant: small-caps;
+	margin-bottom: .5em;
+}
+
+/* Class for each deatils section.  Can be overridden for individual
+   sections using the IDs below. */
+
+div.details {
+	border: 1px #AAAAAA solid;
+	padding: 3px;
+	background: #EEEEEE;
+	margin-top: 1em;
+}
+
+
+/**** Alternate titles ****/
+
+
+/* Container */
+
+div#alternate-titles {
+}
+
+/* Container heading */
+
+div#alternate-titles-heading {
+}
+
+/* Individual title */
+
+.alternate-title {
+}
+
+
+/**** Associations ****/
+
+
+/* Container */
+
+div#associations {
+}
+
+/* Container heading */
+
+div#associations-heading {
+}
+
+/* Individual Association */
+
+.association {
+}
+
+
+/**** Subjects ****/
+
+
+/* Container */
+
+div#subjects {
+}
+
+/* Container heading */
+
+div#subjects-heading {
+}
+
+/* Individual subject */
+
+.subject {
+}
+
+
+/**** Tags ****/
+
+
+/* Container */
+
+div#tags {
+}
+
+/* Container heading */
+
+div#tags-heading {
+}
+
+/* Different levels of tags */
+
+div.tag-0 {
+}
+
+div.tag-50 span.tag-name {
+	font-weight: bold;
+}
+
+div.tag-100 span.tag-name {
+	font-style: italic;
+	font-weight: bold;
+}
+
+/* Tag count */
+
+.tag-count {
+	font-size: 80%;
+}
+
+
+/**** My Tags ****/
+
+
+/* Container */
+
+div#my-tags {
+}
+
+/* Container heading */
+
+div#my-tags-heading {
+}
+
+/* Individual tags */
+
+.tag-mine {
+}
+
+
+/**** Availability ****/
+
+
+/* Container */
+
+div#availability {
+}
+
+/* Container heading */
+
+div#availability-heading {
+}
+
+/* Resource name */
+
+.availability-resource {
+	margin-top: .8em;
+	font-weight: bold;
+}
+
+/* Label for type of availability */
+
+div.availability-label {
+	font-weight: bold;
+	font-size: 90%;
+	float: left;
+	clear: left;
+	margin-left: 10px;
+}
+
+/* Availability data */
+
+div.availability-data {
+	margin-left: 12em;
+	font-size: 90%;
+}
+
+div.availability-journal-note {}
+div.availability-journal-note div.availability-data {
+	color: red;
+	font-weight: bold;
+}
+
+div.availability-resource-note {}
+div.availability-resource-note div.availability-data {
+	color: red;
+	font-weight: bold;
+}
+
+
+div.toc-item-title {
+    clear: both;
+    margin-top: .8em;
+    margin-bottom: .2em;
+    font-weight: bold;
+    font-size: 110%;
+}
+
+div.toc-item-description {
+    margin-top: 5px;
+    margin-right: 10px;
+    clear: both;
+}
+
+div.toc-item-description-short {
+    margin-top: 5px;
+    margin-right: 10px;
+    clear: both;
+}
+
+div.toc-item-description img.shrink {
+    float: left;
+    margin-top: 2px;
+    margin-left: 2px;
+    border: none;
+}
+
+div.toc-item-description div.content {
+    margin-left: 20px;
+}
+
+div.toc-item-description-short img.expand {
+    float: left;
+    margin-top: 2px;
+    margin-left: 2px;
+    border: none;
+}
+
+div.toc-item-description-short div.content {
+    margin-left: 20px;
+}
+
+
+div.toc-item-data {
+    color: #222222;
+}
+
+div.toc-item-data span {
+    margin-right: 10px;
+}
+
+div.toc-item-authors {
+    color: #222222;
+}
+
+
+/*********************************************
+
+	LCC Subject Browse screen
+
+**********************************************/
+
+
+/* Browse container */
+
+div#lcc-browse {
+}
+
+/* Three levels of browse, default indented by level */
+
+div.lcc-browse1 {
+}
+
+div.lcc-browse2 {
+	margin-left: 4em;
+}
+
+div.lcc-browse3 {
+	margin-left: 8em;
+}
+
+/* +/- button for opening/closing subject groups */
+
+div#lcc-browse-content img {
+	border: none;
+	vertical-align: baseline;
+}
+
+/* Groups of browse subjects for hiding/showing */
+	
+div.lcc-browse2-group-hidden {
+	display: none;
+}
+
+div.lcc-browse3-group-hidden {
+	display: none;
+}
+
+div.lcc-browse2-group-visible {
+}
+
+div.lcc-browse3-group-visible {
+}
+
+
+/*********************************************
+
+	Unified Journals display
+
+**********************************************/
+
+
+div.unified-journal {
+	margin-top: 1em;
+}
+
+span.unified-journal {
+	font-size: 110%;
+	font-weight: bold;
+}
+
+span.unified-journal a {
+	color: black;
+}
+
+span.unified-journal a:hover, span.unified-title a:active {
+	color: blue;
+        text-decoration: underline;
+}
+
+div.unified-availability-group {
+	margin-top: 3px;
+	padding-left: 2em;
+}
+
+span.unified-title {
+	font-size: 110%;
+	font-weight: bold;
+}
+
+span.unified-title a {
+	color: black;
+}
+
+span.unified-title a:hover, span.unified-title a:active {
+	color: blue;
+        text-decoration: underline;
+}
+
+span.unified-note-label {
+    font-weight: bold;
+}
+
+span.unified-note-data {
+    font-weight: bold;
+    color: red;
+}
+
+span.unified-issn {
+	font-size: 80%;
+}
+
+span.unified-rss img {
+    margin-left: 4px;
+    border: none;
+    vertical-align: bottom;
+}
+
+/*************************************************
+
+	Paging display used on mulitple screens
+
+**************************************************/
+
+
+div.paging {
+	background: #EEEEEE;
+	border: 1px #AAAAAA solid;
+	margin-top: .5em;
+	margin-bottom: .5em;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.paging li {
+	display: inline;
+	list-style-type: none;
+	padding-right: 20px;
+	font: bold 110% Verdana, Arial, sans-serif;
+
+}
+
+.paging li a {
+	white-space: nowrap;
+}
+
+.paging li span {
+	white-space: nowrap;
+}
+
+ul.paging {
+	margin-top: .5em;
+	margin-bottom: .5em;
+}
+
+/*************************************************
+
+	New pager for numeric paging
+
+**************************************************/
+
+div.pager {
+	background: #EEEEEE;
+	border: 1px #AAAAAA solid;
+	margin-top: .5em;
+	margin-bottom: .5em;
+}
+
+div.pager div.counter {
+    padding: 5px;
+}
+
+div.pager div.pages {
+    border-top: 1px solid #ddd;
+    padding: 5px;
+}
+
+div.pages {
+}
+
+/*************************************************
+
+	Page header menu/integrated login
+
+**************************************************/
+
+div#navline {
+	padding-top: 2px;
+	padding-bottom: 3px;
+	vertical-align: middle;
+	border-bottom: solid 1px #004997;
+	float: left;
+	width: 100%;
+}
+
+div#menu {
+	float: left;
+	margin-left: 10px;
+	vertical-align: middle;
+}
+
+div#loginblock {
+	float: right;
+	display: block;
+	margin-right: 10px;
+}
+
+div#loggedin {
+}
+
+div#dologin {
+}
+
+div#dologin input {
+	font-size: 80%;
+}
+
+
+/*************************************************
+
+	My Tags screen
+
+**************************************************/
+
+
+table#manage-tags-table tr.manage-tags-table-heading td {
+	background-color: #CCCCCC;
+	font-size: 80%;
+	font-weight: bold;
+	padding: 0px 3px;
+	white-space: nowrap;
+}
+table#manage-tags-table td {
+	white-space: nowrap;
+}
+
+table#manage-tags-layout td {
+	vertical-align: top;
+}
+
+td#manage-tags-layout-right {
+	padding-left: 15px;
+}
+
+#manage-tags-layout dl {
+	font-size: 80%;
+}
+
+#manage-tags-layout dt {
+	font-weight: bold;
+}
+
+div#mytags {
+	border: 1px #AAAAAA solid;
+	padding: 3px;
+	background: #EEEEEE;
+}
+
+div#mytags ul {
+	padding-left: 2px;
+}
+
+div#mytags ul li {
+	list-style-type: none;
+}
+div#mytags-heading {
+	font-size: 120%;
+	font-weight: bold;
+	font-variant: small-caps;
+	margin-bottom: .5em;
+}
+
+
+/*************************************************
+
+	Account Create/Manage
+
+**************************************************/
+
+
+div#account {
+	padding-top: 1em;
+}
+
+div#account table {
+	background-color: #EEEEEE;
+	border: 1px #AAAAAA solid;
+	padding: 3px;
+}
+
+div#account td.label {
+	font-weight: bold;
+}
+
+div#account td.data {
+}
+
+
+/**************************************************
+
+script.aculo.us autocomplete
+
+***************************************************/
+
+div.autocomplete {
+     position:absolute;
+     width:250px;
+     background-color:white;
+     border:1px solid #888;
+     margin:0px;
+     padding:0px;
+}
+
+div.autocomplete ul {
+     list-style-type:none;
+     margin:0px;
+     padding:0px;
+}
+
+div.autocomplete ul li.selected { background-color: #ffb;}
+
+div.autocomplete ul li {
+     list-style-type:none;
+     display:block;
+     margin:0;
+     padding:2px;
+     cursor:pointer;
+}
+
+
+
+
+
+
+/************************************************
+
+alternate browse tabs
+
+*************************************************/
+
+
+#browse-tabs {
+  float:left;
+  width:100%;
+  font-size:93%;
+  background:#DAE0D2 url("../images/tab-bg.gif") repeat-x bottom;
+  line-height:normal;
+  }
+#browse-tabs ul {
+  margin:0;
+  padding:10px 10px 0;
+  list-style:none;
+  }
+#browse-tabs li {
+  float:left;
+  background:url("../images/tab-left.gif") no-repeat left top;
+  margin:0;
+  padding:0 0 0 9px;
+  }
+#browse-tabs a {
+  float:left;
+  display:block;
+  background:url("../images/tab-right.gif") no-repeat right top;
+  padding:5px 15px 4px 6px;
+  text-decoration:none;
+  font-weight:bold;
+  color:#667;
+  }
+/* Commented Backslash Hack
+   hides rule from IE5-Mac \*/
+#browse-tabs a {float:none;}
+/* End IE5-Mac hack */
+#browse-tabs a:hover {
+  color:#222;
+  }
+#browse-tabs .current {
+  background-image:url("../images/tab-left-current.gif");
+  }
+#browse-tabs .current a {
+  background-image:url("../images/tab-right-current.gif");
+  color:#222;
+  padding-bottom:5px;
+  }
+  
+div.browse-screen {
+    border-left:   #a6bce8 solid 1px;
+    border-right:  #a6bce8 solid 1px;
+    border-bottom: #a6bce8 solid 1px; 
+    padding: 10px;
+    clear: both;
+    background: #DDDDFF;
+}
+
+div.browse-screen input { padding: 1px; }
+
+div#tabs-container {
+    float: left;
+    clear: both;
+    width: 99%;
+}

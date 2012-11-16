@@ -1,0 +1,339 @@
+CUFTS Installation Instructions
+===============================
+
+What CUFTS Does
+===============
+
+CUFTS provides a knowledge base of where fulltext resources can be found and
+the tools to manage it.  It knows about journals, coverage dates, embargo
+periods, and more.
+
+It provides a system to manage multiple sites and configure which resources
+each site has access to.
+
+It provides a system to resolve OpenURL requests to URLs to fulltext.  It
+has a human usable interface, and an XML one which can be used to provide
+your own interface.
+
+
+What CUFTS Does NOT Do (yet...)
+===============================
+
+CUFTS does not handle customized resolver interfaces for individual sites...
+yet.
+
+
+Requirements
+============
+
+Perl 5.6+ (?) - CUFTS itself may not depend on a particular version of Perl
+                but some of the modules it uses do.
+
+Postgresql - Tested with 7.4.1, should work with other versions.
+
+Apache 1.3.x - Tested with 1.3.29, should work with other versions.  Leave
+HostnameLookups on if you want to use domain name to site mapping.  CUFTS
+does seem to run on Apache 2.x, however extensive testing has not been
+done.
+
+Various Perl Modules
+--------------------
+
+These should all be easily available from CPAN.  The installation script will
+check for them and let you know what is not installed.  There may be others -
+check the install script output to be sure.  You can use 
+"perl util/install.pl -m" to check for necessary modules without running the 
+full install.
+
+DBI
+DBD::Pg
+Class::DBI 0.96 - It may work with other versions of Class::DBI, but it does
+                  a few weird things with Class::DBI internals.  Future
+                  versions will be less intrusive.
+
+Class::DBI::Plugin::CountSearch
+Apache::Session
+Class::Accessor
+Exception::Class
+SQL::Abstract
+Date::Calc
+Text::Template
+
+
+
+Installation
+============
+
+Before installing, you should have a basic system up and running with
+PostgreSQL, Perl, DBI, and Apache.
+
+To install CUFTS you need to pick a couple of locations for the system to
+install files to.  First is a location for the main installation to go -
+this includes modules, title lists, logs, etc.  It should not be in a web
+accessible location if possible.  This location is refered to as the base
+directory in the installation script.  "/usr/local/CUFTS" is a good location
+if you have access to write there.
+
+You also need to pick a location in a web accessible and CGI enabled
+directory for the CGI files to go.  The CGI files are symlinked from the
+main installation directory during installation.
+
+Once you have these locations picked you can run the installation script
+from the directory you have unpacked the source to by running:
+
+perl util/install.pl
+
+Running the install script as root is not necessary, but it makes it easier
+by allowing the system to chown the log files and other web writable files
+to the web server account.
+
+The install script will ask you a number of questions about where to install
+CUFTS, the database name, user and password to use, and whether you want to
+set up the web tree.  The basic database will be created using the
+information provided and some tables will be seeded with lookup values.  It
+will also ask whether you want to install the global knowledge base. 
+Finally it will check whether you have all the necessary Perl modules to run
+CUFTS.  If you do not, you can install them using CPAN and run "perl
+util/install.pl -m" to check the modules again without having to go through
+the installation procedure again.
+
+The install script should set up permissions in a relatively reasonable way,
+however if you have multiple local users trying to run
+"util/title_list_updater.pl" (see ADMINISTRATION), you may need to change
+the upload directory to be owned by a mutual group and assign group write
+access.
+
+It is very helpful if you have access to modify your Apache config files. 
+If you do, add in a PerlSetEnv or SetEnv line for the directory the CUFTS
+CGI files are installed in pointing PERL5LIB to the base CUFTS directory. 
+If you do not do this you may have to add "use lib qw( ... )" lines to all
+the CGI files so they can find the CUFTS modules.
+
+Quick Start
+===========
+
+The installation script will create a default administration user with a
+login of "admin" and password of "admin".  You should log in as this user
+and change the password using the "Account Settings" button before you
+do anything else.
+
+You can then use the "System Administration" tools to add new sites and
+user accounts.  Sites are (generally) institutions or branches and are 
+used to tell CUFTS what resources a patron has access to.  Accounts are
+tied to sites so that administrators can use their own logins/passwords
+to manage sites.  Multiple accounts can be set up to manage a site.
+
+Let's run through a simple site setup for "OpenSource University".  You can
+substitute real site and account information if you have a real site to set
+up.
+
+
+Sites
+-----
+
+Create a new site by clicking on "System Administration", then "Sites".  The
+site listing should be empty, so click on "New Site".  The fields you can
+enter are:
+
+key: this is normally the NUC code for the site, but it isn't tied to any
+     particular scheme.  This is the string used to identify the site when
+     linking to CUFTS.
+
+name: full name for the site.
+
+email: email address to send messages about system updates that may affect
+       the site to.
+
+proxy prefix: if you're using EZProxy (or another similar product) you can
+              put the prefix used to push users through the proxy here.
+
+active: whether the site is active and usable.
+
+associated accounts: you can check off accounts that should have access to
+                     modify settings for this site.  If you're just starting
+                     out you may not have any accounts other than "admin".
+
+
+For our example "OpenSource University" we'll use the following settings:
+
+key: OSU
+name: OpenSource University
+email: support@lib.osu.edu
+proxy prefix: http://proxy.lib.osu.edu/login?url=
+active: yes
+
+We wont check off any accounts yet...
+
+
+Accounts
+--------
+
+Next, we'll set up a new account to administer OSU:
+
+Click on "System Administration" then "Accounts" then "New Account". 
+There's a number of fields to fill in, similar to the site configuration:
+
+key: this is the login name the user will be using.
+
+name: full name for the user.
+
+email: email address.
+
+phone: phone number.
+
+password (and again): password for the user when logging in.  They can
+                      change this themselves later.
+
+administrator access: checking this gives the user full administrator
+                      access to create users and sites, change local
+                      settings for any site, etc.
+
+edit global access: this gives the user access to edit the global resources
+                    without other administrator rights.
+
+active: whether the user is active and can log in
+
+associated sites: check off sites for which the user should have access to
+                  modify settings and local resources.
+
+
+Let's use the following:
+
+key: osuadmin
+name: OpenSource University Administrator
+email: admin@lib.osu.edu
+phone: 555-1212
+password (and again): asdf1234
+administrator access: no
+edit global access: no
+active: yes
+associated sites: OSU
+
+Now log off of the administrator account and log back in with the account
+you just created to make sure you got the key and password correct.  (Note,
+administrators can "Change Site" to any site without being associated with
+it, so you can skip this part if you want).
+
+
+Local Resources
+---------------
+
+Once you've logged back in you should see "Active site: ... " in the top
+right corner of the interface.  If that is missing, you may have logged into
+an account which has access rights to more than one site.  In this case you
+should use the "Change Site" option to set an active site.
+
+Click on the "Local Resources" menu option.  This will bring up a list of
+all global resources, all of which are grayed out at this point because they
+are not yet activated locally.  In order for CUFTS to resolve a link to a
+resource for a particular site, the site must activate the resource and any
+titles from the resource that they have access to.  CUFTS provides an easy
+way to activate all titles for a resource since many do not limit access on
+a title by title basis.
+
+Let's activate "Academic Search Elite" from "EBSCO".  Find "Academic Search
+Elite" on the resource list and click "edit" next to it.  This will give you
+some information about the resource as well as a number of text boxes and
+checkboxes to fill in.  Here's a rundown of what can be set.
+
+General Settings
+
+proxy: whether the "proxy prefix" string from the site settings should be
+prepended to all links generated to this resource.
+
+dedupe: if this is on, only the highest ranked links from a provider will be
+resolved.  This is useful if you have 4 or 5 packages from a provider which
+have overlapping titles and you don't want to give the user multiple links
+to the same place.  This only works with resource which have the same
+provider, so EBSCO will not dedupe against Proquest, for example.
+
+auto activate: this activates all titles in the resource when you save.  It
+also means that whenever the global resource is updated with new titles,
+they will automatically be activated for you.  Generally, you should turn
+this on unless you have only partial access to titles in a resource.
+
+rank: this controls what order the system attempts to resolve links in and
+what order they are presented to the user.  It may also control some
+interactions with other resources - for example, if you are using CrossRef,
+you should rank it higher than resource which depend on the DOIs coming from
+CrossRef for linking.
+
+active: whether this resource is searched for resolving links or not.
+
+Resource Details
+
+Each resource can have its own set of resource details.  The only one that
+is common to almost all resources is "database URL".  This is used when
+creating database level links so you can direct users to your own database
+information pages rather than directly at the remote resource - useful if
+you need a password or something to log into the resource.
+
+For Academic Search Elite, you will also see "authorization name".  This one
+shows up for all EBSCO database and is used when searching their system for
+URLs directly to the article.  Here you would fill in your account name like
+"s1234567.main.web".
+
+Supported Services
+
+These are the various types of linking that the resource supports.  Almost
+all fulltext resources will support database level and journal level.  If
+the provider supplies a way to link closer to the article you will see other
+service types like "table of contents" and "fulltext".  Normally you can
+check all of these off as the user is only presented with the link that gets
+them closest to the fulltext of the article.
+
+
+That's it for setting up a local resource.  Hit "submit" and wait for a bit
+if you selected "auto activate" while it activates all the titles for you.
+
+
+Domain / IP Address Mapping
+---------------------------
+
+Under "Site Settings", a user can change the site name, email, proxy
+information, and also set up a mapping of domain names and IP addresses
+(networks) that map to that site.  This allows CUFTS to know that a user
+resolving links using CUFTS from ".osu.edu" should use the "OpenSource
+University" site settings.
+
+Go into "Site Settings", and click on an "edit" link by either the domain
+names or the IP addresses (they both go to the same place).
+
+** NOTE: This is a very recently added section and the interface needs to be
+tweaked a bit for better usability **
+
+Since we haven't set anything for this site yet, you should see two empty
+boxes, one under domains and one under IP addresses.  We want anyone on
+campus to be associated with the OpenSource University account, and all
+campus computers are on the ".osu.edu" domain.  It's best to use the most
+base part of the domain that still applies as CUFTS will check at each
+domain level until it finds a match.  For example, when someone at
+"hb443.lib.osu.edu" does a search, CUFTS will first look for sites matching
+".lib.osu.edu", and then try ".osu.edu".  So, fill in ".osu.edu" in the
+domain box.
+
+It's a good idea to also put the IP network that machines are on if possible
+in case the DNS is down.  Let's say OpenSource University owns 192.168.111.*
+- which, in IP network notation is noted as: 144.168.111.0/24.  If you don't
+understand how IP network notation works, you may have to talk to your
+network administrator or search the web.  Anyway, fill in 144.168.111.0/24
+under IP addresses and hit save.
+
+After saving, you should be taken back to the site view which will display
+the new network mapping information.  Let's say we also have a remote campus
+with a NAT box that all traffic goes to.  For users at this campus, all
+network traffic looks like it is coming from 112.11.98.2.  Go back into
+"edit", and there should be a new blank box to add another network address
+into.  If you enter "112.11.98.2" without a network identifier (/?? part),
+it will be taken as a single address (which is really /32).  Do that now and
+save it.
+
+
+Resolving
+---------
+
+You should now be able to point an OpenURL at the resolve.cgi script in the
+CUFTS web directory and have it resolve any links it can for the request. 
+For testing purposes you can use test.cgi to create OpenURL links yourself
+and test whether the system resolves as you expected.
+

@@ -1,0 +1,41 @@
+[% USE url %]
+
+[% SET columns = resource.do_module('title_list_fields') %]
+[% IF !columns.in('journal_auth'); columns.push('journal_auth'); END %]
+[% IF !columns.in('id'); columns.unshift('id'); END %]
+[% SET paging_url = url_base _ '/global/titles/' _ resource.id _ '?page=' %]
+[% paging_text = BLOCK %][% PROCESS paging.tt %][% END %]
+<div><span class="heading">[% resource.name %]</span></div>
+
+<form action="[% url("$url_base/global/titles/$resource.id") %]">
+
+<div style="margin-top: 1em;">
+Filter: <input type="text" name="filter" value="[% filter %]"> <input type="submit" name="apply_filter" value="filter">
+</div>
+
+<div style="margin-top: 1em;">
+<table style="width: 99%" class="grid">
+<tr><td colspan="[% columns.size %]" class="paging">[% paging_text %]</td></tr>
+<tr>
+[% FOREACH col IN columns %]
+ <td class="heading">[% col.replace('_', ' ') | html %]</td>
+[% END %]
+</tr>
+[% FOREACH title IN titles %]
+ [% SET class = 'field' _ (loop.count % 2) %]
+ <tr>
+  [% FOREACH col IN columns %]
+   <td class="[% class %]">
+    [% IF col == 'id' %]
+     <a href="[% url("$url_base/global/edit_title/$resource.id?title_id=$title.id&paging_page=$paging_page") %]">[% title.id %]</a>
+    [% ELSE %]
+     [% title.$col | html %]
+    [% END %]
+   </td>
+  [% END %]
+ </tr>
+[% END %]
+<tr><td colspan="[% columns.size %]" class="paging">[% paging_text %]</td></tr>
+</table>
+</div>
+</form>

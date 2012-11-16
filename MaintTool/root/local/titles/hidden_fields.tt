@@ -1,0 +1,29 @@
+[% USE url %]
+
+<div><span class="heading">[% global_resource.name %]</span></div>
+<div style="margin-top: 1em;">
+
+<form method="post" action="[% url("$url_base/local/titles/hidden_fields/g$global_resource.id") %]">
+<div style="margin-top: 1em;">
+
+<table class="grid">
+<tr><td class="heading">field</td><td class="heading">hidden</td></tr>
+[% FOREACH field IN fields.sort.simple_difference(['id']) %]
+ <tr>
+  <td class="label[% loop.count % 2 %]">[% field.replace('_',' ') | html %]</td>
+  <td class="field[% loop.count % 2 %]" style="text-align: center;">
+   <input value="true" type="checkbox" name="hide_[% field %]" [% 'checked="checked"' IF hidden_fields.in(field) %] />
+  </td>
+ </tr>
+[% END %]
+</table>
+</div>
+
+<div style="margin-top: 1em;">
+<input type="submit" name="apply" value="apply" />
+<input type="submit" name="cancel" value="cancel" />
+<input type="hidden" name="page" value="[% page %]">
+</div>
+
+</form>
+

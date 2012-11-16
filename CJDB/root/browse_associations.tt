@@ -1,0 +1,24 @@
+[% USE url %]
+
+[% INCLUDE page_title.tt %]
+
+Associations/organizations  
+[% SWITCH search_type %]
+ [% CASE 'startswith' %]
+  beginning with
+ [% CASE 'exact' %]
+  matching
+ [% CASE 'any' %]
+  containing any of these words: 
+ [% CASE 'all' %]
+  containing all of these words: 
+[% END %]
+"[% search_terms | html%]":<br />
+<br />
+[% IF associations.size == 0 %]
+        No results found for search.
+[% END %]
+[% FOREACH association = associations %]
+	<a href="[% url("$url_base/browse/journals", browse_field='association',search_terms=association.association) %]">[% association.association | html %]</a><br />
+[% END %]
+

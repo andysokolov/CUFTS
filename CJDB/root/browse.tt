@@ -1,0 +1,11 @@
+[% USE url %]
+
+[% INCLUDE page_title.tt %]
+[% INCLUDE azmenu.tt %]
+
+[% IF empty_search.defined %]
+[% empty_search %]
+[% END %]
+
+[% PROCESS browse_form.tt %]
+[%# PROCESS browse_form_alt.tt %]

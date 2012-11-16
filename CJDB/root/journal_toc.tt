@@ -1,0 +1,46 @@
+[% RETURN IF !rss.defined %]
+
+<div id="toc" class="details">
+ <div id="toc-heading" class="details-headings">Table of Contents</div>
+
+ [% FOREACH item IN rss.items %]
+  [% SET collapse = item.description.length > 150 ? 1 : 0 %]
+  <div class="toc-item-[% loop.count % 2 %]" id="toc-item-[% loop.count %]">
+   <div class="toc-item-title">
+   [% IF item.link %]
+    <a href = "[% current_site.proxy_prefix %][% item.link %]">[% item.title %]</a>
+   [% ELSE %]
+    [% item.title %]
+   [% END %]
+   </div>
+   <div class="toc-item-data">
+    [% IF item.volume %]<span class="toc-item-data-volume">Volume: [% item.volume %]</span>[% END %]
+    [% IF item.issue %]<span class="toc-item-data-issue">Issue: [% item.issue %]</span>[% END %]
+    [% IF item.date %]<span class="toc-item-data-date">Date: [% item.date %]</span>[% END %]
+    [% IF item.startPage %]
+     <span class="toc-item-data-pages">
+     [% IF item.endPage %]
+      Pages: [% item.startPage %]-[% item.endPage %]
+     [% ELSE %]
+      Page: [% item.startPage %]
+     [% END %]
+     </span>
+    [% END %]
+   </div>
+   [% IF item.authors %]
+   <div class="toc-item-authors">
+    By: [% item.authors.list.join('; ') %]
+   </div>
+   [% END %]
+   [% IF collapse %]
+   <div class="toc-item-description-short" id="toc-item-description-short-[% loop.count %]">
+    <a href="#" onClick="javascript: Element.toggle('toc-item-description-[% loop.count %]', 'toc-item-description-short-[% loop.count %]'); return false;"><img class="expand" src="[% image_dir %]plus.gif" /></a><div class="content">[% item.description.substr(0, 150).replace('\s+\S*$', ' ... ')  %]</div>
+   </div>
+   [% END %]
+   <div class="toc-item-description" id="toc-item-description-[% loop.count %]" [% IF collapse %]style="display: none"[% END %]>
+    [% IF collapse %]<a href="#" onClick="javascript: Element.toggle('toc-item-description-[% loop.count %]', 'toc-item-description-short-[% loop.count %]'); return false;"><img class="shrink" src="[% image_dir %]minus.gif" /></a>[% END %]<div class="content">[% item.description %]</div>
+   </div>
+  </div>
+ [% END %]
+
+</div>

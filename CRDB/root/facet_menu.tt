@@ -1,0 +1,125 @@
+[% PROCESS facet_labels.tt %]
+[% PROCESS facet_menu_js.tt %]
+
+
+<div id="resources-brief-left">
+
+[% PROCESS current_facets.tt %]
+
+<div id="resources-brief-facet-menu-container">
+
+ <div class="resources-brief-facet-menu-main-heading">
+  <h1>Refine Your Search</h1>
+ </div>
+
+ <div class="resources-brief-facet-menu" id="resources-brief-facet-menu-title">
+  <div class="resources-brief-facet-menu-heading">
+   <h2>[% IF facets.name %]Change[% ELSE %]Add[% END %] Title</h2>
+   <img class="resources-brief-facet-menu-button minus" src="[% c.uri_for_image('bullet_minus.png') %]" onClick="return facetToggle('title');"/>
+   <img class="resources-brief-facet-menu-button plus hidden" src="[% c.uri_for_image('bullet_plus.png') %]" onClick="return facetToggle('title');"/>
+  </div>
+  <div class="resources-brief-facet-menu-content">
+   <form method="POST" action="[% c.uri_for_facets( undef, 'name' ) %]">
+    <select name="name" id="name-select">
+     <option value="[% c.uri_for_facets( [ 'name', undef ], 'name' ) %]">Choose letter...</option>
+     [% FOREACH letter IN [ 'A'..'Z' ] %]
+      <option value="[% c.uri_for_facets( [ 'name', letter ], 'name_regex' ) %]" [% facets.name == letter ? 'selected="selected"' : '' %]>[% letter %]</option>
+     [% END %]
+     <option value="[% c.uri_for_facets( [ 'name_regex', '%5E[%5Ea-z]' ], 'name' ) %]">0-9</option>
+     <option value="[% c.uri_for_facets( undef, 'name' ) %]">All</option>
+    </select>
+   </form>
+  </div>
+ </div>
+
+ <div class="resources-brief-facet-menu" id="resources-brief-facet-menu-subjects">
+  <div class="resources-brief-facet-menu-heading">
+   <h2>[% IF facets.subject %]Change[% ELSE %]Add[% END %] Subject</h2>
+   <img class="resources-brief-facet-menu-button minus" src="[% c.uri_for_image('bullet_minus.png') %]" onClick="return facetToggle('subjects');"/>
+   <img class="resources-brief-facet-menu-button plus hidden" src="[% c.uri_for_image('bullet_plus.png') %]" onClick="return facetToggle('subjects');"/>
+  </div>
+  <div class="resources-brief-facet-menu-content">
+   <ul id="collapsable-subjects">
+   [% SET collapse = 0 %]
+   [% FOREACH subject_id IN subjects_order %]
+    [% SET subject = subjects.$subject_id %]
+    [% IF loop.count == 10 %]
+     [% SET collapse = 1 %]
+    [% END %]
+    <li[% IF collapse %] class="collapsable hidden"[% END %]><a href="[% c.uri_for_facets( [ 'subject', subject_id ] ) %]">[% subject %]</a></li>
+   [% END %]
+   </ul>
+   [% IF collapse %]
+    <div class="resources-brief-facet-menu-collapse-control">
+     <a href="#" onClick="return facetCollapse(this, 'subjects');">Show more</a>
+    </div>
+   [% END %]
+  </div>
+ </div>
+  
+ <div class="resources-brief-facet-menu" id="resources-brief-facet-menu-resource_type">
+  <div class="resources-brief-facet-menu-heading">
+   <h2>[% IF facets.resource_type %]Change[% ELSE %]Add[% END %] Resource Type</h2>
+   <img class="resources-brief-facet-menu-button minus" src="[% c.uri_for_image('bullet_minus.png') %]" onClick="return facetToggle('resource_type');"/>
+   <img class="resources-brief-facet-menu-button plus hidden" src="[% c.uri_for_image('bullet_plus.png') %]" onClick="return facetToggle('resource_type');"/>
+  </div>
+  <div class="resources-brief-facet-menu-content">
+   <ul id="collapsable-resource_types">
+   [% SET collapse = 0 %]
+   [% FOREACH resource_type_id IN resource_types_order %]
+    [% SET resource_type = resource_types.$resource_type_id %]
+    [% IF loop.count == 10 %]
+     [% SET collapse = 1 %]
+    [% END %]
+    <li[% IF collapse %] class="collapsable hidden"[% END %]><a href="[% c.uri_for_facets( [ 'resource_type', resource_type_id ] ) %]">[% resource_type %]</a></li>
+   [% END %]
+   </ul>
+   [% IF collapse %]
+    <div class="resources-brief-facet-menu-collapse-control">
+     <a href="#" onClick="return facetCollapse(this, 'resource_types');">Show more</a>
+    </div>
+   [% END %]
+  </div>
+ </div>
+  
+ <div class="resources-brief-facet-menu" id="resources-brief-facet-menu-content_type">
+  <div class="resources-brief-facet-menu-heading">
+   <h2>[% IF facets.content_type %]Change[% ELSE %]Add[% END %] Content Type</h2>
+   <img class="resources-brief-facet-menu-button minus" src="[% c.uri_for_image('bullet_minus.png') %]" onClick="return facetToggle('content_type');"/>
+   <img class="resources-brief-facet-menu-button plus hidden" src="[% c.uri_for_image('bullet_plus.png') %]" onClick="return facetToggle('content_type');"/>
+  </div>
+  <div class="resources-brief-facet-menu-content">
+   <ul id="collapsable-content_types">
+   [% SET collapse = 0 %]
+   [% FOREACH content_type_id IN content_types_order %]
+    [% SET content_type = content_types.$content_type_id %]
+    [% IF loop.count == 10 %]
+     [% SET collapse = 1 %]
+    [% END %]
+    <li[% IF collapse %] class="collapsable hidden"[% END %]><a href="[% c.uri_for_facets( [ 'content_type' content_type_id ] ) %]">[% content_type %]</a></li>
+   [% END %]
+   </ul>
+   [% IF collapse %]
+    <div class="resources-brief-facet-menu-collapse-control">
+     <a href="#" onClick="return facetCollapse(this, 'content_types');">Show more</a>
+    </div>
+   [% END %]
+  </div>
+ </div>
+
+ <div class="resources-brief-facet-menu" id="resources-brief-facet-menu-keyword">
+  <div class="resources-brief-facet-menu-heading">
+   <h2>By Keyword</h2>
+   <img class="resources-brief-facet-menu-button minus" src="[% c.uri_for_image('bullet_minus.png') %]" onClick="return facetToggle('keyword');"/>
+   <img class="resources-brief-facet-menu-button plus hidden" src="[% c.uri_for_image('bullet_plus.png') %]" onClick="return facetToggle('keyword');"/>
+  </div>
+  <div class="resources-brief-facet-menu-content">
+   <form id="keyword-form" method="POST" action="[% c.uri_for_facets( undef, 'keyword' ) %]">
+    <input id="keyword-input" style="border: 1px solid black; width: 100%" name="keyword" type="text" value="" />
+   </form>
+  </div>
+ </div>
+
+</div>
+
+</div>

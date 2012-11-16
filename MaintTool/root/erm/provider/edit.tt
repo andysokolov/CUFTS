@@ -1,0 +1,300 @@
+[% USE url %]
+
+<script type="text/javascript">
+$( function() {
+    $('#pages-container').tabs();
+} );
+</script>
+
+<div id="erm-edit-key">[% erm.key | html %]
+ <form method="post" action="[% url("$url_base/erm/provider/delete/") %]">
+  <input style="margin-left: 10px;" type="submit" name="delete" value="delete" />
+  <input type="hidden" name="erm_provider_id" value="[% erm.id %]" />
+ </form> 
+</div>
+
+<form method="post" name="provider-form" id="provider-form">
+
+<div id="pages-container" class="tabs-nav" style="width: 100%;">
+
+<ul>
+ <li><a href="#page-general"><span>General</span></a></li>
+ <li><a href="#page-stats"><span>Statistics</span></a></li>
+</ul>
+
+
+<div id="page-general">
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+<fieldset>
+
+<legend>General</legend>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-key">provider identifier</label>
+  <input id="erm-edit-input-key" name="key" value="[% erm.key | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  The unique name for this provider.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-provider_name">provider name</label>
+  <input id="erm-edit-input-provider_name" name="provider_name" value="[% erm.provider_name | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Public name for this provider.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-local_provider_name">local provider name</label>
+  <input id="erm-edit-input-local_provider_name" name="local_provider_name" value="[% erm.local_provider_name | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Internal name for this provider.
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-admin_user">admin username</label>
+  <input id="erm-edit-admin_user" name="admin_user" value="[% erm.admin_user | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Username required to access the administrative module for this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-admin_password">admin password</label>
+  <input id="erm-edit-admin_password" name="admin_password" value="[% erm.admin_password | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Password required to access the administrative module for this provider.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-admin_url">admin URL</label>
+  <input id="erm-edit-admin_url" name="admin_url" value="[% erm.admin_url | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  URL for accessing the administrative module for this provider.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-support_url">support URL</label>
+  <input id="erm-edit-support_url" name="support_url" value="[% erm.support_url | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  URL for accessing the provider support pages.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-support_email">support email</label>
+  <input id="erm-edit-input-support_email" name="support_email" value="[% erm.support_email | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Technical support email address for this provider.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-support_phone">support phone</label>
+  <input id="erm-edit-input-support_phone" name="support_phone" value="[% erm.support_phone | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Technical support phone number for this provider.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-knowledgebase">knowledgebase</label>
+  <input id="erm-edit-input-knowledgebase" name="knowledgebase" value="[% erm.knowledgebase | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  ??
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-customer_number">customer number</label>
+  <input id="erm-edit-input-customer_number" name="customer_number" value="[% erm.customer_number | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Customer number with this provider.
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-provider_contact">contact info</label>
+  <textarea id="erm-edit-input-provider_contact" name="provider_contact">[% erm.provider_contact | html %]</textarea>
+ </div>
+ <div class="help">
+  Contact information for this provider.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-provider_notes">notes</label>
+  <textarea id="erm-edit-input-provider_notes" name="provider_notes">[% erm.provider_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Notes for this provider.
+ </div>
+</div>
+
+
+
+</fieldset>
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+</div>
+
+<div id="page-stats">
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+<fieldset>
+
+<legend>Statistics</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-stats_available">stats available?</label>
+  <select id="erm-edit-input-stats_available" name="stats_available" style="width: 4em;">
+   <option value=""></option>
+   <option value="1" [% 'selected="selected"' IF erm.stats_available == 1 %]>yes</option>
+   <option value="0" [% 'selected="selected"' IF erm.stats_available == 0 %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates if usage statistics are available from the vendor.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-stats_url">stats URL</label>
+  <input id="erm-edit-input-stats_url" name="stats_url" value="[% erm.stats_url | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  URL for usage stats if available.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-stats_frequency">stats frequency</label>
+  <select id="erm-edit-input-stats_frequency" name="stats_frequency" style="width: 8em;">
+   <option value=""></option>
+   <option value="daily"     [% 'selected="selected"' IF erm.stats_frequency == 'daily'     %]>Daily</option>
+   <option value="monthly"   [% 'selected="selected"' IF erm.stats_frequency == 'monthly'   %]>Monthly</option>
+   <option value="quarterly" [% 'selected="selected"' IF erm.stats_frequency == 'quarterly' %]>Quarterly</option>
+   <option value="yearly"    [% 'selected="selected"' IF erm.stats_frequency == 'yearly'    %]>Yearly</option>
+  </select>
+ </div>
+ <div class="help">
+  Frequency which the vendor updates and makes statistics available.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-stats_delivery">stats delivery</label>
+  <select id="erm-edit-input-stats_delivery" name="stats_delivery" style="width: 8em;">
+   <option value=""></option>
+   <option value="email"  [% 'selected="selected"' IF erm.stats_delivery == 'email' %]>email</option>
+   <option value="web"    [% 'selected="selected"' IF erm.stats_delivery == 'web'   %]>web</option>
+   <option value="print"  [% 'selected="selected"' IF erm.stats_delivery == 'print' %]>print</option>
+   <option value="SUSHI"  [% 'selected="selected"' IF erm.stats_delivery == 'SUSHI' %]>SUSHI</option>
+  </select>
+ </div>
+ <div class="help">
+  How statistics are delivered or made available.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-stats_counter">COUNTER stats</label>
+   <select id="erm-edit-input-stats_counter" name="stats_counter" style="width: 4em;">
+    <option value=""></option>
+    <option value="1" [% 'selected="selected"' IF erm.stats_counter == 1 %]>Yes</option>
+    <option value="0" [% 'selected="selected"' IF erm.stats_counter == 0 %]>No</option>
+   </select>
+ </div>
+ <div class="help">
+  Indicates whether statics are COUNTER compliant.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-stats_user">stats username</label>
+  <input id="erm-edit-stats_user" name="stats_user" value="[% erm.stats_user | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Username required to access usage statistics.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-stats_password">stats password</label>
+  <input id="erm-edit-stats_password" name="stats_password" value="[% erm.stats_password | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Username required to access usage statistics.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-stats_notes">stats notes</label>
+  <textarea id="erm-edit-input-stats_notes" name="stats_notes">[% erm.stats_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Enter further information about statistics for the resource here.
+ </div>
+</div>
+
+
+</fieldset>
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+    
+</div>
+
+</div> <!-- tab-container -->
+
+</form>

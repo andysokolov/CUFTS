@@ -1,0 +1,17 @@
+[% USE HTML %]
+[% USE url("$url_base/browse/$browse_type", search_type = search_type, search_terms = search_terms, browse_field = browse_field) %]
+
+<div class="paging">
+<ul class="paging">
+[% FOREACH index IN search_details.indexes %]
+ [% SET sd_start_record = index.0 %]
+ [% SET sd_start_label = index.1 %]
+ [% SET sd_end_label = index.2 %]
+
+ [% IF start_record == sd_start_record %]
+  <li class="active"><span title="[% sd_start_label | html %]&nbsp; - &nbsp;[% sd_end_label | html %]">[% sd_start_label.substr(0,3) | html %] - [% sd_end_label.substr(0,3) | html %]</span></li>
+ [% ELSE %]
+  <li><a title="[% sd_start_label | html %]&nbsp; - &nbsp;[% sd_end_label | html %]" href="[% url(start_record = sd_start_record) %]">[% sd_start_label.substr(0,3) | html %] - [% sd_end_label.substr(0,3) | html %]</a></li>
+ [% END %]
+[% END %]
+</div>

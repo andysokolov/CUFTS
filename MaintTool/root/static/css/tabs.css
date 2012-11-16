@@ -1,0 +1,52 @@
+/* TABS from CJDB */
+
+/* Container for whole tabs/pages group */
+div.tabs-nav {
+    width: 100%;
+    float: left;
+}
+
+ul.tabs-nav {
+  margin: 0;
+  font-size: 93%;
+  padding: 10px 10px 0px;
+  list-style: none;
+}
+
+ul.tabs-nav li {
+  float: left;
+  background: url("/MaintTool/static/images/tab-left.gif") no-repeat left top;
+  margin: 0px;
+  padding: 0px 0px 0px 9px;
+}
+
+ul.tabs-nav li a {
+  float: left;
+  display: block;
+  background: url("/MaintTool/static/images/tab-right.gif") no-repeat right top;
+  padding: 5px 15px 4px 6px;
+  text-decoration: none;
+  font-weight: bold;
+  color: #667;
+}
+
+ul.tabs-nav li a:hover {
+  color: #444;
+}
+
+ul.tabs-nav li.tabs-nav-active {
+  background-image: url("/MaintTool/static/images/tab-left-current.gif");
+}
+
+ul.tabs-nav li.tabs-nav-active a {
+  background-image: url("/MaintTool/static/images/tab-right-current.gif");
+  color: #222;
+}
+
+div.tabs-nav-page {
+    width: 98%;
+    clear: both;
+    border: 1px solid #667;
+    padding: 5px;
+    background: #ededed;
+}

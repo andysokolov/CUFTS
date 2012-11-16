@@ -1,0 +1,891 @@
+[% SET uses_ext_form = 1 %]
+[% SET erm_main_id = erm_main.id %]
+[% USE url %]
+
+<h2 style="margin-bottom: 5px;">[% erm_main.main_name %]</h2>
+
+<div id="erm-main-test"></div>
+<div id="erm-main-links-panel"></div>
+
+<script>
+
+Ext.onReady( function() {
+    Ext.BLANK_IMAGE_URL = '[% image_dir _ '/default/s.gif' %]';
+
+    // Resources linking
+
+    var find_resources_store = new Ext.data.JsonStore({
+        url: '[% url("$url_base/local/find_json") %]',
+        method: 'GET',
+        root: 'results',
+        totalProperty: 'rowcount',
+        fields: [
+           'id',
+           'name',
+           'provider',
+           'erm_main'
+        ]
+    });
+
+    var selected_resources_store = new Ext.data.JsonStore({
+        url: '[% url("$url_base/local/find_json") %]',
+        method: 'GET',
+        root: 'results',
+        totalProperty: 'rowcount',
+        fields: [
+            'id',
+            'name',
+            'provider',
+            'erm_main'
+        ],
+        baseParams: { erm_main: [% erm_main.id %] }
+    });
+
+    var resources_results_grid = new Ext.grid.GridPanel({
+        store: find_resources_store,
+        style: 'margin-top: 5px',
+        columns: [
+           { header: 'name', dataIndex: 'name', width: 270 },
+           { header: 'provider', dataIndex: 'provider', width: 270 },
+           { header: 'Linked ERM', dataIndex: 'erm_main', width: 270 }
+        ],
+        sm: new Ext.grid.RowSelectionModel({singleSelect:false}),
+        title: 'Search Results',
+        frame: false,
+        height: 355,
+        width: 837,
+        tbar: new Ext.Toolbar({
+            items: [
+                new Ext.Button({
+                    iconCls: 'add-button',
+                    text: 'Link Resources',
+                    handler: linkResources
+                })
+            ]
+        }),
+        bbar: new Ext.PagingToolbar({
+            pageSize: 25,
+            displayInfo: true,
+            displayMsg: 'Displaying {0} - {1} of {2}',
+            emptyMsg: 'No records to display',
+            store: find_resources_store
+        }),
+        listeners: {
+            'rowdblclick': function(grid, rowIndex, e) {
+                var local_resource_id = grid.getStore().getAt(rowIndex).get('id');
+                window.open('[% url("$url_base/local/edit/l") %]' + local_resource_id);
+            }
+        }
+    });
+
+    function linkResources() {
+        var selections = resources_results_grid.getSelectionModel().getSelections();
+        var ids = new Array();
+        var confirm = false;
+        Ext.each( selections, function(item) { ids.push( item.get('id') ); if ( item.get('erm_main') ) { confirm = true }  } );
+        if ( ids.length == 0 ) {
+            Ext.MessageBox.alert('No Resources Selected', 'Please select one or more resources from the search results below.  You can highlight multiple records using ctrl or shift-clicks.')
+            return;
+        }
+
+        var doLink = function() {
+                Ext.Ajax.request({
+                url: '[% url("$url_base/erm/main/link_ajax/$erm_main_id/resource/add") %]',
+                success: function(response) {
+                    if ( Ext.ux.utils.ajaxCheckResponse(response) ) {
+                        var results = Ext.decode( response.responseText );
+                        selected_resources_store.loadData(results);
+                        find_resources_store.reload();
+                    }
+                },
+                failure: Ext.ux.utils.ajaxServerFailure,
+                params: { ids: ids }
+            });
+        }
+
+        if ( confirm ) {
+            Ext.MessageBox.confirm( 'Links Exist', 'Links already exists for one or more resources.  Do you want to re-link them?', function(btn) { if ( btn == 'yes' ) { doLink() } } );
+        }
+        else {
+            doLink();
+        }
+    }
+
+
+    var resources_find_form = new Ext.FormPanel({
+        frame: false,
+        border: false,
+        bodyStyle: 'padding: 5px 2px;',
+        id: 'erm-main-resources-find-form',
+        items: [
+            {
+                layout: 'column',
+                border: false,
+                items: [
+                    {
+                        layout: 'form',
+                        columnWidth: .5,
+                        labelWidth: 100,
+                        border: false,
+                        items: [
+                            {
+                                name: 'name',
+                                fieldLabel: 'Name',
+                                xtype: 'textfield',
+                                anchor: '95%'
+                            }
+                        ]
+                    },
+                    {
+                        layout: 'form',
+                        columnWidth: .5,
+                        labelWidth: 100,
+                        border: false,
+                        items: [
+                            {
+                                name: 'provider',
+                                fieldLabel: 'Provider',
+                                xtype: 'textfield',
+                                anchor: '-2'
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        buttons: [
+            {
+                type: 'submit',
+                name: 'search',
+                text: 'Search',
+                handler: resourcesSearch
+            },
+            {
+                type: 'reset',
+                name: 'clear',
+                text: 'Clear',
+                handler: resourcesReset
+            }
+        ]
+
+    });
+
+    resources_find_form.addListener( 'render',
+        function( ) {
+            new Ext.KeyMap( resources_find_form.getEl(), {
+                key: Ext.EventObject.ENTER,
+                fn: resourcesSearch
+            });
+            resources_find_form.getForm().findField(0).focus( false, 50 );
+        }
+    );
+
+    var linked_resources_grid = new Ext.grid.GridPanel({
+        title: 'Currently Linked Resources',
+        style: 'margin-bottom: 10px',
+        frame: false,
+        height: 235,
+        width: 837,
+        store: selected_resources_store,
+        tbar: new Ext.Toolbar({
+            items: [
+                new Ext.Button({
+                    text: 'Remove',
+                    iconCls: 'delete-button',
+                    handler: removeResources
+                }),
+                new Ext.Button({
+                    text: 'Clear',
+                    iconCls: 'delete-button',
+                    handler: clearResources
+                })
+            ]
+        }),
+        columns: [
+            { header: 'name', dataIndex: 'name', width: 300 },
+            { header: 'provider', dataIndex: 'provider', width: 300 }
+        ],
+        listeners: {
+            'rowdblclick': function(grid, rowIndex, e) {
+                var local_resource_id = grid.getStore().getAt(rowIndex).get('id');
+                window.open('[% url("$url_base/local/edit/l") %]' + local_resource_id);
+            }
+        }
+    });
+
+    function removeResources() {
+        var selections = linked_resources_grid.getSelectionModel().getSelections();
+        var ids = new Array();
+        Ext.each( selections, function(item) { ids.push(item.get('id') ) } );
+        Ext.Ajax.request({
+            url: '[% url("$url_base/erm/main/link_ajax/$erm_main_id/resource/remove") %]',
+            success: function(response) {
+                if ( Ext.ux.utils.ajaxCheckResponse(response) ) {
+                    var results = Ext.decode( response.responseText );
+                    selected_resources_store.loadData(results);
+                    find_resources_store.reload();
+                }
+            },
+            failure: Ext.ux.utils.ajaxServerFailure,
+            params: { ids: ids }
+        });
+    }
+
+    function clearResources() {
+        Ext.Ajax.request({
+            url: '[% url("$url_base/erm/main/link_ajax/$erm_main_id/resource/clear") %]',
+            success: function(response) {
+                if ( Ext.ux.utils.ajaxCheckResponse(response) ) {
+                    var results = Ext.decode( response.responseText );
+                    selected_resources_store.loadData(results);
+                    find_resources_store.reload();
+                }
+            },
+            failure: Ext.ux.utils.ajaxServerFailure
+        });
+    }
+
+    var resources_find_panel = new Ext.Panel({
+        frame: true,
+        title: 'Find Local Resources',
+        items: [ resources_find_form ]
+    });
+
+
+    function resourcesSearch() {
+        var params = resources_find_form.getForm().getValues();
+        find_resources_store.baseParams = params;
+        find_resources_store.load( { params: { start: 0, limit: 25 } } );
+    }
+
+    function resourcesReset() {
+        // CAUTION: items.items may not be safe, using private variable to get all fields
+        Ext.each( resources_find_form.getForm().items.items, function( field ) {
+            field.setValue('');
+        } );
+    }
+
+
+    // Journals Linking
+
+    var all_resources_store = new Ext.data.JsonStore({
+        url: '[% url("$url_base/local/find_json") %]',
+        method: 'GET',
+        root: 'results',
+        totalProperty: 'rowcount',
+        fields: [
+           'id',
+           'name',
+           'provider',
+           'erm_main'
+        ]
+    });
+
+    var find_journals_store = new Ext.data.JsonStore({
+        url: '[% url("$url_base/local/titles/find_json") %]',
+        method: 'GET',
+        root: 'results',
+        totalProperty: 'rowcount',
+        fields: [
+            'id',
+            'title',
+            'resource_name',
+            'issn',
+            'e_issn',
+            'erm_main'
+        ]
+    });
+
+    var selected_journals_store = new Ext.data.JsonStore({
+        url: '[% url("$url_base/local/titles/find_json") %]',
+        method: 'GET',
+        root: 'results',
+        totalProperty: 'rowcount',
+        fields: [
+            'id',
+            'title',
+            'resource_name',
+            'issn',
+            'e_issn',
+            'erm_main'
+        ],
+        baseParams: { erm_main: [% erm_main.id %] }
+    });
+
+
+    var journals_results_grid = new Ext.grid.GridPanel({
+        store: find_journals_store,
+        style: 'margin-top: 5px',
+        columns: [
+           { header: 'Title', dataIndex: 'title', width: 250 },
+           { header: 'ISSN', dataIndex: 'issn', width: 70 },
+           { header: 'eISSN', dataIndex: 'e_issn', width: 70 },
+           { header: 'CUFTS Resource', dataIndex: 'resource_name', width: 200 },
+           { header: 'Linked ERM', dataIndex: 'erm_main', width: 220 }
+        ],
+        sm: new Ext.grid.RowSelectionModel({singleSelect:false}),
+        title: 'Search Results',
+        frame: false,
+        height: 325,
+        width: 837,
+        tbar: new Ext.Toolbar({
+            items: [
+                new Ext.Button({
+                    iconCls: 'add-button',
+                    text: 'Link Journals',
+                    handler: linkJournals
+                })
+            ]
+        }),
+        bbar: new Ext.PagingToolbar({
+            pageSize: 25,
+            displayInfo: true,
+            displayMsg: 'Displaying {0} - {1} of {2}',
+            emptyMsg: 'No records to display',
+            store: find_journals_store
+        }),
+        listeners: {
+            'rowdblclick': function(grid, rowIndex, e) {
+                // TODO: Not sure where this should link, really
+                // var local_journal_id = grid.getStore().getAt(rowIndex).get('id');
+                // window.open('[% url("$url_base/local/edit/l") %]' + local_journal_id);
+            }
+        }
+    });
+
+    function linkJournals() {
+        var selections = journals_results_grid.getSelectionModel().getSelections();
+        var ids = new Array();
+        var confirm = false;
+        Ext.each( selections, function(item) { ids.push( item.get('id') ); if ( item.get('erm_main') ) { confirm = true }  } );
+        if ( ids.length == 0 ) {
+            Ext.MessageBox.alert('No Resources Selected', 'Please select one or more resources from the search results below.  You can highlight multiple records using ctrl or shift-clicks.')
+            return;
+        }
+
+        var doLink = function() {
+                Ext.Ajax.request({
+                url: '[% url("$url_base/erm/main/link_ajax/$erm_main_id/journal/add") %]',
+                success: function(response) {
+                    if ( Ext.ux.utils.ajaxCheckResponse(response) ) {
+                        var results = Ext.decode( response.responseText );
+                        selected_journals_store.loadData(results);
+                        find_journals_store.reload();
+                    }
+                },
+                failure: Ext.ux.utils.ajaxServerFailure,
+                params: { ids: ids }
+            });
+        }
+
+        if ( confirm ) {
+            Ext.MessageBox.confirm( 'Links Exist', 'Links already exists for one or more journals.  Do you want to re-link them?', function(btn) { if ( btn == 'yes' ) { doLink() } } );
+        }
+        else {
+            doLink();
+        }
+    }
+
+
+    var journals_find_form = new Ext.FormPanel({
+        frame: false,
+        border: false,
+        bodyStyle: 'padding: 5px 2px;',
+        id: 'erm-main-journals-find-form',
+        items: [
+            {
+                layout: 'column',
+                border: false,
+                items: [
+                    {
+                        layout: 'form',
+                        columnWidth: .5,
+                        labelWidth: 100,
+                        border: false,
+                        items: [
+                            {
+                                hiddenName: 'local_resource',
+                                fieldLabel: 'Resource',
+                                xtype: 'combo',
+                                store: all_resources_store,
+                                mode: 'local',
+                                valueField: 'id',
+                                displayField: 'name',
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                triggerAction: 'all',
+                                anchor: '95%'
+                            },
+                            {
+                                name: 'title',
+                                fieldLabel: 'Title',
+                                xtype: 'textfield',
+                                anchor: '95%'
+                            }
+                        ]
+                    },
+                    {
+                        layout: 'form',
+                        columnWidth: .5,
+                        labelWidth: 100,
+                        border: false,
+                        items: [
+                            {
+                                name: 'issn',
+                                fieldLabel: 'ISSN',
+                                xtype: 'textfield',
+                                anchor: '-2'
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        buttons: [
+            {
+                type: 'submit',
+                name: 'search',
+                text: 'Search',
+                handler: journalsSearch
+            },
+            {
+                type: 'reset',
+                name: 'clear',
+                text: 'Clear',
+                handler: journalsReset
+            }
+        ]
+
+    });
+
+    journals_find_form.addListener( 'render',
+        function( ) {
+            new Ext.KeyMap( journals_find_form.getEl(), {
+                key: Ext.EventObject.ENTER,
+                fn: journalsSearch
+            });
+            journals_find_form.getForm().findField(1).focus( false, 50 );
+        }
+    );
+
+    var linked_journals_grid = new Ext.grid.GridPanel({
+        title: 'Currently Linked Journals',
+        style: 'margin-bottom: 10px',
+        frame: false,
+        height: 235,
+        width: 837,
+        store: selected_journals_store,
+        tbar: new Ext.Toolbar({
+            items: [
+                new Ext.Button({
+                    text: 'Remove',
+                    iconCls: 'delete-button',
+                    handler: removeJournals
+                }),
+                new Ext.Button({
+                    text: 'Clear',
+                    iconCls: 'delete-button',
+                    handler: clearJournals
+                })
+            ]
+        }),
+        columns: [
+            { header: 'Title', dataIndex: 'title', width: 250 },
+            { header: 'ISSN', dataIndex: 'issn', width: 70 },
+            { header: 'eISSN', dataIndex: 'e_issn', width: 70 },
+            { header: 'CUFTS Resource', dataIndex: 'resource_name', width: 200 },
+            { header: 'Linked ERM', dataIndex: 'erm_main', width: 220 }
+        ],
+        listeners: {
+            'rowdblclick': function(grid, rowIndex, e) {
+                // TODO: Not sure where this should link to, really.
+                // var local_resource_id = grid.getStore().getAt(rowIndex).get('local_resource');
+                // window.open('[% url("$url_base/local/edit/l") %]' + local_resource_id);
+            }
+        }
+    });
+
+    function removeJournals() {
+        var selections = linked_journals_grid.getSelectionModel().getSelections();
+        var ids = new Array();
+        Ext.each( selections, function(item) { ids.push(item.get('id') ) } );
+        Ext.Ajax.request({
+            url: '[% url("$url_base/erm/main/link_ajax/$erm_main_id/journal/remove") %]',
+            success: function(response) {
+                if ( Ext.ux.utils.ajaxCheckResponse(response) ) {
+                    var results = Ext.decode( response.responseText );
+                    selected_journals_store.loadData(results);
+                    find_journals_store.reload();
+                }
+            },
+            failure: Ext.ux.utils.ajaxServerFailure,
+            params: { ids: ids }
+        });
+    }
+
+    function clearJournals() {
+        Ext.Ajax.request({
+            url: '[% url("$url_base/erm/main/link_ajax/$erm_main_id/journal/clear") %]',
+            success: function(response) {
+                if ( Ext.ux.utils.ajaxCheckResponse(response) ) {
+                    var results = Ext.decode( response.responseText );
+                    selected_journals_store.loadData(results);
+                    if ( find_journals_store.getCount() ) {
+                        find_journals_store.reload();
+                    }
+                }
+            },
+            failure: Ext.ux.utils.ajaxServerFailure
+        });
+    }
+
+    var journals_find_panel = new Ext.Panel({
+        frame: true,
+        title: 'Find Local Journals',
+        items: [ journals_find_form ]
+    });
+
+
+    function journalsSearch() {
+        var params = journals_find_form.getForm().getValues();
+        find_journals_store.baseParams = params;
+        var paging = { start: 0, limit: 25 };
+        find_journals_store.load( { params: paging } );
+    }
+
+    function journalsReset() {
+        // CAUTION: items.items may not be safe, using private variable to get all fields
+        Ext.each( journals_find_form.getForm().items.items, function( field ) {
+            field.setValue('');
+        } );
+    }
+
+
+    // COUNTER source linking
+
+    var find_counter_sources_store = new Ext.data.JsonStore({
+        url: '[% url("$url_base/erm/counter/find_json") %]',
+        method: 'GET',
+        root: 'results',
+        totalProperty: 'rowcount',
+        fields: [
+           'id',
+           'name',
+           'type'
+        ]
+    });
+
+    var selected_counter_sources_store = new Ext.data.JsonStore({
+        url: '[% url("$url_base/erm/counter/find_json") %]',
+        method: 'GET',
+        root: 'results',
+        totalProperty: 'rowcount',
+        fields: [
+           'id',
+           'name',
+           'type'
+        ],
+        baseParams: { erm_main: [% erm_main.id %] }
+    });
+
+
+    var counter_sources_results_grid = new Ext.grid.GridPanel({
+        store: find_counter_sources_store,
+        style: 'margin-top: 5px',
+        columns: [
+           { header: 'name', dataIndex: 'name', width: 300 },
+           { header: 'type', dataIndex: 'type', width: 120, renderer: function(value) { value = value == 'j' ? 'Journal reports' : value == 'd' ? 'Database reports' : value; return value; } }
+        ],
+        sm: new Ext.grid.RowSelectionModel({singleSelect:false}),
+        title: 'Search Results',
+        frame: false,
+        height: 355,
+        width: 837,
+        tbar: new Ext.Toolbar({
+            items: [
+                new Ext.Button({
+                    iconCls: 'add-button',
+                    text: 'Link COUNTER source',
+                    handler: linkCounterSources
+                })
+            ]
+        }),
+        bbar: new Ext.PagingToolbar({
+            pageSize: 25,
+            displayInfo: true,
+            displayMsg: 'Displaying {0} - {1} of {2}',
+            emptyMsg: 'No records to display',
+            store: find_counter_sources_store
+        }),
+        listeners: {
+            'rowdblclick': function(grid, rowIndex, e) {
+                var counter_source_id = grid.getStore().getAt(rowIndex).get('id');
+                window.open('[% url("$url_base/erm/counter/edit/") %]' + counter_source_id);
+            }
+        }
+    });
+
+    function linkCounterSources() {
+        var selections = counter_sources_results_grid.getSelectionModel().getSelections();
+        var ids = new Array();
+        var confirm = false;
+        Ext.each( selections, function(item) { ids.push( item.get('id') ); if ( item.get('erm_main') ) { confirm = true }  } );
+        if ( ids.length == 0 ) {
+            Ext.MessageBox.alert('No COUNTER Sources Selected', 'Please select one or more COUNTER sources from the search results below.  You can highlight multiple records using ctrl or shift-clicks.')
+            return;
+        }
+
+        var doLink = function() {
+                Ext.Ajax.request({
+                url: '[% url("$url_base/erm/main/link_ajax/$erm_main_id/counter/add") %]',
+                success: function(response) {
+                    if ( Ext.ux.utils.ajaxCheckResponse(response) ) {
+                        var results = Ext.decode( response.responseText );
+                        selected_counter_sources_store.loadData(results);
+                        find_counter_sources_store.reload();
+                    }
+                },
+                failure: Ext.ux.utils.ajaxServerFailure,
+                params: { ids: ids }
+            });
+        }
+
+        if ( confirm ) {
+            Ext.MessageBox.confirm( 'Links Exist', 'Links already exists for one or more COUNTER sources.  Do you want to re-link them?', function(btn) { if ( btn == 'yes' ) { doLink() } } );
+        }
+        else {
+            doLink();
+        }
+    }
+
+
+    counter_source_types_store = new Ext.data.SimpleStore({
+        fields: [ 'id', 'display' ],
+        data: [ [ null,'&nbsp;' ], [ 'j', 'Journal reports' ], [ 'd', 'Database reports' ] ]
+    });
+
+    var counter_sources_find_form = new Ext.FormPanel({
+        frame: false,
+        border: false,
+        bodyStyle: 'padding: 5px 2px;',
+        id: 'erm-main-counter_sources-find-form',
+        items: [
+            {
+                layout: 'column',
+                border: false,
+                items: [
+                    {
+                        layout: 'form',
+                        columnWidth: .5,
+                        labelWidth: 100,
+                        border: false,
+                        items: [
+                            {
+                                name: 'name',
+                                fieldLabel: 'Name',
+                                xtype: 'textfield',
+                                anchor: '95%'
+                            }
+                        ]
+                    },
+                    {
+                        layout: 'form',
+                        columnWidth: .5,
+                        labelWidth: 100,
+                        border: false,
+                        items: [
+                            {
+                                fieldLabel: 'Type',
+                                xtype: 'combo',
+                                hiddenName: 'type',
+                                store: counter_source_types_store,
+                                valueField: 'id',
+                                displayField: 'display',
+                                mode: 'local',
+                                triggerAction: 'all',
+                                editable: false,
+                                listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
+                                anchor: '95%'
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        buttons: [
+            {
+                type: 'submit',
+                name: 'search',
+                text: 'Search',
+                handler: counterSourcesSearch
+            },
+            {
+                type: 'reset',
+                name: 'clear',
+                text: 'Clear',
+                handler: counterSourcesReset
+            }
+        ]
+
+    });
+
+    counter_sources_find_form.addListener( 'render',
+        function( ) {
+            new Ext.KeyMap( counter_sources_find_form.getEl(), {
+                key: Ext.EventObject.ENTER,
+                fn: counterSourcesSearch
+            });
+            counter_sources_find_form.getForm().findField(0).focus( false, 50 );
+        }
+    );
+
+    var linked_counter_sources_grid = new Ext.grid.GridPanel({
+        title: 'Currently Linked COUNTER Sources',
+        style: 'margin-bottom: 10px',
+        frame: false,
+        height: 235,
+        width: 837,
+        store: selected_counter_sources_store,
+        tbar: new Ext.Toolbar({
+            items: [
+                new Ext.Button({
+                    text: 'Remove',
+                    iconCls: 'delete-button',
+                    handler: removeCounterSources
+                }),
+                new Ext.Button({
+                    text: 'Clear',
+                    iconCls: 'delete-button',
+                    handler: clearCounterSources
+                })
+            ]
+        }),
+        columns: [
+            { header: 'name', dataIndex: 'name', width: 300 },
+            { header: 'type', dataIndex: 'type', width: 120, renderer: function(value) { value = value == 'j' ? 'Journal reports' : value == 'd' ? 'Database reports' : value; return value; } }
+        ],
+        listeners: {
+            'rowdblclick': function(grid, rowIndex, e) {
+                var counter_source_id = grid.getStore().getAt(rowIndex).get('id');
+                window.open('[% url("$url_base/counter/edit/") %]' + counter_source_id);
+            }
+        }
+    });
+
+    function removeCounterSources() {
+        var selections = linked_counter_sources_grid.getSelectionModel().getSelections();
+        var ids = new Array();
+        Ext.each( selections, function(item) { ids.push(item.get('id') ) } );
+        Ext.Ajax.request({
+            url: '[% url("$url_base/erm/main/link_ajax/$erm_main_id/counter/remove") %]',
+            success: function(response) {
+                if ( Ext.ux.utils.ajaxCheckResponse(response) ) {
+                    var results = Ext.decode( response.responseText );
+                    selected_counter_sources_store.loadData(results);
+                    find_counter_sources_store.reload();
+                }
+            },
+            failure: Ext.ux.utils.ajaxServerFailure,
+            params: { ids: ids }
+        });
+    }
+
+    function clearCounterSources() {
+        Ext.Ajax.request({
+            url: '[% url("$url_base/erm/main/link_ajax/$erm_main_id/counter/clear") %]',
+            success: function(response) {
+                if ( Ext.ux.utils.ajaxCheckResponse(response) ) {
+                    var results = Ext.decode( response.responseText );
+                    selected_counter_sources_store.loadData(results);
+                    find_counter_sources_store.reload();
+                }
+            },
+            failure: Ext.ux.utils.ajaxServerFailure
+        });
+    }
+
+    var counter_sources_find_panel = new Ext.Panel({
+        frame: true,
+        title: 'Find COUNTER Sources',
+        items: [ counter_sources_find_form ]
+    });
+
+
+    function counterSourcesSearch() {
+        var params = counter_sources_find_form.getForm().getValues();
+        find_counter_sources_store.baseParams = params;
+        find_counter_sources_store.load( { params: { start: 0, limit: 25 } } );
+    }
+
+    function counterSourcesReset() {
+        // CAUTION: items.items may not be safe, using private variable to get all fields
+        Ext.each( counter_sources_find_form.getForm().items.items, function( field ) {
+            field.setValue('');
+        } );
+    }
+
+    // Tab Panel Setup
+
+
+    var link_tabs_panel = new Ext.TabPanel({
+        width: 850,
+        height: 775,
+        renderTo: 'erm-main-links-panel',
+        plain: 'true',
+        frame: true,
+        activeTab: 0,
+        deferredRender: true,
+        layoutOnTabChange: true,
+        items: [
+            {
+                title: 'Resources',
+                items: [
+                    linked_resources_grid,
+                    resources_find_panel,
+                    resources_results_grid
+                ],
+                style: 'padding: 5px;',
+                listeners: {
+                    'render': function() {
+                        find_resources_store.load( { params: { start: 0, limit: 25 } } );
+                        selected_resources_store.load();
+                    }
+                }
+            },
+            {
+                title: 'Journals',
+                items: [
+                    linked_journals_grid,
+                    journals_find_panel,
+                    journals_results_grid
+                ],
+                style: 'padding: 5px;',
+                listeners: {
+                    'render': function() {
+                        all_resources_store.load();
+                        all_resources_store.loadData({ results: [{ id: '', name: '&nbsp;'}] });
+                        all_resources_store.load({add:true});
+                        selected_journals_store.load();
+                    }
+                }
+            },
+            {
+                title: 'COUNTER',
+                items: [
+                    linked_counter_sources_grid,
+                    counter_sources_find_panel,
+                    counter_sources_results_grid
+                ],
+                style: 'padding: 5px;',
+                listeners: {
+                    'render': function() {
+                        find_counter_sources_store.load({ params: { start: 0, limit: 25 } });
+                        selected_counter_sources_store.load();
+                    }
+                }
+            }
+        ]
+    });
+
+});
+
+</script>

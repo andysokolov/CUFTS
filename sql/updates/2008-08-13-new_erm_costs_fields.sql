@@ -1,0 +1,2 @@
+ALTER TABLE erm_costs ADD COLUMN number VARCHAR(256);
+ALTER TABLE erm_costs ADD COLUMN reference VARCHAR(256);

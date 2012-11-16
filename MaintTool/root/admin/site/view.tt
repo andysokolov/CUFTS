@@ -1,0 +1,26 @@
+<div>
+<span class="heading">[% site.name | html %]</span> &nbsp;&nbsp;<a href="[% url_base %]/admin/site/edit/[% site.id %]">edit</a> | <a href="[% url_base %]/admin/site/delete/[% site.id %]" onClick="return confirmDelete()">delete</a>
+</div>
+
+<div style="margin-top: 1em;">
+<table><tr><td>
+<table style="border: 1px solid #004997; width: 100%;">
+<tr><td class="heading-bar" align="left" colspan="2">general settings</td></tr>
+<tr><td class="label0" align="right">key</td><td class="field0">[% site.key | html %]</td></tr>
+<tr><td class="label1" align="right">email</td><td class="field1">[% site.email | html %]</td></tr>
+<tr><td class="label0" align="right">ERM notification email</td><td class="field0">[% site.erm_notification_email | html %]</td></tr>
+<tr><td class="label1" align="right">proxy prefix</td><td class="field1">[% site.proxy_prefix | html %]</td></tr>
+<tr><td class="label0" align="right">alternate proxy prefix</td><td class="field0">[% site.proxy_prefix_alternate | html %]</td></tr>
+<tr><td class="label1" align="right">active</td><td class="field1">[% site.active ? 'yes' : 'no' %]</td></tr>
+<tr><td class="label0" align="right">modified</td><td class="field0">[%# site.modified.substr(0, 19) %]</td></tr>
+<tr><td class="label1" align="right">created</td><td class="field1">[%# site.created.substr(0, 19) %]</td></tr>
+</table></td></tr>
+<tr><td><br /></td></tr>
+<tr><td>
+<table style="border: 1px solid #004997; width: 100%;">
+<tr><td class="heading-bar" align="left" colspan="2">associated accounts</td></tr>
+[% FOREACH account IN site.accounts %]
+ <tr><td class="field[% loop.count % 2 %]"><a href="[% url_base %]/admin/account/view/[% account.id %]">[% account.name | html %]</a></td></tr>
+[% END %]
+</table></td></tr></table>
+</div>

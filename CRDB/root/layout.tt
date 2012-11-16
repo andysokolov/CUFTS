@@ -1,0 +1,39 @@
+[%- IF no_wrap; content; RETURN; END -%]<html>
+<head>
+<meta name="ROBOTS" content="NOINDEX,NOFOLLOW" />
+<base href="[% url_base %]" />
+<title>CRDB</title>
+<link rel="StyleSheet" href="[% c.uri_for_css('crdb.css') %]" type="text/css" media="screen, print" />
+[% FOREACH css_item IN load_css %]
+ <link rel="StyleSheet" href="[% c.uri_for_css( $css_item ) %]" type="text/css" media="screen, print" />
+[% END %]
+[% IF site_css_file %]
+ <link rel="StyleSheet" href="[% site_css_file %]" type="text/css" media="screen, print" />
+[% END %]
+<script src="[% c.uri_for_js('crdb.js') %]" type="text/javascript"></script>
+<script src="[% c.uri_for_js('jquery.js') %]" type="text/javascript"></script>
+<script src="[% c.uri_for_js('jquery.livequery.js') %]" type="text/javascript"></script>
+<!-- <script src="[% c.uri_for_js('interface.js') %]" type="text/javascript"></script> %] -->
+<script src="[% c.uri_for_js('iutil.js') %]" type="text/javascript"></script>
+<script src="[% c.uri_for_js('idrag.js') %]" type="text/javascript"></script>
+<script src="[% c.uri_for_js('idrop.js') %]" type="text/javascript"></script>
+<script src="[% c.uri_for_js('isortables.js') %]" type="text/javascript"></script>
+<script src="[% c.uri_for_js('jquery.color.js') %]" type="text/javascript"></script>
+
+[% FOREACH file IN extra_js %]
+ <script src="[% file %]" type="text/javascript"></script>
+[% END %]
+[% IF include_javascript %]<script type="text/javascript">[% include_javascript %]</script>[% END %]
+</head>
+<body>
+[% PROCESS page_header.tt %]
+[% PROCESS nav_line.tt %]
+<div id="content">
+[% PROCESS page_title.tt %]
+[%- PROCESS errors.tt -%]
+[%- content -%]
+</div>
+
+[% PROCESS page_footer.tt %]
+
+</body></html>

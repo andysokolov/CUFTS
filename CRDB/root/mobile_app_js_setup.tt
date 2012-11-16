@@ -1,0 +1,11 @@
+[%# Put stuff here that should override or augment the main Javascript %]
+<script>
+</script>
+
+[%# -- Do not change these URLS -- %]
+<script>
+CRDB_mobile.subjects_json_url = '[% c.uri_for_site( c.controller('Mobile').action_for('subjects_json') ) %]';
+CRDB_mobile.resources_json_url = '[% c.uri_for_site( c.controller('Mobile').action_for('resources_json') ) %]';
+CRDB_mobile.resource_json_url = '[% c.uri_for_site( c.controller('Mobile').action_for('resource_json') ) %]';
+CRDB_mobile.goto_url = '[% c.uri_for_site( c.controller('Resource').action_for('goto'), ['XXX'] ) %]';
+</script>

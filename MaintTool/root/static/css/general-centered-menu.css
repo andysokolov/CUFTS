@@ -1,0 +1,788 @@
+body {
+	font-family: Helvetica, Arial, sans-serif;
+	margin: 0px;
+	padding: 0px;
+}
+
+form {
+	display: inline;
+}
+
+img {
+	border: 0;
+}
+
+input {
+	font-family: sans-serif;
+	font-size: 80%;
+}
+
+td {
+	font-family: Helvetica, Arial, sans-serif;	
+	border: 0;
+	padding: 0;
+}
+
+td#content {
+	padding-right: 5px;
+}
+
+table {
+	padding: 0;
+	margin: 0;
+	border-collapse: collapse;
+}
+
+table.wide-outlined {
+	width: 100%;
+	border: 1px solid #004997;
+}
+
+table.outlined {
+	border: 1px solid #004997;
+	padding: 1px;
+}
+
+table.grid {
+	border: 1px solid #004997;
+}
+
+table.grid td {
+	border: 1px solid #004997;
+	padding: 3px 5px 1px 5px;
+}
+
+table.grid td.heading {
+	background: #001457;
+}
+
+
+td.heading-bar {
+	font-weight: bold;
+	background: #004997;
+	color: white;
+	padding: 3px 5px;
+}
+
+td.heading-bar2 {
+	font-weight: bold;
+	background: #004997;
+	color: white;
+	padding: 3px 5px;
+	border-top: 1px #d0deed solid;
+	border-right: 1px #d0deed solid;
+}
+
+td.heading-bar2-left {
+	font-weight: bold;
+	background: #004997;
+	color: white;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-top: 1px #d0deed solid;
+	border-right: 1px #d0deed solid;
+	border-left: 1px #004997 solid;
+}
+
+
+td.heading-bar2-right {
+	font-weight: bold;
+	background: #004997;
+	color: white;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-top: 1px #d0deed solid;
+	border-left: 1px #d0deed solid;
+	border-right: 1px #004997 solid;
+}
+
+
+td.heading {
+	background: #004997;
+	font-weight: bold;
+	color: white;
+	padding: 2px 5px;
+	white-space: nowrap;
+}
+
+td.heading a {
+	background: #004997;
+	font-weight: bold;
+	color: white;
+	padding-right: 5px;
+	text-decoration: underline;
+}
+
+table.grid td.heading a {
+	background: #001457;
+	font-weight: bold;
+	color: white;
+	padding-right: 5px;
+	text-decoration: underline;
+}
+
+
+
+span.large-heading {
+	color: #004997;
+	font-size: 120%;
+	font-weight: bold;
+}
+
+
+span.heading {
+	color: #004997;
+	font-size: 120%;
+}
+
+span.small-heading {
+	color: #004997;
+	font-size: 100%;
+	font-weight: bold;
+}
+
+
+td.label {
+	padding-left: 10px;
+	padding-right: 3px;
+	font-weight: bold;
+	color: #004997;
+}
+
+td.label0 {
+	padding: 2px 3px 2px 10px;
+	font-weight: bold;
+	color: #004997;
+	background: white;
+	white-space: nowrap;
+	text-align: right;
+	width: 5em;
+}
+
+td.label1 {
+	padding: 2px 3px 2px 10px;
+	font-weight: bold;
+	color: #004997;
+	background: #D0DEED;
+	white-space: nowrap;
+	text-align: right;
+	width: 5em;
+}
+
+td.field {
+	padding-right: 5px;
+	padding-left: 5px;
+}
+
+td.field0 {
+	padding: 4px 5px 1px 5px;
+	color: black;
+	background: white;
+}
+
+td.field1 {
+	padding: 4px 5px 1px 5px;
+	background: #D0DEED;
+	color: black;
+}
+
+td.active-field0 {
+	padding: 4px 5px 1px 5px;
+	background: white;
+	color: black;
+}
+
+td.active-field1 {
+	padding: 4px 5px 1px 5px;
+	background: #D0DEED;
+	color: black;
+}
+
+td.inactive-field0 {
+	padding: 4px 5px 1px 5px;
+	background: white;
+	color: #666666;
+}
+
+td.inactive-field1 {
+	padding: 2px 5px;
+	background: #D0DEED;
+	color: #666666;
+}
+
+
+td.container {
+	background: #D0DEED;
+}
+
+td.edge {
+	background: #004997;
+}
+
+img.help {
+	border: none;
+	vertical-align: top;
+}
+
+div.row0 {
+	padding: 2px 5px;
+	color: black;
+	background: white;
+}
+
+div.row1 {
+	padding: 2px 5px;
+	background: #D0DEED;
+	color: black;
+}
+
+div.heading {
+	background: #004997;
+	font-weight: bold;
+	color: white;
+	padding: 2px 5px;
+	white-space: nowrap;
+	
+}
+
+
+/* Page header */
+
+td#logged-in {
+	font-size: 80%;
+}
+
+a {
+	color: blue;
+	text-decoration: none;
+}
+
+a.heading {
+	color: white;
+	text-decoration: none;
+}
+
+
+/* ERM Navigation on Local Resource screens */
+
+#navbar {
+	margin: 0;
+	margin-bottom: 1em;
+	padding: 0;
+	float: left;
+	border-bottom: 1px solid #004997;
+	width: 95%;
+	white-space: nowrap;
+}
+
+#navbar UL {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+#navbar LI {
+	display: block;
+	margin: 0;
+	padding: 0;
+	float: left;
+	width: auto;
+}
+
+#navbar A {
+	color: #444;
+	display: block;
+	width: auto;
+	text-decoration: none;
+	background: #D0DEED;
+	margin: 0;
+	padding: 2px 10px;
+	border-left: 1px solid #fff;
+	border-top: 1px solid #004997;
+	border-right: 1px solid #115BB9;
+	line-height: 130%;
+}
+
+#navbar-list-left A {
+	color: #444;
+	display: block;
+	width: auto;
+	text-decoration: none;
+	background: #D0DEED;
+	margin: 0;
+	padding: 2px 10px;
+	border-left: 1px solid #115BB9;
+	border-top: 1px solid #004997;
+	border-right: 1px solid #115BB9;
+	line-height: 130%;
+}
+
+#navbar-list-active {
+	display: block;
+	margin: 0;
+	padding: 0;
+	float: left;
+	width: auto;
+}
+
+#navbar-list-active span {
+	color: #444;
+	display: block;
+	width: auto;
+	text-decoration: none;
+	background: #D0DEED;
+	margin: 0;
+	padding: 2px 10px;
+	border-left: 1px solid #fff;
+	border-top: 1px solid #004997;
+	border-right: 1px solid #115BB9;
+	font-weight: bold;
+	line-height: 130%;
+}
+
+#navbar-list-active-left span {
+	color: #444;
+	display: block;
+	width: auto;
+	text-decoration: none;
+	background: #D0DEED;
+	margin: 0;
+	padding: 2px 10px;
+	border-left: 1px solid #115BB9;
+	border-top: 1px solid #004997;
+	border-right: 1px solid #115BB9;
+	font-weight: bold;
+	line-height: 130%;
+}
+
+#navbar A.active:link, navbar A.active:visited {
+	position: relative;
+	z-index: 102;
+	background: #A2BBD6;
+	font-weight: bold;
+}
+#navbar A:hover, navbar A:active { background: #A2BBD6; }
+
+div.submission-results {
+	width: 95%;
+	border: 1px solid green;
+	margin-bottom: 1em;
+	margin-top: 1em;
+	padding: 3px;
+}
+
+/* Title list displays */
+
+span.local-override {
+	font-weight: bold;
+}
+
+
+/* Error reporting - FormValidator messages */
+
+span.form-results-missing, span.form-results-invalid {
+	color:red;
+	font-weight:bold;
+}
+
+div#form-invalid, div#form-unknown, div#form-missing {
+	margin: .5em 0 .5em 0;
+	color: red;
+	font-weight: bold;
+}
+
+
+
+/* Paging */
+
+td.paging {
+	background: #D0DEED;
+	color: #004997;
+	font-weight: bold;
+	padding: 2px 5px;
+	vertical-align: text-bottom;
+}
+
+td.paging img {
+	vertical-align: text-bottom;
+}
+
+span.paging-current {
+	color: black;
+}
+
+span.paging-title {
+}
+
+td.paging a {
+	color: #004997;
+}
+
+td.paging a:hover, td.paging a:active { text-decoration: underline }
+
+
+/* Journal Auth Editting */
+
+div.journal-auth-titles {
+    margin: 5px;
+    background: #DDDDDD;
+    padding: 2px;
+}
+
+div#journal-auth-titles-heading {
+    font-weight: bold;
+}
+
+div.journal-auth-rss {
+    margin: 5px;
+    background: #DDDDDD;
+    padding: 2px;
+}
+
+div#journal-auth-rss-heading {
+    font-weight: bold;
+}
+
+
+div.journal-auth-global-resources {
+    margin: 5px;
+    background: #DDDDDD;
+    padding: 2px;
+}
+
+div.journal-auth-record table td {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+div#journal-auth-global-resources-heading {
+    font-weight: bold;
+}
+
+div.journal-auth-local-resources {
+    margin: 5px;
+    background: #DDDDDD;
+    padding: 2px;
+}
+
+div#journal-auth-local-resources-heading {
+    font-weight: bold;
+}
+
+div.journal-auth-record {
+    margin-top: 10px;
+    background: #EEEEEE;
+    padding: 5px;
+}
+
+div.journal-auth-marc-dump {
+	margin-left: 10px;
+	margin-right: 10px;
+	background: #D0DEED;
+	padding: 3px;
+}
+	
+
+div#journal-auth-alt-titles-container {
+	margin-top: 1em;
+	border: 1px solid #004997;
+}
+
+div.journal-auth-marc-fields {
+	margin-top: 1em;
+	border: 1px solid #004997;
+}
+
+div#journal-auth-edit-issns {
+    margin-top: 1em;
+    border: 1px solid #004997;
+    background: #EEEEEE;
+}
+
+div#journal-auth-edit-titles {
+    margin-top: 1em;
+    border: 1px solid #004997;
+    background: #EEEEEE;
+}
+
+div#journal-auth-edit-rss {
+    margin-top: 1em;
+    border: 1px solid #004997;
+    background: #EEEEEE;
+}
+
+
+
+
+div.public-journal-auth {
+    border: 1px solid #004997;
+    padding: 5px;
+    background: #EEEEEE;
+    float:  left;
+    width: 99%;
+}
+
+table#public-journal-holdings {
+	border: 1px solid #004997;
+	padding: 1px;
+	width:  100%;
+}
+
+tr.public-journal-holdings-heading td {
+	background: #004997;
+	font-weight: bold;
+	color: white;
+	padding: 2px 5px;
+	white-space: nowrap;
+}
+
+tr.public-journal-holdings-field0 td {
+	padding: 4px 5px 1px 5px;
+	color: black;
+	background: white;
+	border: 1px solid #004997;
+}
+
+tr.public-journal-holdings-field1 td {
+	padding: 4px 5px 1px 5px;
+	background: #D0DEED;
+	color: black;
+	border: 1px solid #004997;
+}
+
+span.public-journal-title {
+	color: #004997;
+	font-size: 120%;
+	font-weight: bold;
+	margin-bottom: 3px;
+}
+
+a#toggle-more {
+    margin-left: 10px;
+    font-size: 80%;
+}
+
+span.public-journal-issns {
+}
+
+div#public-journal-more {
+    float: left; 
+    background: white;
+    width:  99%;
+    padding:  4px;
+    margin:  3px auto 5px auto;
+    border:  solid 1px #CCCCCC;
+    font-size:  90%;
+}
+div.public-journal-info-heading {
+    font-weight:  bold;
+}
+
+div#public-journal-alternate-titles {
+}
+
+div.public-journal-float {
+    float:  left;
+    margin-right:  1em;
+}
+
+div#public-journal-marc {
+}
+
+
+table.public-compare {
+	border: 1px solid black;
+	padding: 1px;
+	width:  100%;
+}
+
+table.public-compare td {
+    border:  1px solid black;
+    padding:  2px;
+}
+tr.public-compare-heading td {
+    font-weight:  bold;
+}
+
+td.public-compare-resource0 {
+    background:  #EEEEEE;
+}
+
+td.public-compare-resource1 {
+    background:  #DDDDDD;
+}
+
+td.public-compare-resource2 {
+    background:  #CCCCCC;
+}
+
+td.public-compare-resource3 {
+    background:  #BBBBBB;
+}
+
+span.yes-highlight {
+    color: #1a1;
+}
+
+span.no-highlight {
+    color: #d22;
+}
+
+/* New form style starting with ERM development */
+
+div.alt {
+    background: #d0deed;
+}
+    
+.help-pointer {
+    position: absolute;
+    left: -10px;
+    top: 5px;
+    width: 10px;
+    height: 19px;
+}
+    
+legend {
+    margin-left: 10px;
+    color: #004997;
+    font-weight: bold;
+}
+    
+fieldset {
+    float: left;
+    padding: 0px;
+    margin: 3px 10px 11px 0px;
+    border: 1px solid #004997;
+    clear: both;
+}
+
+/* Use Javascript to add this class to appropriate inputs since [type=..] doesn't work for most browsers yet */
+.standard-input {
+    padding: 2px;
+    margin: 2px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 80%;
+    width: 30em;
+    border: 1px solid black;
+}
+
+fieldset input.date {
+    width: 14em;
+}
+
+div.field {
+    clear: both;
+    float: left;
+    position: relative;
+}
+
+div.data {
+    float: left;
+    padding: 3px;
+    width: 35em;
+}
+    
+div.data label {
+    width: 10em;
+    float: left;
+    text-align: left;
+    padding-top: 3px;
+}
+
+div.data input, div.data textarea, div.data select {
+    float: left;
+    text-align: left;
+}
+
+.validate-error {
+    background: #ff9999;
+}
+
+div.help {
+    display: none;
+    position: absolute;
+    float: left;
+    margin: -5px 1px 1px 1px;
+    left: 36.2em;
+    width: 18em;
+    border: 1px solid #c93;
+    padding: 10px 12px;
+    background: #ffc;
+}
+
+textarea {
+    overflow: visible;
+    height: 4em;
+}
+
+label.error {
+    margin: 5px 0px;
+    color: red;
+    font-weight: bold;
+    display: block;
+    clear: both;
+}
+
+input.error {
+    background: #ffaaaa;
+}
+
+
+/* NEW LAYOUT */
+
+div#page-header {
+    position: relative;
+}
+
+img#page-header-main-image {
+    float: left;
+}
+
+span#page-header-section {
+    float: right;
+}
+
+div#logged-in {
+    float: right;
+    font-size: 80%;
+}
+
+div#navigation-main {
+    float: left;
+    font: bold 12px Verdana, sans-serif;
+    border: none;
+
+    /* IE hack, Firefox uses !important, IE uses the second width */
+    width: 149px !important;
+    width: 152px;
+}
+
+div#navigation-main ul {
+    margin: 8px 2px 12px 2px;
+    padding: 0px;
+}
+
+div#navigation-main ul li {
+    list-style: none;
+    margin: 0px;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #aaa;
+    text-align: center;
+    width: 100%;
+}
+
+div#navigation-main a {
+    color: black;
+    padding: 5px 0px;
+    display: block;
+    width: 100%;
+}
+
+div#navigation-main a:hover {
+    background: #eee;
+}
+
+div#content-container {
+    float: right;
+}

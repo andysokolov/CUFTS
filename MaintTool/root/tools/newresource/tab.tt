@@ -1,0 +1,11 @@
+[%- CALL c.response.content_type('text/plain') -%]
+[%- SET no_wrap = 1; -%]
+New Titles in [% PROCESS resource_name %]
+Note that this is new titles only. The HTML report also provides a coverage comparison of already held titles.
+
+Title	ISSNs	Fulltext start	Fulltext end	Embargo/Current	Citation start	Citation end
+[%- FOREACH journal IN unique %]
+[% journal.title %]	[% journal.issn %] [% journal.e_issn %]	[% journal.ft_start_date %]	[% journal.ft_end_date %]	[% IF journal.embargo_days %][% journal.embargo_days %] days embargo[% END %][% IF journal.embargo_months %][% journal.embargo_months %] months embargo[% END %][% IF journal.current_months %][% journal.current_months %] days current[% END %][% IF journal.current_years %][% journal.current_years %] months current[% END %]	[% journal.cit_start_date %]	[% journal.cit_end_date %]
+[%- END -%]
+
+[% BLOCK resource_name %][% resource.name || resource.resource.name %] - [% resource.provider || resource.resource.provider %][% END %]

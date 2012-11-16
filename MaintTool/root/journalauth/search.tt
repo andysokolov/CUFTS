@@ -1,0 +1,75 @@
+[% USE url %]
+
+<a href="[% url("$url_base/journalauth/create") %]">Create new journal auth record</a> <br /><br />
+<div>
+<form method="post" action="[% url("$url_base/journalauth/search") %]">
+Search:
+<input type="text" name="string" value="[% string %]" size="30" maxlength="128" />
+in
+<select name="field">
+ <option value="title" [% 'selected="selected"' IF field == 'title' %]>titles</option>
+ <option value="official_title" [% 'selected="selected"' IF field == 'official_title' %]>official title</option>
+ <option value="issn" [% 'selected="selected"' IF field == 'issn' %]>ISSNs</option>
+ <option value="ids" [% 'selected="selected"' IF field == 'ids' %]>ids</option>
+</select>
+<input type="submit" name="search" value="search">
+<input type="submit" name="cancel" value="cancel">
+</form>
+</div>
+
+<div style="margin-top: 1em;">
+<form name="merge_form" method="post" action="[% url("$url_base/journalauth/merge") %]">
+[% FOREACH journal_auth IN journal_auths %]
+ <div class="journal-auth-record">
+  <input type="radio" name="merge_to" value="[% journal_auth.id %]" />
+  <input type="checkbox" name="merge" value="[% journal_auth.id %]" />
+  <span class="heading">[% journal_auth.title | html %]</span>
+  <span style="font-size: 80%">[% journal_auth.id %]</span>
+  [% FOREACH issn IN journal_auth.issns %]([% issn.issn.substr(0,4) %]-[% issn.issn.substr(4,4) %]) [% END %]
+  <a href="[% url("$url_base/journalauth/edit/$journal_auth.id") %]">edit JA record</a> | 
+  <a href="[% url("$url_base/journalauth/edit_marc/$journal_auth.id") %]">edit MARC</a> |
+  <a href="[% url("$url_base/journalauth/marc_file/$journal_auth.id") %]">MARC file</a><br />
+  <div class="journal-auth-titles">
+   <div id="journal-auth-titles-heading">Titles</div>
+   <table>
+   [% FOREACH title IN journal_auth.titles %]
+    <tr><td>[% title.title | html %]</td><td>[% title.title_count %]</td></tr>
+   [% END %]
+   </table>
+  </div>
+  [% IF journal_auth.rss.defined %]
+  <div class="journal-auth-rss">
+   <div id="journal-auth-rss-heading">RSS</div>
+   [% journal_auth.rss %]
+  </div>
+  [% END %]
+  <div class="journal-auth-global-resources">
+  <div id="journal-auth-global-resources-heading">Global Resources</div>
+   <table>
+   [% FOREACH journal IN journal_auth.global_journals %]
+    <tr><td><a href="[% url("$url_base/global/titles/$journal.resource.id") %]">[% journal.resource.name | html %]</a></td><td>[% journal.resource.provider | html %]</td></tr> 
+   [% END %]
+   </table>
+  </div>
+  <div class="journal-auth-local-resources">
+   <div id="journal-auth-local-resources-heading">Local Resources</div>
+   <table>
+   [% FOREACH journal IN journal_auth.local_journals %]
+    <tr><td>[% journal.resource.name | html %]</td><td>[% journal.resource.provider | html %]</td><td>[% journal.resource.site.name | html %]</td></tr>
+   [% END %]
+   </table>
+  </div>
+  <div id="journal-auth-marc-[% journal_auth.id %]" class="journal-auth-marc-dump">
+   [% IF journal_auth.marc %]
+    <pre>[% journal_auth.marc_object.as_formatted | marc8 | html %]</pre>
+   [% ELSE %]
+    No MARC data
+   [% END %]
+  </div>
+ </div>
+[% END %]
+
+[% IF journal_auths.size > 1 %]
+<input type="submit" name="merge_records" value="merge" style="margin-top: 1em;" /></form>
+[% END %]
+</div>

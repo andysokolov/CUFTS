@@ -1,0 +1,13 @@
+[% USE url %]
+
+<div style="margin-bottom: .5em;"><span class="heading">[% template_name %]</span></div>
+<form method="post" action="[% url("$url_base/site/template/save/$type/$template_name") %]">
+<table class="outlined">
+<tr><td class="heading-bar">edit template</td></tr>
+<tr><td class="field1">
+<textarea name="template_contents" style="width: 62em; height: 40em;">[% template_contents | html %]</textarea>
+<br />
+<input name="submit" value="submit" type="submit" /> <input name="cancel" value="cancel" type="submit" />
+</td></tr>
+</table>
+</form>

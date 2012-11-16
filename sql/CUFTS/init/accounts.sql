@@ -1,0 +1,1 @@
+INSERT INTO accounts (id, key, name, email, phone, password, administrator) values (1, 'admin', 'Default Administrator', '', '', 'adpexzg3FUZAk', true);

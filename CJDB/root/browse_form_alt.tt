@@ -1,0 +1,84 @@
+[% USE url %]
+[% PROCESS setup_browse.tt %] 
+
+<div id="tabs-container">
+
+<div id="browse-tabs">
+ <ul>
+  <li id="tab-title"       onClick="return changeBrowseAlt('title');" class="current"><a href="#">Title</a></li>
+  <li id="tab-subject"     onClick="return changeBrowseAlt('subject');"><a href="#">Subject</a></li>
+  <li id="tab-association" onClick="return changeBrowseAlt('association');"><a href="#">Association</a></li>
+  <li id="tab-tag"         onClick="return changeBrowseAlt('tag');"><a href="#">Tag</a></li>
+  <li id="tab-issn"        onClick="return changeBrowseAlt('issn');"><a href="#">ISSN</a></li>
+ </ul>
+</div>
+
+<div id="search-title" class="browse-screen">
+<form method="get" name="browse" action="[% url("$url_base/browse/show") %]" id="form-title">
+<span class="highlight">Search titles: </span>
+<select name="search_type">
+ <option value="startswith">[% search_labels.startswith %]</option>
+ <option value="exact">[% search_labels.exact %]</option>
+ <option value="any">[% search_labels.any %]</option>
+ <option value="all">[% search_labels.all %]</option>
+ <option value="ft">[% search_labels.ft %]</option>
+</select>
+<input type="text" name="search_terms" size="30" maxlength="256" /> <input type="submit" name="submit" value="Search" />
+<input type="hidden" name="browse_field" value="title">
+</form>
+</div>
+
+<div id="search-association" class="browse-screen" style="display: none;">
+<form method="get" name="browse" action="[% url("$url_base/browse/show") %]"  id="form-association">
+<span class="highlight">Search associations: </span>
+<select name="search_type">
+ <option value="startswith">[% search_labels.startswith %]</option>
+ <option value="exact">[% search_labels.exact %]</option>
+ <option value="any">[% search_labels.any %]</option>
+ <option value="all">[% search_labels.all %]</option>
+</select>
+<input type="text" name="search_terms" size="30" maxlength="256" /> <input type="submit" name="submit" value="Search" />
+<input type="hidden" name="browse_field" value="association">
+</form>
+</div>
+
+<div id="search-subject"  class="browse-screen" style="display: none;">
+<form method="get" name="browse" action="[% url("$url_base/browse/show") %]" id="form-subject">
+<span class="highlight">Search subjects: </span>
+<select name="search_type">
+ <option value="startswith">[% search_labels.startswith %]</option>
+ <option value="exact">[% search_labels.exact %]</option>
+ <option value="any">[% search_labels.any %]</option>
+ <option value="all">[% search_labels.all %]</option>
+</select>
+<input type="text" name="search_terms" size="30" maxlength="256" /> <input type="submit" name="submit" value="Search" />
+<input type="hidden" name="browse_field" value="subject">
+</form>
+</div>
+
+
+<div id="search-tag" class="browse-screen" style="display: none;">
+<form method="get" name="browse" action="[% url("$url_base/browse/show") %]" id="form-tag">
+<span class="highlight">Search tags: </span>
+<input type="text" id="auto_tag" name="search_terms" size="30" maxlength="256" /> <input type="submit" name="submit" value="Search" />
+<div style="width: 500px; " class="autocomplete" id="auto_tag_complete"></div><script type="text/javascript">new Ajax.Autocompleter("auto_tag", "auto_tag_complete", "[% url("$url_base/browse/ajax_tag") %]", {minChars: 3})</script>
+<input type="hidden" name="browse_field" value="tag">
+</form>
+</div>
+
+<div id="search-issn" class="browse-screen" style="display: none;">
+<form method="get" name="browse" action="[% url("$url_base/browse/show") %]"  id="form-issn">
+<span class="highlight">Search issns: </span>
+<input type="text" id="auto_issns" name="search_terms" size="30" maxlength="256" /> <input type="submit" name="submit" value="Search" />
+<div style="width: 500px; " class="autocomplete" id="auto_issns_complete"></div><script type="text/javascript">new Ajax.Autocompleter("auto_issns", "auto_issns_complete", "[% url("$url_base/browse/ajax_issn") %]", {minChars: 4})</script>
+<input type="hidden" name="browse_field" value="issn">
+</form>
+</div>
+
+</div>
+
+<div id="browse-subject"><a href="[% url("$url_base/browse/lcc") %]">Browse by journal subject</a></div>
+
+<div id="browse-selected"><a href="[% url("$url_base/browse/selected_journals") %]">Browse selected journals</a></div>
+
+[% SET javascript_onload = "rememberTab();" %]

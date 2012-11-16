@@ -1,0 +1,36 @@
+[% USE url %]
+
+<table class="outlined">
+ <tr><td class="heading-bar">CJDB account search</td></tr>
+ <tr><td class="field0">
+  <form method="post">
+   Search
+   <select name="search_field">
+    <option value="key" [% search_field == 'key' ? 'selected="selected"' : '' %]>login</option>
+    <option value="name" [% search_field == 'name' ? 'selected="selected"' : '' %]>name</option>
+    <option value="email" [% search_field == 'email' ? 'selected="selected"' : '' %]>email</option>
+   </select>
+   for
+   <input name="search_value" maxlength="255" size="30" value="[% search_value %]" />
+   <input type="submit" name="submit" value="submit" />
+  </form>
+ </td></tr>
+</table>
+
+<br />
+
+[% IF accounts %]
+ <table class="outlined">
+  <tr><td class="heading">login</td><td class="heading">name</td><td class="heading">email</td><td class="heading">level</td><td class="heading">active</td></tr>
+  [% FOREACH account IN accounts %]
+   [% SET class = "field" _ (loop.count % 2) %]
+   <tr>
+    <td class="[% class %]"><a href="[% url("$url_base/site/cjdb/account/$account.id") %]">[% account.key %]</a></td>
+    <td class="[% class %]">[% account.name %]</td>
+    <td class="[% class %]">[% account.email %]</td>
+    <td class="[% class %]">[% account.level %]</td>
+    <td class="[% class %]">[% account.active ? 'yes' : 'no' %]</td>
+   </tr>
+  [% END %]
+ </table>
+[% END %]

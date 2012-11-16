@@ -1,0 +1,26 @@
+[%- PROCESS facet_lookups.tt -%]
+<div id="resources-brief-current-facets">
+ <div id="resources-brief-current-facets-heading">
+  <h1>Your Current Search</h1>
+ </div>
+ <div id="resources-brief-current-facets-content">
+  [% IF facets.size %]
+   <dl>
+   [% FOREACH facet IN facets.keys %]
+     [% SET facet_value = facets.$facet %]
+     [% SET facet_lookup = facet _ "_lookup" %]
+     [% IF facet_labels.$facet.defined %]
+      <dt>[% facet_labels.$facet | html %]</dt>
+     [% END %]
+     [% SET display_value = $facet_lookup.$facet_value %]
+     <dd>
+      <a href="[% c.uri_for_facets( undef, facet ) %]" title="remove search term"><img alt="remove" src="[% c.uri_for_image('cross.png') %]" /></a>
+      [% display_value.length ? display_value : facet_value | html %]
+     </dd>
+   [% END %]
+  </dl>
+  [% ELSE %]
+   Showing all records.
+  [% END %]
+ </div>
+</div>

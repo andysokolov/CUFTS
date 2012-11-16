@@ -1,0 +1,48 @@
+<form method="post">
+<table><tr><td>
+<table style="width: 100%;" class="outlined">
+<tr><td class="heading-bar">site domains</td></tr>
+[% SET count = 0 %]
+[% SET domains = current_site.domains %]
+[% IF domains != '' %]
+ [% IF domains.exists('id') %][% domains = [domains] %][% END %]
+ [% FOREACH domain IN domains.sort('domain') %]
+  <tr><td class="field[% loop.count % 2 %]"><input type="text" size="40" maxlength="255" name="domain[% domain.id %]" VALUE="[% domain.domain %]"></td></tr>
+  [% SET count = loop.count + 1 %]
+ [% END %]
+[% END %]
+
+<tr><td class="field[% count % 2 %]"><input type="text" name="domainnew" size="40" maxlength="255" value=""></td></tr>
+</table>
+</td></tr>
+<tr><td><br /></td></tr>
+<tr><td>
+<table class="outlined" style="width: 100%">
+<tr><td class="heading-bar" colspan="2">site IP ranges</td></tr>
+[% SET count = 0 %]
+[% SET ips = current_site.ips %]
+[% IF ips != '' %]
+ [% IF ips.exists('id') %][% ips = [ips] %][% END %]
+ [% FOREACH ip IN ips.sort('ip_low') %]
+  <tr>
+   <td class="field[% loop.count % 2 %]">
+    <input type="text" name="ip_low_[% loop.count %]" value="[% ip.ip_low %]">[% PROCESS form_results.tt frf='ip_low_' _ loop.count %] - 
+    <input type="text" name="ip_high_[% loop.count %]" value="[% ip.ip_high %]">[% PROCESS form_results.tt frf='ip_high_' _ loop.count %]
+   </td>
+  </tr>
+  [% SET count = loop.count + 1 %]
+ [% END %]
+[% END %]
+<tr>
+ <td class="field[% count % 2 %]" colspan="2">
+  <input type="text" name="ip_low_new" value="">[% PROCESS form_results.tt frf='ip_low_new' %] - 
+  <input type="text" name="ip_high_new" value="">[% PROCESS form_results.tt frf='ip_high_new' %]
+ </td>
+</tr>
+</table>
+</td></tr>
+
+<tr><td><br />
+<input type="submit" name="submit" value="submit"> <input type="submit" name="cancel" value="cancel">
+</table>
+</form>

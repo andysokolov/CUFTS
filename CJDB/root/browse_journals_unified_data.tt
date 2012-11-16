@@ -1,0 +1,71 @@
+[% USE HTML %]
+
+<div class="unified-availability-group">
+ [% SET count = 0 %]
+ [%# FOREACH link IN journal.display_links.nsort('rank').reverse %]
+ [% FOREACH link IN rank_name_sort( journal.display_links, resources_display ) %]
+ 
+  [% SET resource = undef %]
+  [% IF link.link_type > 0 %]
+   [% SET resource_id = link.resource %]
+   [% SET resource = resources_display.$resource_id %]
+   [% NEXT UNLESS resource %]
+  [% END %]
+  [% SET count = count + 1 %]
+  <div class="unified-availability">
+   <a href="[% link.URL %]">[%- PROCESS journals_link_name.tt -%]</a>: 
+
+   [% IF link.print_coverage %]
+    <span class="unified-print">in print [% HTML.escape(link.print_coverage).replace("\n", "<br />\n") %]</span>
+   [% END %]
+
+   [% IF link.fulltext_coverage %]
+    <span class="unified-fulltext">fulltext [% link.fulltext_coverage | html %]</span>
+   [% END %]
+
+   [% IF link.embargo %]
+    <span class="unified-embargo">
+     [%- IF link.fulltext_coverage -%]
+      ([% link.embargo | html %] embargo)
+     [%- ELSE -%]
+      fulltext with [% link.embargo | html %] embargo
+     [%- END -%]
+     </span>
+   [% END %]
+
+   [% IF link.current %]
+    <span class="unified-current">
+     [%- IF link.fulltext_coverage || link.embargo -%]
+      (latest [% link.current | html %] only)
+     [%- ELSE -%]
+      fullext with latest [% link.current | html %] only
+     [%- END -%]
+     </span>
+   [% END %]
+
+
+   [% IF link.citation_coverage && current_site.cjdb_show_citations && !(link.embargo || link.fulltext_coverage || link.current) %]
+   [% IF link.embargo || link.fulltext_coverage %]<br />[% END %]
+   <span class="unified-citation">citation [% link.citation_coverage | html %]</span>
+   [% END %]
+
+   [% IF link.journal_cjdb_note %]
+     <div class="unified-journal-note">
+      <span class="unified-note-label">Journal Note:</span>
+      <span class="unified-note-data">[% link.journal_cjdb_note | html %]</span>
+     </div>
+    [% END %]
+
+    [% IF resource.cjdb_note %]
+     <div class="unified-resource-note">
+      <span class="unified-note-label">Resource Note:</span>
+      <span class="unified-note-data">[% resource.cjdb_note | html %]</span>
+     </div>
+    [% END %]
+    
+  </div>
+ [% END %]
+ [% IF count == 0 %]
+  No links are currently available for this journal.
+ [% END %]
+</div>

@@ -1,0 +1,27 @@
+[% IF error %]
+ There was an error while attempting to delete the SUSHI record: [% error %].
+[% ELSE %]
+
+    [% IF result %]
+     [% result %]
+    [% ELSE %]
+
+    <p>[% sushi.name %]</p>
+
+    <div id="erm-delete-linked-list">
+    This SUSHI record is linked to [% counter_sources.size %] COUNTER source records.  Do you really want to delete it?
+    <form method="post">
+     <input type="hidden" name="sushi_id" value="[% sushi.id %]" />
+     <input type="submit" name="confirm" value="yes" />
+     <input type="submit" name="cancel" value="no" />
+    </form>
+     <ul>
+     [% FOREACH counter_source IN counter_sources %]
+      <li>[% counter_source.name %]</li>
+     [% END %]
+     </ul>
+    </div>
+
+    [% END %]
+
+[% END %]

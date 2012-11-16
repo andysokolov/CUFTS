@@ -1,0 +1,39 @@
+[% USE url %]
+[% INCLUDE page_title.tt %]
+
+[% pager.total_entries %] [% INCLUDE browse_search_description.tt browse_type = browse_type, search_type = search_type, search_terms = search_terms, browse_field = browse_field %]
+
+[% PROCESS paging_new.tt %]
+
+[%# "USE url" goes here because paging also uses URL and sets a base URL.  This re-sets it to nothing. %]
+[% USE url %]
+
+[% FOREACH record = records %]
+
+ [% # if the record set is titles, we should use the matched title to display, otherwise use the real journal title %]
+ [% SET journal = record %]
+ [% IF journal.result_title.defined %]
+  [% SET title = journal.result_title %]
+ [% ELSE %]
+  [% SET title = journal.title %]
+ [% END %]
+ <div class="unified-journal">
+  [% IF journal.image.defined -%]
+   <span class="unified-image">
+    [%- IF journal.image_link.defined -%]<a href="[% journal.image_link %]">[%- END -%]
+    <img src="[% journal.image %]" />
+    [%- IF journal.image_link.defined %]</a>[%- END -%]
+    </span>
+  [%- END %]
+  <span class="unified-title"><a href="[% url("$url_base/journal/$journal.journals_auth") %]">[% title | html %]</a></span>
+  <span class="unified-issn">[% FOREACH issn IN journal.issns %][% issn.issn.substr(0,4) %]-[% issn.issn.substr(4,4) %][% ',' UNLESS loop.last %][% END %]</span>
+  [% IF 0 && journal.rss.defined %]
+  <span class="unified-rss"><a href="[% url("$url_base/journal/rss_proxy/$journal.journals_auth") %]"><img src="[% image_dir %]rss.gif" /></a></span>
+  [% END %]
+  <br />
+
+  [% IF show_unified %][% PROCESS browse_journals_unified_data.tt %][% END %]
+ </div>
+[% END %]
+
+[% PROCESS paging_new.tt %]

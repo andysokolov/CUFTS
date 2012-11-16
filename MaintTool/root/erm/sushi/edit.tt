@@ -1,0 +1,68 @@
+[% USE url %]
+
+<div id="sushi-edit-key">
+ [% sushi.name || 'New SUSHI resource' | html %]
+ <form method="post" action="[% url("$url_base/erm/sushi/delete/") %]">
+  <input style="margin-left: 10px;" type="submit" name="delete" value="delete" />
+  <input type="hidden" name="sushi_id" value="[% sushi.id %]" />
+ </form> 
+</div>
+
+
+<form method="post" name="sushi-form" enctype="multipart/form-data" id="sushi-form">
+
+<div id="page-terms" class="tabs-nav-page">
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+<fieldset>
+
+<legend>General</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="sushi-edit-input-name">name</label>
+  <input id="sushi-edit-input-name" name="name" value="[% sushi.name | html %]" style="width: 30em;" />
+  [% PROCESS form_results.tt frf='name' %]
+ </div>
+ <div class="help">
+  Name for this SUSHI resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="sushi-edit-input-requestor">requestor</label>
+  <input id="sushi-edit-input-requestor" name="requestor" value="[% sushi.requestor | html %]" style="width: 15em;" />
+  [% PROCESS form_results.tt frf='requestor' %]
+ </div>
+ <div class="help">
+  SUSHI requestor ID field to send.  e.g. SSIP-38020
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="sushi-edit-input-service_url">service URL</label>
+  <input id="sushi-edit-input-service_url" name="service_url" value="[% sushi.service_url | html %]" style="width: 30em;" />
+  [% PROCESS form_results.tt frf='service_url' %]
+ </div>
+ <div class="help">
+  SUSHI service URL.  e.g. http://170.224.101.201/sushi_01/services/SushiServicePort
+ </div>
+</div>
+
+</fieldset>
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+</div>
+
+
+</form>
+
+

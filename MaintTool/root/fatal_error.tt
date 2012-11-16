@@ -1,0 +1,6 @@
+<div style="margin-bottom: 1em;" id="fatal-errors">An error occurred while processing your request.  The following problems have been logged:</div>
+
+[% FOREACH error IN fatal_errors %]
+<div id="fatal-error">
+[% error %]
+[% END %]

@@ -1,0 +1,27 @@
+[% USE url %]
+[% PROCESS setup_browse.tt %]
+
+<form method="get" name="browse" action="[% url("$url_base/browse/show") %]">
+<span class="highlight">Search</span> for journals by:
+<p>
+<select name="browse_field" onchange="return changeBrowse();">
+ <option value="title">title</option>
+ <option value="subject">subject</option>
+ <option value="association">association</option>
+ <option value="issn">ISSN</option>
+ <option value="tag">tag</option>
+</select>
+<select name="search_type">
+ <option value="startswith">[% search_labels.startswith %]</option>
+ <option value="exact">[% search_labels.exact %]</option>
+ <option value="any">[% search_labels.any %]</option>
+ <option value="all">[% search_labels.all %]</option>
+ <option value="ft">[% search_labels.ft %]</option>
+</select>
+<input type="text" name="search_terms" size="30" maxlength="256" /> <input type="submit" name="submit" value="Search" /> <input type="reset" value="Clear form" />
+</p>
+</form>
+
+<div><a href="[% url("$url_base/browse/lcc") %]">Browse by journal subject</a></div>
+
+<div><a href="[% url("$url_base/browse/selected_journals") %]">Browse selected journals</a></div>

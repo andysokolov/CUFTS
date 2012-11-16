@@ -1,0 +1,24 @@
+#!/bin/sh
+
+DATABASE=$1
+DIRECTORY=$2
+FILENAME=`date +"%Y%m%d"`
+
+if [ ! -n "$DATABASE" ]; then
+	echo "Database name not passed in on command line."
+	echo "Usage: database_backup database directory"
+	exit
+fi
+
+if [ ! -n "$DIRECTORY" ]; then
+	echo "Backup directory name not passed in on command line."
+	echo "Usage: database_backup database directory"
+	exit
+fi
+
+echo "Attempting to backup database '$DATABASE' to datestamp file '$FILENAME'"
+
+/usr/local/pgsql/bin/pg_dump $DATABASE > "$DIRECTORY/$FILENAME"
+gzip "$DIRECTORY/$FILENAME"
+
+

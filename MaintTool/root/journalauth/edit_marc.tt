@@ -1,0 +1,122 @@
+[% USE url %]
+
+[% SET journal_auth_id = journal_auth.id %]
+[% SET marc = journal_auth.marc_object %]
+
+[%# PROCESS write_marc_fields_to_js %]
+[%# Set up other variables used for JS form manipulation %]
+<script type="text/javascript">window['marc_field_max'] = new Array();</script>
+
+<span class="heading">[% journal_auth.title %]</span> [% FOREACH issn IN journal_auth.issns %]([% issn.issn.substr(0,4) %]-[% issn.issn.substr(4,4) %]) [% END %]<br />
+
+<div id="journal-auth-alt-titles-container">
+ <div class="heading" style="height: 1.6em; padding-top: .2em">Alternate Titles</div>
+ [% FOREACH title IN journal_auth.titles %]
+  <div class="row[% loop.count % 2 %]">[% title.title %]</div>
+ [% END %]
+</div>
+
+<form method="post" name="journal_auth">
+
+[% PROCESS display_marc_fields field_type='245', field_description='Title' %]
+
+[% PROCESS display_marc_fields field_type='022', field_description='ISSNs' %]
+
+[% PROCESS display_marc_fields field_type='246', field_description='Varying Form of Title' %]
+
+[% PROCESS display_marc_fields field_type='210', field_description='Title Abbreviations' %]
+
+[% PROCESS display_marc_fields field_type='222', field_description='Key Title' %]
+
+[% PROCESS display_marc_fields field_type='050', field_description='Call Number' %]
+
+[% PROCESS display_marc_fields field_type='260', field_description='Publication, Distribution, etc.' %]
+
+[% PROCESS display_marc_fields field_type='310', field_description='Current Publication Frequency' %]
+
+[% PROCESS display_marc_fields field_type='321', field_description='Former Publication Frequency' %]
+
+[% PROCESS display_marc_fields field_type='362', field_description='Dates of Publication' %]
+
+[% PROCESS display_marc_fields field_type='110', field_description='Corporate Name' %]
+
+[% PROCESS display_marc_fields field_type='710', field_description='Corporate Name Added Entry' %]
+
+[% PROCESS display_marc_fields field_type='650', field_description='Subjects' %]
+
+[% PROCESS display_marc_fields field_type='780', field_description='Preceeding Entry' %]
+
+[% PROCESS display_marc_fields field_type='785', field_description='Succeeding Entry' %]
+
+<div id="submit" style="margin-top: 1em; margin-bottom: 1em;">
+<input type="submit" name="save" value="save" />
+<input type="submit" name="cancel" value="cancel" />
+</div>
+
+</form>
+
+[%# **** NOTE: If you change the HTML in this block, also change the javascript which creates new lines! **** %]
+
+[% BLOCK display_marc_fields %]
+ <div id="journal-auth-[% field_type %]" class="journal-auth-marc-fields">
+ <div class="heading" style="padding-top: .2em; height: 1.6em">[% field_type %] - [% field_description %]
+  [% IF marc_fields.$field_type.repeats %]
+   <input style="margin-left: 10px; font-weight: normal; background: #D0DEED" name="add_field_[% field_type %]" value="add" type="submit" onClick="return show_marc_line('[% field_type %]');" />
+  [% END %]
+ </div>
+
+ [%# Get one empty entry for non-repeating fields if there's no real data %]
+ [% SET fields = marc.field(field_type) %]
+ [% IF fields == '' AND !marc_fields.$field_type.repeats %]
+  [% SET fields = [ undef ] %]
+ [% END %]
+
+ [% SET max_field = -1 %]
+ [% FOREACH field IN fields %]
+  [% SET field_index = loop.index %]
+  [% SET max_field = field_index %]
+  <div class="row[% max_field % 2 %]">
+   <input style="width: 1.1em;" type="text" name="[% field_index %]-[% field_type %]-1" value="[% field.indicator(1) | html %]" size="1" maxlength="1" />
+   <input style="width: 1.1em;" type="text" name="[% field_index %]-[% field_type %]-2" value="[% field.indicator(2) | html %]" size="1" maxlength="1" />
+   [% FOREACH subfield IN marc_fields.$field_type.subfields %]
+    [% SET subfield_key   = subfield %]
+    [% SET subfield_index = 0 %]
+    [% IF ( matches = subfield.match('^(.)(\d)$') ) %]
+     [% SET subfield_key   = matches.0 %]
+     [% SET subfield_index = matches.1 %]
+    [% END %]
+    [% SET loop_index = loop.index %]
+    [% subfield_key %] <input type="text" name="[% field_index %]-[% field_type %][% subfield %]" value="[% field.subfield(subfield_key).list.$subfield_index | marc8 | html %]" size="[% marc_fields.$field_type.size.$loop_index %]" />
+   [% END %]
+   <input type="hidden" name="[% field_index %]-[% field_type %]-exists" value="1" />
+   <input style="background: #D0DEED; margin-left: 10px;" type="submit" name="clear" value="clear" onClick="return clear_field('[% field_index %]', '[% field_type %]', 'journal_auth');" />
+  </div>
+ [% END %]
+ 
+ [% IF marc_fields.$field_type.repeats %]
+
+  [% SET start = max_field + 1  %]
+  [% SET end   = max_field + 10 %]
+  [% FOREACH x IN [ start .. end ] %]
+   <div class="row[% x % 2 %]" [% IF !max_seen_field.defined || x > max_seen_field.$field_type %]style="display: none"[% END %] id="[% x %]-[% field_type %]">
+    <input style="width: 1.1em;" type="text" name="[% x %]-[% field_type %]-1" value="" size="1" maxlength="1" />
+    <input style="width: 1.1em;" type="text" name="[% x %]-[% field_type %]-2" value="" size="1" maxlength="1" />
+    [% FOREACH subfield IN marc_fields.$field_type.subfields %]
+    [% SET subfield_key   = subfield %]
+    [% SET subfield_index = 0 %]
+    [% IF ( matches = subfield.match('^(.)(\d)$') ) %]
+     [% SET subfield_key   = matches.0 %]
+     [% SET subfield_index = matches.1 %]
+    [% END %]
+     [% SET loop_index = loop.index %]
+     [% subfield_key %] <input type="text" name="[% x %]-[% field_type %][% subfield %]" value="" size="[% marc_fields.$field_type.size.$loop_index %]" />
+    [% END %]
+    <input type="hidden" name="[% x %]-[% field_type %]-exists" value="1" />
+    <input style="background: #D0DEED; margin-left: 10px;" type="submit" name="clear" value="clear" onClick="return clear_field('[% x %]', '[% field_type %]', 'journal_auth');" />
+   </div>
+  [% END %]
+  
+ [% END %]
+ </div>
+ <script type="text/javascript">window['marc_field_max']['[% field_type %]'] = [% max_field %]</script>
+[% END %]

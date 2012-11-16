@@ -1,0 +1,45 @@
+[% RETURN UNLESS javascript_validate %]
+<script type="text/javascript">
+
+    
+[% FOREACH form IN javascript_validate %]
+$( function() {
+    var validator = $("#[% form.name %]").validate({
+        event: "change",
+        errorPlacement: function(error, element) {
+            element.parents('div.tabs-nav-page').trigger('triggerPage');
+            error.prependTo( element.parent().siblings('.help') );
+        },
+       rules: {
+            [% FOREACH fieldname IN form.fields.keys %]
+             [%- SET field = form.fields.$fieldname -%]
+             "[%# form.field_prefix %][% fieldname %]": {
+                [% FOREACH constraint IN form.fields.$fieldname.keys %]
+                    [% constraint %]: [% form.fields.$fieldname.$constraint %][% ',' IF NOT loop.last %]
+                [% END %]
+             }[% ',' IF NOT loop.last %]
+            [% END %]
+            
+        }
+    });
+
+    /* Override focusInvalid to handle switching tab focus */
+
+    validator.focusInvalid = function() {
+        if( this.settings.focusInvalid ) {
+            try {
+                var element = jQuery(this.findLastActive() || this.errorList.length && this.errorList[0].element || []).filter(":visible");
+                element.parents('div.tabs-nav-page').trigger('triggerPage');
+                element.focus();
+            } catch(e) { /* ignore IE throwing errors when focusing hidden elements */ }
+        }
+    };
+
+    $("#[% form.name %] input").filter(":reset").bind("click", function() {
+        validator.resetForm();
+    });
+
+});
+    
+[% END %]
+</script>

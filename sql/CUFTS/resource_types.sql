@@ -1,0 +1,7 @@
+CREATE TABLE resource_types (
+	id		SERIAL PRIMARY KEY,
+	type		VARCHAR(256) NOT NULL,
+	
+	created		TIMESTAMP NOT NULL DEFAULT NOW(),
+	modified	TIMESTAMP NOT NULL DEFAULT NOW()
+);

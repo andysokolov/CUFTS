@@ -1,0 +1,45 @@
+<script type="text/javascript">
+
+
+ function facetCollapse( link, name ) {
+     var ul = $('#collapsable-' + name);
+     if ( ul ) {
+         var li = ul.find('li.collapsable').toggleClass('hidden').eq(0);
+         link.innerHTML = li.hasClass('hidden') ? 'Show more' : 'Show less';
+         return false;
+     }
+     
+     return true;
+ }
+ 
+ function facetToggle( name ) {
+     var menu = $('#resources-brief-facet-menu-' + name);
+     menu.find('div.resources-brief-facet-menu-content').toggleClass('hidden');
+     menu.find('img.resources-brief-facet-menu-button').toggleClass('hidden');
+ }
+ 
+
+$( function() {
+    $('#keyword-input').bind('keypress', function(e) {
+        if ( e.keyCode == 13 ) {
+            e.preventDefault();
+            $('#keyword-form').submit();
+            return false;
+        }
+    } );
+    
+    $('#keyword-form').bind('submit', function(e) {
+        var URL = $('#keyword-form').attr('action') + '/keyword/' + encodeURI( $('#keyword-input').val() );
+        e.preventDefault();
+        window.location = URL;
+        return false;
+    });
+
+    $('#name-select').bind('change', function(e) {
+        var URL = $('#name-select').val();
+        window.location = URL;
+    });
+
+} );
+
+</script>

@@ -1,0 +1,16 @@
+<div id="resources-current-facets" class="resources-current-facets-row">
+ [% IF facets.size %]
+  [% FOREACH facet IN facets.keys %]
+   [% SET facet_value = facets.$facet %]
+   [% SET facet_lookup = facet _ "_lookup" %]
+   [% IF facet_labels.$facet.defined %]
+    [% facet_labels.$facet | html %]: 
+   [% END %]
+   [% SET display_value = $facet_lookup.$facet_value %]
+   [% display_value.length ? display_value : facet_value | html %]
+   [% ' AND ' UNLESS loop.last %]
+  [% END %]
+ [% ELSE %]
+  No facets selected.
+ [% END %]
+</div>

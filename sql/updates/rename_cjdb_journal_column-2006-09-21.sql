@@ -1,0 +1,1 @@
+ALTER TABLE cjdb_journals RENAME COLUMN miscelaneous to miscellaneous;

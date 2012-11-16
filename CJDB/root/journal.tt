@@ -1,0 +1,24 @@
+[% USE url %]
+
+[% INCLUDE page_title.tt %]
+
+<div id="journal-title">[% journal.title | html %]</div>
+<div id="details">
+[% IF journal.image.defined -%]
+ <span class="availability-image">
+  [%- IF journal.image_link.defined -%]<a href="[% journal.image_link %]">[%- END -%]
+  <img src="[% journal.image %]" />
+  [%- IF journal.image_link.defined %]</a>[%- END -%]
+  </span>
+[%- END %]
+
+[%- PROCESS journal_issns.tt -%]
+[%- PROCESS journal_titles.tt -%]
+[%- PROCESS journal_subjects.tt -%]
+[%- PROCESS journal_associations.tt -%]
+[%- PROCESS journal_relations.tt -%]
+</div> <!-- details -->
+[%- PROCESS journal_availability.tt -%]
+[%- PROCESS journal_mytags.tt -%]
+[%- PROCESS journal_tags.tt -%]
+[%#- PROCESS journal_toc.tt -%]

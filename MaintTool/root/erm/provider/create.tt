@@ -1,0 +1,22 @@
+[% USE url %]
+
+<form name="erm-create" id="erm-create" method="post">
+
+ <fieldset>
+  <legend>New ERM Provider Record</legend>
+
+  <div class="field">
+   <div class="data">
+    <label for="erm-create-key">Record identifier</label><input id="erm-create-key" name="key" value="">
+   </div>
+   <div class="help">
+    This unique identifier is used to find the right provider record when attaching to an ERM record.
+   </div>
+  </div>
+
+  <input type="submit" name="save" value="save" />
+  <input type="submit" name="cancel" value="cancel" />
+
+ </fieldset>
+
+</form>

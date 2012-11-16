@@ -1,0 +1,43 @@
+[% USE url %]
+
+<div style="padding-bottom: .5em;"><span class="heading">[% resource.name || 'New Global Resource' | html %]</span></div>
+<table><tr><td>
+<table class="wide-outlined">
+<tr><td class="heading-bar" align="left" colspan="2">general settings</td></tr>
+<tr><td class="label0" align="right">provider</td><td class="field0">[% resource.provider | html %]</td></tr>
+<tr><td class="label1" align="right">type</td><td class="field1">[% resource.resource_type.type | html %]</td></tr>
+<tr><td class="label0" align="right">module</td><td class="field0">[% resource.module | html %]</td></tr>
+<tr><td class="label1" align="right">active</td><td class="field1">[% resource.active ? 'yes' : 'no' %]</td></tr>
+</table>
+</td></tr>
+<tr><td><br /></td></tr>
+
+[% SET details = resource.do_module('global_resource_details') %]
+[% IF details %]
+ <tr><td>
+ <table class="wide-outlined">
+ <tr><td class="heading-bar" align="left" colspan="2">resource details</td></tr>
+ [% FOREACH detail IN details %]
+  <tr><td class="label[% loop.count % 2 %]" align="right">[% detail.replace('_', ' ') | html %]</td>
+      <td class="field[% loop.count % 2 %]">[% resource.$detail | html %]</td></tr>
+ [% END %]
+</table>
+</td></tr>
+<tr><td><br /></td></tr>
+[% END %]
+
+<tr><td>
+<table class="wide-outlined">
+<tr><td class="heading-bar" align="left" colspan="2">title list maintenance</td></tr>
+<tr>
+ <td class="label0">upload title list</td>
+ <td class="field0">
+  <form action="[% url("$url_base/global/bulk/$resource.id") %]" method="post" enctype="multipart/form-data">
+   <input type="file" name="file" /> <input type="submit" name="upload" value="upload" />
+  </form>
+ </td>
+</tr>
+</table>
+</td></tr>
+
+</table>

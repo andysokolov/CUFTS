@@ -1,0 +1,96 @@
+[% UNLESS current_account %]
+    <div style="height: 50px"></div>
+    [% RETURN %]
+[% END %]
+[%- # Setup menu items
+    SET menu = [];
+    menu.push(['/main', 'Home']);
+    IF current_site;
+        menu.push(['/local/menu', 'Local Resources']);
+
+        menu.push([
+            [
+                [ '/erm/main', 'Main' ],
+                [ '/erm/license', 'License' ],
+                [ '/erm/provider', 'Provider' ],
+                [ '/erm/counter', 'COUNTER' ],
+                [ '/erm/sushi', 'SUSHI' ],
+                [ '/erm/tables/edit', 'Tables' ],
+                [ '/erm/alerts', 'Alerts' ],
+            ],
+            'ERM'
+        
+        ]);
+        
+        menu.push([
+            [
+                [ '/site/edit',               'General' ],
+                [ '/site/template/menu_cjdb', 'CJDB Templates' ],
+                [ '/site/template/menu_crdb', 'CRDB Templates' ],
+                [ '/site/cjdb/settings',      'CJDB Settings' ],
+                [ '/site/cjdb/data',          'CJDB Data' ],
+                [ '/site/crdb/settings',      'CRDB Settings' ],
+                [ '/site/cjdb/accounts',      'C*DB Accounts' ],
+                [ '/site/googlescholar/edit', 'Google Scholar' ],
+            ],
+            'Site Settings'
+        ]);
+
+        menu.push(['/statistics/menu', 'Statistics']);
+
+        menu.push([
+            [
+                [ '/tools/compare',     'Resource Comparison' ],
+                [ '/tools/newresource', 'New Resource' ],
+            ],
+            'Tools'
+        ]);
+        
+    END;
+
+    IF (current_account.sites AND current_account.sites.size > 1) OR current_account.administrator;
+        menu.push(['/site/change', 'Change Site']);
+    END;
+
+    IF current_account.edit_global OR current_account.administrator;
+        menu.push(['/global/menu', 'Global Resources']);
+    END;
+
+    IF current_account.journal_auth OR current_account.administrator;
+        menu.push(['/journalauth/search', 'Journal Auth']);
+    END;
+
+    IF current_account.administrator;
+        menu.push(['/admin', 'Administration']);
+    END;
+
+    menu.push(['/account/edit', 'Account Settings']);
+    menu.push(['/logout', 'Logout']);
+
+-%]
+<ul>
+[% FOREACH item IN menu %]
+ [% IF !item.0.length %]
+  <li><a class="navigation-submenu-trigger" href="">[% item.1 %]</a>
+  <ul style="display: none">
+  [% FOREACH subitem IN item.0 %]
+   <li><a href="[% url_base %][% subitem.0 %]">[% subitem.1 %]</a></li>
+  [% END %]
+  </ul></li>
+ [% ELSE %]
+ <li><a href="[% url_base %][% item.0 %]">[% item.1 %]</a></li>
+ [% END %]
+[% END %]
+</ul>
+<script>
+ $( function() { 
+     $('.navigation-submenu-trigger').click(
+         function(event) {
+             event.preventDefault();
+             var to_toggle = $(this).parent().find('ul');
+             $('#navigation-main ul li ul').not(to_toggle).hide();
+             to_toggle.toggle();
+         }
+     );
+ } );
+</script>

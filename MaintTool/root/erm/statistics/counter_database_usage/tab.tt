@@ -1,0 +1,6 @@
+[%- SET no_wrap = 1 -%]
+Start Date	[% start_date %]
+End Date	[% end_date %]
+		[% FOREACH date IN dates %]	[% date.display %][% END %]	Totals
+[% FOREACH sorted_title IN sorted_titles -%][%- SET title_id = sorted_title.0; FOREACH type IN types -%][% titles.$title_id %]	[% type %]	[% FOREACH date IN dates; SET lookup_date = date.date -%][% records_hash.$title_id.$lookup_date.$type.count || 0 %]	[% END %][% records_hash.$title_id.$type.total || 0 %]
+[% END %][% END %]

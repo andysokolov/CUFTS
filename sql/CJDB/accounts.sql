@@ -1,0 +1,19 @@
+CREATE TABLE cjdb_accounts (
+	id		SERIAL PRIMARY KEY,
+	
+	name		VARCHAR(512),
+	key		VARCHAR(128),
+	password	VARCHAR(128),
+	email		VARCHAR(128),
+	level		INTEGER NOT NULL DEFAULT 0,
+
+	site		INTEGER NOT NULL,
+	
+	active		BOOLEAN DEFAULT TRUE,
+
+	created		TIMESTAMP NOT NULL DEFAULT NOW(),
+	modified	TIMESTAMP NOT NULL DEFAULT NOW()
+
+);
+
+

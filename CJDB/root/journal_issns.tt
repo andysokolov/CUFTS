@@ -1,0 +1,9 @@
+[% SET journal_issns = journal.issns.force_list %]
+[% IF journal_issns.size > 0 AND journal_issns.first != '' %]
+ <div class="journal-label">ISSNs:</div>
+ <div class="journal-data">
+ [% FOREACH issn IN journal_issns %]
+  [% issn.issn.substr(0,4) %]-[% issn.issn.substr(4,4) %][% ',' UNLESS loop.last %]
+ [% END %]
+ </div>
+[% END %]

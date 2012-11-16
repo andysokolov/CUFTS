@@ -1,0 +1,11 @@
+[% USE url %]
+
+<form>
+<select name="provider">
+ <option value="new">Create new provider record...</option>
+[% FOREACH record IN records %]
+ <option value="[% record.id %]">[% record.key %]</option>
+[% END %]
+</select>
+<input type="submit" name="submit" value="submit" />
+</form>

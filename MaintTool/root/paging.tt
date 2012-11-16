@@ -1,0 +1,39 @@
+[% SET paging_max_page = paging_count / paging_per_page %]
+[% SET paging_max_page = paging_max_page.ceil || 1 %]
+[% SET paging_max_show_page = (paging_page + 5) < paging_max_page ? (paging_page + 5) : paging_max_page %]
+[% SET paging_min_show_page = paging_page < 5 ? 1 : paging_page - 5 %]
+
+<span id="paging-title">Page: </span>
+[% IF paging_page == 1 %]
+ <span class="paging-current">1</span>
+ <img class="paging-arrows" src="[% image_dir %]page_first.gif">
+ <img class="paging-arrows" src="[% image_dir %]page_prev.gif">
+[% ELSE %]
+ <a href="[% paging_url %]1">1</a>
+ <a href="[% paging_url %]1"><img class="paging-arrows" src="[% image_dir %]page_first.gif"></a>
+ <a href="[% paging_url %][% paging_page - 1 %]"><img class="paging-arrows" src="[% image_dir %]page_prev.gif"></a>
+[% END %]
+[% FOREACH paging_show_page IN [1 .. paging_max_page] %]
+        [% IF paging_page == paging_show_page %]
+                <span class="paging-current">[% paging_show_page %]</span>
+        [% ELSIF paging_show_page > paging_min_show_page && paging_show_page < paging_max_show_page %]
+                <a href="[% paging_url %][% paging_show_page %]">[% paging_show_page %]</a>
+	[% ELSIF paging_show_page == paging_min_show_page %]
+		[% UNLESS paging_show_page == 1 %] ... [% END %]
+		<a href="[% paging_url %][% paging_show_page %]">[% paging_show_page %]</a>
+	[% ELSIF paging_show_page == paging_max_show_page %]
+		<a href="[% paging_url %][% paging_show_page %]">[% paging_show_page %]</a>
+		[% UNLESS paging_show_page == paging_max_page %] ... [% END %]
+        [% ELSIF paging_show_page % 10 == 0 %]
+		<a href="[% paging_url %][% paging_show_page %]">[% paging_show_page %]</a>
+	[% END %]
+[% END %]
+[% IF paging_page == paging_max_page %]
+ <img class="paging-arrows" src="[% image_dir %]page_next.gif">
+ <img class="paging-arrows" src="[% image_dir %]page_last.gif">
+ <span class="paging-current">[% paging_max_page %]</span>
+[% ELSE %]
+ <a href="[% paging_url %][% paging_page + 1 %]"><img class="paging-arrows" src="[% image_dir %]page_next.gif"></a>
+ <a href="[% paging_url %][%paging_max_page %]"><img class="paging-arrows" src="[% image_dir %]page_last.gif"></a>
+ <a href="[% paging_url %][% paging_max_page %]">[% paging_max_page %]</a>
+[% END %]

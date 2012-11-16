@@ -1,0 +1,3 @@
+[% INCLUDE page_title.tt add = 'Subjects' %]
+
+[% INCLUDE lcc_browse_content.tt %]

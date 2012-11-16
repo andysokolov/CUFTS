@@ -1,0 +1,19 @@
+[%- IF errors %]
+ <div id="errors"><ul>
+ [% FOREACH error IN errors %]
+  <li>[% error %]</li>
+ [% END %]
+ </ul></div>
+[% END -%]
+[%- IF c.form.has_unknown %]
+ <div id="form-unknown">The following parameters were found but not handled: <ul>
+ [% FOREACH unknown IN c.form.unknown %]
+  <li>[% unknown %]</li>
+ [% END %]
+ </ul></div>
+[% END -%]
+[%- IF c.form.has_invalid %]
+<div id="form-invalid">
+There were problems with the submitted data.  See below.
+</div>
+[% END -%]

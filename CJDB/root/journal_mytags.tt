@@ -1,0 +1,43 @@
+ [% RETURN UNLESS current_account %]
+ <div id="my-tags" class="details">
+   <div id="my-tags-heading" class="details-headings">My Tags</div>
+   <div id="my-tags-group">
+   [% FOREACH tag IN my_tags %]
+    <div class="tag-mine">[% tag.tag %] ([%- INCLUDE tag_viewing_string.tt viewing = tag.viewing -%])</div>
+   [% END %]
+    <div style="margin-top: .5em;">
+     <a href="[% url("$url_base/journal/manage_tags/$journal.journals_auth") %]" onclick="return showDiv('manage-tags','my-tags-group');">[% IF my_tags.size %]add/manage tags[% ELSE %]add tags[% END %]</a>
+    </div>
+   </div>
+ 
+   <div id="manage-tags" [% UNLESS show_manage_tags %]style="display: none"[% END %]>
+     <form method="post" action="[% url("$url_base/tags/save/$journal.id") %]">
+     <table id="manage-tags-layout">[%# sigh. this should be a proper div float. %]
+      <tr><td id="manage-tags-layout-left">
+       <table id="manage-tags-table" class="manage-tags">
+       <tr class="manage-tags-table-heading"><td>delete</td><td>tag</td><td>viewing</td></tr>
+       [% FOREACH tag IN my_tags %]
+        <tr>
+         <td style="text-align: center;"><input type="checkbox" name="delete_[% tag.id %]" /></td>
+         <td><input type="text" name="edit_[% tag.id %]" size="20" maxlength="512" value="[% tag.tag %]" /></td>
+         <td><select name="viewing_[% tag.id %]">
+          <option value="0" [% IF tag.viewing == 0 %]selected="selected"[% END %]>[%- INCLUDE tag_viewing_string.tt viewing = 0 -%]</option>
+          <option value="1" [% IF tag.viewing == 1 %]selected="selected"[% END %]>[%- INCLUDE tag_viewing_string.tt viewing = 1 -%]</option>
+          <option value="2" [% IF tag.viewing == 2 %]selected="selected"[% END %]>[%- INCLUDE tag_viewing_string.tt viewing = 2 -%]</option>
+         </select></td>
+        </tr>
+       [% END %]
+        <tr><td colspan="3">&nbsp;</td></tr>
+        <tr class="manage-tags-table-heading"><td colspan="3">add tags</td></tr>
+        <tr><td colspan="3"><input type="text" name="new_tags_0" size="30" maxlength="1024" /> [% INCLUDE tag_viewing_string.tt viewing = 0 %]</td></tr>
+        <tr><td colspan="3"><input type="text" name="new_tags_1" size="30" maxlength="1024" /> [% INCLUDE tag_viewing_string.tt viewing = 1 %]</td></tr>
+        <tr><td colspan="3"><input type="text" name="new_tags_2" size="30" maxlength="1024" /> [% INCLUDE tag_viewing_string.tt viewing = 2 %]</td></tr>
+        <tr><td colspan="3"><input type="submit" name="manage" value="save" style="margin-top: 3px;"/> <input type="submit" name="cancel" value="cancel" onclick="return showDiv('my-tags-group','manage-tags');" /></td></tr>
+       </table>
+      </td><td id="manage-tags-layout-right">
+       [% INCLUDE manage_tags_info.tt %]
+      </td></tr>
+      </table>
+     </form>
+   </div>
+ </div>

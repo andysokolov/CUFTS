@@ -1,0 +1,79 @@
+[%- CALL c.response.content_type('text/xml') -%]
+<?xml version="1.0" ?>
+[%- PROCESS set_request_fields -%]
+<CUFTS>
+    <request>
+    [% FOREACH field IN request_fields %]
+        [%- SET data = request.$field -%]
+        [% IF data && data != '' && data.list.size > 0 %]<[% field %]>[% request.$field.list.join(',') | html %]</[% field %]>[% END %]
+    [% END %]
+    </request>
+[% FOREACH compiled_result IN results %]
+    [% SET resource = compiled_result.resource %]
+    [% SET resource_name = resource.name %]
+    
+    <resource name="[% resource_name | html %]" rank="[% resource.rank || '0' %]" provider="[% resource.provider | html %]">
+    [% IF resource.cjdb_note %]<cjdb_note>[% resource.cjdb_note | html %]</cjdb_note>[% END %]
+    [% FOREACH service_name IN compiled_result.services.keys.sort %]
+        [% SET service = compiled_result.services.$service_name.service %]
+        <service name="[% service_name | html %]">
+        [% FOREACH result IN compiled_result.services.$service_name.results %]
+            <result>
+                <url>[% result.url | html %]</url>
+                [% IF result.atitle %]<title>[% result.atitle | html %]</title>[% END %]
+                [% SET record = result.record %]
+                [% IF record.defined %]
+                    <source>[% record.title | html %]</source>
+                    [% FOREACH field IN [ 'issn', 'e_issn', 'ft_start_date', 'ft_end_date', 'embargo_months', 'embargo_days', 'current_months', 'current_years', 'coverage', 'vol_ft_start', 'vol_ft_end', 'iss_ft_start', 'iss_ft_end', 'cjdb_note' ] %]
+                        [% IF record.$field %]<[% field %]>[% record.$field | html %]</[% field %]>[% END %]
+                    [% END %]
+                [% END %]
+            </result>
+        [% END %]
+        </service>
+    [% END %]
+    <site>[% resource.site.key %]</site>
+    </resource>
+[% END %]
+</CUFTS>
+
+[% BLOCK set_request_fields %]
+[% SET request_fields = [
+    'id',
+    'sid',
+    'genre',
+    'aulast',
+    'aufirst',
+    'auinit',
+    'auinit1',
+    'auinitm',
+    'issn',
+    'eissn',
+    'coden',
+    'isbn',
+    'sici',
+    'bici',
+    'title',
+    'stitle',
+    'atitle',
+    'jtitle',
+    'volume',
+    'part',
+    'issue',
+    'spage',
+    'epage',
+    'pages',
+    'artnum',
+    'date',
+    'ssn',
+    'quarter',
+    'doi',
+    'oai',
+    'pmid',
+    'bibcode',
+    'pid',
+    'other_issns',
+    'journal_auths',
+]
+%]
+[% END %]

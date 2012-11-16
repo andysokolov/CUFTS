@@ -1,0 +1,18 @@
+[% SET search_labels = {
+    startswith => 'starts with',
+    exact      => 'exact',
+    any        => 'any',
+    all        => 'all',
+    ft         => 'keyword'
+   }
+%]
+[% SET browse_search_types = {
+    title        => ['startswith','exact','any','all'],
+    subject      => ['startswith','exact','any','all'],
+    association  => ['startswith','exact','any','all'],
+    issn         => ['exact'],
+    tag          => ['exact'],
+   }
+%]
+
+[% PROCESS setup_browse_javascript.tt %]

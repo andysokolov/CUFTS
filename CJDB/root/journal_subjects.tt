@@ -1,0 +1,11 @@
+[% SET journal_subjects = journal.subjects.force_list %]
+[% IF journal_subjects.size > 0 && journal_subjects.first != '' %]
+ <div id="subjects" class="details">
+ <div id="subjects-heading" class="details-headings">Subjects</div>
+ [% FOREACH subject IN journal_subjects %]
+  <div class="subject">
+   <a href="[% url("$url_base/browse/journals", browse_field='subject', search_terms=subject.subject) %]">[% subject.subject | html %]</a>
+  </div>
+ [% END %]
+ </div> <!-- subjects -->
+[% END %]

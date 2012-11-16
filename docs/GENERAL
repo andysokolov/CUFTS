@@ -1,0 +1,48 @@
+
+
+Services
+========
+
+Services are a general term for a level of linking or other action that
+CUFTS can perform.  There are currently seven service types:
+
+database: A link to the database level where a user would have to further
+          search for fulltext.  This is a last ditch level, however some
+          resources do not provide the ability to link in further than this.
+fulltext: A link directly to the fulltext of an article, either HTML, PDF,
+          or a page with further links to the fulltext.
+holdings: A link to print holdings for a library - usually a link into their
+          catalogue.
+journal: A link to the journal level from where a user can normally pick a
+         specific volume/issue to browse for fulltext.
+metadata: This may not actually be a link, but may return extra data to be
+          added to a request object for other resources to use.  See
+          CrossRef for an example.
+table of contents: A link to the issue level which should display all the
+                   articles in the issue.  This may be a real TOC page, or
+                   it may be a search for all articles in a specific issue.
+web search: A link to a web search engine like Google.
+
+
+Resolver
+========
+
+Here's (very roughly) how the resolver works...
+
+1. Parse the OpenURL request and create a Request object.
+2. Determine the user's site from Request or IP/domain information, 
+   create a Site object
+3. Find all active resources for Site, and create Resource objects
+   for each one
+4. Foreach Resource...
+ 5. Get all the active services for Resource
+ 6. Foreach service...
+  7. If deduping is turned on and a link for this provider at this services
+     level, goto next service
+  8. Call "search_get$service" method on the resource to find any active
+     titles 
+  9. Filter those titles by the request information: date, embargo, volume, issue, etc.
+  10. Call "build_link$service" to try to create links at that service level
+     for titles which are not filtered out.  If a link is made, create a
+     Result object for it.  Store all the Results.
+11. Pass all the Results into the template chosen to display the results

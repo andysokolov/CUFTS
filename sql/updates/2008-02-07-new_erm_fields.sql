@@ -1,0 +1,2 @@
+ALTER TABLE erm_main ADD COLUMN access VARCHAR(1024);
+ALTER TABLE erm_main ADD COLUMN group_records VARCHAR(1024);

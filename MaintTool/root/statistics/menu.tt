@@ -1,0 +1,17 @@
+<form method="post">
+<table class="outlined">
+<tr><td colspan="2" class="heading-bar">statistics reports</td></tr>
+<tr><td class="label0">report type</td><td class="field0"><select name="statistics_type">
+<option value="top50journals_no_fulltext">50 most requested journals without fulltext</option>
+<option value="top50journals_yes_fulltext">50 most requested journals with fulltext</option>
+<option value="request_count">number of requests</option>
+</select></td></tr>
+<tr><td class="label1">time period</td><td class="field1"><select name="statistics_time">
+<option value="last_week">last week</option>
+<option value="last_month">last month</option>
+<option value="last_year">last year</option>
+</select></td></tr>
+</table>
+<br />
+<input type="submit" name="submit" value="run report"> <input type="submit" name="cancel" value="cancel" />
+</form>

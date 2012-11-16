@@ -1,0 +1,8 @@
+[%# Display values for facets - used to provider friendlier display values for things like regex lookups and
+    lookup table searches.  Values for lookup tables are populated in the controller automatically and do not
+    need to added here.
+ %]
+
+[%- SET name_regex_lookup = {
+    '^[^a-z]' => '0-9'
+} -%]

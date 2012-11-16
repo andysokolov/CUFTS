@@ -1,0 +1,9 @@
+#!/bin/sh
+
+pg_dump --data-only --no-privileges --no-owner --table=resources --compress=9 CUFTS > sql/global/resources.z
+pg_dump --data-only --no-privileges --no-owner --table=resource_details --compress=9 CUFTS > sql/global/resource_details.z
+pg_dump --data-only --no-privileges --no-owner --table=resources_services --compress=9 CUFTS > sql/global/resources_services.z
+pg_dump --data-only --no-privileges --no-owner --table=journals --compress=9 CUFTS > sql/global/journals.z
+pg_dump --data-only --no-privileges --no-owner --table=journal_details --compress=9 CUFTS > sql/global/journal_details.z
+
+

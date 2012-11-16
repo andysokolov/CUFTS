@@ -1,0 +1,22 @@
+[% browse_type %]
+[% IF browse_type == 'titles' %]
+ [% SWITCH search_type %]
+  [% CASE 'ft' %]
+   with keywords:
+  [% CASE 'startswith' %]
+   beginning with
+  [% CASE 'advstartswith' %]
+   beginning with
+  [% CASE 'exact' %]
+   matching
+  [% CASE 'any' %]
+   containing any of these words: 
+  [% CASE 'all' %]
+   containing all of these words: 
+ [% END %]
+[% ELSE %]
+ with [% browse_field -%][%- 's' IF search_terms.size > 1 %]:
+[% END %]
+[% FOREACH search_term IN search_terms %]
+ "[% search_term | html %]"[% ", " UNLESS loop.last %]
+[% END %]

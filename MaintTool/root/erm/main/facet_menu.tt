@@ -1,0 +1,166 @@
+[% PROCESS erm/main/facet_labels.tt %]
+
+<script type="text/javascript">
+ var facet_array;
+
+ var facet_display = new Object();
+ facet_display["subject"]       = [% subjects_json %];
+ facet_display["resource_type"] = [% resource_types_json %];
+ facet_display["content_type"]  = [% content_types_json %];
+
+ facet_display["keyword"] = new Object();
+ facet_display["name"] = {"[^a-z]":"0-9"}; // Special case for 0-9 (actually a not A-Z search)
+
+ function init_facets() {
+     facet_array = new Object();
+
+     [% FOREACH facet IN facets.keys %]
+      facet_array["[% facet %]"] = "[% facets.$facet %]";
+     [% END %]
+
+     update_chosen_facets();
+ }
+
+ function update_chosen_facets() {
+  var ul = $("ul#chosen-facets");
+  ul.empty();
+  $.each( facet_array, function(facet_type, data) {
+   var display_string = facet_display[facet_type][data];
+   if ( display_string == undefined ) {
+    display_string = data;
+   }
+   var display_name = facet_labels[facet_type];
+   if ( display_name != undefined ) {
+    display_name = display_name + ': ';
+   } 
+   ul.append( "<li><a href=\"/remove_facet/" + facet_type + "/\" onClick=\"remove_facet('" + facet_type + "'); return false;\">X</a> " + display_name +  display_string + "</li>" );
+  } );
+
+  var URL = "[% url("$url_base/erm/main/count_facets/") %]";
+
+  $.each( facet_array, function(facet_type, data)  {
+      URL = URL + facet_type + '/' + data + '/';
+  } );
+
+  $.get( URL, function(data) {
+     $('#facet-count').empty().append(data); 
+  });
+
+ }
+ 
+ function add_facet( facet_type, data ) {
+  facet_array[facet_type] = data;
+  update_chosen_facets();   
+ }
+
+ function remove_facet( facet_type ) {
+  delete facet_array[facet_type];
+  update_chosen_facets();
+ }
+
+ function submit_facet_changes() {
+
+  var URL = "[% url("$url_base/erm/main/find/") %]";
+
+  $.each( facet_array, function(facet_type, data)  {
+      URL = URL + facet_type + '/' + data + '/';
+  } );
+
+  window.location.href = URL;
+ }
+ 
+$( function() {
+     init_facets();
+} );
+
+</script>
+
+<div id="resources-brief-facets" style="float: left; width: 99%; background: #cdf">
+
+<div style="width: 80%; float: left;">
+[% PROCESS erm/main/current_facets.tt %]
+</div>
+<div class="resources-current-facets-row" style="width: 10%; float: right;">
+ <a href="" onClick="$('#resource-facet-choice-wrapper').toggle(); return false;">filter</a>
+</div>
+
+<div id="resource-facet-choice-wrapper" style="width: 100%; float: left; [% 'display: none;' IF records.defined %] border-top: 1px solid blue; background: #def;">
+
+<div id="resources-brief-browse" style="float: left;  width: 78%;">
+
+
+ <div id="resources-facet-choice-top" style="width: 100%; height: 3em;" >
+
+     <div style="width: 19em; border: none; float: left; margin-left: 5px">
+
+      <h2>Keyword</h2>
+      <div id="resources-brief-browse-keyword" class="resources-facet-choice-list" style="width: 99%; height: 100%">
+       <form onSubmit="return false;"><input style="border: 1px solid black; width: 16em" name="keyword" type="text" onChange="var keywordvalue = $(this).val(); add_facet( 'keyword', keywordvalue ); return false;" value="[% facets.keyword.data | html %]" /></form>
+      </div>
+
+     </div>
+ 
+     <div style="border: none; width: 27em; overflow: show; float: left">
+
+      <h2>Titles</h2>
+      <div id="resources-brief-browse-title" style="width: 99%; height: 100%; white-space: nowrap;">
+       [% FOREACH letter IN [ 'A' .. 'Z' ] %]
+        <a href="[% url("$url_base/erm/browse/add_facet/name/$letter") %]" onClick="add_facet( 'name', '[% letter %]'); return false;">[% letter %]</a>
+       [% END %]
+       <a href="[% url("$url_base/resources/browse/add_facet/name/[^a-z]") %]"  onClick="add_facet( 'name', '[^a-z]'); return false;">0-9</a>
+      </div>
+  
+     </div>
+
+ </div>
+
+ <div id="resources-facet-choice-bottom" style="width: 100%; clear: left" >
+
+  <div class="resources-facet-choice-container">
+   <h2>Subjects</h2>
+   <div id="resources-brief-browse-subject" class="resources-facet-choice-list">
+       [% FOREACH subject_id IN subjects_order %]
+        [% SET subject = subjects.$subject_id %]
+     <div class="resources-main-browse-subject-record" id="resources-main-browse-facet-subject-[% subject_id %]">
+      <a href="[% url("$url_base/resources/browse/add_facet/subject/$subject_id") %]" onClick="add_facet( 'subject', '[% subject_id %]'); return false;">[% subject %]</a>
+     </div>
+    [% END %]
+   </div>
+  </div>
+  
+  <div class="resources-facet-choice-container">
+   <h2>Resource Types</h2>
+   <div id="resources-brief-browse-resource-type" class="resources-facet-choice-list">
+   [% FOREACH resource_type_id IN resource_types_order %]
+    [% SET resource_type = resource_types.$resource_type_id %]
+    <a href="[% url("$url_base/resources/browse/add_facet/resource_type/$data") %]" onClick="add_facet( 'resource_type', '[% resource_type_id %]'); return false;">[% resource_type %]</a> <br />
+   [% END %]
+   </div>
+  </div>
+  
+  <div class="resources-facet-choice-container" style="border-right: none;">
+   <h2>Content Types</h2>
+   <div id="resources-brief-browse-content-type" class="resources-facet-choice-list">
+       [% FOREACH content_type_id IN content_types_order %]
+        [% SET content_type = content_types.$content_type_id %]
+    <a href="[% url("$url_base/resources/browse/add_facet/resource_medium/$data") %]" onClick="add_facet( 'content_type', '[% content_type_id %]'); return false;">[% content_type %]</a><br />
+   [% END %]
+   </div>
+  </div>
+
+ </div>
+
+</div>
+
+<div id="resources-facet-change-list" style="width: 18%; padding: 5px; height: 27.5em; background: white; float: right;">
+ <h2>Show:</h2>
+ <ul id="chosen-facets"></ul>
+ <div id="facet-count-container">Estimated result count: <span id="facet-count"></span></div>
+ <form name="browse">
+  <input type="submit" name="show" value="show"   onClick="submit_facet_changes(); return false;" />
+  <input type="submit" name="reset" value="reset" onClick="init_facets(); return false;" />
+ </form>
+</div>
+
+</div>
+</div>

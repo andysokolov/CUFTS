@@ -1,0 +1,39 @@
+<h1>Database usage from JR1 reports</h1>
+
+<div id="erm-statistics-report-info">
+Start Date: [% start_date %]<br />
+End Date: [% end_date %]<br />
+
+<h3>COUNTER Sources Used</h3>
+[% FOREACH resource_id IN resources_sorted %]
+ [%- SET resource = resources_map.$resource_id -%]
+ [% resource.name %]: [% sources_used.$resource_id.join(', ') %]<br />
+[% END %]
+</div>
+
+<div id="erm-statistics-report-counter_database_usage_from_jr" class="erm-statistics-report">
+
+<table>
+ <thead>
+  <tr>
+   <th>&nbsp;</th>
+   [% FOREACH date IN dates %]
+    <th>[% date.display %]</th>
+   [% END %]
+  </tr>
+ </thead>
+ <tbody>
+  [% FOREACH resource_id IN resources_sorted %]
+   [% SET resource = resources_map.$resource_id %]
+   <tr class="[% loop.count % 2 ? 'alt' : '' %]">
+    <td class="label"><div class="force-width">[% resource.name | html %]</div></td>
+    [% FOREACH date IN dates %]
+     [% SET lookup_date = date.date %]
+     <td class="data">[% counts_by_resource.$resource_id.$lookup_date || 0 %]</td>
+    [% END %]
+   </tr>
+  [% END %]     
+ </tbody>
+<table>
+
+</div>

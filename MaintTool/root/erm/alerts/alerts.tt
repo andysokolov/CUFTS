@@ -1,0 +1,28 @@
+[% USE url %]
+
+<form action="[% url( "$url_base/erm/alerts/delete" ) %]" name="alerts" id="alerts" method="post">
+
+[% IF resources.size %]<input type="submit" name="delete" value="remove alerts" id="alerts-delete-button" />[% END %]
+
+<div id="alerts-resources">
+ [% FOREACH resource IN resources %]
+  <div class="alerts-resource">
+   <div class="alerts-resource-name"><a href="[% url("$url_base/erm/main/edit/" _ resource.id) %]">[% resource.name %]</a></div>
+   <div class="alerts-delete-box"><input type="checkbox" name="delete_ids" value="[% resource.id %]" /></div>
+   <div class="alerts-resource-alert">
+   [% IF resource.alert %]
+    [% resource.alert %]
+    <br />Expires:
+    [% IF resource.alert_expiry %]
+     [% resource.alert_expiry %]
+    [% ELSE %]
+     Never
+    [% END %]
+   [% END %] 
+   </div>
+  </div>
+ [% END %]
+ [% IF !resources.size %]No resources currently have alerts.[% END %]
+</div>
+
+</form>

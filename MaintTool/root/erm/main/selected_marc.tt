@@ -1,0 +1,54 @@
+[% SET uses_ext_form = 1 %]
+[% USE url %]
+
+<div id="erm-selected-marc-form"></div>
+
+<div id="erm-selected-marc-text" style="margin-top: 8px;">
+<div class="x-panel-body" style="padding: 5px; font-size: 13px">[% marc_dump_text.replace("\n", "<br />\n") %]</div>
+</div>
+
+<div id="erm-main-selected" style="margin-top: 8px;"></div>
+</div>
+
+<script>
+
+Ext.onReady( function() {
+    Ext.BLANK_IMAGE_URL = '[% image_dir _ '/default/s.gif' %]';
+    
+    var marc_text_panel = new Ext.Panel({
+        applyTo: 'erm-selected-marc-text',
+        title: 'MARC data',
+        width: 700,
+        height: 600,
+        autoScroll: true,
+        tbar: new Ext.Toolbar({
+            items: [
+                new Ext.Button({
+                    text: 'Export MARC',
+                    iconCls: 'table-button',
+                    handler: exportMARC
+                })
+            
+            ]
+        })
+    });
+    
+    function exportMARC() {
+        Ext.MessageBox.confirm(
+            'Update Records?',
+            'Would you like to change the subscription status to "On order" for these records?',
+            function(btn) {
+                var params = { file: 1 };
+                if ( btn == 'yes' ) {
+                    params.update = 1;
+                }
+                window.location = '[% url("$url_base/erm/main/selected_marc") %]?' + Ext.urlEncode(params);
+            }
+        );
+    }
+    
+});
+
+</script>
+
+

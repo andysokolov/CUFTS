@@ -1,0 +1,50 @@
+[%- IF no_wrap %][% content %][% RETURN %][% END -%]
+<html>
+<head>
+<title>CUFTS Maintenance Tool</title>
+<link rel="StyleSheet" href="[% css_dir %]general.css" type="text/css" media="screen, print" />
+[% IF uses_ext_form %]
+ <link rel="StyleSheet" href="[% css_dir %]ext-all.css" type="text/css" media="screen, print" />
+[% END %]
+[% FOREACH css IN load_css %]
+ <link rel="StyleSheet" href="[% "${css_dir}${css}" %]" type="text/css" media="screen, print" />
+[% END %]
+
+<script src="[% js_dir %]default.js"   type="text/javascript"></script>
+<script src="[% js_dir %]jquery.js"    type="text/javascript"></script>
+[% IF uses_ext_form %]
+ <script src="[% js_dir %]ext-base.js"      type="text/javascript"></script>
+ <script src="[% js_dir %]ext-all-debug.js" type="text/javascript"></script>
+ <script src="[% js_dir %]ext.ux.js"        type="text/javascript"></script>
+[% ELSE %]
+ <script src="[% js_dir %]jquery.validate.js"  type="text/javascript"></script>
+ <script src="[% js_dir %]jquery.tabs.js"      type="text/javascript"></script>
+ <script src="[% js_dir %]jquery.livequery.js" type="text/javascript"></script>
+ [% PROCESS javascript_form_helper.tt %]
+ [% PROCESS javascript_validate.tt    %]
+[% END %]
+
+[% FOREACH js IN load_javascript %]
+ <script src="[% js_dir %][% js %]" type="text/javascript"></script>
+[% END %]
+
+</head>
+<body>
+[%- PROCESS page_header.tt -%]
+<div id="page-layout">
+ <div id="navigation-main" style="background: transparent url([% image_dir %]corner.png) no-repeat bottom right">
+  [% PROCESS sidebar.tt %]
+ </div>
+ <div id="content-container">
+  <div id="logged-in">
+   [% IF current_account %]Logged in as: <b>[% current_account.name %]</b> &nbsp;&nbsp;[% END %]
+   [% IF current_site %]&nbsp;&nbsp;Active site: <b>[% current_site.name %]</b> &nbsp;&nbsp;[% END %]
+  </div>
+  <div id="content">
+   [%- PROCESS display_errors.tt -%][%- PROCESS display_results.tt -%][% content %]
+  </div>
+ </div>
+</div>     
+<div id="footer">[% PROCESS page_footer.tt %]</div>
+</body>
+</html>

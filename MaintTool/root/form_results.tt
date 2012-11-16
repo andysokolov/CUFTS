@@ -1,0 +1,6 @@
+[%- IF c.form.missing(frf) -%]
+<span class="form-results-missing"> * [% fr_missing || fr_msg || 'Required' %]</span>
+[%- END -%]
+[%- IF c.form.invalid(frf) -%]
+<span class="form-results-invalid"> * [% fr_invalid || fr_msg || 'Invalid' %]</span>
+[%- END -%]

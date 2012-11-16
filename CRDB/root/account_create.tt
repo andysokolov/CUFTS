@@ -1,0 +1,15 @@
+[% USE url %]
+
+<div id="account">
+<form action="[% c.uri_for_site( c.controller('Account').action_for('create') ) %]" method="post">
+<table>
+<tr><td class="label">login id</td><td class="data"><input type="text" name="key" size="20" maxlength="128" /></td></tr>
+<tr><td class="label">name</td><td class="data"><input type="text" name="name" size="30" maxlength="128" /></td></tr>
+<tr><td class="label">email</td><td class="data"><input type="text" name="email" size="30" maxlength="128" /></td></tr>
+<tr><td class="label">password</td><td class="data"><input type="password" name="password" size="20" maxlength="128" /></td></tr>
+[% IF !c.site.cjdb_authentication_module.defined %]
+<tr><td class="label">password (again)</td><td class="data"><input type="password" name="password2" size="20" maxlength="128" /></td></tr>
+[% END %]
+<tr><td colspan="2"><input type="submit" name="create" value="create" /></td></tr>
+</table>
+</form>

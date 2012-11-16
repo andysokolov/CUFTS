@@ -1,0 +1,11 @@
+[% USE url %]
+
+<form name="change_site" action="[% url("$url_base/site/change") %]" method="post">
+Change current site to: <select name="change_site">
+[% FOREACH site IN sites.sort('name') %]
+ <option value="[% site.id %]" [% 'selected="1"' IF current_site.id == site.id %]>[% site.name | html %] ([% site.key %])</option>
+[% END %]
+</select>
+<input type="submit" name="submit" value="submit">
+<input type="submit" name="cancel" value="cancel">
+</form>

@@ -1,0 +1,591 @@
+[% USE url %]
+
+<script type="text/javascript">
+$( function() {
+    $('#pages-container').tabs();
+} );
+</script>
+
+<div id="erm-edit-key">[% erm.key | html %]
+ <form method="post" action="[% url("$url_base/erm/license/delete/") %]">
+  <input style="margin-left: 10px;" type="submit" name="delete" value="delete" />
+  <input type="hidden" name="erm_license_id" value="[% erm.id %]" />
+ </form> 
+</div>
+
+
+<div id="pages-container" class="tabs-nav" style="width: 100%;">
+
+<ul>
+ <li><a href="#page-terms"><span>Terms</span></a></li>
+ <li><a href="#page-contacts"><span>Contacts</span></a></li>
+ <li><a href="#page-files"><span>Files</span></a></li>
+ <li><a href="#page-links"><span>ERM Links</span></a></li>
+</ul>
+
+<form method="post" name="license-form" id="license-form">
+
+<div id="page-terms" class="tabs-nav-page">
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+<fieldset>
+
+<legend>Terms</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-key">resource identifier</label>
+  <input id="erm-edit-input-key" name="key" value="[% erm.key | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  A unique identifier for this resource that is used when attaching to resources, journals, and subjects.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-full_on_campus_access">full on-campus access</label>
+  <select id="erm-edit-input-full_on_campus_access" name="full_on_campus_access" style="width: 8em;">
+   <option value=""></option>
+   <option value="1"     [% 'selected="selected"' IF erm.full_on_campus_access == 1     %]>yes</option>
+   <option value="0"      [% 'selected="selected"' IF erm.full_on_campus_access == 0      %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether the resource is usable from any on-campus location, including different branches.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-full_on_campus_notes">full on-campus access notes</label>
+  <textarea id="erm-edit-input-full_on_campus_notes" name="full_on_campus_notes">[% erm.full_on_campus_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Notes and exceptions regarding full on-campus access.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-allows_remote_access">allows remote access</label>
+  <select id="erm-edit-input-allows_remote_access" name="allows_remote_access" style="width: 8em;">
+   <option value=""></option>
+   <option value="1"     [% 'selected="selected"' IF erm.allows_remote_access == 1     %]>yes</option>
+   <option value="0"      [% 'selected="selected"' IF erm.allows_remote_access == 0      %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether the license allows for remote or outside of the library use.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-allows_proxy_access">allows proxy access</label>
+  <select id="erm-edit-input-allows_proxy_access" name="allows_proxy_access" style="width: 8em;">
+   <option value=""></option>
+   <option value="1"     [% 'selected="selected"' IF erm.allows_proxy_access == 1     %]>yes</option>
+   <option value="0"      [% 'selected="selected"' IF erm.allows_proxy_access == 0      %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether the license allows the library to use a proxy server to access the resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-allows_commercial_use">allows commercial use</label>
+  <select id="erm-edit-input-allows_commercial_use" name="allows_commercial_use" style="width: 8em;">
+   <option value=""></option>
+   <option value="1"     [% 'selected="selected"' IF erm.allows_commercial_use == 1     %]>yes</option>
+   <option value="0"      [% 'selected="selected"' IF erm.allows_commercial_use == 0      %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether the license allows the content to be used in commercial situations.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-allows_walkins">allows walk-ins</label>
+  <select id="erm-edit-input-allows_walkins" name="allows_walkins" style="width: 8em;">
+   <option value=""></option>
+   <option value="1"     [% 'selected="selected"' IF erm.allows_walkins == 1     %]>yes</option>
+   <option value="0"      [% 'selected="selected"' IF erm.allows_walkins == 0      %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether the license allows non-affiliated users who are not a part of the organization to have access to this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-allows_ill">allows ILL</label>
+  <select id="erm-edit-input-allows_ill" name="allows_ill" style="width: 8em;">
+   <option value=""></option>
+   <option value="1"     [% 'selected="selected"' IF erm.allows_ill == 1     %]>yes</option>
+   <option value="0"      [% 'selected="selected"' IF erm.allows_ill == 0      %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether the license allows the library to fill ILL requests with content from the resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-ill_notes">ILL notes</label>
+  <textarea id="erm-edit-input-ill_notes" name="ill_notes">[% erm.ill_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Notes and exceptions regarding ILL usage.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-allows_ereserves">allows ereserves</label>
+  <select id="erm-edit-input-allows_ereserves" name="allows_ereserves" style="width: 8em;">
+   <option value=""></option>
+   <option value="1"     [% 'selected="selected"' IF erm.allows_ereserves == 1     %]>yes</option>
+   <option value="0"      [% 'selected="selected"' IF erm.allows_ereserves == 0      %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether the license allows the library to utilize content in an electronic reserves system.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-ereserves_notes">e-reserves notes</label>
+  <textarea id="erm-edit-input-ereserves_notes" name="ereserves_notes">[% erm.ereserves_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Notes and exceptions regarding e-reserves usage.
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-allows_coursepacks">allows coursepacks</label>
+  <select id="erm-edit-input-allows_coursepacks" name="allows_coursepacks" style="width: 8em;">
+   <option value=""></option>
+   <option value="1"     [% 'selected="selected"' IF erm.allows_coursepacks == 1     %]>yes</option>
+   <option value="0"      [% 'selected="selected"' IF erm.allows_coursepacks == 0      %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether the license allows the library to utilize content in coursepacks.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-coursepack_notes">coursepack notes</label>
+  <textarea id="erm-edit-input-coursepack_notes" name="coursepack_notes">[% erm.coursepack_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Notes and exceptions regarding coursepack usage.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-allows_distance_ed">allows distance ed</label>
+  <select id="erm-edit-input-allows_distance_ed" name="allows_distance_ed" style="width: 8em;">
+   <option value=""></option>
+   <option value="1"     [% 'selected="selected"' IF erm.allows_distance_ed == 1     %]>yes</option>
+   <option value="0"      [% 'selected="selected"' IF erm.allows_distance_ed == 0      %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether the license allows for materials to be used for distance education purposes.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-allows_downloads">allows downloads</label>
+  <select id="erm-edit-input-allows_downloads" name="allows_downloads" style="width: 8em;">
+   <option value=""></option>
+   <option value="1"     [% 'selected="selected"' IF erm.allows_downloads == 1     %]>yes</option>
+   <option value="0"      [% 'selected="selected"' IF erm.allows_downloads == 0      %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether the license allows users to download materials.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-allows_prints">allows prints</label>
+  <select id="erm-edit-input-allows_prints" name="allows_prints" style="width: 8em;">
+   <option value=""></option>
+   <option value="1"     [% 'selected="selected"' IF erm.allows_prints == 1     %]>yes</option>
+   <option value="0"      [% 'selected="selected"' IF erm.allows_prints == 0      %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether the license allows users to print materials.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-allows_emails">allows emails</label>
+  <select id="erm-edit-input-allows_emails" name="allows_emails" style="width: 8em;">
+   <option value=""></option>
+   <option value="1"     [% 'selected="selected"' IF erm.allows_emails == 1     %]>yes</option>
+   <option value="0"      [% 'selected="selected"' IF erm.allows_emails == 0      %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether the license allows users to email records to themselves or others.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-emails_notes">allows emails notes</label>
+  <textarea id="erm-edit-input-emails_notes" name="emails_notes">[% erm.emails_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Notes and exceptions regarding emailing records.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-allows_archiving">allows archiving</label>
+  <select id="erm-edit-input-allows_archiving" name="allows_archiving" style="width: 8em;">
+   <option value=""></option>
+   <option value="1"     [% 'selected="selected"' IF erm.allows_archiving == 1     %]>yes</option>
+   <option value="0"      [% 'selected="selected"' IF erm.allows_archiving == 0      %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether the license allows the library to archive the content of the resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-archiving_notes">archiving notes</label>
+  <textarea id="erm-edit-input-archiving_notes" name="archiving_notes">[% erm.archiving_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Notes and exceptions regarding archiving.
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-own_data">own data</label>
+  <select id="erm-edit-input-own_data" name="own_data" style="width: 8em;">
+   <option value=""></option>
+   <option value="1"     [% 'selected="selected"' IF erm.own_data == 1     %]>yes</option>
+   <option value="0"     [% 'selected="selected"' IF erm.own_data == 0     %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates the content is actually purchased or if it is just a subscription for access.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-citation_requirements">citation requirements</label>
+  <input id="erm-edit-input-citation_requirements" name="citation_requirements" value="[% erm.citation_requirements | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Any special citation requirements.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-requires_print">requires print</label>
+  <select id="erm-edit-input-requires_print" name="requires_print" style="width: 8em;">
+   <option value=""></option>
+   <option value="1"     [% 'selected="selected"' IF erm.requires_print == 1     %]>yes</option>
+   <option value="0"      [% 'selected="selected"' IF erm.requires_print == 0      %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether the license requires the library to carry a subscription to the print version of the resource .
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-requires_print_plus">requires print plus</label>
+  <select id="erm-edit-input-requires_print_plus" name="requires_print_plus" style="width: 8em;">
+   <option value=""></option>
+   <option value="1"     [% 'selected="selected"' IF erm.requires_print_plus == 1     %]>yes</option>
+   <option value="0"      [% 'selected="selected"' IF erm.requires_print_plus == 0      %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether the license requires the library to carry a subscription to the print version of the resource plus an additional fee.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-additional_requirements">additional requirements</label>
+  <textarea id="erm-edit-input-additional_requirements" name="additional_requirements">[% erm.additional_requirements | html %]</textarea>
+ </div>
+ <div class="help">
+  Any additional requirements or restrictions.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-allowable_downtime">allowable downtime</label>
+  <input id="erm-edit-input-allowable_downtime" name="allowable_downtime" value="[% erm.allowable_downtime | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Amount of downtime permitted by the contract.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-online_terms">online terms</label>
+  <input id="erm-edit-input-online_terms" name="online_terms" value="[% erm.online_terms | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  URL for the terms of terms of use if they are available online.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-user_restrictions">user restrictions</label>
+  <textarea id="erm-edit-input-user_restrictions" name="user_restrictions">[% erm.user_restrictions | html %]</textarea>
+ </div>
+ <div class="help">
+  Any additional user restrictions not covered elsewhere.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-termination_requirements">termination requirements</label>
+  <textarea id="erm-edit-input-termination_requirements" name="termination_requirements">[% erm.termination_requirements | html %]</textarea>
+ </div>
+ <div class="help">
+  Requirements for termination.
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-terms_notes">terms notes</label>
+  <textarea id="erm-edit-input-terms_notes" name="terms_notes">[% erm.terms_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Any additional notes.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-perpetual_access">perpetual access</label>
+  <select id="erm-edit-input-perpetual_access" name="perpetual_access" style="width: 8em;">
+   <option value=""></option>
+   <option value="1"     [% 'selected="selected"' IF erm.perpetual_access == 1     %]>yes</option>
+   <option value="0"      [% 'selected="selected"' IF erm.perpetual_access == 0      %]>no</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether the license provides for perpetual access.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-perpetual_access_notes">perpetual access notes</label>
+  <textarea id="erm-edit-input-perpetual_access_notes" name="perpetual_access_notes">[% erm.perpetual_access_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Notes and exceptions regarding perpetual access.
+ </div>
+</div>
+
+
+</fieldset>
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+</div>
+
+<div id="page-contacts" class="tabs-nav-page">
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+<fieldset>
+
+<legend>Contacts</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-contact_name">contact name</label>
+  <input id="erm-edit-input-contact_name" name="contact_name" value="[% erm.contact_name | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Name of contacts.
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-contact_role">contact role</label>
+  <input id="erm-edit-input-contact_role" name="contact_role" value="[% erm.contact_role | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Name of contacts.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-contact_address">contact address</label>
+  <input id="erm-edit-input-contact_address" name="contact_address" value="[% erm.contact_address | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Name of contacts.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-contact_phone">contact phone</label>
+  <input id="erm-edit-input-contact_phone" name="contact_phone" value="[% erm.contact_phone | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Name of contacts.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-contact_fax">contact fax</label>
+  <input id="erm-edit-input-contact_fax" name="contact_fax" value="[% erm.contact_fax | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Name of contacts.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-contact_email">contact email</label>
+  <input id="erm-edit-input-contact_email" name="contact_email" value="[% erm.contact_email | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  Name of contacts.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-contact_notes">contact notes</label>
+  <textarea id="erm-edit-input-contact_notes" name="contact_notes">[% erm.contact_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Any additional notes.
+ </div>
+</div>
+
+</fieldset>
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+    
+</div>
+
+</form>
+
+
+<div id="page-files" class="tabs-nav-page">
+
+
+<table class="wide-outlined">
+ <tr><td class="heading-bar">&nbsp;</td><td class="heading-bar">description</td><td class="heading-bar">created</td><td class="heading-bar">extension</td></tr>
+ [% FOREACH license_file IN license_files %]
+ [%- SET filename = license_file.UUID _ '.' _ license_file.ext -%]
+ [%- SET file_id = license_file.id -%]
+ [%- SET class = 'field' _ loop.count % 2 -%]
+ <tr>
+  <td class="[% class %]"><a href="[% url("$url_base/static/erm_files/l/$filename") %]">view</a> | <a href="[% url("$url_base/erm/license/delete_file/$erm_id/$file_id") %]" onClick="return confirmDelete()">delete</td>
+  <td class="[% class %]">[% license_file.description %]</td>
+  <td class="[% class %]">[% license_file.created.substr(0,10) %]</td>
+  <td class="[% class %]">[% license_file.ext %]</td>
+ </tr>
+ [% END %]
+</table>
+
+<form method="post" enctype="multipart/form-data" name="license-form" id="license-form" action="[% url("$url_base/erm/license/edit/$erm_id") %]">
+<fieldset style="margin-top: 10px">
+<legend>Attach New File</legend>
+<div style="padding: 1em 0px;">
+ <div class="field">
+  <div class="data">
+   <label for="erm-licence-file-description">Description</label>
+   <input id="erm-licence-file-description" type="textfield" name="file_description" value="" />
+  </div>
+ </div>
+ <div class="field">
+  <div class="data">
+   <label for="erm-licence-file-description">File</label>
+   <input type="file" name="file" value="" />
+  </div>
+ </div>
+</div>
+</fieldset>
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="upload" value="upload">
+</div>
+
+</form>
+
+</div>
+
+
+<div id="page-links" class="tabs-nav-page">
+
+<fieldset>
+
+<legend>ERM Links</legend>
+<div style="padding: 5px;">
+[% FOREACH main IN mains %]
+<a href="[% url("$url_base/erm/main/edit/" _ main.id ) %]">[% main.key | html %]</a><br />
+[% END %]
+</div>
+
+</fieldset>
+</div>
+
+</div> <!-- tab-container -->
+

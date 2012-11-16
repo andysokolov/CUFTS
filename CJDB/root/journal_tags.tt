@@ -1,0 +1,6 @@
+<div id="tags" class="details">
+ <div id="tags-heading" class="details-headings">Tags</div>
+ [% FOREACH tag IN tags %]
+  <div class="tag-[% tag.1 %]"><span class="tag-name">[% tag.2 %]</span> <span class="tag-count">([% tag.0 %])</span></div>
+ [% END %]
+</div>

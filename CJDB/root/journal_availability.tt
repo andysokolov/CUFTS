@@ -1,0 +1,121 @@
+[% USE HTML %]
+ <div id="availability" class="details">
+ <div id="availability-heading" class="details-headings">Availability</div>
+ [% SET count = 0 %]
+ [%# FOREACH link IN journal.display_links.nsort('rank').reverse %]
+ [% FOREACH link IN rank_name_sort( journal.display_links, resources_display ) %]
+  [% SET resource = undef %]
+  [% SET link_id = link.id %]
+  [% IF link.link_type > 0 %]
+   [% SET resource_id = link.resource %]
+   [% SET resource = resources_display.$resource_id %]
+   [% NEXT UNLESS resource %]
+  [% END %]
+  [% SET count = count + 1 %]
+
+  <div class="availability-resource">[%- PROCESS journals_link_name.tt -%]</div>
+
+  [% IF link.print_coverage %]
+   <div class="availability-label">Print Coverage:</div>
+   <div class="availability-data">[% HTML.escape(link.print_coverage).replace("\n", "<br />\n") %]</div>
+  [% END %]
+
+  [% IF link.citation_coverage %]
+   <div class="availability-label">Citation Coverage:</div>
+   <div class="availability-data">[% link.citation_coverage | html %]</div>
+  [% END %]
+
+  [% IF link.fulltext_coverage %]
+   <div class="availability-label">Fulltext Coverage:</div>
+   <div class="availability-data">[% link.fulltext_coverage | html %]</div>
+  [% END %]
+
+  [% IF link.embargo %]
+   <div class="availability-label">Embargo Period:</div>
+   <div class="availability-data">[% link.embargo | html %]</div>
+  [% END %]
+
+  [% IF link.current %]
+   <div class="availability-label">Current Limit:</div>
+   <div class="availability-data">Limited to the latest [% link.current | html %] only</div>
+  [% END %]
+
+  <div class="availability-label">Link:</div>
+  <div class="availability-data"><a href="[% link.URL %]">[%- PROCESS journals_link_label.tt -%]</a></div>
+
+  [% IF link.journal_cjdb_note %]
+   <div class="availability-journal-note">
+    <div class="availability-label">Journal Note:</div>
+    <div class="availability-data">
+     [% link.journal_cjdb_note | html %]
+    </div>
+   </div>
+  [% END %]
+
+  [% IF resource.cjdb_note %]
+   <div class="availability-resource-note">
+    <div class="availability-label">Resource Note:</div>
+    <div class="availability-data">
+     [% resource.cjdb_note | html %]
+    </div>
+   </div>
+  [% END %]
+
+  [% IF staff AND erm AND erm.$link_id %]
+   [% SET erm_main = erm.$link_id %]
+   [% SET erm_license = erm_main.license %]
+   [% IF erm_license %]
+    <div class="availability-erm">
+     <div class="availability-label">ERM License:</div>
+     <div class="availability-data">[% erm_license.key %]</div>
+    </div>
+    <div class="availability-erm">
+     <div class="availability-label">Allows ILL:</div>
+     <div class="availability-data">[% erm_license.allows_ill.defined ? erm_license.allows_ill ? 'yes' : 'no' : 'unknown' %]</div>
+    </div>
+    [% IF erm_license.ill_notes %]
+     <div class="availability-erm">
+      <div class="availability-label">ILL notes:</div>
+      <div class="availability-data">[% erm_license.ill_notes.replace("\n", "<br />\n") %]</div>
+     </div>
+    [% END %]
+    <div class="availability-erm">
+     <div class="availability-label">Allows coursepack:</div>
+     <div class="availability-data">[% erm_license.allows_coursepacks.defined ? erm_license.allows_coursepacks ? 'yes' : 'no' : 'unknown' %]</div>
+    </div>
+    [% IF erm_license.coursepack_notes %]
+     <div class="availability-erm">
+      <div class="availability-label">Coursepack notes:</div>
+      <div class="availability-data">[% erm_license.coursepack_notes.replace("\n", "<br />\n") %]</div>
+     </div>
+    [% END %]
+    <div class="availability-erm">
+     <div class="availability-label">Allows distance ed:</div>
+     <div class="availability-data">[% erm_license.allows_distance_ed.defined ? erm_license.allows_distance_ed ? 'yes' : 'no' : 'unknown' %]</div>
+    </div>
+    <div class="availability-erm">
+     <div class="availability-label">Allows downloads:</div>
+     <div class="availability-data">[% erm_license.allows_downloads.defined ? erm_license.allows_downloads ? 'yes' : 'no' : 'unknown' %]</div>
+    </div>
+    <div class="availability-erm">
+     <div class="availability-label">Allows prints:</div>
+     <div class="availability-data">[% erm_license.allows_prints.defined ? erm_license.allows_prints ? 'yes' : 'no' : 'unknown' %]</div>
+    </div>
+    <div class="availability-erm">
+     <div class="availability-label">Allows emails:</div>
+     <div class="availability-data">[% erm_license.allows_emails.defined ? erm_license.allows_emails ? 'yes' : 'no' : 'unknown' %]</div>
+    </div>
+    [% IF erm_license.emails_notes %]
+     <div class="availability-erm">
+      <div class="availability-label">Email notes:</div>
+      <div class="availability-data">[% erm_license.emails_notes.replace("\n", "<br />\n") %]</div>
+     </div>
+    [% END %]
+   [% END %]
+  [% END %]
+
+ [% END %]
+ [% IF count == 0 %]
+  No links are currently available for this journal.
+ [% END %]
+ </div> <!-- availability -->

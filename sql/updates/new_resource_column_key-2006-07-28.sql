@@ -1,0 +1,1 @@
+ALTER TABLE resources ADD COLUMN key VARCHAR(256);

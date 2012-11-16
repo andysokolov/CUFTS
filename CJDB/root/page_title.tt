@@ -1,0 +1,7 @@
+<div id="page-title">
+[% IF replace %]
+ [% replace %]
+[% ELSE %]
+ Journals[% IF add %] - [% add %][% END %]
+[% END %]
+</div>

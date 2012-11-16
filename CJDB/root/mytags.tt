@@ -1,0 +1,12 @@
+[% USE url %]
+
+[% INCLUDE page_title.tt %]
+
+[%# tags format: [ tag name, level, count ] %]
+<div id="mytags">
+<div id="mytags-heading">My Tags</div>
+<ul>
+[% FOREACH tag IN tags %]
+<li><span class="mytags-tag"><a href="[% url("$url_base/browse/mytags/$tag.0?viewing=$tag.1") %]">[% tag.0 | html %]</a></span> <span class="mytags-viewing">[% INCLUDE tag_viewing_string.tt viewing=tag.1 %]</span> <span class="mytags-count">([% tag.2 | html %])</span></li>
+[% END %]
+</ul></div>

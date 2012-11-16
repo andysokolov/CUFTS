@@ -1,0 +1,91 @@
+[% SET services_in_order = ['fulltext', 'table of contents', 'journal', 'database', 'holdings', 'web search'] %]
+
+<div id="results">
+ [% USE results_iter = iterator(results) %]
+ [% FOREACH compiled_result IN results_iter %]
+  [% SET resource = compiled_result.resource %]
+  [% SET service_total = compiled_result.services.size %]
+  [% SET service_count = 0 %]
+  [% FOREACH service_name IN services_in_order %]
+
+   [% NEXT UNLESS compiled_result.services.exists(service_name) %]
+   [% SET service = compiled_result.services.$service_name %]
+   [% SET service_count = service_count + 1 %]
+
+   [% IF service_count == 1 %]
+    <span class="results-from">
+    [% SWITCH service_name %]
+     [% CASE 'fulltext' %]
+      fulltext of the article is available from 
+     [% CASE 'table of contents' %]
+      table of contents for the issue is available from
+     [% CASE 'journal' %]
+      the journal is available from
+     [% CASE 'database' %]
+      the article may be available by searching in
+     [% CASE 'holdings' %]
+      check for holdings in
+     [% CASE 'web search' %]
+      search the web using
+     [% CASE %]
+      unrecognized service from
+    [% END %]
+    <span class="results-from-resource">[% resource.name %]</span>: </span>
+
+    [% IF service_total > 1 %]
+     <a href="javascript:void(0)" onclick="toggleOthers([% results_iter.count %])" style="text-decoration: none;"><span id="showhide[% results_iter.count %]" class="results-others-available">(show other services)</span></a>
+    [% END %]
+
+    <br />
+
+    <ul class="results">
+    [% FOREACH result IN service.results %]
+     <li>
+      <a href="[% result.url %]">
+      [%- IF result.atitle -%]
+       [% result.atitle %]
+      [%- ELSIF request.atitle -%]
+       [% request.atitle %]
+      [%- ELSIF request.title -%]
+       [% request.title %]
+      [%- ELSE %]
+       link to result
+      [%- END -%]
+      </a>
+     </li>
+    [% END %]
+    </ul>
+
+    <div class="other-services" style="display: none" id="others[% results_iter.count %]"><ul class="results">
+
+   [% ELSE %] [%# not the first service... Prepare hidden layer contents for services other than the best one %]
+
+    [% FOREACH result IN service.results %]
+      <li><a href="[% result.url %]">[%- INCLUDE service_name_description service_name=service_name -%]</a></li>
+    [% END %]
+   [% END %]
+  [% END %]
+  </ul></div>
+
+ [% END %]
+</div>
+
+
+[% BLOCK service_name_description %]
+ [% SWITCH service_name %]     
+  [% CASE 'fulltext' %]
+   fulltext of the article
+  [% CASE 'table of contents' %]
+   table of contents for the issue
+  [% CASE 'journal' %]
+   journal home page or list of articles in journal
+  [% CASE 'database' %]
+   database of articles
+  [% CASE 'holdings' %]
+   check for holdings
+  [% CASE 'web search' %]
+   search the web
+  [% CASE %]
+   unrecognized service
+ [% END %]
+[% END %]

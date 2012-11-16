@@ -1,0 +1,259 @@
+[% SET uses_ext_form = 1 %]
+[% USE url %]
+[% USE JSON %]
+
+[% FOREACH report IN report_config.keys %]
+ [% SET setup = "erm/statistics/$report/setup.tt" %]
+ [% SET config_entry = report_config.$report %]
+ [% PROCESS $setup %]
+[% END %]
+
+[% SET default_help = 'Choose a report to run for the selected resources.  Fields used for the report will be enabled below.'%]
+
+<div id="selected-resources">
+</div>
+
+<div id="report-setup">
+</div>
+
+<script>
+Ext.onReady( function() {
+        
+    var hash_state = new HashState();
+    var current_report = hash_state.params.current_report || null;
+    var report_uri = null;
+
+    var report_config = [% report_config.json %];
+    var default_help  = [% default_help.json %];
+
+    var s_r_store = new Ext.data.SimpleStore({
+        fields: ['resource', 'counter'],
+        data: [ [%- PROCESS selected_resources -%] ]
+    });
+
+    new Ext.grid.GridPanel({
+        applyTo: 'selected-resources',
+        title: false,
+        store: s_r_store,
+        columns: [
+            { header: 'Resource',       dataIndex: 'resource', width: 280 },
+            { header: 'Counter Source', dataIndex: 'counter',  width: 500 }
+        ],
+        height: 200,
+        width: 800,
+        enableColumnResize: false
+    });
+    
+    var granularity_store = new Ext.data.SimpleStore({
+        fields: [ 'granularity' ],
+        data: [ ['year'], ['month'], ['day'] ]
+    });
+
+    var format_store = new Ext.data.SimpleStore({
+        fields: [ 'format', 'format_name' ],
+        data: [ ['html', 'HTML'], ['tab', 'tab delimited'], ['graph', 'graphed'] ]
+    });
+    
+    var reports_store = new Ext.data.SimpleStore({
+        fields: ['id', 'report'],
+        data: [ [null,'Choose report...'],[%- PROCESS reports -%] ]
+    });
+    
+    var select_report_panel = new Ext.Panel({
+        height: 32,
+        bodyStyle: 'padding: 5px 0 0 5px;',
+        border: false,
+        items: [
+            new Ext.form.ComboBox({
+                width: 250,
+                editable: false,
+                mode: 'local',
+                triggerAction: 'all',
+                typeAhead: false,
+                valueField: 'id',
+                store: reports_store,
+                displayField: 'report',
+                value: current_report,
+                listeners: {
+                    select: function(combo, record) {
+                        activateReport( record.get('id') )
+                    }
+                }
+            })
+        ]
+    });
+
+    function activateReport( report_id ) {
+        
+        var setup_form = Ext.getCmp('report-setup-form');
+        var items = setup_form.items.items;
+
+        // Show help 
+
+        if ( !report_id ) {
+            Ext.getCmp('statistics-help-panel').getEl().update( default_help );
+            Ext.getCmp('run-report-button').disable();
+            Ext.each( items, function(field) {
+                if ( field.getName() == 'selected_resources' ) { return true; }  // Do not disable resource list
+                field.disable();
+            } );
+            return;
+        }
+
+        // var config_entry = report_config[report_id];
+        
+        Ext.getCmp('statistics-help-panel').getEl().update( report_config[report_id].help, false );
+        Ext.getCmp('run-report-button').enable();
+
+        setup_form.getForm().getEl().set( { action: report_config[report_id].uri } );
+        
+        Ext.each( items, function(field) {
+            if ( field.getName() == 'selected_resources' ) { return true; }  // Do not disable resource list
+
+            var found = false;
+            Ext.each( report_config[report_id].fields, function(f_config) {
+                if ( field.getName() == f_config ) {
+                    found = true;
+                    return false;
+                }
+            } );
+            if ( found ) {
+                field.enable();
+            }
+            else {
+                field.disable();
+            }
+        } );
+        
+        format_store.clearFilter();
+        if ( typeof(report_config[report_id].formats) == 'object' ) {
+            format_store.filterBy( function(record) {
+                // console.log(report_config[report_id].formats.indexOf( record.get('format') ) != -1);
+                return report_config[report_id].formats.indexOf( record.get('format') ) != -1;
+            });
+        }
+        
+        current_report = report_id;
+        
+    }
+
+
+    var help_panel = new Ext.Panel({
+        id: 'statistics-help-panel',
+        border: true,
+        html: default_help
+    });
+    
+    var report_setup_form = new Ext.form.FormPanel({
+        id: 'report-setup-form',
+        style: 'padding: 5px 0 0 5px;',
+        standardSubmit: true,
+        border: false,
+        items: [
+            new Ext.form.DateField({
+                name: 'start_date',
+                tabIndex: 1,
+                fieldLabel: 'Start Date',
+                format: 'Y-m-d',
+                allowBlank: false,
+                disabled: true,
+                value: hash_state.params['start_date']
+            }),
+            new Ext.form.DateField({
+                name: 'end_date',
+                tabIndex: 2,
+                fieldLabel: 'End Date',
+                format: 'Y-m-d',
+                allowBlank: false,
+                disabled: true,
+                value: hash_state.params['end_date']
+            }),
+            new Ext.form.ComboBox({
+                hiddenName: 'granularity',
+                tabIndex: 3,
+                allowBlank: false,
+                fieldLabel: 'Granularity',
+                width: 150,
+                editable: false,
+                mode: 'local',
+                triggerAction: 'all',
+                typeAhead: false,
+                valueField: 'granularity',
+                store: granularity_store,
+                displayField: 'granularity',
+                value: 'year',
+                disabled: true,
+                value: hash_state.params['granularity']
+            }),
+            new Ext.form.ComboBox({
+                hiddenName: 'format',
+                tabIndex: 4,
+                allowBlank: false,
+                fieldLabel: 'Format',
+                width: 150,
+                editable: false,
+                mode: 'local',
+                triggerAction: 'all',
+                typeAhead: false,
+                valueField: 'format',
+                store: format_store,
+                displayField: 'format_name',
+                value: 'html',
+                disabled: true,
+                value: hash_state.params['format']
+            }),
+            new Ext.form.Hidden({
+                name: 'selected_resources',
+                value: [% resources.map_join('id', ',').json %]
+            })
+        ],
+        buttonAlign: 'left',
+        buttons: [
+            {
+                text: 'Run Report',
+                id: 'run-report-button',
+                disabled: true,
+                handler: function() {
+                    var form = Ext.getCmp('report-setup-form').getForm();
+                    
+                    if ( form.isValid() ) {
+                        var params = form.getValues();
+                        hash_state.params = params;
+                        hash_state.params.current_report = current_report;
+                        hash_state.setState();
+                        form.getEl().dom.submit();
+                    }
+                }
+            }
+        ],
+        onSubmit: Ext.emptyFn
+    });
+    
+    
+    var panel = new Ext.Panel({
+        title: 'Report Setup',
+        width: 800,
+        applyTo: 'report-setup',
+        autoHeight: true,
+        style: 'margin-top: 10px',
+        items: [ select_report_panel, help_panel, report_setup_form ],
+        listeners: {
+            show: function() { activateReport( current_report ); }
+        }
+    });
+    
+    panel.show();
+    
+
+} );
+
+</script>
+
+[% BLOCK reports %]
+[%- FOREACH report IN report_config.values.sort('name') %]['[% report.id | js_data %]','[% report.name | js_data %]'][% UNLESS loop.last %],[% END %][% END -%]
+[% END %]
+
+[% BLOCK selected_resources %]
+[%- FOREACH resource IN resources %]['[% resource.name | js_data %]', '[% resource.counter_sources.map_join('name', ', ') | js_data %]'][% UNLESS loop.last %],[% END %][% END -%]
+[% END %]
+

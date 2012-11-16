@@ -1,0 +1,1 @@
+ALTER TABLE sites ADD COLUMN erm_notification_email VARCHAR(1024);

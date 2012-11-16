@@ -1,0 +1,6 @@
+[% USE url %]
+<div id="menu">
+<a href="[% url("$url_base/browse") %]">Browse</a> |
+<a href="[% url("$url_base/browse/lcc") %]">Subjects</a> |
+<a href="[% url("$url_base/browse/selected_journals") %]">Selected</a>
+</div>

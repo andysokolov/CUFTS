@@ -1,0 +1,980 @@
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    margin: 0px;
+    padding: 0px;
+}
+
+h1 {
+    font-size: 140%;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 120%;
+    font-weight: bold;
+}
+
+h3 {
+    font-size: 100%;
+    font-weight: bold;
+}
+
+form {
+    display: inline;
+}
+
+img {
+    border: 0;
+}
+
+input {
+    font-family: sans-serif;
+    font-size: 80%;
+}
+
+td {
+    font-family: Helvetica, Arial, sans-serif;  
+    border: 0;
+    padding: 0;
+}
+
+td#content {
+    padding-right: 5px;
+}
+
+table {
+    padding: 0;
+    margin: 0;
+    border-collapse: collapse;
+}
+
+table.wide-outlined {
+    width: 100%;
+    border: 1px solid #004997;
+}
+
+table.outlined {
+    border: 1px solid #004997;
+    padding: 1px;
+}
+
+table.grid {
+    border: 1px solid #004997;
+}
+
+table.grid td {
+    border: 1px solid #004997;
+    padding: 3px 5px 1px 5px;
+}
+
+table.grid td.heading {
+    background: #001457;
+}
+
+table.grid th {
+    text-align: left;
+}
+
+
+td.heading-bar {
+    font-weight: bold;
+    background: #004997;
+    color: white;
+    padding: 3px 5px;
+}
+
+td.heading-bar2 {
+    font-weight: bold;
+    background: #004997;
+    color: white;
+    padding: 3px 5px;
+    border-top: 1px #d0deed solid;
+    border-right: 1px #d0deed solid;
+}
+
+td.heading-bar2-left {
+    font-weight: bold;
+    background: #004997;
+    color: white;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-top: 1px #d0deed solid;
+    border-right: 1px #d0deed solid;
+    border-left: 1px #004997 solid;
+}
+
+
+td.heading-bar2-right {
+    font-weight: bold;
+    background: #004997;
+    color: white;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-top: 1px #d0deed solid;
+    border-left: 1px #d0deed solid;
+    border-right: 1px #004997 solid;
+}
+
+
+td.heading {
+    background: #004997;
+    font-weight: bold;
+    color: white;
+    padding: 4px 5px 2px 5px;
+    white-space: nowrap;
+}
+
+td.heading a {
+    background: #004997;
+    font-weight: bold;
+    color: white;
+    padding-right: 5px;
+    text-decoration: underline;
+}
+
+table.grid td.heading a {
+    background: #001457;
+    font-weight: bold;
+    color: white;
+    padding-right: 5px;
+    text-decoration: underline;
+}
+
+
+
+span.large-heading {
+    color: #004997;
+    font-size: 120%;
+    font-weight: bold;
+}
+
+
+span.heading {
+    color: #004997;
+    font-size: 120%;
+}
+
+span.small-heading {
+    color: #004997;
+    font-size: 100%;
+    font-weight: bold;
+}
+
+span.yes-highlight {
+    color: green;
+    font-weight: bold;
+}
+
+span.no-highlight {
+    color: red;
+    font-weight: bold;
+}
+
+
+td.label {
+    padding-left: 10px;
+    padding-right: 3px;
+    font-weight: bold;
+    color: #004997;
+}
+
+td.label0 {
+    padding: 2px 3px 2px 10px;
+    font-weight: bold;
+    color: #004997;
+    background: white;
+    white-space: nowrap;
+    text-align: right;
+    width: 5em;
+}
+
+td.label1 {
+    padding: 2px 3px 2px 10px;
+    font-weight: bold;
+    color: #004997;
+    background: #D0DEED;
+    white-space: nowrap;
+    text-align: right;
+    width: 5em;
+}
+
+td.field {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+td.field0 {
+    padding: 4px 5px 1px 5px;
+    color: black;
+    background: white;
+}
+
+td.field1 {
+    padding: 4px 5px 1px 5px;
+    background: #D0DEED;
+    color: black;
+}
+
+td.active-field0 {
+    padding: 4px 5px 1px 5px;
+    background: white;
+    color: black;
+}
+
+td.active-field1 {
+    padding: 4px 5px 1px 5px;
+    background: #D0DEED;
+    color: black;
+}
+
+td.inactive-field0 {
+    padding: 4px 5px 1px 5px;
+    background: white;
+    color: #666666;
+}
+
+td.inactive-field1 {
+    padding: 2px 5px;
+    background: #D0DEED;
+    color: #666666;
+}
+
+
+td.container {
+    background: #D0DEED;
+}
+
+td.edge {
+    background: #004997;
+}
+
+img.help {
+    border: none;
+    vertical-align: top;
+}
+
+div.row0 {
+    padding: 2px 5px;
+    color: black;
+    background: white;
+}
+
+div.row1 {
+    padding: 2px 5px;
+    background: #D0DEED;
+    color: black;
+}
+
+div.heading {
+    background: #004997;
+    font-weight: bold;
+    color: white;
+    padding: 2px 5px;
+    white-space: nowrap;
+    
+}
+
+
+/* Page header */
+
+td#logged-in {
+    font-size: 80%;
+}
+
+a {
+    color: blue;
+    text-decoration: none;
+}
+
+a.heading {
+    color: white;
+    text-decoration: none;
+}
+
+
+/* ERM Navigation on Local Resource screens */
+
+#navbar {
+    margin: 0;
+    margin-bottom: 1em;
+    padding: 0px 10px;
+    float: left;
+    border-bottom: 1px solid #004997;
+    white-space: nowrap;
+}
+
+#navbar UL {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+#navbar LI {
+    display: block;
+    margin: 0;
+    padding: 0;
+    float: left;
+    width: auto;
+}
+
+#navbar A {
+    color: #444;
+    display: block;
+    width: auto;
+    text-decoration: none;
+    background: #D0DEED;
+    margin: 0;
+    padding: 2px 10px;
+    border-left: 1px solid #fff;
+    border-top: 1px solid #004997;
+    border-right: 1px solid #115BB9;
+    line-height: 130%;
+}
+
+#navbar-list-left A {
+    color: #444;
+    display: block;
+    width: auto;
+    text-decoration: none;
+    background: #D0DEED;
+    margin: 0;
+    padding: 2px 10px;
+    border-left: 1px solid #115BB9;
+    border-top: 1px solid #004997;
+    border-right: 1px solid #115BB9;
+    line-height: 130%;
+}
+
+#navbar-list-active {
+    display: block;
+    margin: 0;
+    padding: 0;
+    float: left;
+    width: auto;
+}
+
+#navbar-list-active span {
+    color: #444;
+    display: block;
+    width: auto;
+    text-decoration: none;
+    background: #D0DEED;
+    margin: 0;
+    padding: 2px 10px;
+    border-left: 1px solid #fff;
+    border-top: 1px solid #004997;
+    border-right: 1px solid #115BB9;
+    font-weight: bold;
+    line-height: 130%;
+}
+
+#navbar-list-active-left span {
+    color: #444;
+    display: block;
+    width: auto;
+    text-decoration: none;
+    background: #D0DEED;
+    margin: 0;
+    padding: 2px 10px;
+    border-left: 1px solid #115BB9;
+    border-top: 1px solid #004997;
+    border-right: 1px solid #115BB9;
+    font-weight: bold;
+    line-height: 130%;
+}
+
+#navbar A.active:link, navbar A.active:visited {
+    position: relative;
+    z-index: 102;
+    background: #A2BBD6;
+    font-weight: bold;
+}
+#navbar A:hover, navbar A:active { background: #A2BBD6; }
+
+div.submission-results {
+    width: 95%;
+    border: 1px solid green;
+    margin-bottom: 1em;
+    margin-top: 1em;
+    padding: 3px;
+}
+
+/* Title list displays */
+
+span.local-override {
+    font-weight: bold;
+}
+
+
+/* Error reporting - FormValidator messages */
+
+span.form-results-missing, span.form-results-invalid {
+    color:red;
+    font-weight:bold;
+}
+
+div#form-invalid, div#form-unknown, div#form-missing {
+    margin: .5em 0 .5em 0;
+    color: red;
+    font-weight: bold;
+}
+
+
+
+/* Paging */
+
+td.paging {
+    background: #D0DEED;
+    color: #004997;
+    font-weight: bold;
+    padding: 2px 5px;
+    vertical-align: text-bottom;
+}
+
+td.paging img {
+    vertical-align: text-bottom;
+}
+
+span.paging-current {
+    color: black;
+}
+
+span.paging-title {
+}
+
+td.paging a {
+    color: #004997;
+}
+
+td.paging a:hover, td.paging a:active { text-decoration: underline }
+
+
+
+/* New form style starting with ERM development */
+
+div.alt {
+    background: #d0deed;
+}
+
+legend {
+    margin-left: 10px;
+    color: #004997;
+    font-weight: bold;
+}
+    
+fieldset {
+/*    float: left;
+    clear: both; */
+    display: block;
+    width: 700px;
+    padding: 0px;
+    margin: 3px 10px 11px 0px;
+    border: 1px solid #004997;
+    background: white;
+}
+
+/* Use Javascript to add this class to appropriate inputs since [type=..] doesn't work for most browsers yet */
+.standard-input {
+    padding: 2px;
+    margin: 2px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 80%;
+}
+
+.text-input {
+    width: 30em;
+    border: solid 1px black;
+}
+
+.select-input {
+    width: 30em;
+    border: solid 1px black;
+}
+
+
+
+fieldset input.date {
+    width: 14em;
+}
+
+div.field {
+    clear: both;
+    float: left;
+    position: relative;
+}
+
+div.data {
+    float: left;
+    padding: 3px;
+    width: 694px;
+}
+
+    
+div.data label {
+    width: 10em;
+    float: left;
+    text-align: left;
+    padding-top: 3px;
+}
+
+span.data {
+    float: left;
+    text-align: left;
+    padding-top: 3px;
+}
+
+div.data input, div.data textarea, div.data select {
+    float: left;
+    text-align: left;
+}
+
+.validate-error {
+    background: #ff9999;
+}
+
+div.help {
+/*    display: none; */
+    position: absolute;
+    float: left;
+    margin: -5px 1px 1px 1px;
+    left: 41.2em;
+    width: 18em;
+    border: 1px solid #c93;
+    padding: 10px 12px;
+    background: #ffc;
+}
+
+
+.help-pointer {
+    position: absolute;
+    left: -10px;
+    top: 5px;
+    width: 10px;
+    height: 19px;
+}
+
+textarea {
+    overflow: visible;
+    height: 5em;
+    border: 1px solid black;
+    width: 30em;
+}
+
+label.error {
+    margin: 5px 0px;
+    color: red;
+    font-weight: bold;
+    display: block;
+    clear: both;
+}
+
+input.error {
+    background: #faa;
+}
+
+
+/* NEW LAYOUT */
+
+div#page-header {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    float: left;
+}
+
+img#page-header-main-image {
+    float: left;
+    border: none;
+    padding: 0px;
+    
+    /* IE hack, Firefox uses !important, IE uses the second width */
+    
+    margin-left: 0px !important;
+    margin-left: -3px;
+}
+
+div#page-layout {
+    clear: both;
+}
+
+
+span#page-header-section {
+    float: right;
+    color: #d0deed;
+    font-weight: bold;
+    margin: 30px 30px 0px 0px;
+}
+
+div#logged-in {
+    float: right;
+    font-size: 80%;
+}
+
+div#navigation-main {
+    float: left;
+    font: normal 12px Verdana, sans-serif;
+    border: none;
+    width: 149px;
+}
+
+div#navigation-main ul {
+    margin: 8px 2px 12px 2px;
+    padding: 0px;
+}
+
+div#navigation-main ul li {
+    list-style: none;
+    margin: 0px;
+    text-align: left;
+    width: 100%;
+}
+
+div#navigation-main ul li ul {
+    margin: 0px;
+    padding: 0px;
+}
+
+
+div#navigation-main ul li ul li a {
+color: black;
+padding: 5px 0px 5px 20px;
+display: block;
+width: 125px;
+}
+
+div#navigation-main ul li a {
+    color: black;
+    padding: 5px 0px 5px 10px;
+    display: block;
+    width: 135px;
+}
+
+div#navigation-main a:hover {
+    background: #e0eefd;
+}
+
+div#content-container {
+    margin-left: 160px;
+    padding-top: 5px;
+}
+
+div#content {
+    padding-top: 1em;
+    float: left;
+}
+
+
+/* CRDB settings */
+
+div.site-settings-crdb-all-fields-field {
+    margin: .1em;
+    padding: 2px 4px;
+    border: 1px solid #999;
+    width: 90%;
+}
+
+div.site-settings-crdb-active-fields-field {
+    margin: .1em;
+    padding: 2px 4px;
+    border: 1px solid #999;
+}
+
+tr.site-settings-crdb-active-fields-field td {
+    margin-top: 4px;
+}
+
+td#site-settings-crdb-all-fields {
+    border-right: 1px solid #004997;
+    padding-right: 5px;
+}
+
+
+div#site-settings-crdb-all-fields-drop {
+    height: 400px;
+    width: 20em;
+    overflow: auto;
+}
+
+div#site-settings-crdb-active-fields-drop {
+    width: 25em;
+    height: 400px;
+    overflow: auto;
+}
+
+/* ERM Find */
+
+.add-button {
+    background-image: url(../images/icons/add.png) !important;
+}
+
+.delete-button {
+    background-image: url(../images/icons/delete.png) !important;
+}
+
+.accept-button {
+    background-image: url(../images/icons/accept.png) !important;
+}
+
+.alert-button {
+    background-image: url(../images/icons/exclamation.png) !important;
+}
+
+.table-button {
+    background-image: url(../images/icons/table.png) !important;
+}
+
+.table-edit-button {
+    background-image: url(../images/icons/table_edit.png) !important;
+}
+
+.table-relationship-button {
+    background-image: url(../images/icons/table_relationship.png) !important;
+}
+
+.chart-line-button {
+    background-image: url(../images/icons/chart_line.png) !important;    
+}
+
+.float-button {
+    margin-bottom: 4px;
+}
+
+.float-button .x-btn {
+    float: left;
+}
+
+
+/* ERM Alerts */
+
+#alert-selected-resources {
+    clear: both;
+}
+
+.alert-selected-resource-alert {
+    font-size: 90%;
+    margin-left: 5px;
+}
+
+.alert-selected-resource-name {
+    margin-top: 5px;
+}
+
+#alerts-resources {
+    clear: both;
+}
+
+.alerts-resource {
+    clear: both;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #aaa;
+}
+
+.alerts-resource-alert {
+    font-size: 90%;
+    margin-left: 5px;
+}
+
+.alerts-resource-name {
+    margin-top: 5px;
+}
+
+.alerts-delete-box {
+    float: left;
+    margin-top: 5px;
+    padding-right: 5px;
+}
+
+#alerts-delete-button {
+    margin-bottom: 8px;
+}
+
+/* ERM Find */
+
+#erm-main-find-form .x-panel-body {
+    background-color: #DFE8F6;
+}
+
+#erm-main-resources-find-form .x-panel-body {
+    background-color: #DFE8F6;
+}
+
+/*#erm-main-find .x-panel-ml {
+    padding-left: 0px;
+}
+#erm-main-find .x-panel-mr {
+    padding-right: 0px;
+}
+#erm-main-find .x-panel-mc {
+    padding-top: 0px;
+}
+#erm-main-find .x-panel-tbar {
+    border-top: 0pt none;
+    border-bottom: 1px solid #99BBE8;
+}
+
+#erm-main-find .x-toolbar {
+    border-top: 0pt none;
+}
+#erm-main-find .x-column-inner {
+}
+*/
+
+/* ERM Costs */
+
+table.erm-costs input {
+    font-size: 90%;
+}
+
+table.erm-costs td.action {
+    text-align: center;
+}
+
+table.erm-costs td.currency {
+    text-align: right;
+}
+
+table.erm-costs-edit input {
+    font-size: 90%;
+}
+
+tr.highlight td {
+    background: #ee8 !important;
+}
+
+/* ERM Statistics */
+
+#statistics-help-panel {
+    font-size: 14px;
+    margin: 5px;
+    padding: 10px;
+    border: 1px solid #559955;
+    background: #AAEEAA;
+}
+
+#statistics-help-panel .x-panel-body {
+    background: #AAEEAA;
+}
+
+#erm-statistics-report-info {
+    margin-bottom: 10px;
+}
+
+.erm-statistics-report table {
+}
+
+.erm-statistics-report th {
+    background: #ccc;
+    padding: 6px 6px 3px;
+}
+
+.erm-statistics-report td {
+    border: 1px solid #ddd;
+    padding: 2px 5px;
+}
+
+
+.erm-statistics-report tr {
+    background: #ddd;
+}
+
+.erm-statistics-report tr.alt {
+    background: #eee;
+}
+
+.erm-statistics-report td.data {
+    text-align: right;
+}
+
+.erm-statistics-report td.label {
+    color: black;
+    font-weight: bold;
+}
+
+.erm-statistics-report .force-width {
+    width: 20em;
+}
+
+.erm-statistics-report.erm-cost-per-use th {
+    border: 1px solid #666;
+}
+
+.erm-statistics-report.erm-cost-per-use td.left-edge {
+    border-left: 1px solid #666;
+}
+
+.erm-statistics-report.erm-cost-per-use td.right-edge {
+    border-right: 1px solid #666;
+}
+
+.erm-statistics-report.erm-cost-per-use td.label {
+    border-left: 1px solid #666;
+    border-right: 1px solid #666;
+}
+
+table.erm-cost-per-use tr.last td {
+    border-bottom: 1px solid #666;
+}
+
+
+
+
+/* ERM selected records export */
+
+table.erm-selected-export-html {
+}
+
+.erm-selected-export-html th {
+    border: 1px solid #ddd;
+    background: #ccc;
+    padding: 6px 6px 3px;
+}
+
+.erm-selected-export-html td {
+    border: 1px solid #ddd;
+    padding: 2px 5px;
+}
+
+/* ERM Counter */
+
+#erm-counter-summary td {
+    width: 2em;
+    text-align: right;
+}
+
+#erm-counter-summary td.month-header {
+    background: #eee;
+}
+
+/* ExtJS styling */
+
+.grid-hide-header .x-grid3-header { display: none; }
+
+
+/* Fake ExtJS looks for when we want the style but not the overhead of loading the JS */
+
+div.fake-ext-white {
+    border: 1px solid #99BBE8;
+    
+}
+
+div.fake-ext-blue {
+    border: 1px solid #99BBE8;
+    
+}
+
+
+h2.fake-ext {
+    border-bottom: 1px solid #99BBE8;
+    background: #DFE8F6 url(../images/default/panel/white-top-bottom.gif) repeat-x scroll 0pt -1px;
+    color: #15428B;
+    font-family: tahoma, arial, verdana, sans-serif;
+    margin: 0;
+    padding: 5px 4px;
+    font-size: 12px;
+    line-height: 15px;
+    font-weight: bold;
+}
+
+

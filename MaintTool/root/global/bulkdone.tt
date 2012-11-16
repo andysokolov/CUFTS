@@ -1,0 +1,10 @@
+[% USE url %]
+
+<p>
+The update file has been uploaded and will be processed when the title list
+updating script is next run.  You should receive an email message containing
+the results of the processing.
+</p>
+<p>
+<a href="[% url("$url_base/global/menu") %]">Return to Global Resources</a>
+</p>

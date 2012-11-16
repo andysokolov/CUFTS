@@ -1,0 +1,102 @@
+[% USE url %]
+
+ <div class="public-journal-auth">
+ <div style="margin-bottom: 5px;">
+  <span class="public-journal-title">[% journal_auth.title %]</span>
+  [% SET issns = [] %]
+  [% FOREACH issn IN journal_auth.issns %]
+   [% issns.push(issn.issn_dash) %]
+  [% END %]
+  [% IF issns.size > 0 %]
+   <span class="public-journal-issns">[ [% issns.join(', ') %] ]</span>
+  [% END %]
+  <a id="toggle-more" href="#" onClick="Element.toggle('public-journal-more'); return false;">toggle more information</a>
+ </div>
+ <div id="public-journal-more" class="public-journal-float" style="display: none;">
+  [% SET titles = journal_auth.titles %]
+  [% IF titles.exists('id') %][% SET titles = [ titles ] %][% END %]
+  [% IF titles.size > 0 %]
+   <div id="public-journal-alternate-titles"  class="public-journal-float">
+    <div class="public-journal-info-heading">Alternate Titles</div>
+   [% FOREACH title IN titles.sort('title') %]
+   [% title.title %]<br />
+   [% END %]
+   </div>
+  [% END %]
+  [% IF journal_auth.marc %]
+   [% SET marc = journal_auth.marc_object %]
+
+    [% SET subjects = ( marc.field('6..') ) %]
+    [% IF subjects.size AND subjects != '' %]
+     <div id="public-journal-marc-subjects"  class="public-journal-float">
+      <div class="public-journal-info-heading">Subjects</div>
+      [% FOREACH subject IN subjects %]
+       [% subject.as_string %]<br />
+      [% END %]
+     </div>
+    [% END %]
+
+    [% SET preceded_bys = ( marc.field('780') ) %]
+    [% IF preceded_bys.size AND preceded_bys != '' %]
+     <div id="public-journal-marc-preceded-by" class="public-journal-float">
+      <div class="public-journal-info-heading">Preceded By</div>
+      [% FOREACH preceded_by IN preceded_bys %]
+       [% preceded_by.subfield('t') || preceded_by.subfield('a') %]
+       [% IF preceded_by.subfield('x').defined %][ [% preceded_by.subfield('x') %] ][% END %]<br />
+      [% END %]
+     </div>
+    [% END %]
+
+    [% SET succeded_bys = ( marc.field('785') ) %]
+    [% IF succeded_bys.size AND succeded_bys != '' %]
+     <div id="public-journal-marc-succeded-by" class="public-journal-float">
+      <div class="public-journal-info-heading">Succeded By</div>
+      [% FOREACH succeded_by IN succeded_bys %]
+       [% succeded_by.subfield('t') || succeeded_by.subfield('a') %]
+       [% IF succeded_by.subfield('x').defined %][ [% succeded_by.subfield('x') %] ][% END %]
+       <br />
+      [% END %]
+     </div>
+
+    [% END %]
+
+  [% END %]
+ </div>
+ <div style="clear: both;">
+ [% SET holding_list = holdings.shift %]
+ [% IF holding_list.size %]
+  <table id="public-journal-holdings">
+   <tr class="public-journal-holdings-heading">
+    <td>resource</td>
+    <td>provider</td>
+    <td>citation start</td>
+    <td>citation end</td>
+    <td>fulltext start</td>
+    <td>fulltext end</td>
+    <td>embargo</td>
+   </tr>
+   [% FOREACH holding IN holding_list %]
+    <tr class="public-journal-holdings-field[% loop.count % 2 %]">
+     <td>[% holding.resource.name %]</td>
+     <td>[% holding.resource.provider %]</td>
+     <td>[% holding.cit_start_date %]</td>
+     <td>[% holding.cit_end_date %]</td>
+     <td style="white-space: nowrap;">[% holding.ft_start_date %]
+     [% IF holding.vol_ft_start.defined %]
+      [% holding.vol_ft_start %]
+      [% IF holding.iss_ft_start.defined %]([% holding.iss_ft_start %])[% END %]
+     [% END %]</td>
+     <td style="white-space: nowrap;">[% holding.ft_end_date %]
+    [% IF holding.vol_ft_end.defined %]
+     [% holding.vol_ft_end %]
+     [% IF holding.iss_ft_end.defined %]([% holding.iss_ft_end %])[% END %]
+     [% END %]</td>
+     <td>[% IF holding.embargo_days %][% holding.embargo_days %] days[% END %][% IF holding.embargo_months %][% holding.embargo_months %] months[% END %]</td>
+    </tr> 
+   [% END %]
+   </table>
+  [% ELSE %]
+   No electronic holdings found for this journal
+  [% END %]
+  </div>
+ </div>

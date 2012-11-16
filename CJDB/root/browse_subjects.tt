@@ -1,0 +1,24 @@
+[% USE url %]
+
+[% INCLUDE page_title.tt %]
+
+Subjects 
+[% SWITCH search_type %]
+ [% CASE 'startswith' %]
+  beginning with 
+ [% CASE 'exact' %]
+  matching
+ [% CASE 'any' %]
+  containing any of these words: 
+ [% CASE 'all' %]
+  containing all of these words: 
+[% END %]
+"[% search_terms %]":<br />
+<br />
+[% IF subjects.size == 0 %]
+        No results found for search.
+[% END %]
+[% FOREACH subject = subjects %]
+	<a href="[% url("$url_base/browse/journals", browse_field='subject',search_terms=subject.subject) %]">[% subject.subject | html %]</a><br />
+[% END %]
+

@@ -1,0 +1,17 @@
+[% USE HTML %]
+<div id="fatal">
+ <div id="fatal-report">
+  Fatal error(s) in <span id="fatal-package">[% fatal_package %]</span> method <span id="fatal-subname">[% fatal_subname %]</span> line <span id="fatal-line">[% fatal_line %]</span>
+ </div>
+
+ <div id="fatal-errors"><ul>
+  [% FOREACH fatal IN fatal_errors %]
+   <li>[% fatal %]</li>
+  [% END %]
+ </ul></div>
+
+ <div id="fatal-dump">
+  <div id="fatal-dump-heading">Context Dump</div>
+ [% HTML.escape(fatal_dump).replace("\n", "<br />\n").replace(" ", '&nbsp;') %]
+ </div>
+</div>

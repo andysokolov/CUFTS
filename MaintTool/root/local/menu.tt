@@ -1,0 +1,61 @@
+[% USE HTML %]
+[% USE date %]
+
+<div id="global-menu-new"><a href="[% url_base %]/local/edit">New Resource</a></div>
+
+<div id="global-menu-control" style="margin: .5em 0;">
+<form action="[% url_base %]/local/menu"><input style="margin-right: 2em;" type="submit" name="show" VALUE="[% show == 'show all' ? 'show active' : 'show all' %]"></form>
+<form action="[% url_base %]/local/menu">Search for a resource or provider: <input type="text" name="filter" value="[% HTML.escape(filter) %]"> <input type="submit" name="apply_filter" VALUE="filter"></form>
+</div>
+
+<table class="grid">
+<tr><td class="heading" align="left">&nbsp;</td><td class="heading"><a href="[% url_base %]/local/menu?sort=name">name</a></td><td class="heading"><a href="[% url_base %]/local/menu?sort=provider">provider</a></td><td class="heading">type</td><td align="left" class="heading">titles</td><td align="center" class="heading">active</td><td align="center" class="heading"><a href="[% url_base %]/local/menu?sort=rank">rank</a></td><td align="right" class="heading">title list scanned</td></tr>
+[% FOREACH resource IN resources %]
+ [% SET class = (resource.active ? 'active-field' : 'inactive-field') _ (loop.count % 2) %]
+ <tr>
+ <td class="[% class %]" style="white-space: nowrap;">
+  <a href="[% url_base %]/local/view/[% resource.local ? 'l' _ resource.local.id : 'g' _ resource.global.id %]">view</a> | 
+  <a href="[% url_base %]/local/edit/[% resource.local ? 'l' _ resource.local.id : 'g' _ resource.global.id %]">edit</a> | 
+  [% IF resource.local %]
+   <a href="[% url_base %]/local/delete/l[% resource.local.id %]" onClick="return confirmDelete('Deleting resources with a large number of titles may take up to a couple of minutes.  Please be patient.')">delete</a>
+  [% ELSE %]
+   <span class="inactive-field">delete</span>
+  [% END %]
+ </td>
+
+ <td class="[% class %]">[% resource.name %]</td>
+
+ <td class="[% class %]">[% resource.provider %]</td>
+
+ <td class="[% class %]" style="white-space: nowrap;">[% resource.resource_type.type %]</td>
+
+ <td class="[% class %]" style="white-space: nowrap;">
+  [% IF resource.global AND resource.global.do_module('has_title_list') %]
+   [% IF resource.local.auto_activate %]
+    <a href="[% url_base %]/local/titles/view/g[% resource.global.id %]?show=show+active">[% resource.global.title_count %]</a>
+   [% ELSE %]
+    <a href="[% url_base %]/local/titles/view/g[% resource.global.id %]?show=show+active">[% resource.local.record_count('active', 'true') || 0 %]</a>
+   [% END %]
+   of
+   <a href="[% url_base %]/local/titles/view/g[% resource.global.id %]?show=show+all">[% resource.global.title_count %]</a> (<a href="[% url_base %]/local/titles/bulk_global/g[% resource.global.id %]">bulk</a>)
+  [% ELSIF resource.local AND resource.local.do_module('has_title_list') %]
+   <a href="[% url_base %]/local/titles/view/l[% resource.local.id %]">[% resource.local.record_count %]</a> (<a href="[% url_base %]/local/titles/bulk_local/l[% resource.local.id %]">bulk</a>)
+  [% ELSE %]
+   N/A
+  [% END %]
+ </td>
+
+ <td class="[% class %]" align="center">
+  [% resource.active ? '<span style="color: green; font-weight: bold;">yes</span>' : 'no' %]
+ </td>
+
+ <td class="[% class %]" align="center">
+  [% resource.rank || 0  | html %]
+ </td>
+
+ <td class="[% class %]" align="right">
+  [% resource.title_list_scanned.substr(0,10) IF resource.title_list_scanned %]
+ </td>
+ </tr>
+[% END %]
+</table>

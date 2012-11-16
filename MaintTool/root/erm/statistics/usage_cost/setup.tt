@@ -1,0 +1,4 @@
+[% config_entry.help = BLOCK -%]
+Example
+[%- END %]
+[% SET config_entry.name = 'Usage Cost' %]

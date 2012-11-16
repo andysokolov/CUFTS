@@ -1,0 +1,24 @@
+[% USE url %]
+
+<div><span class="heading">[% title.title %]</span></div>
+
+<form method="post">
+<table class="grid" style="margin-top: 1em;">
+<tr>
+ <td class="heading">field</td>
+ <td class="heading">value</td>
+</tr>
+[% FOREACH field IN fields %]
+ [% NEXT IF field == 'id' %]
+ <tr>
+  <td class="label[% loop.count % 2 %]">[% field.replace('_', ' ') | html %]</td>
+  <td class="field[% loop.count % 2 %]"><input name="[% field %]" value="[% title.$field | html %]" size="30" maxlength="255" /></td>
+ </tr>
+[% END %]
+</table>
+<div style="margin-top: 1em;">
+<input type="submit" name="apply" value="apply" />
+<input type="submit" name="cancel" value="cancel" />
+<input type="hidden" name="paging_page" value="[% paging_page %]" />
+</form>
+</div>

@@ -1,0 +1,11 @@
+[% USE url %]
+
+<form>
+<select name="source_id">
+ <option value="new">Create new SUSHI record...</option>
+[% FOREACH record IN records %]
+ <option value="[% record.id %]">[% record.name %]</option>
+[% END %]
+</select>
+<input type="submit" name="submit" value="submit" />
+</form>

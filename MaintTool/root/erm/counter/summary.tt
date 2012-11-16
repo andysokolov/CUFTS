@@ -1,0 +1,41 @@
+<h1>COUNTER record summary</h1>
+<h2>[% source.name | html %]</h2>
+
+<div id="erm-counter-summary">
+<form action="[% c.uri_for( c.controller('ERM::Counter').action_for('delete_counts') ) %]" method="POST">
+<table class="grid">
+<tr><th>&nbsp;</th><th>delete</th>[% FOREACH month IN [ 1 .. 12 ] %]
+<td class="month-header">[% month %]</td>
+[% END %]
+</tr>
+[% FOREACH year IN summaries.keys.sort.reverse %]
+ <tr><th class="year">[% year %]</th><td style="text-align: center;"><input type="checkbox" name="delete_counts" value="[% year %]" /></td>
+ [% FOREACH month IN [ 1 .. 12 ] %]
+  [%- SET reccount = summaries.$year.$month || 0 -%]
+  <td class="month field">[% reccount %]</td>
+ [% END %]
+ </tr>
+[% END %]
+</table>
+<br />
+<input type="hidden" name="counter_source" value="[% source.id %]" />
+<input type="submit" name="delete" value="delete selected years" />
+</form>
+</div>
+
+
+
+<h2>View Report</h2>
+[% IF source.type == 'j' %]
+<form action="[% c.uri_for( c.controller('ERM::Statistics').action_for('counter_journal_usage') ) %]">
+[% ELSIF source.type == 'd' %]
+<form action="[% c.uri_for( c.controller('ERM::Statistics').action_for('counter_database_usage') ) %]">
+[% END %]
+<table>
+<tr><td>Start:</td><td><input type="text" name="start_date" size="10" maxlength="10" /> (YYYY-MM-DD)</td></tr>
+<tr><td>End:</td><td><input type="text" name="end_date" size="10" maxlength="10" /> (YYYY-MM-DD)</td></tr>
+</table>
+<input type="hidden" name="counter_sources" value="[% source.id %]" />
+<input type="hidden" name="format" value="html" />
+<input type="submit" name="run_report" value="show report" />
+</form>

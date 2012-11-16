@@ -1,0 +1,27 @@
+[% USE url %]
+
+[% SET journal_auth_id = journal_auth.id %]
+
+<span class="heading">[% journal_auth.title %]</span> [% FOREACH issn IN journal_auth.issns %]([% issn.issn.substr(0,4) %]-[% issn.issn.substr(4,4) %]) [% END %]<br />
+
+<div class="journal-auth-record">
+ <div class="journal-auth-marc-dump" style="margin-bottom: 4px;">
+ [% IF journal_auth.marc %]
+  <pre>[% journal_auth.marc_object.as_formatted | marc8 | html %]</pre>
+ [% ELSE %]
+  No current MARC data
+ [% END %]
+</div>
+[% IF journal_auth.marc %]
+ <a href="[% url("$url_base/journalauth/marc_download/$journal_auth_id") %]" target="_blank">Download as MARC file</a>
+[% END %]
+</div>
+
+<div style="margin-top: 5px">
+ <form enctype="multipart/form-data" method="post">
+ Upload a MARC record to attach: <input type="file" name="upload_data" />
+ <div id="submit" style="margin-top: 1em; margin-bottom: 1em;">
+ <input type="submit" name="upload" value="upload" />
+ </div>
+ </form>
+</div>

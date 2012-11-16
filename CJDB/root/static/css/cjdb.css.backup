@@ -1,0 +1,556 @@
+body {
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 80%;
+	margin: 0;
+}
+
+form {
+	display: inline;
+}
+
+.highlight {
+	font-weight: bold;
+}
+
+#page-header-background {
+	width: 100%;
+	background: url(../images/cjdb_header_repeat.gif) repeat-x;
+}
+
+#content {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+#page-footer {
+	font-family: Arial;
+	font-size: 80%;
+	text-align: center;
+	margin-top: 10em;
+}
+
+div#details {
+	margin-top: 1em;
+}
+
+div#azmenu {
+	margin-bottom: 1em;
+}
+ 
+div#journal-title {
+#	font-variant: small-caps;
+	font-size: 160%;
+	font-weight: bold;
+}
+
+div#alternate-titles {
+	border: 1px black dotted;
+	padding: 3px;
+	background: #EEEEEE;
+	margin-top: 1em;
+}
+
+div#alternate-titles-heading {
+	font-size: 120%;
+	font-weight: bold;
+	font-variant: small-caps;
+	margin-bottom: .5em;
+}
+
+.alternate-title {
+}
+
+.alternate-title-count {
+	font-size: 80%;
+}
+
+div#associations {
+	border: 1px black dotted;
+	padding: 3px;
+	background: #EEEEEE;
+	margin-top: 1em;
+}
+
+div#associations-heading {
+	font-size: 120%;
+	font-weight: bold;
+	font-variant: small-caps;
+	margin-bottom: .5em;
+}
+
+.association {
+}
+
+.association-count {
+	font-size: 80%;
+}
+
+div#subjects {
+	border: 1px black dotted;
+	padding: 3px;
+	background: #EEEEEE;
+	margin-top: 1em;
+}
+
+div#subjects-heading {
+	font-size: 120%;
+	font-weight: bold;
+	font-variant: small-caps;
+	margin-bottom: .5em;
+}
+
+.subject {
+}
+
+.subject-count {
+	font-size: 80%;
+}
+
+div#tags {
+	border: 1px black dotted;
+	padding: 3px;
+	background: #EEEEEE;
+	margin-top: 1em;
+}
+
+div#tags-heading {
+	font-size: 120%;
+	font-weight: bold;
+	font-variant: small-caps;
+	margin-bottom: .5em;
+}
+
+
+div.tag-0 {
+}
+
+div.tag-50 span.tag-name {
+	font-weight: bold;
+}
+
+div.tag-100 span.tag-name {
+	font-style: italic;
+	font-weight: bold;
+}
+
+.tag-count {
+	font-size: 80%;
+}
+
+div#my-tags {
+	border: 1px black dotted;
+	padding: 3px;
+	background: #EEEEEE;
+	margin-top: 1em;
+}
+
+div#my-tags-heading {
+	font-size: 120%;
+	font-weight: bold;
+	font-variant: small-caps;
+	margin-bottom: .5em;
+}
+
+div.tag-mine {
+}
+
+div.journal-label {
+	font-weight: bold;
+	float: left;
+	clear: left;
+}
+
+div.journal-data {
+	margin-left: 4em;
+}
+
+div#availability {
+	border: 1px black dotted;
+	padding: 3px;
+	background: #EEEEEE;
+	margin-top: 1em;
+}
+
+div#availability-heading {
+	font-weight: bold;
+	font-size: 120%;
+	font-variant: small-caps;
+}
+
+div.availability-resource {
+	margin-top: .8em;
+	font-weight: bold;
+}
+
+div.availability-label {
+	font-weight: bold;
+	font-size: 90%;
+	float: left;
+	clear: left;
+	margin-left: 10px;
+}
+
+div.availability-data {
+	margin-left: 12em;
+	font-size: 90%;
+}
+
+a:link, a:visited {
+	 text-decoration: none;
+}
+
+a:active, a:hover {
+	text-decoration: underline;
+}
+
+a {
+	color: blue;
+}
+
+div#lcc-browse {
+}
+
+div.lcc-browse1 {
+}
+
+div.lcc-browse2 {
+	margin-left: 4em;
+}
+
+div.lcc-browse3 {
+	margin-left: 8em;
+}
+
+div#lcc-browse-content img {
+	border: none;
+	vertical-align: baseline;
+}
+	
+div.lcc-browse2-group-hidden {
+	display: none;
+}
+
+div.lcc-browse3-group-hidden {
+	display: none;
+}
+
+
+div.lcc-browse2-group-visible {
+}
+
+div.lcc-browse3-group-visible {
+}
+
+
+/* Unified title and holdings screen */
+
+div.unified-journal {
+	margin-top: 1em;
+}
+
+span.unified-journal {
+	font-size: 110%;
+	font-weight: bold;
+}
+
+span.unified-journal a {
+	color: black;
+}
+
+span.unified-journal a:hover, span.unified-title a:active {
+	color: blue;
+        text-decoration: underline;
+}
+
+
+
+div.unified-availability-group {
+	margin-top: 3px;
+	padding-left: 2em;
+}
+
+span.unified-title {
+	font-size: 110%;
+	font-weight: bold;
+}
+
+span.unified-title a {
+	color: black;
+}
+
+span.unified-title a:hover, span.unified-title a:active {
+	color: blue;
+        text-decoration: underline;
+}
+
+
+span.unified-issn {
+	font-size: 80%;
+}
+
+/* Paging */
+
+.paging li {
+	display: inline;
+	list-style-type: none;
+	padding-right: 20px;
+	font: bold 110% Verdana, Arial, sans-serif;
+}
+
+ul.paging {
+}
+
+div#loginblock {
+	padding-top: 2px;
+	padding-bottom: 3px;
+	padding-left: 10px;
+	vertical-align: middle;
+	font-size: 80%;
+	border-bottom: solid 1px #004997;
+}
+
+
+table#manage-tags-table tr.manage-tags-table-heading td {
+	background-color: #CCCCCC;
+	font-size: 80%;
+	font-weight: bold;
+	padding: 0px 3px;
+}
+
+div#mytags {
+	border: 1px black dotted;
+	padding: 3px;
+	background: #EEEEEE;
+}
+
+div#mytags ul {
+	padding-left: 2px;
+}
+
+div#mytags ul li {
+	list-style-type: none;
+}
+div#mytags-heading {
+	font-size: 120%;
+	font-weight: bold;
+	font-variant: small-caps;
+	margin-bottom: .5em;
+}
+
+.subject {
+}
+
+.subject-count {
+	font-size: 80%;
+}
+
+div#tags {
+	border: 1px black dotted;
+	padding: 3px;
+	background: #EEEEEE;
+	margin-top: 1em;
+}
+
+div#tags-heading {
+	font-size: 120%;
+	font-weight: bold;
+	font-variant: small-caps;
+	margin-bottom: .5em;
+}
+
+
+div.tag-0 {
+}
+
+div.tag-50 span.tag-name {
+	font-weight: bold;
+}
+
+div.tag-100 span.tag-name {
+	font-style: italic;
+	font-weight: bold;
+}
+
+.tag-count {
+	font-size: 80%;
+}
+
+div#my-tags {
+	border: 1px black dotted;
+	padding: 3px;
+	background: #EEEEEE;
+	margin-top: 1em;
+}
+
+div#my-tags-heading {
+	font-size: 120%;
+	font-weight: bold;
+	font-variant: small-caps;
+	margin-bottom: .5em;
+}
+
+div.tag-mine {
+}
+
+div.journal-label {
+	font-weight: bold;
+	float: left;
+	clear: left;
+}
+
+div.journal-data {
+	margin-left: 4em;
+}
+
+div#availability {
+	border: 1px black dotted;
+	padding: 3px;
+	background: #EEEEEE;
+	margin-top: 1em;
+}
+
+div#availability-heading {
+	font-weight: bold;
+	font-size: 120%;
+	font-variant: small-caps;
+}
+
+div.availability-resource {
+	margin-top: .8em;
+	font-weight: bold;
+}
+
+div.availability-label {
+	font-weight: bold;
+	font-size: 90%;
+	float: left;
+	clear: left;
+	margin-left: 10px;
+}
+
+div.availability-data {
+	margin-left: 12em;
+	font-size: 90%;
+}
+
+a:link, a:visited {
+	 text-decoration: none;
+}
+
+a:active, a:hover {
+	text-decoration: underline;
+}
+
+a {
+	color: blue;
+}
+
+div#lcc-browse {
+}
+
+div.lcc-browse1 {
+}
+
+div.lcc-browse2 {
+	margin-left: 4em;
+}
+
+div.lcc-browse3 {
+	margin-left: 8em;
+}
+
+div#lcc-browse-content img {
+	border: none;
+	vertical-align: baseline;
+}
+	
+div.lcc-browse2-group-hidden {
+	display: none;
+}
+
+div.lcc-browse3-group-hidden {
+	display: none;
+}
+
+
+div.lcc-browse2-group-visible {
+}
+
+div.lcc-browse3-group-visible {
+}
+
+
+/* Unified title and holdings screen */
+
+div.unified-journal {
+	margin-top: 1em;
+}
+
+span.unified-journal {
+	font-size: 110%;
+	font-weight: bold;
+}
+
+span.unified-journal a {
+	color: black;
+}
+
+span.unified-journal a:hover, span.unified-title a:active {
+	color: blue;
+        text-decoration: underline;
+}
+
+
+
+div.unified-availability-group {
+	margin-top: 3px;
+	padding-left: 2em;
+}
+
+span.unified-title {
+	font-size: 110%;
+	font-weight: bold;
+}
+
+span.unified-title a {
+	color: black;
+}
+
+span.unified-title a:hover, span.unified-title a:active {
+	color: blue;
+        text-decoration: underline;
+}
+
+
+span.unified-issn {
+	font-size: 80%;
+}
+
+/* Paging */
+
+.paging li {
+	display: inline;
+	list-style-type: none;
+	padding-right: 20px;
+	font: bold 110% Verdana, Arial, sans-serif;
+}
+
+ul.paging {
+}
+
+div#loginblock {
+	padding-top: 2px;
+	padding-bottom: 3px;
+	padding-left: 10px;
+	vertical-align: middle;
+	font-size: 80%;
+	border-bottom: solid 1px #004997;
+}
+
+
+table#manage-tags-table tr.manage-tags-table-heading td {
+	background-color: #CCCCCC;
+	font-size: 80%;
+	font-weight: bold;
+	padding: 0px 3px;
+}

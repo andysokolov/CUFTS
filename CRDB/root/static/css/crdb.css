@@ -1,0 +1,802 @@
+/*************************************************
+ 
+  General Settings that apply to the whole site 
+ 
+**************************************************/
+
+body {
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 80%;
+    margin: 0;
+}
+
+td {
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 80%;
+}
+/* Prevent forms from forcing a line break */
+
+form {
+    display: inline;
+}
+
+/* Generic class for highlighting some text */
+
+.highlight {
+    font-weight: bold;
+}
+
+img.icon {
+    border: none;
+}
+
+
+/* Page header background, useful for a repeating image/solid background colour */
+
+/* No longer used by default because the path to the image file isn't easy
+   to determine in a CSS file.  This is now in a style tag in the page_header
+   template 
+
+#page-header-background {
+    width: 100%;
+    background: url(/static/images/cjdb_header_repeat.gif) repeat-x;
+}
+
+*/
+
+/* Page title - words at the top of every page */
+
+#page-title {
+    margin-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 180%;
+    font-variant: small-caps;
+    font-weight: bold;
+}
+
+/*  Container for the general page content */
+
+#content {
+    clear: both;
+/*    padding-left: 5px;
+    padding-right: 5px;
+*/
+}
+
+#page-footer {
+    font-family: Arial;
+    font-size: 80%;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    float: left;
+    clear: both;
+    width: 100%;
+    margin-top: 50px;
+}
+
+/* Link styling */
+
+a:link, a:visited {
+     text-decoration: none;
+}
+
+a:active, a:hover {
+    text-decoration: underline;
+}
+
+a {
+    color: blue;
+}
+
+/* Heading styles for various things */
+
+h3 {
+    font-weight: bold;
+}
+
+
+
+/**** Tags ****/
+
+
+/* Container */
+
+div#tags {
+}
+
+/* Container heading */
+
+div#tags-heading {
+}
+
+/* Different levels of tags */
+
+div.tag-0 {
+}
+
+div.tag-50 span.tag-name {
+    font-weight: bold;
+}
+
+div.tag-100 span.tag-name {
+    font-style: italic;
+    font-weight: bold;
+}
+
+/* Tag count */
+
+.tag-count {
+    font-size: 80%;
+}
+
+
+/**** My Tags ****/
+
+
+/* Container */
+
+div#my-tags {
+}
+
+/* Container heading */
+
+div#my-tags-heading {
+}
+
+/* Individual tags */
+
+.tag-mine {
+}
+
+
+/*************************************************
+
+    Page header menu/integrated login
+
+**************************************************/
+
+div#navline {
+    padding-top: 2px;
+    padding-bottom: 3px;
+    vertical-align: middle;
+    border-bottom: solid 1px #004997;
+    float: left;
+    width: 100%;
+}
+
+div#menu {
+    float: left;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+div#loginblock {
+    float: right;
+    display: block;
+    margin-right: 10px;
+}
+
+div#loggedin {
+}
+
+div#dologin {
+}
+
+div#dologin input {
+    font-size: 80%;
+}
+
+
+/*************************************************
+
+    My Tags screen
+
+**************************************************/
+
+
+table#manage-tags-table tr.manage-tags-table-heading td {
+    background-color: #CCCCCC;
+    font-size: 80%;
+    font-weight: bold;
+    padding: 0px 3px;
+    white-space: nowrap;
+}
+table#manage-tags-table td {
+    white-space: nowrap;
+}
+
+table#manage-tags-layout td {
+    vertical-align: top;
+}
+
+td#manage-tags-layout-right {
+    padding-left: 15px;
+}
+
+#manage-tags-layout dl {
+    font-size: 80%;
+}
+
+#manage-tags-layout dt {
+    font-weight: bold;
+}
+
+div#mytags {
+    border: 1px #AAAAAA solid;
+    padding: 3px;
+    background: #EEEEEE;
+}
+
+div#mytags ul {
+    padding-left: 2px;
+}
+
+div#mytags ul li {
+    list-style-type: none;
+}
+div#mytags-heading {
+    font-size: 120%;
+    font-weight: bold;
+    font-variant: small-caps;
+    margin-bottom: .5em;
+}
+
+
+/*************************************************
+
+    Account Create/Manage
+
+**************************************************/
+
+
+div#account {
+    padding-top: 1em;
+}
+
+div#account table {
+    background-color: #EEEEEE;
+    border: 1px #AAAAAA solid;
+    padding: 3px;
+}
+
+div#account td.label {
+    font-weight: bold;
+}
+
+div#account td.data {
+}
+
+
+
+/*************************************************
+
+    Main screen
+
+**************************************************/
+
+.main-box {
+    border: 1px solid #555;
+/*    float: left;*/
+    margin: 8px 0 0 10px;
+    padding: 0;
+    width: 50em;
+    background: #efefef;
+}
+
+.main-box-heading {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background: #aaa;
+}
+
+.main-box-heading h2 {
+    font-weight: bold;
+    font-size: 100%;
+    padding: 4px;
+    margin: 0;
+    color: #222;
+}
+
+.main-box-content {
+    padding: 3px;
+}
+
+#main-title a {
+    font-size: 110%;
+    margin-right: 2px;
+    margin-left: 2px;
+}
+/*************************************************
+
+    Browse screen
+
+**************************************************/
+
+div#resources-brief-subject_description {
+    margin-bottom: 10px;
+    border: 1px solid #555;
+    color: #000;
+    background: #eee;
+    clear: none;
+    float: none;
+}
+
+div#resources-brief-subject_description-content {
+    padding: 5px;
+}
+
+div#resources-brief-subject_description-edit {
+    padding: 4px;
+}
+
+textarea#resources-brief-subject_description-textarea {
+    width: 60em;
+    height: 15em;
+    border: 1px solid #333;
+    margin-left: 4px;
+    margin-bottom: 3px;
+}
+
+input#resources-brief-subject_description-submit {
+    margin-left: 5px;
+}
+
+input#resources-brief-subject_description-cancel {
+}
+
+div#resources-brief-records {
+    padding: 0;
+    clear: none;
+}
+    
+
+div.resource-brief-record {
+    padding: 5px;
+    border-bottom: 1px solid #aaa;
+    background: none;
+}
+
+div.resource-brief-field-name {
+    font-size: 120%;
+    font-weight: bold;
+    font-family: 'Trebuchet MS',Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    margin: 3px 1px;
+}
+
+div.resource-brief-field-description {
+    margin: 4px 2px;
+}
+
+div.resource-brief-default-description {
+    background: #eee;
+    margin: 5px 2px;
+    padding: 3px;
+}
+
+div.resource-brief-default-description h3 {
+    font-family: 'Trebuchet MS',Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    font-size: 100%;
+    padding: 2px 0px;
+    margin: 0px;
+}
+
+textarea.resource-brief-change-description {
+    width: 50em;
+    height: 10em;
+    border: 1px solid #333;
+    margin-left: 4px;
+    margin-bottom: 3px;
+}
+
+input.resource-brief-change-submit {
+    margin-left: 5px;
+}
+
+input.resource-brief-change-cancel {
+}
+
+
+div.resource-brief-details {
+    display: none;
+    position: absolute;
+    background: #ffc;
+    border: 1px solid #c93;
+    padding: 7px 10px;
+    width: 35em;
+    left: 5.2em;
+    margin-top: -60px;
+    font-family: Helvetica,Verdana,Arial,sans-serif;
+}
+
+div.resource-brief-record a.trigger {
+    line-height: 135%;
+}
+
+span.resource-brief-label {
+    width: 8.2em;
+    float: left;
+    font-weight: bold;
+}
+
+span.resource-brief-data {
+    float: left;
+    width: 25.5em;
+}
+
+div.resource-brief-field {
+    padding: 4px 0px;
+    float: left;
+    clear: both;
+    width: 34.8em;
+}
+
+div.ajax_loading {
+    background: #faa;
+}
+
+div#resources-brief-facets {
+    border: 1px solid blue;
+    margin-top: 20px;
+}
+
+div#resources-brief-facets h2 {
+    font-family: 'Trebuchet MS',Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    margin: 5px 0px;
+}
+
+div#resources-current-facets {
+}
+
+div.resources-current-facets-row {
+    padding: 5px 3px;
+}
+
+
+div#resources-brief-facets {
+    float: left;
+    width: 99%;
+    background: #cdf;
+}
+
+div#resource-facet-choice-wrapper {
+    width: 100%;
+    float: left;
+    border-top: 1px solid blue;
+    background: #def;
+}
+
+div#resources-brief-records-top {
+    margin-bottom: 20px;
+}
+
+div#resources-brief-records h2 {
+    margin-top: 0;
+    margin-bottom: 7px;
+    padding: 5px;
+    font-weight: bold;
+    font-size: 110%;
+    background: #aaa;
+    color: #222;
+}
+
+div.resource-brief-url {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    
+}
+
+div.resource-brief-access {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.resource-brief-field-alert {
+    color: red;
+}
+
+div.resource-brief-rank-handle {
+    margin-top: 10px;
+}
+
+.resources-sort-helper {
+    border-top: dashed 2px black;
+    border-bottom: dashed 2px black;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: auto !important;
+}
+
+div.resources-facet-choice-container {
+    padding: 0px 5px;
+    width: 30%;
+    height: 22.5em;
+    float: left;
+}
+
+div.resources-facet-choice-list {
+    width: 99%;
+    height: 19.5em;
+    overflow: auto;
+}
+
+div#resources-facet-change-list {
+    width: 18%; 
+    padding: 5px;
+    height: 27.5em;
+    background: white;
+    float: right;
+}
+
+div#resources-facet-change-list ul {
+}
+
+div#facet-count-container {
+    padding-left: 7px;
+    margin-bottom: 7px;
+    font-size: 110%;
+}
+
+ul#chosen-facets {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+    height: 15em;
+}
+
+/*************************************************
+
+    Resource screen
+
+**************************************************/
+
+
+div#resource {
+    padding-top: 20px;
+    margin-left: 5px;
+}
+
+div#resource-name {
+    font-size: 130%;
+    font-weight: bold;
+    font-family: 'Trebuchet MS',Tahoma,Verdana,Arial,Helvetica,sans-serif;
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+div.resource-field {
+    clear: both;
+}
+
+span.resource-field-label {
+}
+
+span.resource-field-data {
+    margin-left: 10em;
+}
+
+dl.resource-fields {
+    padding-left: 5px;
+}
+
+dt {
+    padding-top: 3px;
+    float: left;
+    width: 11.9em;
+    clear: left;
+}
+
+
+dd {
+    padding-top: 3px;
+    margin-left: 12em;
+}
+
+textarea.edit-in-place {
+    width: 40em;
+    height: 7em;
+}
+
+input.edit-in-place {
+    width: 40em;
+}
+
+
+td {
+    vertical-align: top;
+}
+
+td.resource-field-label {
+    width: 9.5em;
+}
+
+td.resource-edit-control {
+    text-align: center;
+    width: 50px;
+    white-space: nowrap;
+}
+
+/* Specific field styles */
+
+#resource-definition-description_full {
+    margin: 5px 0px;
+    padding: 4px 2px;
+    background: #eee;
+}
+
+#resource-definition-alert {
+    color: red;
+}
+
+#resource-definition-group_records {
+    margin: 5px 0px;
+    padding: 9px 15px 4px;
+    background: #eee;
+}
+
+#resource-definition-group_records h3 {
+    font-weight: bold;
+    font-size: 120%;
+    margin: 4px 0;
+}
+
+.resource-definition-grouped_record {
+}
+
+/* New browse screens */
+
+#resources-brief-left {
+    width: 200px;
+    float: left;
+    margin-left: 10px;
+}
+
+#resources-brief-facet-menu-container {
+    margin: 0;
+    padding: 0;
+    float: left;
+    width: 100%;
+    margin-top: 8px;
+    border: 1px solid #555;
+}
+
+.resources-brief-facet-menu {
+    float: left;
+    padding: 0;
+    width: 100%;
+    background: #efefef;
+}
+
+
+.resources-brief-facet-menu-main-heading {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background: #aaa;
+}
+
+.resources-brief-facet-menu-main-heading h1 {
+    font-weight: bold;
+    font-size: 110%;
+    padding: 4px;
+    margin: 0;
+    color: #222;
+}
+
+.resources-brief-facet-menu-heading {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background: #ccc;
+    height: 1.9em;
+}
+
+.resources-brief-facet-menu-button {
+    float: right;
+    margin: .4em .4em 0 .2em;
+    clear: none;
+    cursor: pointer;
+}
+
+
+.resources-brief-facet-menu-content {
+    padding: 3px;
+}
+
+.resources-brief-facet-menu h2 {
+    float: left;
+    font-weight: bold;
+    font-size: 100%;
+    padding: 4px;
+    margin: 0;
+    color: #222;
+    display: inline;
+}
+
+.resources-brief-facet-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.resources-brief-facet-menu li {
+    margin: 2px 0 2px 1em;
+    padding: 0;
+    text-indent: -1em;
+}
+
+#resources-brief-current-facets {
+    border: 1px solid #555;
+    float: left;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background: #83CFEB;
+}
+
+#resources-brief-current-facets-heading {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background: #649EB3;
+}
+
+#resources-brief-current-facets-heading h1 {
+    font-weight: bold;
+    font-size: 110%;
+    padding: 4px;
+    margin: 0;
+    color: #222;
+}
+
+#resources-brief-current-facets-content {
+    padding: 3px;
+}
+
+
+#resources-container {
+    margin-left: 225;
+    margin-right: 10px;
+}
+
+#resources-brief-current-facets-content dl {
+    margin: 0;
+}
+
+
+#resources-brief-current-facets-content dt {
+    float: none;
+    width: auto;
+    font-weight: bold;
+    color: #333;
+}
+
+#resources-brief-current-facets-content dd {
+    float: none;
+    width: auto;
+    margin-left: 10px;
+}
+
+#resources-brief-current-facets-content dd img {
+    border: none;
+    vertical-align: middle;
+}
+
+.resources-brief-facet-menu-collapse-control {
+    text-align: right;
+    font-weight: bold;
+}
+
+.resources-brief-facet-menu-collapse-control a {
+    margin-right: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+span.validate-message {
+    color: red;
+}

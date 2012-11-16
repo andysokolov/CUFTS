@@ -1,0 +1,68 @@
+body {
+	background: #D0DEED;
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+div#header {
+	width: 100%;
+	height: 105px;
+}
+
+div#test {
+	padding-left: 5px;
+	float: left;
+}
+
+label {
+	float: left;
+	width: 9.5em;
+}
+
+div.labels {
+	float: left;
+	width: 9.5em;
+}
+
+label.col1 {
+	float: none;
+	width: auto;
+	display: inline;
+}
+
+label.col2 {
+	float: none;
+	width: auto;
+	display: inline;
+}
+
+label.col3 {
+	float: none;
+	width: auto;
+	display: inline;
+}
+
+input, select {
+	margin-bottom: 5px;
+}
+
+input.col1 {
+	width: 10em;
+}
+
+input.col2 {
+	width: 10em;
+}
+
+input.col3 {
+	width: 10em;
+}
+
+input.submit {
+	margin-left: 11.7em;
+}
+
+br {
+	clear: left;
+}

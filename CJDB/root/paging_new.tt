@@ -1,0 +1,29 @@
+[%- RETURN IF !pager || pager.total_entries == 0 -%]
+<div class="pager results-block">
+    <div class="counter">
+        Page [% pager.current_page %] of [% pager.last_page %]. Total results: [% pager.total_entries %]
+    </div>
+    [% IF pager.last_page > 1 %]
+    <div class="pages">Page: 
+       [% IF pager.previous_page %]
+           <span><a href="[% c.req.uri_with( page => pager.first_page ) %]">&laquo;</a></span>
+           <span><a href="[% c.req.uri_with( page => pager.previous_page ) %]">&lt;</a></span>
+       [% END %]
+
+       [% start = (pager.current_page - 3) > 0 ? (pager.current_page - 3) : 1;
+        FOREACH page IN [ start .. pager.last_page ] %]
+           [% LAST IF loop.count > 6 %]
+           [% IF pager.current_page == page %]
+               <span class="current"> [% page %] </span>
+           [% ELSE %]
+               <span> <a href="[% c.req.uri_with( page => page ) %]">[% page %]</a> </span>
+           [% END %]
+       [% END %]
+
+       [% IF pager.next_page %]
+           <span><a href="[% c.req.uri_with( page => pager.next_page ) %]">&gt;</a></span>
+           <span><a href="[% c.req.uri_with( page => pager.last_page ) %]">&raquo;</a></span>
+       [% END %]
+   </div>
+   [% END %]
+</div>

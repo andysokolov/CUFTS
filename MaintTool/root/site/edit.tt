@@ -1,0 +1,48 @@
+[% USE url %]
+
+<form method="post">
+<table><tr><td>
+<table style="width: 100%;" class="outlined">
+<tr><td class="heading-bar" colspan="2">general settings</td></tr>
+<tr><td class="label0">key</td><td class="field0">[% current_site.key | html %]</td></tr>
+<tr><td class="label1">name</td><td class="field1"><input type="text" name="name" size="50" maxlength="256" value="[% current_site.name | html %]" />[% PROCESS form_results.tt frf='name' %]</td></tr>
+<tr><td class="label0">email</td><td class="field0"><input type="text" name="email" size="50" maxlength="256" value="[% current_site.email | html %]" />[% PROCESS form_results.tt frf='email' %]</td></tr>
+<tr><td class="label1">ERM notification email</td><td class="field1"><input type="text" name="erm_notification_email" size="50" maxlength="256" value="[% current_site.erm_notification_email | html %]" />[% PROCESS form_results.tt frf='erm_notification_email' %]</td></tr>
+<tr><td class="label0">proxy prefix</td><td class="field0"><input type="text" name="proxy_prefix" size="50" maxlength="256" value="[% current_site.proxy_prefix | html %]" /></td></tr>
+<tr><td class="label1">proxy prefix alternate</td><td class="field1"><input type="text" name="proxy_prefix_alternate" size="50" maxlength="256" value="[% current_site.proxy_prefix_alternate | html %]" /></td></tr>
+<tr><td class="label0">WAM proxy server</td><td class="field0"><input type="text" name="proxy_WAM" size="50" maxlength="256" value="[% current_site.proxy_WAM | html %]" /></td></tr>
+</table>
+</td></tr>
+<tr><td><br /></td></tr>
+<tr><td>
+<table style="width: 100%;" class="outlined">
+<tr><td class="heading-bar">domains</td><td  style="text-align: right; width: 10%; background: white;"><a href="[% url("$url_base/site/ips") %]">edit</a>&nbsp;&nbsp;</tr>
+[% SET count = 0 %]
+[% SET domains = current_site.domains %]
+[% IF domains != '' %]
+ [% IF domains.exists('id') %][% domains = [domains] %][% END %]
+ [% FOREACH domain IN current_site.domains %]
+	<tr><td class="field[% loop.count % 2 %]" colspan="2">[% domain.domain %]</td></tr>
+ [% END %]
+[% END %]
+</table>
+</td></tr>
+<tr><td><br /></td></tr>
+<tr><td>
+<table style="width: 100%;" class="outlined"> 
+<tr><td class="heading-bar">IP networks</td><td style="text-align: right; width: 10%; background: white;"><a href="[% url("$url_base/site/ips") %]">edit</a>&nbsp;&nbsp;</td></tr>
+[% SET ips = current_site.ips %]
+[% IF ips != '' %]
+ [% IF ips.exists('id') %][% ips = [ips] %][% END %]
+ [% FOREACH ip IN ips.sort('ip_low') %]
+  <tr>
+   <td colspan="2" class="field[% loop.count % 2 %]">[% ip.ip_low %] - [% ip.ip_high %]</td>
+  </tr>
+ [% END %]
+[% END %]
+</table>
+</td></tr>
+<tr><td><br /><input type="submit" value="submit" name="submit" /> <input type="submit" name="cancel" value="cancel" /></td></tr>
+</table>
+
+</form>

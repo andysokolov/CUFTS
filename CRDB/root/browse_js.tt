@@ -1,0 +1,204 @@
+<script type="text/javascript">
+
+[% IF sorting_enabled %]
+
+
+/* Setup handler for staff sorting of resources in a subject */
+
+function CRDB_enable_sorting() {
+
+    $('#resources-brief-records-top, #resources-brief-records-other').Sortable(
+        {
+            accept: 'resource-brief-record',
+            handle: '.handle',
+            axis: 'vertically',
+            helperclass: 'resources-sort-helper',
+            opacity: 0.8,
+            onChange: function() {
+                $.ajax({
+                    type: 'POST',
+                    url: '[% c.uri_for_site( c.controller('Resources').action_for('rerank') ) %]',
+                    dataType: 'json',
+                    data: {
+                        subject: [% facets.subject %],
+                        resource_order: $.SortSerialize('resources-brief-records-top'  )["o"]["resources-brief-records-top"],
+                        resource_other: $.SortSerialize('resources-brief-records-other')["o"]["resources-brief-records-other"]
+                    },
+                    success: function( data ) {  /* re-stripe */
+                        $('#resources-brief-records-top   div.resource-brief-record').removeClass('resource-brief-record-alt').filter(':odd').addClass('resource-brief-record-alt');
+                        $('#resources-brief-records-other div.resource-brief-record').removeClass('resource-brief-record-alt').filter(':odd').addClass('resource-brief-record-alt');
+                    }
+                });
+            }
+        }
+    );
+
+}
+
+$( function() {
+
+    CRDB_enable_sorting();
+
+} );
+
+[% END %]
+
+[% IF editing_enabled %]
+
+$( function() {
+
+ // Edit in place for subject overrides for each resource
+
+ $('div.resource-brief-field-description').bind( 'dblclick', function() {
+
+     var description_field = $(this);
+     var erm_main_id       = $(this).parents('.resource-brief-record').attr('id');
+
+     $.ajax({
+         type: 'POST',
+         url:  '[% c.uri_for_site( c.controller('Resources').action_for('subject_description') ) %]',
+         dataType: 'json',
+         data: {
+             erm_main_id: erm_main_id,
+             subject_id:  [% facets.subject %]
+         },
+         success: function( data ) {
+
+             var subject_description     = data.subject_description ? data.subject_description.escape_html() : '';
+             var description_textarea_id = 'resource-brief-field-change-description-' + erm_main_id;
+             var input_button_id         = 'resource-brief-field-change-description-submit-' + erm_main_id;
+             var cancel_button_id        = 'resource-brief-field-change-description-cancel-' + erm_main_id;
+
+             var edit_field = description_field.after( '<div class="resource-brief-description-edit"></div>' ).next();
+             description_field.hide();
+
+             edit_field.empty()
+                       .append( '<div class="resource-brief-default-description"><h3>default description</h3>' + data.description + '</div>' )
+                       .append( '<textarea class="resource-brief-change-description" name="change_description" id="' + description_textarea_id + '">' + subject_description + '</textarea><br />' )
+                       .append( '<input type="submit" name="submit" value="submit" class="resource-brief-change-submit" id="' + input_button_id + '"/> ' )
+                       .append( '<input type="submit" name="cancel" value="cancel" class="resource-brief-change-cancel" id="' + cancel_button_id + '"/>' );
+
+
+             $( '#' + description_textarea_id )[0].focus();
+
+             $( '#' + input_button_id ).bind( 'click', function(event) {
+                 event.preventDefault();
+                 $.ajax({
+                     type: 'POST',
+                     url:  '[% c.uri_for_site( c.controller('Resources').action_for('subject_description') ) %]',
+                     dataType: 'json',
+                     data: {
+                         erm_main_id: erm_main_id,
+                         subject_id:  [% facets.subject %],
+                         description: $( '#' + description_textarea_id ).val(),
+                         change: 1
+                     },
+                     success: function( new_data ) {
+                         description_field.empty().append( new_data.subject_description ? new_data.subject_description : new_data.description ).show();
+                         edit_field.hide().remove();
+                     }
+                     
+                 });
+                 
+             });
+
+             /* Cancel button - empty the div tag and put back the regular description */
+
+             $( '#' + cancel_button_id ).bind( 'click', function(event) {
+                 event.preventDefault();
+                 description_field.empty().append( data.subject_description ? data.subject_description : data.description ).show();
+                 edit_field.hide().remove();
+             });
+
+         }
+     });
+
+ } );
+
+ // Edit in place for subject description at the top of a results list
+
+ $('div#resources-brief-subject_description').bind( 'dblclick', function() {
+
+     var description_field = $(this);
+
+     $.ajax({
+         type: 'POST',
+         url:  '[% c.uri_for_site( c.controller('Browse').action_for('subject_description') ) %]',
+         dataType: 'json',
+         data: {
+             subject_id:  [% facets.subject %]
+         },
+         success: function( data ) {
+
+             var subject_description     = data.subject_description ? data.subject_description.escape_html() : '';
+
+             var content_field = $('#resources-brief-subject_description-content');
+             var edit_field    = content_field.after('<div id="resources-brief-subject_description-edit"></div>').next();
+             content_field.hide();
+
+             edit_field.empty()
+                       .append( '<textarea id="resources-brief-subject_description-textarea" name="change_subject_description">' + subject_description + '</textarea><br />' )
+                       .append( '<input type="submit" name="submit" value="submit" id="resources-brief-subject_description-submit" /> ' )
+                       .append( '<input type="submit" name="cancel" value="cancel" id="resources-brief-subject_description-cancel" />' );
+
+             $( '#resources-brief-subject_description-textarea' )[0].focus();
+
+             $( '#resources-brief-subject_description-submit' ).bind( 'click', function(event) {
+                 event.preventDefault();
+                 $.ajax({
+                     type: 'POST',
+                     url:  '[% c.uri_for_site( c.controller('Browse').action_for('subject_description') ) %]',
+                     dataType: 'json',
+                     data: {
+                         subject_id: [% facets.subject %],
+                         subject_description: $( '#resources-brief-subject_description-textarea' ).val(),
+                         change: 1
+                     },
+                     success: function( new_data ) {
+                         content_field.empty().append( new_data.subject_description ? new_data.subject_description : 'No subject description.' ).show();
+                         edit_field.hide().remove();
+                     }
+                     
+                 });
+                 
+             });
+
+             /* Cancel button - empty the div tag and put back the regular description */
+
+             $( '#resources-brief-subject_description-cancel' ).bind( 'click', function(event) {
+                 event.preventDefault();
+                 content_field.empty().append( data.subject_description ? data.subject_description : 'No subject description.' ).show();
+                 edit_field.hide().remove();
+             });
+
+         }
+     });
+
+ } );
+
+
+
+} );
+
+
+
+[% END %]
+
+function ajax_erm_resource_details( record_id ) {
+    var container = $('#resource-brief-details-' + record_id );
+    if ( !container.is('.ajax_loaded') ) {
+        container.addClass('ajax_loaded');
+        container.prepend('<div class="ajax_loading">Loading...</div>');
+        var url_string = "[% c.uri_for_site( c.controller('Resource').action_for('json'), [ 'replace_me' ]) %]/";
+        $.getJSON( url_string.replace( /replace_me/, record_id ), function(json) {
+            var container = $('#resource-brief-details-' + json.id );
+            container.find('div.ajax_loading').remove();
+            container.find('#field-resource_type').append( json.resource_type );
+            container.find('#field-resource_medium').append( json.resource_medium );
+            container.find('#field-content_types').append( json.content_types.join(', ') );
+            container.find('#field-subjects').append( json.subjects.join(', ') );
+        } );
+    }
+    container.show();
+}
+</script>

@@ -1,0 +1,11 @@
+[% USE url %]
+
+<div id="erm-menu">
+ <a href="[% url("$url_base/erm/main/") %]">Main Records</a><br />
+ <a href="[% url("$url_base/erm/license/") %]">License Records</a><br />
+ <a href="[% url("$url_base/erm/provider/") %]">Provider Records</a><br />
+ <a href="[% url("$url_base/erm/counter/") %]">COUNTER Sources</a><br />
+ <a href="[% url("$url_base/erm/sushi/") %]">SUSHI Records</a><br />
+ <a href="[% url("$url_base/erm/alerts/") %]">Alerts</a><br />
+ <a href="[% url("$url_base/erm/tables/edit") %]">Tables</a><br />
+</div>

@@ -1,0 +1,29 @@
+<html>
+<head>
+<meta name="ROBOTS" content="NOINDEX,NOFOLLOW" />
+<base href="[% url_base %]" />
+<title>CJDB</title>
+<link rel="StyleSheet" href="[% css_dir %]cjdb.css" type="text/css" media="screen, print" />
+[% IF site_css_file %]
+ <link rel="StyleSheet" href="[% site_css_file %]" type="text/css" media="screen, print" />
+[% END %]
+<script src="[% js_dir %]cjdb.js" type="text/javascript"></script>
+<!--
+<script src="[% js_dir %]prototype.js" type="text/javascript"></script>
+<script src="[% js_dir %]scriptaculous.js?load=builder,effects,controls" type="text/javascript"></script>
+-->
+<script src="[% js_dir %]jquery.js" type="text/javascript"></script>
+<script src="[% js_dir %]interface.js" type="text/javascript"></script>
+[% IF include_javascript %]<script type="text/javascript">[% include_javascript %]</script>[% END %]
+</head>
+<body style="margin: 0; border: 0" [% IF javascript_onload %]onLoad="[% javascript_onload %]"[% END %]>
+[% PROCESS page_header.tt %]
+[% PROCESS nav_line.tt %]
+<div id="content">
+[%- PROCESS errors.tt -%]
+[%- content -%]
+</div>
+
+[% PROCESS page_footer.tt %]
+
+</body></html>

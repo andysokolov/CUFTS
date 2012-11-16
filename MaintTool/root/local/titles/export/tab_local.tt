@@ -1,0 +1,11 @@
+[%- CALL c.response.content_type('text/plain') -%]
+[%- SET no_wrap = 1; 
+    SET columns = local_resource.do_module('title_list_fields');
+    SET columns = columns.simple_difference(['id']);
+-%]
+[% columns.join("\t") %]
+[% FOREACH local_title IN local_titles -%]
+[%- FOREACH column IN columns -%]
+[%- local_title.$column -%][%- UNLESS loop.last %]	[% END -%]
+[% END %]
+[% END -%]

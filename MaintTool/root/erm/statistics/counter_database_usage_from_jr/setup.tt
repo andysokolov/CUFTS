@@ -1,0 +1,5 @@
+[% config_entry.help = BLOCK -%]
+This report shows the database usage from COUNTER sources using the fulltext journal access stats.  If you select multiple resources that include different counter sources, the counts will be merged.
+[%- END %]
+[% SET config_entry.name = 'COUNTER database usage from journals' %]
+[% SET config_entry.formats = [ 'html', 'tab' ] %]

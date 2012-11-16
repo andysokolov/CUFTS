@@ -1,0 +1,9 @@
+<div style="padding-bottom: .5em;"><span class="heading">[% global_resource.name | html %]</span></div>
+
+<table class="grid">
+<tr><td class="header-bar" colspan="2">results</td></tr>
+<tr><td class="label0">errors</td><td class="field0">[% bulk_results.error_count %]</td></tr>
+<tr><td class="label1">processed</td><td class="field1">[% bulk_results.processed_count %]</td></tr>
+<tr><td class="label0">new</td><td class="field0">[% bulk_results.new_count %]</td></tr>
+<tr><td class="label1">deactivated</td><td class="field1">[% bulk_results.deactivated_count %]</td></tr>
+</table>

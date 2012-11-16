@@ -1,0 +1,16 @@
+<div id="loginblock">
+<div id="loggedin">
+[% IF c.user %]
+Logged in as <b>[% c.user.name | html %]</b> |
+<a href="[% c.uri_for_site( c.controller('Account').action_for('manage') ) %]">my account</a> |
+<!-- <a href="[% c.uri_for_site( c.controller('Account').action_for('tags') ) %]">my tags</a> | -->
+<a href="[% c.uri_for_site( c.controller('Account').action_for('logout') ) %]">logout</a>
+[% ELSE %]
+<a href="[% c.uri_for_site( c.controller('Account').action_for('login') ) %]" onClick="$('#dologin').show(); $('#loggedin').hide(); return false;">Log in</a> or <a href="[% c.uri_for_site( c.controller('Account').action_for('create') ) %]">create</a> a new account to use extra features.
+[% END %]
+</div>
+<div id="dologin" style="display: none;">
+<form action="[% c.uri_for_site( c.controller('Account').action_for('login') ) %]" method="post">Log in: <input id="key" name="key" type="text" size="20" maxlength="128" /> Password: <input name="password" type="password" size="20" maxlength="128" /> <input type="submit" name="login" value="login" />
+</form>
+</div>
+</div>

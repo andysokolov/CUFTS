@@ -1,0 +1,1 @@
+ALTER TABLE sites ADD COLUMN marc_dump_direct_links BOOLEAN DEFAULT false;

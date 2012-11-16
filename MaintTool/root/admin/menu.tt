@@ -1,0 +1,6 @@
+[% USE url %]
+
+<div id="admin-menu">
+<a href="[% url("$url_base/admin/account/menu") %]">Accounts</a> |
+<a href="[% url("$url_base/admin/site/menu") %]">Sites</a>
+</div>

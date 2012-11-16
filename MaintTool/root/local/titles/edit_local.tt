@@ -1,0 +1,37 @@
+[% USE url %]
+
+<div>
+    <span class="heading">[% local_title.title | html %]</span>
+    [% IF local_title %]<a href="[% url("$url_base/local/titles/delete_local/l$local_resource.id?local_id=$local_title.id") %]" onClick="return confirmDelete()">delete record</a>[% END %]
+</div>
+
+<form method="post" action="[% url("$url_base/local/titles/edit_local/l$local_resource.id") %]">
+<input type="hidden" name="paging_page" value="[% paging_page %]" />
+<input type="hidden" name="local_id" value="[% local_title.id %]" />
+<table class="grid" style="margin-top: 1em;">
+<tr>
+ <td class="heading">field</td>
+ <td class="heading">value</td>
+</tr>
+[% FOREACH field IN override_fields %]
+ [% NEXT IF field == 'id' %]
+ <tr>
+  <td class="label[% loop.count % 2 %]">[% field.replace('_', ' ') | html %]</td>
+  <td class="field[% loop.count % 2 %]">
+  [% IF field == 'coverage' %]
+   <textarea name="[% field %]" style="width: 50em; font-family: sans-serif; font-size: 80%;" height="5" >[% local_title.$field | html %]</textarea>
+  [% ELSE %]
+   <input name="[% field %]" value="[% local_title.$field | html %]" style="width: 50em;" maxlength="1024" />
+  [% END %]
+  </td>
+ </tr>
+[% END %]
+</table>
+<div style="margin-top: 1em;">
+<input type="submit" name="apply" value="apply" />
+</form>
+<form method="post" action="[% url("$url_base/local/titles/view/l$local_resource.id") %]">
+<input type="submit" name="cancel" value="cancel" />
+<input type="hidden" name="page" value="[% paging_page %]" />
+</form>
+</div>

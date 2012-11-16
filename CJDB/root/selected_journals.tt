@@ -1,0 +1,40 @@
+[% USE url %]
+
+[% INCLUDE page_title.tt add = 'Selected' %]
+
+[% PROCESS selected_journals_data.tt %]
+
+[% SET sorted_keys = selected_journals_data.keys.sort %]
+[% SET midpoint = (sorted_keys.size + 1) div 2 %]
+
+[% SET x = 0 %]
+<table>
+[% WHILE x < midpoint %]
+ <tr>
+  <td>
+   [% PROCESS create_sj_url key=sorted_keys.$x %]
+  </td>
+  [% SET xpm = x + midpoint %]
+  [% SET x = x + 1 %]
+
+  <td>
+   [% IF sorted_keys.$xpm.defined %]
+    [% PROCESS create_sj_url key=sorted_keys.$xpm %] 
+   [% END %]
+  </td>
+ </tr>
+[% END %]
+</table>
+
+[% BLOCK create_sj_url %]
+ [% SET url_data = selected_journals_data.$key %]
+ [% SET url_data_string = '' %]
+ [% FOREACH data IN url_data %]
+  [% SET data = data.uri_escape %]
+  [% SET url_data_string = url_data_string _ data %]
+  [% UNLESS loop.last %]
+   [% SET url_data_string = url_data_string _ '/' %]
+  [% END %]
+ [% END %]
+ <a href="[% url("$url_base/browse/bytags/$url_data_string", level=selected_journals_level, viewing=selected_journals_viewing) %]">[% key | html %]</a> 
+[% END %]

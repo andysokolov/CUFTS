@@ -1,0 +1,20 @@
+[%#  Labels for facets - remove from these lists if you do not want a label for that facet type %]
+
+[% SET facet_labels = {
+    content_type    => "Content Type",
+    keyword         => "Keyword",
+    name            => "Name",
+    resource_type   => "Resource Type",
+    resource_medium => "Resource Medium",
+    subject         => "Subject",
+} %]
+
+<script type="text/javascript">
+var facet_labels = new Object();
+facet_labels["content_type"]    = "[% facet_labels.content_type %]";
+facet_labels["keyword"]         = "[% facet_labels.keyword %]";
+facet_labels["name"]            = "[% facet_labels.name %]";
+facet_labels["resource_type"]   = "[% facet_labels.resource_type %]";
+facet_labels["resource_medium"] = "[% facet_labels.resource_medium %]";
+facet_labels["subject"]         = "[% facet_labels.subject %]";
+</script>

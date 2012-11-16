@@ -1,0 +1,24 @@
+[% USE url %]
+
+<div>
+<a href="[% url("$url_base/admin/site/edit") %]">New Site</a> |
+</div>
+
+<div style="margin-top: 1em;">
+<table style="border: 1px solid #004997">
+<tr><td class="heading">&nbsp;</td><td class="heading">key</td><td class="heading">name</td></tr>
+[% FOREACH site IN sites.sort('name') %]
+ [% SET class = (site.active ? 'active-field' : 'inactive-field') _ (loop.count % 2) %]
+ [% SET site_id = site.id %]
+ <tr>
+  <td class="[% class %]">
+   <a href="[% url("$url_base/admin/site/view/$site_id")   %]">view</a> |
+   <a href="[% url("$url_base/admin/site/edit/$site_id")   %]">edit</a> |
+   <a href="[% url("$url_base/admin/site/delete/$site_id") %]" onClick="return confirmDelete()">delete</a>
+  </td>
+  <td class="[% class %]">[% site.key  | html %]</td>
+  <td class="[% class %]">[% site.name | html %]</td>
+ </tr>
+[% END %]
+</table>
+</div>

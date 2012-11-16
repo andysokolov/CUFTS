@@ -1,0 +1,95 @@
+[% USE url %]
+
+[% SET columns = global_resource.do_module('title_list_fields') %]
+[% SET temp_cols = columns.merge(global_resource.do_module('overridable_title_list_fields')).unique %]
+
+[%# *********************************************
+
+     Check all the records to see what columns aren't being used.  Rebuild
+     the columns list using only the columns which contain data.
+
+    ************************************************* %]
+
+[%
+ SET columns_check = {};
+ SET columns = [];
+%]
+[% FOREACH col IN temp_cols %]
+ [% SET x = 0 %]
+ [% WHILE x <= global_titles.max %]
+  [% IF global_titles.$x.$col.defined OR local_titles.$x.$col.defined %]
+   [% SET columns_check.$col = 1 %]
+   [% LAST %]
+  [% END %]
+  [% SET x = x + 1 %]
+ [% END %]
+[% END %]
+
+[% FOREACH col IN temp_cols %]
+ [% columns.push(col) IF columns_check.$col %]
+[% END %]
+
+[% SET paging_url = url_base _ '/local/titles/view/g' _ global_resource.id _ '?page=' %]
+
+[% paging_text = BLOCK %][% PROCESS paging.tt %][% END %]
+
+[%# ******* ACTUAL DISPLAY CODE BEGINS HERE *************** %]
+
+<div><span class="heading">[% global_resource.name %]</span></div>
+<div style="margin-top: 1em;">
+<form method="post" action="[% url("$url_base/local/titles/view/g$global_resource.id") %]">
+Search within this list: <input type="text" name="filter" value="[% filter %]"> <input type="submit" name="apply_filter" value="filter">
+</form>
+<form method="post" action="[% url("$url_base/local/titles/edit/g$global_resource.id") %]">
+<input type="hidden" name="page" value="[% paging_page %]" />
+<input type="submit" name="edit" style="margin-left: 2em;" value="edit page" />
+</form>
+[% UNLESS local_resource.auto_activate %]
+ <form method="post" action="[% url("$url_base/local/titles/apply_view/g$global_resource.id") %]">
+ <input type="hidden" name="page" value="[% paging_page %]" />
+ <input type="submit" style="margin-left: 2em;" name="show" value="[% show == 'show all' ? 'show active' : 'show all' %]">
+ <input type="submit" name="activate_all" value="activate all" onClick="return confirmActivate()" />
+ <input type="submit" name="deactivate_all" value="deactivate all" onClick="return confirmDeactivate()" />
+ <input type="submit" name="apply" value="apply changes" style="margin-left: 2em;" />
+[% END %]
+</div>
+
+<div style="margin-top: 1em;">
+<table style="width: 99%" class="grid">
+ <tr><td colspan="[% columns.size + 1 %]" class="paging">[% paging_text %]</td></tr>
+ <tr>
+  <td class="heading" align="center">active</td>
+  [% FOREACH col IN columns %]
+   <td class="heading">[% col.replace('_', ' ') %]</td>
+  [% END %]
+ </tr>
+ [% FOREACH title IN global_titles %]
+  [% SET local_title = local_titles.shift %]
+  [% SET class = ((local_title.active || local_resource.auto_activate) ? 'active-' : 'inactive-') _ 'field' _ (loop.count % 2) %]
+  <tr>
+   <td class="[% class %]" align="center">
+   [% IF local_resource.auto_activate %]
+    <input type="checkbox" name="ignoreme" value="" disabled="disabled" checked="checked" />
+   [% ELSE %]
+    <input type="checkbox" name="new_[% title.id %]_active" [% 'checked="checked"' IF local_title.active %] value="true" />
+    <input type="hidden" name="orig_[% title.id %]_active" value="[% local_title.active ? 'true' : 'false' %]" />
+   [% END %]
+   [% FOREACH col IN columns %]
+    <td class="[% class %]">
+     [% IF col == "id" %]
+      <a href="[% url("$url_base/local/titles/single/g$global_resource.id?global_id=$title.id&paging_page=$paging_page") %]">[% title.id %]</a>
+     [% ELSE %]
+      [% IF local_title.$col.defined %]
+       <span class="local-override">[% local_title.$col | html %]</span>
+      [% ELSE %]
+       [% title.$col | html %]
+      [% END %]
+     [% END %]
+    </td>
+   [% END %]
+  </tr>
+ [% END %]
+ <tr><td colspan="[% columns.size + 1 %]" class="paging">[% paging_text %]</td></tr>
+</table>
+</div>
+</form>

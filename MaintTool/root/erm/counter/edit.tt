@@ -1,0 +1,157 @@
+[% USE url %]
+
+<div id="counter-edit-key">
+ [% source.name || 'New COUNTER Source' | html %]
+ <form method="post" action="[% url("$url_base/erm/counter/delete/") %]">
+  <input style="margin-left: 10px;" type="submit" name="delete" value="delete" />
+  <input type="hidden" name="source_id" value="[% source.id %]" />
+ </form> 
+</div>
+
+
+<form method="post" name="counter-form" enctype="multipart/form-data" id="counter-form">
+
+<div id="page-terms" class="tabs-nav-page">
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+<fieldset>
+
+<legend>General</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="counter-edit-input-name">name</label>
+  <input id="counter-edit-input-name" name="name" value="[% source.name | html %]" style="width: 30em;" />
+  [% PROCESS form_results.tt frf='name' %]
+ </div>
+ <div class="help">
+  Name for this COUNTER source.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="counter-edit-input-type">type</label>
+  <select id="counter-edit-input-type" name="type" style="width: 19em">
+   <option value="j" [% 'selected="selected"' IF source.type == 'j' %]>Journal Statistics</option>
+   <option value="d" [% 'selected="selected"' IF source.type == 'd' %]>Database Statistics</option>
+  </select>
+ </div>
+ <div class="help">
+  What type of COUNTER reports this source will handle.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <a href="[% url("$url_base/erm/counter/stats_summary/$source.id") %]">View COUNTER stats summary</a>
+ </div>
+</div>
+
+</fieldset>
+
+<fieldset>
+
+<legend>SUSHI</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="counter-edit-input-erm_sushi">SUSHI resource</label>
+  <select id="counter-edit-input-erm_sushi" name="erm_sushi" style="width: 19em">
+   [% IF erm_sushi_options.defined %]
+    <option value=""></option>
+    [% FOREACH erm_sushi_option IN erm_sushi_options %]
+     <option value="[% erm_sushi_option.id %]" [% 'selected="selected"' IF source.erm_sushi.id == erm_sushi_option.id %]>[% erm_sushi_option.name | html %]</option>
+    [% END %]
+   [% ELSE %]
+    <option value="">None available</option>
+   [% END %]
+  </select>
+ </div>
+ <div class="help">
+  SUSHI resource to use for automated COUNTER retrieval, if available.
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
+  <label for="counter-edit-input-reference">reference</label>
+  <input id="counter-edit-input-reference" name="reference" value="[% source.reference | html %]" style="width: 15em;" />
+  [% PROCESS form_results.tt frf='reference' %]
+ </div>
+ <div class="help">
+  SUSHI customer reference field to send.
+ </div>
+</div>
+
+</fieldset>
+
+<fieldset>
+    
+<legend>SUSHI Scheduling</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="counter-edit-input-next_run_date">next run date</label>
+  <input id="counter-edit-input-next_run_date" name="next_run_date" value="[% source.next_run_date | html %]" style="width: 10em;" />
+  [% PROCESS form_results.tt frf='next_run_date' %]
+ </div>
+ <div class="help">
+  Date the next SUSHI run will be done on.  YYYY-MM-DD.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="counter-edit-input-run_start_date">start date</label>
+  <input id="counter-edit-input-run_start_date" name="run_start_date" value="[% source.run_start_date | html %]" style="width: 10em;" />
+  [% PROCESS form_results.tt frf='run_start_date' %]
+ </div>
+ <div class="help">
+  Start date for the statistics range for the next SUSHI run.  YYYY-MM-DD.  Total requested period will be start date plus interval months.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="counter-edit-input-interval_months">interval_months</label>
+  <input id="counter-edit-input-interval_months" name="interval_months" value="[% source.interval_months | html %]" style="width: 5em;" />
+  [% PROCESS form_results.tt frf='interval_months' %]
+ </div>
+ <div class="help">
+  Number of months before COUNTER data is available from this source.
+ </div>
+</div>
+
+</fieldset>
+
+<fieldset>
+    
+<legend>File Upload</legend>
+
+<div class="field">
+ <div class="data">
+  <label for="counter-edit-input-upload">COUNTER file</label>
+  <input id="counter-edit-input-upload" name="file" type="file" style="width: 10em;" />
+ </div>
+ <div class="help">
+  Upload a new file of COUNTER statistics.
+ </div>
+</div>
+
+</fieldset>
+
+<div style="padding: 1em 0px;">
+ <input type="submit" name="submit" value="submit"> <input type="reset" name="reset" value="reset">
+</div>
+
+</div>
+
+
+</form>
+
+

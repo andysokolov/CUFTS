@@ -1,0 +1,9 @@
+[% message -%]
+<form name="login" action="[% url_base %]/login" method="post">
+<table class="outlined">
+<tr><td colspan="2" class="heading-bar" align="left">CUFTS maintenance login</td></tr>
+<tr><td class="label0">login</td><td class="field0"><input type="text" name="login_key" size="20" maxlength="64" /></td></tr>
+<tr><td class="label0">password</td><td class="field0"><input type="password" name="login_password" size="20" maxlength="32" /></td></tr>
+<tr><td class="field0" colspan="2" align="right"><input type="submit" name="submit" value="login"></td></tr>
+</table>
+</form>

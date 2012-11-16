@@ -1,0 +1,85 @@
+[% USE url %]
+[% USE num_format = format('%0.03f') %]
+
+<form enctype="multipart/form-data" method="post">
+<table>
+<tr><td>
+<table class="outlined" style="width: 100%;">
+ <tr><td class="heading-bar" colspan="5">CJDB print MARC record files</td></tr>
+ <tr><td class="heading-bar2-left" style="width: 1%; text-align: center;">delete</td>
+     <td class="heading-bar2" style="width: 1%; text-align: center;">rebuild with print</td>
+     <td class="heading-bar2" style="width: 1%; text-align: center;">rebuild electronic only</td>
+     <td class="heading-bar2" style="width: 1%; text-align: center;">test</td>
+     <td class="heading-bar2-right" style="text-align: left;">file</td>
+ </tr>
+
+ [% IF print_files.size %]
+  [% FOREACH print_file IN print_files %]
+   [% SET index = loop.count - 1 %]
+   [% SET file_size = print_file_sizes.$index / 1048576 %]
+   [% SET class = 'field' _ (loop.count % 2) %] 
+   <tr>
+    <td class="[% class %]" style="width: 1%; text-align: center"><input type="checkbox" name="delete" value="[% print_file %]" /></td>
+    <td class="[% class %]" style="width: 1%; text-align: center"><input id="rebuild[% loop.count %]" type="checkbox" name="rebuild" value="[% print_file %]" [% IF current_site.rebuild_cjdb.split('\|').in(print_file) %]checked="checked"[% END %] onClick="if (this.checked) { $('marc[% loop.count %]').checked = false; }" /></td>
+    <td class="[% class %]" style="width: 1%; text-align: center"><input id="marc[% loop.count %]"type="checkbox" name="MARC" value="[% print_file %]" [% IF current_site.rebuild_MARC.split('\|').in(print_file) %]checked="checked"[% END %] onClick="if (this.checked) { $('rebuild[% loop.count %]').checked = false; }"/></td>
+    <td class="[% class %]" style="width: 1%; text-align: center"><input type="checkbox" name="test" value="[% print_file %]" [% IF current_site.test_MARC_file.split('\|').in(print_file) %]checked="checked"[% END %] /></td>
+    <td class="[% class %]">[% print_file %] ([% num_format(file_size) %] MB)</td>
+   </tr>
+  [% END %]
+ [% ELSE %]
+  <tr>
+   <td class="field1">&nbsp;</td>
+   <td class="field1">&nbsp;</td>
+   <td class="field1" style="width: 1%; text-align: center;"><input type="checkbox" name="rebuild_ejournals_only" value="1" [% IF current_site.rebuild_ejournals_only %]checked="checked"[% END %] /></td>
+   <td class="field1">&nbsp;</td>
+   <td class="field1">No print files available, rebuild from CUFTS data only</td></tr>
+ [% END %]
+ <tr><td class="heading-bar" colspan="5">upload file</td></tr>
+ <tr>
+  <td colspan="5">
+   <table style="width: 100%;">
+    <tr><td class="label1" style="text-align: left;">label</td><td class="label1" style="text-align: left;">file</td></tr>
+    <tr>
+     <td class="field1"><input type="text" name="upload_label" value="" size="20" maxlength="128" /></td>
+     <td class="field1"><input type="file" name="cjdb_data_upload">&nbsp;&nbsp;<input type="submit" name="upload_data" value="upload" /></td>
+    </tr>
+   </table>
+  </td>
+ </tr>
+</table>
+</td></tr>
+
+<tr><td><br /></td></tr>
+
+<tr><td>
+<table class="outlined" style="width: 100%;">
+ <tr><td class="heading-bar" colspan="2">MARC data</td></tr>
+ <tr><td class="label1">readable</td><td class="field1"><a href="[% url("${MARC_url}marc_dump.txt") %]">marc_data.txt</a></td></tr>
+ <tr><td class="label0">transmission</td><td class="field0"><a href="[% url("${MARC_url}marc_dump.mrc") %]">marc_data.mrc</a></td></tr>
+</table>
+</td></tr>
+
+<tr><td><br /></td></tr>
+
+<tr><td>
+<table class="outlined" style="width: 100%;">
+ <tr>
+  <td class="heading-bar2-left" style="width: 1%;">delete</td>
+  <td class="heading-bar2-right">file</td></tr>
+   [% IF call_number_file.defined %]
+    <tr><td class="field1" style="width: 1%; text-align: center"><input name="delete_lccn" type="checkbox" value="1" /></td><td class="field1">[% call_number_file %]</td></tr>
+   [% ELSE %]
+    <tr><td class="field1" colspan="2">No call number file uploaded.</td></tr>
+   [% END %]
+  </td>
+ </tr>
+ <tr><td class="heading-bar" colspan="4">upload file</td></tr>
+ <tr><td colspan="4" class="field1">
+  <input type="file" name="lccn_data_upload">&nbsp;&nbsp;<input type="submit" name="upload_lccn" value="upload">
+ </td></tr>
+</table>
+</td></tr>
+</table>
+<br />
+<input type="submit" name="submit" value="submit"> <input type="submit" name="cancel" value="cancel">
+</form>

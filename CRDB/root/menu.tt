@@ -1,0 +1,4 @@
+[% USE url %]
+<div id="menu">
+<a href="[% c.uri_for_site( c.controller('Root').action_for('app_root') ) %]">Home</a>
+</div>

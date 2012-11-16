@@ -1,0 +1,78 @@
+<!DOCTYPE html> 
+<html> 
+ <head> 
+ <title>CRDB Mobile</title> 
+ <link rel="stylesheet" href="[% c.uri_for_css('jquery.mobile-1.0a3.min.css') %]" />
+ <link rel="stylesheet" href="[% c.uri_for_css('crdb_mobile.css') %]" />
+ [% IF site_css_file %]
+  <link rel="StyleSheet" href="[% site_css_file %]" type="text/css" media="screen, print" />
+ [% END %]
+ <script type="text/javascript" src="[% c.uri_for_js('jquery-1.6.4.min.js') %]"></script>
+ <script type="text/javascript" src="[% c.uri_for_js('jquery.mobile-1.0a3.min.js') %]"></script>
+ <script type="text/javascript" src="[% c.uri_for_js('crdb_mobile.js') %]"></script>
+</head> 
+<body> 
+
+<div data-role="page" id="home">
+[% PROCESS mobile_app_header.tt %]
+ <div data-role="header"><h1>Browse by ...</h1></div>
+ <div data-role="content">
+  <ul data-role="listview">
+   <li><a href="#az">Name</a></li>
+   <li><a href="#subjects">Subject</a></li>
+  </ul>
+ </div>
+ [% PROCESS mobile_app_footer.tt %]
+</div>
+
+<div data-role="page" id="az">
+[% PROCESS mobile_app_header.tt %]
+ <div data-role="header"><a data-rel="back" data-icon="back">Back</a><h1>Names</h1><a href="#home" data-icon="home" data-iconpos="notext">Home</a></div>
+ <div data-role="content">
+  <ul data-role="listview">
+   <li><a href="#resources" letter="#">#</a></li>
+   [% FOREACH letter IN [ 'A'..'Z' ] %]
+   <li><a href="#resources" letter="[% letter %]">[% letter %]</a></li>
+   [% END %]
+  </ul>
+ </div>
+ [% PROCESS mobile_app_footer.tt %]
+</div>
+
+<div data-role="page" id="subjects">
+[% PROCESS mobile_app_header.tt %]
+ <div data-role="header"><a data-rel="back" data-icon="back">Back</a><h1>Subjects</h1><a href="#home" data-icon="home" data-iconpos="notext">Home</a></div>
+ <div data-role="content">
+  <ul data-role="listview">
+  </ul>
+ </div>
+ [% PROCESS mobile_app_footer.tt %]
+</div>
+
+<div data-role="page" id="resources">
+[% PROCESS mobile_app_header.tt %]
+ <div data-role="header"><a data-rel="back" data-icon="back">Back</a><h1></h1><a href="#home" data-icon="home" data-iconpos="notext">Home</a></div>
+ <div data-role="content">
+  <ul data-role="listview">
+  </ul>
+ </div>
+ [% PROCESS mobile_app_footer.tt %]
+</div>
+
+<div data-role="page" id="full">
+[% PROCESS mobile_app_header.tt %]
+ <div data-role="header"><a data-rel="back" data-icon="back">Back</a><h1>Resource</h1><a href="#home" data-icon="home" data-iconpos="notext">Home</a></div>
+ <div data-role="content">
+  <div id="resource"></div>
+ </div>
+ [% PROCESS mobile_app_footer.tt %]
+</div>
+
+</body>
+</html>
+
+[% PROCESS mobile_app_js_setup.tt %]
+
+<script>
+CRDB_mobile.initApp();
+</script>

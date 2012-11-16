@@ -1,0 +1,106 @@
+Administration
+==============
+
+When CUFTS is first installed, it will create an administrator account
+called "admin" with a password of "admin".  Your first task is to log in as
+admin and change the password.  You can do this in the "Account Settings"
+screen.
+
+Administrator accounts have access to do things like create other accounts,
+create sites, change their site to anything, edit global resources, etc. 
+The Quick Start section of the INSTALL document gives you a quick rundown on
+creating sites and accounts.
+
+Special Global Resources
+========================
+
+There is one special global resource (at the time of this writing) that you
+should have a look at first.  It is the resource for CrossRef - an online
+system which allows you to get metadata about a citation, including looking
+up DOIs.  This is critical for a number of other resources which require
+DOIs when linking to the article level.
+
+CrossRef requires you to sign a license to use their service, however it is
+free.  Once you have signed up and received an account name and password,
+you should go into "edit" for CrossRef under the global resources and set
+the authorization name and password fields.  The best solution is to sign a
+license covering all your sites in one, however if individual sites have
+their own licenses, they can set those fields in the local resources section
+as well.
+
+Global Resource Administration
+==============================
+
+You can update your global resources by uploading title lists, however once
+you have done that you will be out of sync with the main CUFTS database. 
+It's not a big deal as we will post new title lists as we load them into our
+main system and you can then load the ones that are relevant to you.  If you
+have global title lists that you think may be useful to others, we encourage
+you to send them to us so we can include them in the main system.
+
+If you've loaded the global resources which came with CUFTS, you wont have
+to do much in the way of administration of global resources.  If you do wish
+to load your own or update your title lists with the latest ones from the
+main system (without reloading the database), here's how you do it...
+
+Global Resource Settings
+------------------------
+
+Each resource has a number of general settings and may also have some
+resource specific settings.  These can be changed for existing resources by
+clicking "edit" beside them, or they can be set when creating a new
+resource.
+
+The general settings are...
+
+name: the name of the resource which is displayed in the list, as well as in
+the patron interface.
+
+provider: the name of the resource provider.  This is displayed in the
+resource list, and is used when deduping.
+
+type: this is mostly a reference as to what this resource is for and doesn't
+control anything yet, however in the future it may be used, so set it to
+something meaningful.
+
+module: this tells CUFTS which Perl module controls this resource.  This is
+VERY critical to get correct - spelling mistakes, wrong case, etc., will
+cause the module not to load.
+
+active: whether the resource can be used or not.
+
+Resource modules can define their own resource details if they need more
+information to work properly.  Most resources have a database URL which will
+be used to link to the database level if present.  Most also have a
+configuration note which will show up on the local resources page if
+present.  Other details you may see are authorization name and password for
+logging into services, or base URL for specifying the base component of a
+URL for constructing links to that resource.
+
+Each resource also has a set of services it supports.  Checking off
+services here will allow users to turn them on at the local level. 
+Services which are not active at the global level are not available to be
+activated at the local level.  See the GENERAL documentation for details on
+what each service means.
+
+Global Resource Title Lists
+---------------------------
+
+Title lists can be uploaded by clicking on the "bulk" link next to the
+titles count.  From this screen you can browse to the title list on your
+local machine and then upload it.  Once it is uploaded, you will need to run
+"util/title_list_updater.pl" from the CUFTS base directory to do the actual
+load.  It is split this way because some title list updates can take a while
+(if they're updating a global resource which many sites have activated
+locally) and it occasionally would time out the browser.  If you have
+multiple people maintaining global lists, you may want to cronjob the
+title_list_updater.pl script to run every 15 minutes or something like that.
+
+Title lists are tab delimited, with the first row containing field names. 
+They should match whatever fields are displayed when you click on the number
+of titles in the resource (even if it's 0).
+
+The update process will tell you how many records were added, and deleted. 
+Due to how title lists vary and the lack of a single unique identifier,
+there is no modification of records.  Records with changes will be deleted
+and re-added.

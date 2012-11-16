@@ -1,0 +1,468 @@
+AC	1	AC	9999	Writing, Publishing, Libraries	
+AE	1	AE	9999	Writing, Publishing, Libraries	
+AG	1	AG	9999	Writing, Publishing, Libraries	
+AI	1	AI	9999	Writing, Publishing, Libraries	
+AM	1	AM	9999	Writing, Publishing, Libraries	Museums
+AN	1	AN	9999	Writing, Publishing, Libraries	
+AP	1	AP	9999	Writing, Publishing, Libraries	
+AS	1	AS	9999	Writing, Publishing, Libraries	
+AY	1	AY	9999	Writing, Publishing, Libraries	
+AZ	1	AZ	9999	Writing, Publishing, Libraries	Humanities
+B	1	B	5739	Philosophy and Religion	Philosophy
+BC	1	BC	9999	Philosophy and Religion	Logic
+BD	1	BD	9999	Philosophy and Religion	Philosophy
+BF	1	BF	1000	Social Sciences	Psychology
+BF	1001	BF	1400	Social Sciences	Psychology
+BF	1401	BF	1999	Social Sciences	Psychology
+BH	1	BH	9999	Social Sciences	Psychology
+BJ	1	BJ	1800	Social Sciences	Ethics
+BJ	1801	BJ	2195	Social Sciences	
+BL	1	BL	9999	Philosophy and Religion	Religion
+BM	1	BM	9999	Philosophy and Religion	Judaism
+BP	1	BP	9999	Philosophy and Religion	Islam
+BQ	1	BQ	9999	Philosophy and Religion	Buddhism
+BR	1	BR	9999	Philosophy and Religion	Christianity
+BS	1	BS	9999	Philosophy and Religion	Christianity
+BT	1	BT	9999	Philosophy and Religion	Christianity
+BV	1	BV	9999	Philosophy and Religion	Christianity
+BX	1	BX	799	Philosophy and Religion	Christianity
+BX	800	BX	4795	Philosophy and Religion	Christianity
+BX	4800	BX	9999	Philosophy and Religion	Christianity
+C	1	C	9999	Archaeology, Biography and Genealogy	
+CB	1	CB	9999	Archaeology, Biography and Genealogy	Civilization
+CC	1	CC	9999	Archaeology, Biography and Genealogy	Archaeology
+CD	1	CD	9999	Archaeology, Biography and Genealogy	Archives
+CE	1	CE	9999	Archaeology, Biography and Genealogy	
+CJ	1	CJ	9999	Archaeology, Biography and Genealogy	
+CN	1	CN	9999	Archaeology, Biography and Genealogy	
+CR	1	CR	9999	Archaeology, Biography and Genealogy	
+CS	1	CS	9999	Archaeology, Biography and Genealogy	Genealogy
+CT	1	CT	9999	Archaeology, Biography and Genealogy	Biography
+D	1	D	899	History	World History
+D	900	D	2009	History	European
+DA	1	DA	9999	History	European
+DAW	1001	DAW	1051	History	European
+DB	1	DB	9999	History	European
+DC	1	DC	9999	History	European
+DD	1	DD	9999	History	European
+DE	1	DE	9999	History	European
+DF	1	DF	9999	History	European
+DG	1	DG	9999	History	European
+DH	1	DH	9999	History	European
+DJ	1	DJ	9999	History	European
+DJK	1	DJK	9999	History	European
+DK	1	DK	9999	History	European
+DL	1	DL	9999	History	European
+DP	1	DP	500	History	European
+DP	501	DP	900	History	European
+DQ	1	DQ	9999	History	European
+DR	1	DR	9999	History	European
+DS	1	DS	40	History	Asian
+DS	41	DS	329	History	Asian
+DS	330	DS	500	History	Asian
+DS	501	DS	937	History	Asian
+DT	1	DT	9999	History	African
+DU	1	DU	9999	History	Oceania
+DX	1	DX	9999	History	
+E	1	E	50	History	Early North American
+E	51	E	99	Social Sciences	First Nations
+E	100	E	139	History	Early North American
+E	140	E	884	History	United States
+F	1	F	975	History	United States
+F	1000	F	1170	History	Canadian
+F	1201	F	1392	History	Latin American
+F	1401	F	1419	History	Latin American
+F	1421	F	1577	History	Latin American
+F	1601	F	2151	History	Latin American
+F	2155	F	2191	History	Latin American
+F	2201	F	3799	History	Latin American
+FC	1	FC	9999	History	Canadian
+G	1	G	922	Social Sciences	Geography
+G	1001	G	3122	Social Sciences	Geography
+G	3160	G	9980	Social Sciences	Geography
+GA	1	GA	87	Social Sciences	Geography
+GA	100	GA	1999	Social Sciences	Geography
+GB	1	GB	399	Social Sciences	Physical Geography
+GB	400	GB	650	Social Sciences	Physical Geography
+GB	651	GB	5030	Social Sciences	Physical Geography
+GC	1	GC	9999	Social Sciences	Oceanography
+GE	1	GE	9999	Social Sciences	Enviromental Science
+GF	1	GF	9999	Social Sciences	Human Geography
+GN	1	GN	296	Social Sciences	Anthropology
+GN	301	GN	686	Social Sciences	Anthropology
+GN	700	GN	890	Social Sciences	Anthropology
+GR	1	GR	9999	Social Sciences	Anthropology
+GT	1	GT	9999	Social Sciences	Anthropology
+GV	1	GV	200	Social Sciences	Kinesiology
+GV	201	GV	555	Social Sciences	Kinesiology
+GV	557	GV	1198	Social Sciences	Kinesiology
+GV	1199	GV	1570	Social Sciences	Kinesiology
+GV	1580	GV	1799	Fine Arts and Music	Dance
+GV	1800	GV	1860	Social Sciences	
+H	1	H	9999	Social Sciences	
+HA	1	HA	9999	Business and Economics	Statistics
+HB	1	HB	9999	Business and Economics	Theory and Demography
+HC	1	HC	9999	Business and Economics	Economic History
+HD	1	HD	100	Business and Economics	Economics
+HD	101	HD	1395	Business and Economics	Economics
+HD	1401	HD	2210	Business and Economics	Economics
+HD	2321	HD	4730	Business and Economics	Economics
+HD	4801	HD	8942	Business and Economics	Labour
+HD	9000	HD	9999	Business and Economics	Economics
+HE	1	HE	9999	Business and Economics	Business
+HF	1	HF	1186	Business and Economics	Commerce
+HF	1401	HF	4050	Business and Economics	Commerce
+HF	5001	HF	5392	Business and Economics	Business
+HF	5401	HF	5541	Business and Economics	Marketing
+HF	5546	HF	5549	Business and Economics	Management
+HF	5601	HF	5689	Business and Economics	Accounting
+HF	5691	HF	5716	Business and Economics	Accounting
+HF	5717	HF	5746	Business and Economics	Business
+HF	5761	HF	5780	Business and Economics	Business
+HF	5801	HF	6182	Business and Economics	Advertising
+HG	1	HG	9999	Business and Economics	Finance
+HJ	1	HJ	9999	Business and Economics	Finance
+HM	1	HM	9999	Social Sciences	Sociology
+HN	1	HN	9999	Social Sciences	Sociology
+HQ	1	HQ	10	Social Sciences	Sociology
+HQ	12	HQ	472	Social Sciences	Sociology
+HQ	503	HQ	1058	Social Sciences	Sociology
+HQ	1059	HQ	1073	Social Sciences	Gerontology
+HQ	1075	HQ	1090	Social Sciences	Women Studies
+HQ	1101	HQ	2044	Social Sciences	Women Studies
+HS	1	HS	9999	Social Sciences	Sociology
+HT	1	HT	9999	Social Sciences	Sociology
+HV	1	HV	4995	Social Sciences	Social Work
+HV	4997	HV	5840	Social Sciences	Criminology
+HV	6001	HV	9999	Social Sciences	Criminology
+HX	1	HX	9999	Social Sciences	Sociology
+J	1	J	9999	Political Science, Government and Law	Political Science
+JA	1	JA	9999	Political Science, Government and Law	Political Science
+JC	1	JC	9999	Political Science, Government and Law	Political Theory
+JF	1	JF	9999	Political Science, Government and Law	Political Institutions and Public Administration
+JK	1	JK	9999	Political Science, Government and Law	Political Institutions and Public Administration - United States
+JL	1	JL	500	Political Science, Government and Law	Political Institutions and Public Administration - Canada
+JL	501	JL	9999	Political Science, Government and Law	Political Institutions and Public Administration - Latin America
+JN	1	JN	9999	Political Science, Government and Law	Political Institutions and Public Administration - Europe
+JQ	1	JQ	9999	Political Science, Government and Law	Political Institutions and Public Administration - International
+JS	1	JS	9999	Political Science, Government and Law	Local Government
+JV	1	JV	5399	Political Science, Government and Law	Emigration and Immigration
+JV	6001	JV	9500	Political Science, Government and Law	Emigration and Immigration
+JX	1	JX	9999	Political Science, Government and Law	International Law
+K	1	KC	9999	Political Science, Government and Law	Law
+KD	1	KD	9999	Political Science, Government and Law	Other Jurisdictions
+KE	1	KE	9999	Political Science, Government and Law	Canada
+KEA	1	KEY	9999	Political Science, Government and Law	Canada - Provinces, Territories
+KEZ	1	KEZ	9999	Political Science, Government and Law	Canada - Cities
+KF	1	KF	9999	Political Science, Government and Law	United States - Federal
+KFA	1	KFW	9999	Political Science, Government and Law	United States - States and Territories
+KFX	1	KFX	9999	Political Science, Government and Law	United States - Cities
+KFZ	1	KFZ	9999	Political Science, Government and Law	Other Jurisdictions
+KG	1	KJ	9999	Political Science, Government and Law	Other Jurisdictions
+KK	1	KKC	9999	Political Science, Government and Law	Other Jurisdictions
+KKD	1	KX	9999	Political Science, Government and Law	Other Jurisdictions
+L	1	L	9999	Education	
+LA	1	LA	9999	Education	History of Education
+LB	5	LB	1050	Education	Educational Theory and Practice
+LB	1050	LB	1091	Education	Educational Psychology
+LB	1101	LB	1139	Education	
+LB	1140	LB	1695	Education	Pre-school - Grade 12
+LB	1705	LB	2286	Education	Teacher Education
+LB	2300	LB	2430	Education	Higher Education
+LB	2799	LB	3095	Education	Administration
+LB	3201	LB	3640	Education	Administration
+LC	1	LC	9999	Education	
+LD	1	LD	9999	Education	
+LE	1	LE	9999	Education	
+LF	1	LF	9999	Education	
+LG	1	LG	9999	Education	
+LH	1	LH	9999	Education	
+LJ	1	LJ	9999	Education	
+LT	1	LT	9999	Education	
+M	1	M	4	Fine Arts and Music	Music
+M	5	M	1490	Fine Arts and Music	Music
+M	1495	M	5000	Fine Arts and Music	Music
+ML	1	ML	9999	Fine Arts and Music	Music
+MT	1	MT	9999	Fine Arts and Music	Music
+N	1	N	9999	Fine Arts and Music	Fine Arts
+NA	1	NA	9999	Fine Arts and Music	Architecture
+NB	1	NB	9999	Fine Arts and Music	Sculpture
+NC	1	NC	9999	Fine Arts and Music	Graphic Arts, Drawing, Design
+ND	1	ND	9999	Fine Arts and Music	Painting
+NE	1	NE	9999	Fine Arts and Music	Fine Arts
+NK	1	NK	9999	Fine Arts and Music	Decorative Arts, Applied Arts, Crafts
+NX	1	NX	9999	Fine Arts and Music	Fine Arts
+P	1	P	50	Language and Literature	Linguistics
+P	51	P	56	Language and Literature	Linguistics
+P	57	P	86	Language and Literature	Linguistics
+P	87	P	96	Language and Literature	Communication, Mass media
+P	97	P	9999	Language and Literature	Linguistics
+PA	1	PA	2995	Language and Literature	
+PA	3000	PA	3049	Language and Literature	
+PA	3050	PA	4500	Language and Literature	
+PA	5000	PA	5665	Language and Literature	
+PA	6000	PA	7041	Language and Literature	
+PA	8001	PA	8595	Language and Literature	
+PB	1	PB	431	Language and Literature	Languages
+PB	1001	PB	3029	Language and Literature	Languages
+PC	1	PC	400	Language and Literature	Languages
+PC	601	PC	872	Language and Literature	Languages
+PC	890	PC	890	Language and Literature	Languages
+PC	901	PC	986	Language and Literature	Languages
+PC	1001	PC	1984	Language and Literature	Languages
+PC	2001	PC	3761	Language and Literature	Languages
+PC	3801	PC	3976	Language and Literature	Languages
+PC	4001	PC	4977	Language and Literature	Languages
+PC	5001	PC	5498	Language and Literature	Languages
+PD	1	PD	777	Language and Literature	Languages
+PD	1001	PD	1350	Language and Literature	Languages
+PD	1501	PD	7159	Language and Literature	Languages
+PE	1	PE	9999	Language and Literature	Languages
+PF	1	PF	979	Language and Literature	Languages
+PF	1001	PF	1184	Language and Literature	Languages
+PF	1401	PF	1558	Language and Literature	Languages
+PF	3001	PF	5999	Language and Literature	Languages
+PG	1	PG	499	Language and Literature	Languages
+PG	500	PG	585	Language and Literature	Languages
+PG	601	PG	799	Language and Literature	Languages
+PG	801	PG	1158	Language and Literature	Languages
+PG	1161	PG	1164	Language and Literature	Languages
+PG	1171	PG	1798	Language and Literature	Languages
+PG	1801	PG	1998	Language and Literature	Languages
+PG	2001	PG	2850	Language and Literature	Languages
+PG	2900	PG	3800	Language and Literature	Languages
+PG	3801	PG	3998	Language and Literature	Languages
+PG	4001	PG	5198	Language and Literature	Languages
+PG	5201	PG	5598	Language and Literature	Languages
+PG	5631	PG	5698	Language and Literature	Languages
+PG	6001	PG	7498	Language and Literature	Languages
+PG	7900	PG	7948	Language and Literature	Languages
+PG	8001	PG	9263	Language and Literature	Languages
+PG	9501	PG	9678	Language and Literature	Languages
+PH	1	PH	79	Language and Literature	Languages
+PH	91	PH	1109	Language and Literature	Languages
+PH	1201	PH	3718	Language and Literature	Languages
+PH	5001	PH	5490	Language and Literature	Languages
+PJ	1	PJ	995	Language and Literature	
+PJ	1001	PJ	1989	Language and Literature	
+PJ	2001	PJ	2199	Language and Literature	
+PJ	2301	PJ	2551	Language and Literature	
+PJ	3001	PJ	4091	Language and Literature	
+PJ	4101	PJ	5809	Language and Literature	
+PJ	5901	PJ	9293	Language and Literature	
+PK	1	PK	90	Language and Literature	
+PK	101	PK	2891	Language and Literature	
+PK	2901	PK	5534	Language and Literature	
+PK	6001	PK	6599	Language and Literature	
+PK	6701	PK	6996	Language and Literature	
+PK	7001	PK	9601	Language and Literature	
+PL	1	PL	489	Language and Literature	
+PL	490	PL	495	Language and Literature	
+PL	501	PL	898	Language and Literature	
+PL	901	PL	998	Language and Literature	
+PL	1001	PL	3299	Language and Literature	
+PL	3301	PL	3505	Language and Literature	
+PL	3521	PL	4587	Language and Literature	
+PL	4601	PL	4961	Language and Literature	
+PL	5001	PL	7101	Language and Literature	
+PL	7501	PL	7893	Language and Literature	
+PL	8000	PL	8844	Language and Literature	
+PM	1	PM	95	Language and Literature	Languages
+PM	101	PM	7356	Language and Literature	Languages
+PM	7801	PM	7895	Language and Literature	Languages
+PM	8001	PM	9201	Language and Literature	Languages
+PN	1	PN	44	Language and Literature	Literature
+PN	45	PN	75	Language and Literature	Literature
+PN	80	PN	99	Language and Literature	Literature
+PN	101	PN	249	Language and Literature	Literature
+PN	441	PN	1009	Language and Literature	Literary History
+PN	1010	PN	1590	Language and Literature	Poetry
+PN	1600	PN	1989	Language and Literature	Drama
+PN	1990	PN	1992	Language and Literature	Broadcasting
+PN	1993	PN	1999	Language and Literature	Motion Pictures
+PN	2000	PN	3300	Language and Literature	Theatre
+PN	3311	PN	3503	Language and Literature	Literature
+PN	4001	PN	4355	Language and Literature	Literature
+PN	4390	PN	4500	Language and Literature	Literature
+PN	4699	PN	5650	Language and Literature	Journalism
+PN	6010	PN	6078	Language and Literature	Literature
+PN	6080	PN	6095	Language and Literature	Literature
+PN	6099	PN	6120	Language and Literature	Poetry
+PN	6121	PN	6146	Language and Literature	Literature
+PN	6147	PN	6231	Language and Literature	Literature
+PN	6233	PN	6381	Language and Literature	Literature
+PN	6400	PN	6525	Language and Literature	Literature
+PN	6700	PN	6790	Language and Literature	Literature
+PQ	1	PQ	3899	Language and Literature	Literature
+PQ	3900	PQ	3919	Language and Literature	Canadian Literature
+PQ	3920	PQ	3999	Language and Literature	Literature
+PQ	4001	PQ	5999	Language and Literature	Literature
+PQ	6001	PQ	8929	Language and Literature	Literature
+PQ	9000	PQ	9999	Language and Literature	Literature
+PR	1	PR	8899	Language and Literature	English Literature
+PR	8900	PR	9399	Language and Literature	Canadian Literature
+PR	9399	PR	9899	Language and Literature	English Literature
+PS	1	PS	3576	Language and Literature	American Literature
+PS	8001	PS	8599	Language and Literature	Canadian Literature
+PS	9001	PS	9599	Language and Literature	Canadian Literature
+PT	1	PT	4899	Language and Literature	Literature
+PT	5001	PT	5980	Language and Literature	Literature
+PT	6000	PT	6471	Language and Literature	Literature
+PT	6500	PT	6592	Language and Literature	Literature
+PT	7001	PT	9999	Language and Literature	Literature
+PZ	1	PZ	4	Language and Literature	Fiction
+PZ	5	PZ	99	Language and Literature	Juvenile
+Q	1	Q	9999	Science, Technology and Agriculture	Science
+QA	1	QA	74	Science, Technology and Agriculture	Mathematics
+QA	76	QA	76	Science, Technology and Agriculture	Computing Science
+QA	77	QA	141	Science, Technology and Agriculture	Mathematics
+QA	150	QA	272	Science, Technology and Agriculture	Mathematics
+QA	273	QA	275	Science, Technology and Agriculture	Mathematics
+QA	276	QA	280	Science, Technology and Agriculture	Mathematics
+QA	281	QA	299	Science, Technology and Agriculture	Mathematics
+QA	300	QA	433	Science, Technology and Agriculture	Mathematics
+QA	440	QA	799	Science, Technology and Agriculture	Mathematics
+QA	801	QA	939	Science, Technology and Agriculture	Mathematics
+QB	1	QB	9999	Science, Technology and Agriculture	Astronomy
+QC	1	QC	75	Science, Technology and Agriculture	Physics
+QC	81	QC	119	Science, Technology and Agriculture	Physics
+QC	120	QC	168	Science, Technology and Agriculture	Physics
+QC	170	QC	220	Science, Technology and Agriculture	Physics
+QC	221	QC	246	Science, Technology and Agriculture	Physics
+QC	251	QC	338	Science, Technology and Agriculture	Physics
+QC	350	QC	496	Science, Technology and Agriculture	Physics
+QC	501	QC	798	Science, Technology and Agriculture	Physics
+QC	801	QC	849	Science, Technology and Agriculture	Physics
+QC	851	QC	999	Science, Technology and Agriculture	Meteorology
+QD	1	QD	69	Science, Technology and Agriculture	Chemistry
+QD	71	QD	145	Science, Technology and Agriculture	Chemistry
+QD	146	QD	199	Science, Technology and Agriculture	Chemistry
+QD	241	QD	449	Science, Technology and Agriculture	Chemistry
+QD	450	QD	731	Science, Technology and Agriculture	Chemistry
+QD	901	QD	999	Science, Technology and Agriculture	Chemistry
+QE	1	QE	64	Science, Technology and Agriculture	Geology
+QE	65	QE	350	Science, Technology and Agriculture	Geology
+QE	351	QE	625	Science, Technology and Agriculture	Geology
+QE	640	QE	996	Science, Technology and Agriculture	Geology
+QH	1	QH	199	Science, Technology and Agriculture	Natural History
+QH	201	QH	705	Science, Technology and Agriculture	Biology
+QK	1	QK	989	Science, Technology and Agriculture	Botany
+QL	1	QL	739	Science, Technology and Agriculture	Zoology
+QL	750	QL	991	Science, Technology and Agriculture	Zoology
+QM	1	QM	9999	Science, Technology and Agriculture	Anatomy
+QP	1	QP	348	Science, Technology and Agriculture	Physiology
+QP	351	QP	499	Science, Technology and Agriculture	Physiology
+QP	501	QP	801	Science, Technology and Agriculture	Physiology
+QP	901	QP	981	Science, Technology and Agriculture	Physiology
+QR	1	QR	9999	Science, Technology and Agriculture	Microbiology
+QS	1	QS	9999	Science, Technology and Agriculture	Anatomy
+QT	1	QT	9999	Science, Technology and Agriculture	Physiology
+QU	1	QU	9999	Science, Technology and Agriculture	Molecular Biology and Biochemistry
+QV	1	QV	9999	Science, Technology and Agriculture	Chemistry
+QW	1	QW	9999	Science, Technology and Agriculture	Microbiology and Immunology
+QX	1	QX	9999	Science, Technology and Agriculture	Parasitology
+QY	1	QY	9999	Science, Technology and Agriculture	Pathology
+QZ	1	QZ	9999	Science, Technology and Agriculture	Pathology
+R	1	R	130	Health Science	Medicine
+R	131	R	687	Health Science	Medicine
+R	690	R	920	Health Science	Medicine
+RA	3	RA	420	Health Science	Medicine
+RA	421	RA	790	Health Science	Medicine
+RA	791	RA	955	Health Science	Medicine
+RA	960	RA	998	Health Science	Medicine
+RA	1001	RA	1171	Health Science	Medicine
+RA	1190	RA	1270	Health Science	Medicine
+RB	1	RB	9999	Health Science	Pathology
+RC	1	RC	106	Health Science	Medicine
+RC	110	RC	253	Health Science	Disease
+RC	254	RC	298	Health Science	Disease
+RC	306	RC	320	Health Science	Disease
+RC	321	RC	431	Health Science	Neurology
+RC	435	RC	576	Health Science	Psychiatry
+RC	578	RC	632	Health Science	Disease
+RC	633	RC	951	Health Science	Disease
+RC	952	RC	954	Health Science	Geriatrics
+RC	955	RC	1245	Health Science	Medicine
+RD	1	RD	9999	Health Science	Surgery
+RE	1	RE	9999	Health Science	Medicine
+RF	1	RF	9999	Health Science	Medicine
+RG	1	RG	9999	Health Science	Gynecology
+RJ	1	RJ	9999	Health Science	Pediatrics
+RK	1	RK	9999	Health Science	Dentistry
+RL	1	RL	9999	Health Science	Dermatology
+RM	1	RM	9999	Health Science	Pharmacology
+RS	1	RS	9999	Health Science	Pharmacy
+RT	1	RT	9999	Health Science	Nursing
+RV	1	RV	9999	Health Science	Medicine
+RX	1	RX	9999	Health Science	Homeopathy
+RZ	1	RZ	9999	Health Science	Medicine
+S	1	S	760	Science, Technology and Agriculture	Agriculture
+S	900	S	972	Science, Technology and Agriculture	Resouce and Environmental Management
+SB	1	SB	486	Science, Technology and Agriculture	Plants
+SB	599	SB	1110	Science, Technology and Agriculture	Plants
+SD	1	SD	9999	Science, Technology and Agriculture	Forestry
+SF	1	SF	597	Science, Technology and Agriculture	Animals
+SF	600	SF	1100	Science, Technology and Agriculture	Veterinary Medicine
+SH	1	SH	9999	Science, Technology and Agriculture	Fisheries
+SK	1	SK	9999	Science, Technology and Agriculture	Resouce and Environmental Management
+T	1	T	9999	Science, Technology and Agriculture	Technology
+TA	1	TA	9999	Science, Technology and Agriculture	Engineering
+TC	1	TC	9999	Science, Technology and Agriculture	Engineering
+TD	1	TD	9999	Science, Technology and Agriculture	Engineering
+TE	1	TE	9999	Science, Technology and Agriculture	Engineering
+TF	1	TF	9999	Science, Technology and Agriculture	Engineering
+TG	1	TG	9999	Science, Technology and Agriculture	Engineering
+TH	1	TH	9999	Science, Technology and Agriculture	Engineering
+TJ	1	TJ	9999	Science, Technology and Agriculture	Engineering
+TK	1	TK	9999	Science, Technology and Agriculture	Engineering
+TL	1	TL	9999	Science, Technology and Agriculture	Technology
+TN	1	TN	9999	Science, Technology and Agriculture	Engineering
+TP	1	TP	9999	Science, Technology and Agriculture	Technology
+TR	1	TR	9999	Science, Technology and Agriculture	Photography
+TS	1	TS	9999	Science, Technology and Agriculture	Manufacturing
+TT	1	TT	9999	Science, Technology and Agriculture	Technology
+TX	1	TX	9999	Science, Technology and Agriculture	Technology
+U	1	U	9999	Political Science, Government and Law	Armed Forces
+V	1	V	9999	Political Science, Government and Law	Armed Forces
+W	1	W	9999	Health Science	
+WA	1	WA	9999	Health Science	
+WB	1	WB	9999	Health Science	Medicine
+WC	1	WC	9999	Health Science	Disease
+WD	100	WD	199	Health Science	
+WD	200	WD	299	Health Science	Disease
+WD	300	WD	399	Health Science	Disease
+WD	400	WD	499	Health Science	
+WD	500	WD	599	Health Science	
+WD	600	WD	699	Health Science	Disease
+WD	700	WD	799	Health Science	
+WE	1	WE	9999	Health Science	Medicine
+WF	1	WF	9999	Health Science	Medicine
+WG	1	WG	9999	Health Science	Medicine
+WH	1	WH	9999	Health Science	Medicine
+WI	1	WI	9999	Health Science	Medicine
+WJ	1	WJ	9999	Health Science	Medicine
+WK	1	WK	9999	Health Science	Medicine
+WL	1	WL	9999	Health Science	Medicine
+WM	1	WM	9999	Health Science	Psychiatry
+WN	1	WN	9999	Health Science	Radiology
+WO	1	WO	9999	Health Science	Surgery
+WP	1	WP	9999	Health Science	Gynecology
+WQ	1	WQ	9999	Health Science	Obstetrics
+WR	1	WR	9999	Health Science	Dermatology
+WS	1	WS	9999	Health Science	Pediatrics
+WT	1	WT	9999	Health Science	Geriatrics
+WU	1	WU	9999	Health Science	Dentistry
+WV	1	WV	9999	Health Science	Medicine
+WW	1	WW	9999	Health Science	Medicine
+WX	1	WX	9999	Health Science	Medicine
+WY	1	WY	9999	Health Science	Nursing
+WZ	1	WZ	9999	Health Science	Medicine
+Z	4	Z	15	Writing, Publishing, Libraries	Publishing
+Z	40	Z	115	Writing, Publishing, Libraries	Writing
+Z	116	Z	550	Writing, Publishing, Libraries	Printing
+Z	551	Z	661	Writing, Publishing, Libraries	Copyright
+Z	662	Z	1000	Writing, Publishing, Libraries	Libraries
+Z	1001	Z	8999	Writing, Publishing, Libraries	Bibliography
+ZQS	1	ZQZ	9999	Writing, Publishing, Libraries	Bibliography
+ZSF	1	ZSF	9999	Writing, Publishing, Libraries	Bibliography
+ZW	1	ZWZ	9999	Writing, Publishing, Libraries	Bibliography
