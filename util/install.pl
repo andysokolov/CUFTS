@@ -44,10 +44,12 @@ my @modules = qw(
     Biblio::COUNTER
     Business::ISSN
     Catalyst
+    Catalyst::Plugin::I18N
     Catalyst::Plugin::FillInForm
     Catalyst::Plugin::FormValidator
     Catalyst::Plugin::Session::Store::FastMmap
     Catalyst::Plugin::Session::State::Cookie
+	Catalyst::Plugin::Unicode::Encoding
     Catalyst::View::Download::CSV
     Catalyst::View::JSON
     Catalyst::View::TT
@@ -55,7 +57,6 @@ my @modules = qw(
     Class::Accessor
     Class::DBI
     Class::DBI::AbstractSearch
-    Class::DBI::Plugin::FastDelete
     Class::DBI::Plugin::CountSearch
     Class::DBI::Plugin::FastDelete
     Class::DBI::Plugin::Type
@@ -280,7 +281,8 @@ if ($no_psql) {
 		unless ($db_exists) {
 			print "Creating CUFTS database. If you have entered a password above, you will be asked to enter it again.\n";
 			my $pw = defined($config->{'CUFTS_PASSWORD'}) && $config->{'CUFTS_PASSWORD'} ne '' ? '--password' : '';
-			my $result = `createdb -e --lc-collate=C --encoding=SQL_ASCII --template=template0 --username=$config->{'CUFTS_USER'} $pw $config->{'CUFTS_DB'}`;
+			#my $result = `createdb -e --lc-collate=C --encoding=SQL_ASCII --template=template0 --username=$config->{'CUFTS_USER'} $pw $config->{'CUFTS_DB'}`;
+			my $result = `createdb -e --encoding=UTF8 --username=$config->{'CUFTS_USER'} $pw $config->{'CUFTS_DB'}`;
 			if ($result !~ /CREATE\sDATABASE/) {
 				die("Error creating database: $result\n\nIf the above error is something like FATAL: IDENT auth failed,\nyou are trying to create the database as a user other than\nthe one you are currently logged in as, and PostgreSQL is set\nto use 'ident' authentication. See the pg_hba.conf PostgreSQL config file.\n");
 			}
@@ -409,6 +411,7 @@ sub verify_cwd {
 		sql/CUFTS/services.sql
         Resolver/lib/CUFTS/Resolver.pm
         CJDB/lib/CUFTS/CJDB.pm
+        CRDB/lib/CUFTS/CRDB.pm
         MaintTool/lib/CUFTS/MaintTool.pm
 	);
 
@@ -664,19 +667,19 @@ sub create_apache_config_modperl2 {
 	print CONF <<EOF;
 
     PerlRequire $config->{'CUFTS_BASE_DIR'}/util/startup.pl
-    PerlSwitches -I$config->{'CUFTS_BASE_DIR'}/lib -I$config->{'CUFTS_BASE_DIR'}/MaintTool/lib -I$config->{'CUFTS_BASE_DIR'}/Resolver/lib -I$config->{'CUFTS_BASE_DIR'}/CJDB/lib
+    PerlSwitches -I$config->{'CUFTS_BASE_DIR'}/lib -I$config->{'CUFTS_BASE_DIR'}/MaintTool/lib -I$config->{'CUFTS_BASE_DIR'}/Resolver/lib -I$config->{'CUFTS_BASE_DIR'}/CJDB/lib -I$config->{'CUFTS_BASE_DIR'}/CRDB/lib
     PerlLoadModule CUFTS::MaintTool
     PerlLoadModule CUFTS::Resolver
     PerlLoadModule CUFTS::CJDB
+	PerlLoadModule CUFTS::CRDB
 #    PerlTransHandler Apache2::Const::OK
 
-    <Location /CUFTS/MaintTool>
+    <Location /MaintTool>
             SetHandler modperl
             PerlResponseHandler CUFTS::MaintTool
     </Location>
 
-
-    <Location /CUFTS/Resolver>
+    <Location /Resolver>
             SetHandler modperl
             PerlResponseHandler CUFTS::Resolver
     </Location>
@@ -684,6 +687,11 @@ sub create_apache_config_modperl2 {
     <Location /CJDB>
             SetHandler modperl
             PerlResponseHandler CUFTS::CJDB
+    </Location>
+
+    <Location /CRDB>
+            SetHandler modperl
+            PerlResponseHandler CUFTS::CRDB
     </Location>
 EOF
 
@@ -702,7 +710,7 @@ sub create_apache_config_modperl1 {
 
     PerlRequire $config->{'CUFTS_BASE_DIR'}/util/startup.pl
     <Perl>
-            use lib qw[$config->{'CUFTS_BASE_DIR'}/lib $config->{'CUFTS_BASE_DIR'}/MaintTool/lib $config->{'CUFTS_BASE_DIR'}/CJDB/lib $config->{'CUFTS_BASE_DIR'}/Resolver/lib];
+            use lib qw[$config->{'CUFTS_BASE_DIR'}/lib $config->{'CUFTS_BASE_DIR'}/MaintTool/lib $config->{'CUFTS_BASE_DIR'}/CJDB/lib $config->{'CUFTS_BASE_DIR'}/CRDB/lib $config->{'CUFTS_BASE_DIR'}/Resolver/lib];
     </Perl>
     <Location /MaintTool>
             PerlModule CUFTS::MaintTool
@@ -722,6 +730,11 @@ sub create_apache_config_modperl1 {
             PerlHandler CUFTS::CJDB
     </Location>
 
+    <Location /CRDB>
+            PerlModule CUFTS::CRDB
+            SetHandler perl-script
+            PerlHandler CUFTS::CRDB
+    </Location>
 EOF
 
 	close CONF;

@@ -20,10 +20,10 @@ use vars qw(
 	$CUFTS_MAIL_FROM
 );
 
-$CUFTS_BASE_DIR = '/opt/devel/CUFTS';
+$CUFTS_BASE_DIR = '/usr/local/CUFTS';
 
-$CUFTS_DB = 'CUFTS3';
-$CUFTS_USER = 'tholbroo';
+$CUFTS_DB = 'CUFTS';
+$CUFTS_USER = 'CUFTS';
 $CUFTS_PASSWORD = '';
 
 $CUFTS_SMTP_HOST = 'localhost';
