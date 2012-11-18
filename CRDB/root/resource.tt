@@ -82,7 +82,7 @@ function validate_field( field ) {
             return true;
         }
         else {
-            message_field.html('Date fields must be blank or YYYY-MM-DD');
+            message_field.html('[% c.loc( 'Date fields must be blank or YYYY-MM-DD' ) %]');
             return false;
         }
     }
@@ -93,7 +93,7 @@ function validate_field( field ) {
             return true;
         }
         else {
-            message_field.html('Integer fields must be blank or contain a valid integer.');
+            message_field.html('[% c.loc( 'Integer fields must be blank or contain a valid integer.' ) %]');
             return false;
         }
     }
@@ -159,7 +159,7 @@ function update_subject_fields() {
     
  <div id="resource-name">[% erm.main_name | html %]</div>
 
- [% IF c.check_user_roles('edit_erm_records') %]<a href="#toggle" onClick="toggle_nodata_fields(); return false;">toggle empty fields</a>[% END %]
+ [% IF c.check_user_roles('edit_erm_records') %]<a href="#toggle" onClick="toggle_nodata_fields(); return false;">[% c.loc( 'toggle empty fields' ) %]</a>[% END %]
  
  <table class="resource-fields"> 
   [% FOREACH display_field IN display_fields %]

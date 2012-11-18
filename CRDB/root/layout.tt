@@ -1,8 +1,10 @@
-[%- IF no_wrap; content; RETURN; END -%]<html>
+[%- IF no_wrap; content; RETURN; END -%]
+<html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="ROBOTS" content="NOINDEX,NOFOLLOW" />
 <base href="[% url_base %]" />
-<title>CRDB</title>
+<title>[% c.loc( 'CRDB' ) %]</title>
 <link rel="StyleSheet" href="[% c.uri_for_css('crdb.css') %]" type="text/css" media="screen, print" />
 [% FOREACH css_item IN load_css %]
  <link rel="StyleSheet" href="[% c.uri_for_css( $css_item ) %]" type="text/css" media="screen, print" />

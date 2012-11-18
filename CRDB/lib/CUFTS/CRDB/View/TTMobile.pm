@@ -11,6 +11,15 @@ __PACKAGE__->config( {
     ENCODING     => 'UTF-8',
 } );
 
+use Template::Filters;    # Need to use, so that we can have access to $Template::Filters::FILTERS
+$Template::Filters::FILTERS->{escape_js_string} = \&escape_js_string;
+
+sub escape_js_string {
+    my $s = shift;
+    $s =~ s/(\\|'|"|\/)/\\$1/g;
+    return $s;
+}
+
 $Template::Config::STASH = 'Template::Stash::XS';
 
 $Template::Stash::SCALAR_OPS->{uri_escape} = sub { my $text = shift; $text =~ s/([^a-zA-Z0-9_.-])/uc sprintf("%%%02x",ord($1))/eg; return $text; };
