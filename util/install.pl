@@ -281,7 +281,7 @@ if ($no_psql) {
 		unless ($db_exists) {
 			print "Creating CUFTS database. If you have entered a password above, you will be asked to enter it again.\n";
 			my $pw = defined($config->{'CUFTS_PASSWORD'}) && $config->{'CUFTS_PASSWORD'} ne '' ? '--password' : '';
-			#my $result = `createdb -e --lc-collate=C --encoding=SQL_ASCII --template=template0 --username=$config->{'CUFTS_USER'} $pw $config->{'CUFTS_DB'}`;
+			### my $result = `createdb -e --lc-collate=C --encoding=SQL_ASCII --template=template0 --username=$config->{'CUFTS_USER'} $pw $config->{'CUFTS_DB'}`;
 			my $result = `createdb -e --encoding=UTF8 --username=$config->{'CUFTS_USER'} $pw $config->{'CUFTS_DB'}`;
 			if ($result !~ /CREATE\sDATABASE/) {
 				die("Error creating database: $result\n\nIf the above error is something like FATAL: IDENT auth failed,\nyou are trying to create the database as a user other than\nthe one you are currently logged in as, and PostgreSQL is set\nto use 'ident' authentication. See the pg_hba.conf PostgreSQL config file.\n");

@@ -6,6 +6,11 @@ use base 'Catalyst::View::TT';
 use Scalar::Util qw(blessed);
 
 use Template::Config;
+
+__PACKAGE__->config( {
+    ENCODING     => 'UTF-8',
+} );
+
 $Template::Config::STASH = 'Template::Stash::XS';
 
 $Template::Stash::SCALAR_OPS->{uri_escape} = sub { my $text = shift; $text =~ s/([^a-zA-Z0-9_.-])/uc sprintf("%%%02x",ord($1))/eg; return $text; };

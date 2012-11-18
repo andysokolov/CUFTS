@@ -30,6 +30,26 @@ Uses chained paths to get the site key from the URL.
 
 =cut
 
+sub begin : Private {
+     my ( $self, $c ) = @_;
+
+ # internationalization
+    $c->stash->{lang} = $c->req->cookie('pref_lang')->value if ($c->req->cookie('pref_lang'));
+    if (my $lang = $c->req->param('set_lang')) {
+        $lang =~ s/\W+//isg;
+        if (length($lang) == 2) {
+            $c->res->cookies->{pref_lang} = { value => $lang };
+            $c->stash->{lang} = $lang;
+        }
+    }
+    $c->res->headers->push_header( 'Vary' => 'Accept-Language' );
+    $c->languages( $c->stash->{lang} ? [ $c->stash->{lang} ] : undef );
+
+    $c->stash->{languages_list} = $c->installed_languages;
+    $c->stash->{selected_lang} = $c->language;
+
+}
+
 sub site : Chained('/') PathPart('') CaptureArgs(1) {
     my ($self, $c, $site_key) = @_;
     
@@ -152,8 +172,9 @@ sub end : ActionClass('RenderView') {
     $c->response->headers->expires( time  );
     
     if ( !$c->response->content_type ) {
-        $c->response->content_type('text/html; charset=iso-8859-1');
-    }
+        ### $c->response->content_type('text/html; charset=iso-8859-1');
+        $c->response->content_type('text/html; charset=utf-8');
+	}
     
 }
 

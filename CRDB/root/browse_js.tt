@@ -75,8 +75,8 @@ $( function() {
              edit_field.empty()
                        .append( '<div class="resource-brief-default-description"><h3>default description</h3>' + data.description + '</div>' )
                        .append( '<textarea class="resource-brief-change-description" name="change_description" id="' + description_textarea_id + '">' + subject_description + '</textarea><br />' )
-                       .append( '<input type="submit" name="submit" value="submit" class="resource-brief-change-submit" id="' + input_button_id + '"/> ' )
-                       .append( '<input type="submit" name="cancel" value="cancel" class="resource-brief-change-cancel" id="' + cancel_button_id + '"/>' );
+                       .append( '<input type="submit" name="submit" value="[% c.loc( 'submit' ) %]" class="resource-brief-change-submit" id="' + input_button_id + '"/> ' )
+                       .append( '<input type="submit" name="cancel" value="[% c.loc( 'cancel' ) %]" class="resource-brief-change-cancel" id="' + cancel_button_id + '"/>' );
 
 
              $( '#' + description_textarea_id )[0].focus();
@@ -138,8 +138,8 @@ $( function() {
 
              edit_field.empty()
                        .append( '<textarea id="resources-brief-subject_description-textarea" name="change_subject_description">' + subject_description + '</textarea><br />' )
-                       .append( '<input type="submit" name="submit" value="submit" id="resources-brief-subject_description-submit" /> ' )
-                       .append( '<input type="submit" name="cancel" value="cancel" id="resources-brief-subject_description-cancel" />' );
+                       .append( '<input type="submit" name="submit" value="[% c.loc( 'submit' ) %]" id="resources-brief-subject_description-submit" /> ' )
+                       .append( '<input type="submit" name="cancel" value="[% c.loc( 'cancel' ) %]" id="resources-brief-subject_description-cancel" />' );
 
              $( '#resources-brief-subject_description-textarea' )[0].focus();
 
@@ -155,7 +155,7 @@ $( function() {
                          change: 1
                      },
                      success: function( new_data ) {
-                         content_field.empty().append( new_data.subject_description ? new_data.subject_description : 'No subject description.' ).show();
+                         content_field.empty().append( new_data.subject_description ? new_data.subject_description : '[% c.loc( 'No subject description.' ) %]' ).show();
                          edit_field.hide().remove();
                      }
                      
@@ -167,7 +167,7 @@ $( function() {
 
              $( '#resources-brief-subject_description-cancel' ).bind( 'click', function(event) {
                  event.preventDefault();
-                 content_field.empty().append( data.subject_description ? data.subject_description : 'No subject description.' ).show();
+                 content_field.empty().append( data.subject_description ? data.subject_description : '[% c.loc( 'No subject description.' ) %]' ).show();
                  edit_field.hide().remove();
              });
 
@@ -188,7 +188,7 @@ function ajax_erm_resource_details( record_id ) {
     var container = $('#resource-brief-details-' + record_id );
     if ( !container.is('.ajax_loaded') ) {
         container.addClass('ajax_loaded');
-        container.prepend('<div class="ajax_loading">Loading...</div>');
+        container.prepend('<div class="ajax_loading">[% c.loc( 'Loading' ) %]...</div>');
         var url_string = "[% c.uri_for_site( c.controller('Resource').action_for('json'), [ 'replace_me' ]) %]/";
         $.getJSON( url_string.replace( /replace_me/, record_id ), function(json) {
             var container = $('#resource-brief-details-' + json.id );

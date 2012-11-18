@@ -348,7 +348,8 @@ sub edit_field_text : Private {
 
 
         $c->model('CUFTS')->schema->txn_do( sub {
-            $c->stash->{erm}->$field( utf8($c->req->params->{$field})->latin1 );
+            ### $c->stash->{erm}->$field( utf8($c->req->params->{$field})->latin1 );
+            $c->stash->{erm}->$field( $c->req->params->{$field} );
             $c->stash->{erm}->update();     
         } );
         
@@ -370,7 +371,8 @@ sub edit_field_textarea : Private {
         # Add in validation here
 
         $c->model('CUFTS')->schema->txn_do( sub {
-            $c->stash->{erm}->$field( utf8($c->req->params->{$field})->latin1 );
+            ### $c->stash->{erm}->$field( utf8($c->req->params->{$field})->latin1 );
+            $c->stash->{erm}->$field( $c->req->params->{$field} );
             $c->stash->{erm}->update();     
         } );
         

@@ -2,6 +2,6 @@
 [% IF replace %]
  [% replace %]
 [% ELSE %]
- Electronic Resources[% IF add %] - [% add %][% END %]
+ [% c.loc( 'Electronic Resources' ) %][% IF add %] - [% add %][% END %]
 [% END %]
 </div>

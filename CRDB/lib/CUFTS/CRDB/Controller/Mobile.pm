@@ -6,6 +6,7 @@ use base 'Catalyst::Controller';
 
 use URI::Escape;
 use Unicode::String qw(utf8);
+use Encode qw/decode_utf8/; ### Because HTML::Strip's parse returns a string of (unicode) characters.
 
 use JSON::XS qw(encode_json);
 use CUFTS::Util::Simple;
@@ -129,15 +130,17 @@ sub resources_json : Chained('base') PathPart('resources') Args(0) {
         $resource->{name} = delete $resource->{result_name};
 
         if ( $subject ) {
-            $resource->{group} = $resource->{rank} == 0 ? 'Other Resources' : 'Top Resources';
-        }
+            ### $resource->{group} = $resource->{rank} == 0 ? 'Other Resources' : 'Top Resources';
+            $resource->{group} = $resource->{rank} == 0 ? $c->loc('Other Resources') : $c->loc('Top Resources'); ### Localization / Internationalization.
+		}
         else {
             my $first_char = substr($resource->{name},0,1);
             $first_char = uc( CUFTS::Util::Simple::convert_diacritics($first_char) );
             $resource->{group} = $first_char =~ /^[A-Z]/ ? $first_char : '#';
         }
 
-        $resource->{description_brief} = $html_strip->parse( $resource->{description_brief} );
+        ### $resource->{description_brief} = $html_strip->parse( $resource->{description_brief} );
+        $resource->{description_brief} = decode_utf8($html_strip->parse($resource->{description_brief})); ### Because HTML::Strip's parse returns a string of (unicode) characters.
         $html_strip->eof;
 
         # Remove some things we don't need to cut down on data sent.

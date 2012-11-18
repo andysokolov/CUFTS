@@ -16,7 +16,7 @@
 
 [% IF subject_description.length OR editing_enabled %]
 <div id="resources-brief-subject_description"><div id="resources-brief-subject_description-content">
-[% subject_description || 'No subject description.'%]
+[% subject_description || c.loc( 'No subject description.' ) %]
 </div></div>
 [% END %]
 
@@ -24,7 +24,7 @@
     
 [% IF facets.subject AND facets.size == 1 %]
 
- <h2>Top Resources</h2>
+ <h2>[% c.loc( 'Top Resources' ) %]</h2>
 
  <div id="resources-brief-records-top">
 
@@ -39,7 +39,7 @@
  </div>
  
  [% IF record_index < records.size OR sorting_enabled %]
-  <h2>Other Resources</h2>
+  <h2>[% c.loc( 'Other Resources' ) %]</h2>
 
   <div id="resources-brief-records-other">
 
@@ -62,7 +62,7 @@
 [% END %]
 
 [% IF records.size == 0 %]
-No records found for your current search.
+[% c.loc( 'No records found for your current search.' ) %]
 [% END %]
 
 </div>
@@ -79,9 +79,9 @@ No records found for your current search.
   <div class="resource-brief-field-alert">[% record.alert %]</div> 
  [% END %]
  [% IF record.url %]
-  <div class="resource-brief-url"><a href="[% c.uri_for_site( c.controller('Resource').action_for('goto'), [ record_id ] ) %]">Connect</a></div>
+  <div class="resource-brief-url"><a href="[% c.uri_for_site( c.controller('Resource').action_for('goto'), [ record_id ] ) %]">[% c.loc( 'Connect' ) %]</a></div>
  [% ELSIF record.access %]
-  <div class="resource-brief-access">Access: [% record.access %]</div>
+  <div class="resource-brief-access">[% c.loc( 'Access' ) %]: [% record.access %]</div>
  [% END %]
  [% IF c.check_user_roles('edit_erm_records') AND facets.subject AND facets.size == 1 %]
   <div class="resource-brief-rank-handle"><span style="cursor: move" class="handle">[ rank ]</span></div>

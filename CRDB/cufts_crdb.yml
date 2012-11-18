@@ -3,10 +3,11 @@ name: CUFTS::CRDB
 default_view: TT
 
 connect_info:
-    - 'dbi:Pg:dbname=CUFTS3'
-    - 'tholbroo'
+    - 'dbi:Pg:dbname=CUFTS'
+    - 'CUFTS'
     - ''
     - AutoCommit: 1
+    - pg_enable_utf8: 1
 
 Plugin::Cache:
     backend:
@@ -24,8 +25,6 @@ View::JSON:
     expose_stash: json
     callback_param: json_callback
     allow_callback: 1
-    encoding: iso-8859-1
-
 
 View::TT:
     WRAPPER: layout.tt

@@ -5,11 +5,11 @@ use lib '../lib';
 use strict;
 use warnings;
 
-use Catalyst::Runtime '5.70';
+use Catalyst::Runtime '5.80';
 
 use CUFTS::Util::Simple;
 use URI::Escape;
-
+use MRO::Compat;
 
 # Set flags and add plugins for the application
 #
@@ -18,6 +18,12 @@ use URI::Escape;
 #                 application's home directory
 # Static::Simple: will serve static files from the application's root 
 #                 directory
+#
+#              I18N: Localization / Internationalization
+# Unicode::Encoding: proper decoding/encoding of incoming request parameters
+#                    and the outgoing body response respectively
+#                    http://wiki.catalystframework.org/wiki/tutorialsandhowtos/using_unicode
+#
 
 use Catalyst qw/ 
     -Debug
@@ -31,6 +37,8 @@ use Catalyst qw/
     Authentication
     Authorization::Roles
     FormValidator
+    I18N
+    Unicode::Encoding
 /;
 
 our $VERSION = '0.01';
@@ -44,7 +52,13 @@ our $VERSION = '0.01';
 # with a external configuration file acting as an override for
 # local deployment.
 
-__PACKAGE__->config( name => 'CUFTS::CRDB' );
+### UTF-8 support.
+__PACKAGE__->config(
+    name => 'CUFTS::CRDB',
+    encoding => 'UTF-8',
+    # Disable deprecated behavior needed by old applications
+    disable_component_resolution_regex_fallback => 1,
+);
 
 # Start the application
 __PACKAGE__->setup;
@@ -65,7 +79,8 @@ This is important for keeping logins to separate CRDB sites from colliding.
 sub session {
     my $c = shift;
     
-    my $session = $c->NEXT::session;
+    ### my $session = $c->NEXT::session;
+    my $session = $c->maybe::next::method;
     
     if ( $c->site ) {
         my $session_key = 'site_session_' . $c->site->id;

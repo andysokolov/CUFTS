@@ -73,7 +73,8 @@ $CUFTS_DB_ATTR   = {
     'PrintError'  => 0,
     'RaiseError'  => 0,
     'HandleError' => Exception::Class::DBI->handler(),
-    'AutoCommit'  => 0
+    'AutoCommit'  => 0,
+    'pg_enable_utf8'  => 1
 };
 
 @CUFTS_DB_CONNECT = ( $CUFTS_DB_STRING, $CUFTS_USER, $CUFTS_PASSWORD, $CUFTS_DB_ATTR );

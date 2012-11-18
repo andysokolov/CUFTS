@@ -6,6 +6,11 @@ use base 'Catalyst::View::TT';
 use Scalar::Util qw(blessed);
 
 use Template::Config;
+
+__PACKAGE__->config( {
+    ENCODING     => 'UTF-8',
+} );
+
 $Template::Config::STASH = 'Template::Stash::XS';
 
 $Template::Stash::LIST_OPS->{ in } = sub {

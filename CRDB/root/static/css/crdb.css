@@ -800,3 +800,10 @@ td.resource-edit-control {
 span.validate-message {
     color: red;
 }
+
+.langform {
+	position: absolute;
+	z-index: auto;
+	top: 30px;
+	right: 10px;
+}
