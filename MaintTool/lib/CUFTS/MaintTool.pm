@@ -1,7 +1,7 @@
 package CUFTS::MaintTool;
 
 use strict;
-use Catalyst qw/Static::Simple Session Session::Store::FastMmap Session::State::Cookie FormValidator CUFTS::MaintTool::FillInForm -Debug/;
+use Catalyst qw/Static::Simple Session Session::Store::FastMmap Session::State::Cookie FormValidator CUFTS::MaintTool::FillInForm I18N Unicode::Encoding -Debug/;
 use lib '../lib';
 
 use CUFTS::ResourcesLoader;
@@ -13,6 +13,7 @@ our $VERSION = '2.00.00';
 CUFTS::MaintTool->config(
     name                     => 'CUFTS::MaintTool',
     default_display_per_page => 50,
+    encoding => 'UTF-8',
 );
 
 CUFTS::MaintTool->config->{session} = {
@@ -21,7 +22,8 @@ CUFTS::MaintTool->config->{session} = {
     storage => '/tmp/CUFTS_MaintTool_sessions',
 };
 
-CUFTS::MaintTool->config->{'V::JSON'}->{encoding} = 'iso-8859-1';
+### CUFTS::MaintTool->config->{'V::JSON'}->{encoding} = 'iso-8859-1';
+CUFTS::MaintTool->config->{'V::JSON'}->{encoding} = 'utf8';
 
 CUFTS::MaintTool->setup;
 
@@ -93,7 +95,8 @@ sub end : Private {
     return 1 if $c->response->body;
 
     unless ( $c->response->content_type ) {
-        $c->response->content_type('text/html; charset=iso-8859-1');
+        ### $c->response->content_type('text/html; charset=iso-8859-1');
+        $c->response->content_type('text/html; charset=utf-8');
     }
 
     if ( defined($c->stash->{current_account}) ) {

@@ -9,7 +9,7 @@
 [% END %]
 
 [% IF c.form.has_missing %]
- <span class="error-heading">The following fields are required:</span>
+ <span class="error-heading">[% c.loc( 'The following fields are required:' ) %]</span>
  <ul>
  [% FOREACH missing IN c.form.missing %]
   <li>[% missing | html %]</li>
@@ -18,7 +18,7 @@
 [% END %]
 
 [% IF c.form.has_invalid %]
- <span class="error-heading">The following fields are invalid:</span>
+ <span class="error-heading">[% c.loc( 'The following fields are invalid:' ) %]</span>
  <ul>
  [% FOREACH mssing IN c.form.invalid %]
   <li>[% invalid | html %]</li>

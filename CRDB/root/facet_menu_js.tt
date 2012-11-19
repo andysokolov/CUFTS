@@ -5,7 +5,7 @@
      var ul = $('#collapsable-' + name);
      if ( ul ) {
          var li = ul.find('li.collapsable').toggleClass('hidden').eq(0);
-         link.innerHTML = li.hasClass('hidden') ? 'Show more' : 'Show less';
+         link.innerHTML = li.hasClass('hidden') ? '[% c.loc( 'Show more' ) %]' : '[% c.loc( 'Show less' ) %]';
          return false;
      }
      

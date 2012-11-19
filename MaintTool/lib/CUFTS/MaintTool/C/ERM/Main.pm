@@ -14,6 +14,7 @@ use CUFTS::DB::ERMSubjectsMain;
 
 use MARC::Record;
 use List::MoreUtils;
+use Encode qw/decode_utf8/;
 
 my $form_validate = {
     required => [
@@ -214,7 +215,8 @@ sub auto : Private {
         $c->stash->{$type}           = { map { $_->id => $_->$field } @records };
         $c->stash->{"${type}_order"} = [ map { $_->id } @records ];
 
-        $c->stash->{"${type}_ext"}   = encode_json( [ [undef, '&nbsp;' ], map { [$_->id, $_->$field ] } @records ] );
+        ### $c->stash->{"${type}_ext"}   = encode_json( [ [undef, '&nbsp;' ], map { [$_->id, $_->$field ] } @records ] );
+        $c->stash->{"${type}_ext"}   = decode_utf8(encode_json( [ [undef, '&nbsp;' ], map { [$_->id,  $_->$field ] } @records ] ));
         $c->stash->{"${type}_json"}  = encode_json( $c->stash->{$type} );
         $c->stash->{"${field}_lookup"} = $c->stash->{$type};  # Alias for looking up when we have the "field" name rather than the type name.
 

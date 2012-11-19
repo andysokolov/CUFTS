@@ -8,6 +8,10 @@ use base 'Catalyst::View::TT';
 
 use CUFTS::CJDB::Util;
 
+__PACKAGE__->config( {
+    ENCODING     => 'utf-8',
+} );
+
 __PACKAGE__->config->{WRAPPER} = 'layout.tt';
 __PACKAGE__->config->{FILTERS} = {
     'marc8'   => \&CUFTS::CJDB::Util::marc8_to_latin1,

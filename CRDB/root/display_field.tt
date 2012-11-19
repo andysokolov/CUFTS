@@ -29,7 +29,7 @@
   [% INCLUDE render_field field_name="content_types", field_data=HTML.escape( erm.content_types.force_list.sort('content_type').map_join('content_type', ', ') ) %]
  [% CASE 'url' %]
   [% IF erm.url.length %]
-   [% SET url_field_data = '<a href="' _ c.uri_for_site( c.controller('Resource').action_for('goto'), [ erm.id ] ) _ '">Connect</a>' %]
+   [% SET url_field_data = '<a href="' _ c.uri_for_site( c.controller('Resource').action_for('goto'), [ erm.id ] ) _ '">' _ c.loc('Connect') _ '</a>' %]
   [% END %]
   [% INCLUDE render_field field_name="url", field_data=url_field_data %]
  [% CASE %]
@@ -91,11 +91,11 @@
     <td class="resource-edit-control">
       [% SET ajax_edit_URL = c.uri_for_site( c.controller('Resource::Field').action_for('edit'), [ erm.id ], field_name ) %]
       <span class="resource-edit-control-savecancel" style="display: none">
-       <a href="#" onClick="ajax_save_edit( '[% field_name %]', '[% ajax_edit_URL %]'); return false;" ><img class="icon" src="[% c.uri_for_image('tick.png') %]" alt="save" /></a> 
-       <a href="#" onClick="ajax_cancel_edit( '[% field_name %]' ); return false;" ><img class="icon" src="[% c.uri_for_image('cross.png') %]" alt="cancel" /></a>
+       <a href="#" onClick="ajax_save_edit( '[% field_name %]', '[% ajax_edit_URL %]'); return false;" ><img class="icon" src="[% c.uri_for_image('tick.png') %]" alt="[% c.loc( 'save' ) %]" /></a> 
+       <a href="#" onClick="ajax_cancel_edit( '[% field_name %]' ); return false;" ><img class="icon" src="[% c.uri_for_image('cross.png') %]" alt="[% c.loc( 'cancel' ) %]" /></a>
       </span>
       <span class="resource-edit-control-edit">
-       <a href="#" onClick="ajax_get_edit( '[% field_name %]', '[% ajax_edit_URL %]' ); return false;" ><img class="icon" src="[% c.uri_for_image('pencil.png') %]" alt="edit" /></a>
+       <a href="#" onClick="ajax_get_edit( '[% field_name %]', '[% ajax_edit_URL %]' ); return false;" ><img class="icon" src="[% c.uri_for_image('pencil.png') %]" alt="[% c.loc( 'edit' ) %]" /></a>
       </span>
      </td>
     [% ELSE %]

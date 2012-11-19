@@ -9,24 +9,24 @@
 <div id="resources-brief-facet-menu-container">
 
  <div class="resources-brief-facet-menu-main-heading">
-  <h1>Refine Your Search</h1>
+  <h1>[% c.loc( 'Refine Your Search' ) %]</h1>
  </div>
 
  <div class="resources-brief-facet-menu" id="resources-brief-facet-menu-title">
   <div class="resources-brief-facet-menu-heading">
-   <h2>[% IF facets.name %]Change[% ELSE %]Add[% END %] Title</h2>
+   <h2>[% IF facets.name %][% c.loc( 'Change' ) %][% ELSE %][% c.loc( 'Add' ) %][% END %] [% c.loc( 'Title' ) %]</h2>
    <img class="resources-brief-facet-menu-button minus" src="[% c.uri_for_image('bullet_minus.png') %]" onClick="return facetToggle('title');"/>
    <img class="resources-brief-facet-menu-button plus hidden" src="[% c.uri_for_image('bullet_plus.png') %]" onClick="return facetToggle('title');"/>
   </div>
   <div class="resources-brief-facet-menu-content">
    <form method="POST" action="[% c.uri_for_facets( undef, 'name' ) %]">
     <select name="name" id="name-select">
-     <option value="[% c.uri_for_facets( [ 'name', undef ], 'name' ) %]">Choose letter...</option>
+     <option value="[% c.uri_for_facets( [ 'name', undef ], 'name' ) %]">[% c.loc( 'Choose letter...' ) %]</option>
      [% FOREACH letter IN [ 'A'..'Z' ] %]
       <option value="[% c.uri_for_facets( [ 'name', letter ], 'name_regex' ) %]" [% facets.name == letter ? 'selected="selected"' : '' %]>[% letter %]</option>
      [% END %]
      <option value="[% c.uri_for_facets( [ 'name_regex', '%5E[%5Ea-z]' ], 'name' ) %]">0-9</option>
-     <option value="[% c.uri_for_facets( undef, 'name' ) %]">All</option>
+     <option value="[% c.uri_for_facets( undef, 'name' ) %]">[% c.loc( 'All' ) %]</option>
     </select>
    </form>
   </div>
@@ -34,7 +34,7 @@
 
  <div class="resources-brief-facet-menu" id="resources-brief-facet-menu-subjects">
   <div class="resources-brief-facet-menu-heading">
-   <h2>[% IF facets.subject %]Change[% ELSE %]Add[% END %] Subject</h2>
+   <h2>[% IF facets.subject %][% c.loc( 'Change' ) %][% ELSE %][% c.loc( 'Add' ) %][% END %] [% c.loc( 'Subject' ) %]</h2>
    <img class="resources-brief-facet-menu-button minus" src="[% c.uri_for_image('bullet_minus.png') %]" onClick="return facetToggle('subjects');"/>
    <img class="resources-brief-facet-menu-button plus hidden" src="[% c.uri_for_image('bullet_plus.png') %]" onClick="return facetToggle('subjects');"/>
   </div>
@@ -51,7 +51,7 @@
    </ul>
    [% IF collapse %]
     <div class="resources-brief-facet-menu-collapse-control">
-     <a href="#" onClick="return facetCollapse(this, 'subjects');">Show more</a>
+     <a href="#" onClick="return facetCollapse(this, 'subjects');">[% c.loc( 'Show more' ) %]</a>
     </div>
    [% END %]
   </div>
@@ -59,7 +59,7 @@
   
  <div class="resources-brief-facet-menu" id="resources-brief-facet-menu-resource_type">
   <div class="resources-brief-facet-menu-heading">
-   <h2>[% IF facets.resource_type %]Change[% ELSE %]Add[% END %] Resource Type</h2>
+   <h2>[% IF facets.resource_type %][% c.loc( 'Change' ) %][% ELSE %][% c.loc( 'Add' ) %][% END %] [% c.loc( 'Resource Type' ) %]</h2>
    <img class="resources-brief-facet-menu-button minus" src="[% c.uri_for_image('bullet_minus.png') %]" onClick="return facetToggle('resource_type');"/>
    <img class="resources-brief-facet-menu-button plus hidden" src="[% c.uri_for_image('bullet_plus.png') %]" onClick="return facetToggle('resource_type');"/>
   </div>
@@ -76,7 +76,7 @@
    </ul>
    [% IF collapse %]
     <div class="resources-brief-facet-menu-collapse-control">
-     <a href="#" onClick="return facetCollapse(this, 'resource_types');">Show more</a>
+     <a href="#" onClick="return facetCollapse(this, 'resource_types');">[% c.loc( 'Show more' ) %]</a>
     </div>
    [% END %]
   </div>
@@ -84,7 +84,7 @@
   
  <div class="resources-brief-facet-menu" id="resources-brief-facet-menu-content_type">
   <div class="resources-brief-facet-menu-heading">
-   <h2>[% IF facets.content_type %]Change[% ELSE %]Add[% END %] Content Type</h2>
+   <h2>[% IF facets.content_type %][% c.loc( 'Change' ) %][% ELSE %][% c.loc( 'Add' ) %][% END %] [% c.loc( 'Content Type' ) %]</h2>
    <img class="resources-brief-facet-menu-button minus" src="[% c.uri_for_image('bullet_minus.png') %]" onClick="return facetToggle('content_type');"/>
    <img class="resources-brief-facet-menu-button plus hidden" src="[% c.uri_for_image('bullet_plus.png') %]" onClick="return facetToggle('content_type');"/>
   </div>
@@ -101,7 +101,7 @@
    </ul>
    [% IF collapse %]
     <div class="resources-brief-facet-menu-collapse-control">
-     <a href="#" onClick="return facetCollapse(this, 'content_types');">Show more</a>
+     <a href="#" onClick="return facetCollapse(this, 'content_types');">[% c.loc( 'Show more' ) %]</a>
     </div>
    [% END %]
   </div>
@@ -109,7 +109,7 @@
 
  <div class="resources-brief-facet-menu" id="resources-brief-facet-menu-keyword">
   <div class="resources-brief-facet-menu-heading">
-   <h2>By Keyword</h2>
+   <h2>[% c.loc( 'By Keyword' ) %]</h2>
    <img class="resources-brief-facet-menu-button minus" src="[% c.uri_for_image('bullet_minus.png') %]" onClick="return facetToggle('keyword');"/>
    <img class="resources-brief-facet-menu-button plus hidden" src="[% c.uri_for_image('bullet_plus.png') %]" onClick="return facetToggle('keyword');"/>
   </div>

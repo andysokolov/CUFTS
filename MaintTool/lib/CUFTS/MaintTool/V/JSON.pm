@@ -10,7 +10,8 @@ __PACKAGE__->config( {
 
 sub encode_json($) {
     my ($self, $c, $data) = @_;
-    my $encoder = JSON::XS->new->latin1;
+    ### my $encoder = JSON::XS->new->latin1;
+    my $encoder = JSON::XS->new->utf8;
     $encoder->encode($data);
 }
 
