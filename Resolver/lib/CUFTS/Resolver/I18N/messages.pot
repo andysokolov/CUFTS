@@ -1,0 +1,188 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: root/fatal_error.tt:1
+msgid "An error occurred while processing your request. The following problems have been logged"
+msgstr ""
+
+#: root/main.tt:3
+msgid "CUFTS Resolver"
+msgstr ""
+
+#: root/main_header.tt.000:2 root/main_header.tt:2
+msgid "CUFTS Resolver logo"
+msgstr ""
+
+#: root/test.tt:3
+msgid "CUFTS resolver test"
+msgstr ""
+
+#: root/test.tt:54
+msgid "DOI"
+msgstr ""
+
+#: root/test.tt:57
+msgid "PMID"
+msgstr ""
+
+#: root/test.tt:36
+msgid "article title"
+msgstr ""
+
+#: root/test.tt:42
+msgid "author"
+msgstr ""
+
+#: root/main_results.tt:85
+msgid "check for holdings"
+msgstr ""
+
+#: root/main_results.tt:27
+msgid "check for holdings in"
+msgstr ""
+
+#: root/main_results.tt:83
+msgid "database of articles"
+msgstr ""
+
+#: root/main_request.tt:35 root/test.tt:48
+msgid "date"
+msgstr ""
+
+#: root/main_request.tt:37
+msgid "doi"
+msgstr ""
+
+#: root/test.tt:51
+msgid "end"
+msgstr ""
+
+#: root/test.tt:42
+msgid "first"
+msgstr ""
+
+#: root/main_results.tt:77
+msgid "fulltext of the article"
+msgstr ""
+
+#: root/main_results.tt:19
+msgid "fulltext of the article is available from"
+msgstr ""
+
+#: root/test.tt:29
+msgid "genre"
+msgstr ""
+
+#: root/main_request.tt:27 root/test.tt:48
+msgid "issue"
+msgstr ""
+
+#: root/main_results.tt:81
+msgid "journal home page or list of articles in journal"
+msgstr ""
+
+#: root/test.tt:42
+msgid "last"
+msgstr ""
+
+#: root/main_results.tt:52
+msgid "link to result"
+msgstr ""
+
+#: root/main_results.tt:61
+msgid "not the first service... Prepare hidden layer contents for services other than the best one"
+msgstr ""
+
+#: root/main_request.tt:39
+msgid "oai"
+msgstr ""
+
+#: root/main_request.tt:29 root/main_request.tt:31 root/test.tt:51
+msgid "pages"
+msgstr ""
+
+#: root/main_request.tt:38
+msgid "pmid"
+msgstr ""
+
+#: root/main_results.tt:87
+msgid "search the web"
+msgstr ""
+
+#: root/main_results.tt:29
+msgid "search the web using"
+msgstr ""
+
+#: root/main_results.tt:36
+msgid "show other services"
+msgstr ""
+
+#: root/test.tt:15
+msgid "site"
+msgstr ""
+
+#: root/main_request.tt:13
+msgid "source"
+msgstr ""
+
+#: root/test.tt:39
+msgid "source/title"
+msgstr ""
+
+#: root/test.tt:51
+msgid "start"
+msgstr ""
+
+#: root/main_request.tt:33
+msgid "start page"
+msgstr ""
+
+#: root/main_results.tt:79
+msgid "table of contents for the issue"
+msgstr ""
+
+#: root/main_results.tt:21
+msgid "table of contents for the issue is available from"
+msgstr ""
+
+#: root/test.tt:22
+msgid "template"
+msgstr ""
+
+#: root/main_results.tt:25
+msgid "the article may be available by searching in"
+msgstr ""
+
+#: root/main_results.tt:23
+msgid "the journal is available from"
+msgstr ""
+
+#: root/main_request.tt:2
+msgid "title"
+msgstr ""
+
+#: root/main_results.tt:89
+msgid "unrecognized service"
+msgstr ""
+
+#: root/main_results.tt:31
+msgid "unrecognized service from"
+msgstr ""
+
+#: root/main_request.tt:26 root/test.tt:48
+msgid "volume"
+msgstr ""

@@ -16,24 +16,24 @@
     <span class="results-from">
     [% SWITCH service_name %]
      [% CASE 'fulltext' %]
-      fulltext of the article is available from 
+      [% c.loc( 'fulltext of the article is available from' ) %] 
      [% CASE 'table of contents' %]
-      table of contents for the issue is available from
+      [% c.loc( 'table of contents for the issue is available from' ) %]
      [% CASE 'journal' %]
-      the journal is available from
+      [% c.loc( 'the journal is available from' ) %]
      [% CASE 'database' %]
-      the article may be available by searching in
+      [% c.loc( 'the article may be available by searching in' ) %]
      [% CASE 'holdings' %]
-      check for holdings in
+      [% c.loc( 'check for holdings in' ) %]
      [% CASE 'web search' %]
-      search the web using
+      [% c.loc( 'search the web using' ) %]
      [% CASE %]
-      unrecognized service from
+      [% c.loc( 'unrecognized service from' ) %]
     [% END %]
     <span class="results-from-resource">[% resource.name %]</span>: </span>
 
     [% IF service_total > 1 %]
-     <a href="javascript:void(0)" onclick="toggleOthers([% results_iter.count %])" style="text-decoration: none;"><span id="showhide[% results_iter.count %]" class="results-others-available">(show other services)</span></a>
+     <a href="javascript:void(0)" onclick="toggleOthers([% results_iter.count %])" style="text-decoration: none;"><span id="showhide[% results_iter.count %]" class="results-others-available">([% c.loc( 'show other services' ) %])</span></a>
     [% END %]
 
     <br />
@@ -49,7 +49,7 @@
       [%- ELSIF request.title -%]
        [% request.title %]
       [%- ELSE %]
-       link to result
+       [% c.loc( 'link to result' ) %]
       [%- END -%]
       </a>
      </li>
@@ -58,7 +58,7 @@
 
     <div class="other-services" style="display: none" id="others[% results_iter.count %]"><ul class="results">
 
-   [% ELSE %] [%# not the first service... Prepare hidden layer contents for services other than the best one %]
+   [% ELSE %] [%# [% c.loc( 'not the first service... Prepare hidden layer contents for services other than the best one' ) %] %]
 
     [% FOREACH result IN service.results %]
       <li><a href="[% result.url %]">[%- INCLUDE service_name_description service_name=service_name -%]</a></li>
@@ -74,18 +74,18 @@
 [% BLOCK service_name_description %]
  [% SWITCH service_name %]     
   [% CASE 'fulltext' %]
-   fulltext of the article
+   [% c.loc( 'fulltext of the article' ) %]
   [% CASE 'table of contents' %]
-   table of contents for the issue
+   [% c.loc( 'table of contents for the issue' ) %]
   [% CASE 'journal' %]
-   journal home page or list of articles in journal
+   [% c.loc( 'journal home page or list of articles in journal' ) %]
   [% CASE 'database' %]
-   database of articles
+   [% c.loc( 'database of articles' ) %]
   [% CASE 'holdings' %]
-   check for holdings
+   [% c.loc( 'check for holdings' ) %]
   [% CASE 'web search' %]
-   search the web
+   [% c.loc( 'search the web' ) %]
   [% CASE %]
-   unrecognized service
+   [% c.loc( 'unrecognized service' ) %]
  [% END %]
 [% END %]

@@ -1,6 +1,7 @@
 <html>
 <head>
 	<title>CUFTS resolver test</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="StyleSheet" href="[% c.uri_for_static('css/test.css') %]" type="text/css" media="screen, print" />
 	<script src="[% c.uri_for_static('js/test.js') %]" type="text/javascript"></script>
 	<script src="[% c.uri_for_static('js/jquery.js') %]" type="text/javascript"></script>
@@ -12,52 +13,52 @@
 [%- SET genres = [ 'article', 'book', 'bookitem', 'journal' ] -%]
 <div id="test">
 	<form name="testform" action="[% url_base %]/test/do" method="post">
-		<label for="_site">site</label>
+		<label for="_site">[% c.loc( 'site' ) %]</label>
 		<select name="_site" id="_site">
 			[% FOREACH site IN sites.sort('name') %]
 				<option value="[% site.key %]" [% 'SELECTED' IF site.key == current_site_key %]>[% site.name %] ([% site.key %])</option>
 			[% END %]
 		</select><br />
 		
-		<label for="_template">template</label>
+		<label for="_template">[% c.loc( 'template' ) %]</label>
 		<select name="_template" id="_template">
 			[% FOREACH display_template IN display_templates %]
 				<option value="[% display_template.0 %]">[% display_template.1 %]</option>
 			[% END %]
 		</select><br />
 
-		<label for="genre">genre</label>
+		<label for="genre">[% c.loc( 'genre' ) %]</label>
 		<select name="genre" id="genre">
 			[% FOREACH genre IN genres %]
 				<option value="[% genre %]">[% genre %]</option>
 			[% END %]
 		</select><br />
 		
-		<label for="atitle">article title</label>
+		<label for="atitle">[% c.loc( 'article title' ) %]</label>
 		<input type="text" name="atitle" id="atitle" size="50" maxlength="256"/><br />
 
-		<label for="title">source/title</label>
+		<label for="title">[% c.loc( 'source/title' ) %]</label>
 		<input type="text" name="title" id="title" size="50" maxlength="256"/><br />
 
-		<div class="labels"><label for="aulast" class="col1">author (last</label>, <label for="aufirst" class="col2">first</label>)</div>
+		<div class="labels"><label for="aulast" class="col1">[% c.loc( 'author' ) %] ([% c.loc( 'last' ) %]</label>, <label for="aufirst" class="col2">[% c.loc( 'first' ) %]</label>)</div>
 		<input type="text" name="aulast" id="aulast" />, <input type="text" name="aufirst" id="aufirst" /><br />
 
 		<div class="labels"><label for="issn" class="col1">ISSN</label> / <label for="eissn" class="col2">eISSN</label> / <label for="isbn" class="col3">ISBN</label></div>
 		<input type="text" name="issn" id="issn" class="col1" size="10" maxlength="9" /> / <input type="text" name="eissn" id="eissn" class="col2" size="10" maxlength="9" /> / <input type="text" name="isbn" id="isbn" class="col3" size="10" maxlength="16" /> <br />
 
-		<div class="labels"><label for="volume" class="col1">volume</label> / <label for="issue" class="col2">issue</label> / <label for="date" class="col3">date</label></div>
+		<div class="labels"><label for="volume" class="col1">[% c.loc( 'volume' ) %]</label> / <label for="issue" class="col2">[% c.loc( 'issue' ) %]</label> / <label for="date" class="col3">[% c.loc( 'date' ) %]</label></div>
 		<input type="text" name="volume" id="volume" class="col1" size="10" maxlength="9" /> / <input type="text" name="issue" id="issue" class="col2" size="10" maxlength="9" /> / <input type="text" name="date" id="date" class="col3" size="10" maxlength="16" /> <br />
 
-		<div class="labels"><label for="pages" class="col1">pages</label> / <label for="spage" class="col2">start</label> / <label for="pages" class="col3">end</label></div>
+		<div class="labels"><label for="pages" class="col1">[% c.loc( 'pages' ) %]</label> / <label for="spage" class="col2">[% c.loc( 'start' ) %]</label> / <label for="pages" class="col3">[% c.loc( 'end' ) %]</label></div>
 		<input type="text" name="pages" id="pages" class="col1" size="10" maxlength="9" /> / <input type="text" name="spage" id="spage" class="col2" size="10" maxlength="9" /> / <input type="text" name="epage" id="epage" class="col3" size="10" maxlength="16" /> <br />
 		
-		<label for="doi">DOI</label>
+		<label for="doi">[% c.loc( 'DOI' ) %]</label>
 		<input type="text" name="doi" id="doi" /><br />
 
-		<label for="doi">PMID</label>
+		<label for="doi">[% c.loc( 'PMID' ) %]</label>
 		<input type="text" name="pmid" id="pmid" /><br />
 		
-		<input type="submit" name="_submit" value="submit" class="submit"/>
+		<input type="submit" name="_submit" value="[% c.loc( 'submit' ) %]" class="submit"/>
 		
 		<hr />
 

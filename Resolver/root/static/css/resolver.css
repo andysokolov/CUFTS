@@ -49,3 +49,10 @@ span.results-others-available {
 	font-size: 60%;
 	text-decoration: none;
 }
+
+.langform {
+	position: absolute;
+	z-index: auto;
+	top: 30px;
+	right: 10px;
+}

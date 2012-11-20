@@ -1,2 +1,12 @@
 [% USE url %]
-<div id="header" style="background: url([% c.uri_for_static('images/resolver_tile.jpg') %]);"><img width="693" height="105" src="[% c.uri_for_static('images/resolver_header.jpg') %]" border="0" alt="CUFTS Resolver logo"/></div>
+<div id="header" style="background: url([% c.uri_for_static('images/resolver_tile.jpg') %]);"><img width="693" height="105" src="[% c.uri_for_static('images/resolver_header.jpg') %]" border="0" alt="[% c.loc( 'CUFTS Resolver logo' ) %]"/>
+<div class="langform">
+<form method="post" name="langForm" action="">
+	<select id="set_lang" name="set_lang" onChange="document.langForm.submit();">
+		[% FOREACH language IN languages_list.keys.sort %]
+			<option value="[% language %]"[% IF selected_lang==language %] selected[% END %]>[% languages_list.$language %]</option>
+		[% END %]
+	</select>
+</form>
+</div>
+</div>

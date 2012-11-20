@@ -1,5 +1,5 @@
 <div id="request">
-<div class="request-label">title</div>
+<div class="request-label">[% c.loc( 'title' ) %]</div>
 <div class="request-field">
 [% IF request.atitle %]
  [% request.atitle %]
@@ -10,7 +10,7 @@
 [% END %]
 </div>
 
-<div class="request-label">source</div>
+<div class="request-label">[% c.loc( 'source' ) %]</div>
 <div class="request-field">
 [% IF request.issn || request.eissn || request.genre == 'journal' || request.genre == 'article' %]
  [% request.title || request.stitle %]
@@ -23,18 +23,18 @@
 
 <br />
  
-[% IF request.volume %]volume: [% request.volume %][% END %]
-[% IF request.issue %]issue: [% request.issue %][% END %]
+[% IF request.volume %][% c.loc( 'volume' ) %]: [% request.volume %][% END %]
+[% IF request.issue %][% c.loc( 'issue' ) %]: [% request.issue %][% END %]
 [% IF request.pages %]
- pages: [% request.pages %]
+ [% c.loc( 'pages' ) %]: [% request.pages %]
 [% ELSIF request.spage && request.epage %]
- pages: [% request.spage %]-[% request.epage %]
+ [% c.loc( 'pages' ) %]: [% request.spage %]-[% request.epage %]
 [% ELSIF request.spage %]
- start page: [% request.spage %]
+ [% c.loc( 'start page' ) %]: [% request.spage %]
 [% END %]
-[% IF request.date %]date: [% request.date %][% END %]
+[% IF request.date %][% c.loc( 'date' ) %]: [% request.date %][% END %]
 </div>
-[% IF request.doi %]<div class="request-label">doi</div><div class="request-field">[% request.doi %]</div>[% END %]
-[% IF request.pmid %]<div class="request-label">pmid</div><div class="request-field">[% request.pmid %]</div>[% END %]
-[% IF request.oai %]<div class="request-label">doi</div><div class="request-field">[% request.oai %]</div>[% END %]
+[% IF request.doi %]<div class="request-label">[% c.loc( 'doi' ) %]</div><div class="request-field">[% request.doi %]</div>[% END %]
+[% IF request.pmid %]<div class="request-label">[% c.loc( 'pmid' ) %]</div><div class="request-field">[% request.pmid %]</div>[% END %]
+[% IF request.oai %]<div class="request-label">[% c.loc( 'oai' ) %]</div><div class="request-field">[% request.oai %]</div>[% END %]
 </div>

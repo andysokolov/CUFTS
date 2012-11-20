@@ -1,0 +1,209 @@
+# English translations for PACKAGE package.
+# Copyright (C) 2011 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# root <andrew@lib.pu.ru>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2011-12-07 12:28+0400\n"
+"Last-Translator: root <andrew@lib.pu.ru>\n"
+"Language-Team: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: root/fatal_error.tt:1
+msgid ""
+"An error occurred while processing your request. The following problems have "
+"been logged"
+msgstr ""
+"An error occurred while processing your request. The following problems have "
+"been logged"
+
+#: root/main.tt:3
+msgid "CUFTS Resolver"
+msgstr "CUFTS Resolver"
+
+#: root/main_header.tt:2
+msgid "CUFTS Resolver logo"
+msgstr "CUFTS Resolver logo"
+
+#: root/test.tt:3
+msgid "CUFTS resolver test"
+msgstr "CUFTS resolver test"
+
+#: root/test.tt:54
+msgid "DOI"
+msgstr "DOI"
+
+#: root/test.tt:11
+msgid "OpenSearch"
+msgstr "OpenSearch"
+
+#: root/test.tt:57
+msgid "PMID"
+msgstr "PMID"
+
+#: root/test.tt:11
+msgid "XML"
+msgstr "XML"
+
+#: root/test.tt:36
+msgid "article title"
+msgstr "article title"
+
+#: root/test.tt:42
+msgid "author"
+msgstr "author"
+
+#: root/main_results.tt:85
+msgid "check for holdings"
+msgstr "check for holdings"
+
+#: root/main_results.tt:27
+msgid "check for holdings in"
+msgstr "check for holdings in"
+
+#: root/main_results.tt:83
+msgid "database of articles"
+msgstr "database of articles"
+
+#: root/main_request.tt:35 root/test.tt:48
+msgid "date"
+msgstr "date"
+
+#: root/main_request.tt:37
+msgid "doi"
+msgstr "doi"
+
+#: root/test.tt:51
+msgid "end"
+msgstr "end"
+
+#: root/test.tt:42
+msgid "first"
+msgstr "first"
+
+#: root/main_results.tt:77
+msgid "fulltext of the article"
+msgstr "fulltext of the article"
+
+#: root/main_results.tt:19
+msgid "fulltext of the article is available from"
+msgstr "fulltext of the article is available from"
+
+#: root/test.tt:29
+msgid "genre"
+msgstr "genre"
+
+#: root/test.tt:11
+msgid "human"
+msgstr "human"
+
+#: root/main_request.tt:27 root/test.tt:48
+msgid "issue"
+msgstr "issue"
+
+#: root/main_results.tt:81
+msgid "journal home page or list of articles in journal"
+msgstr "journal home page or list of articles in journal"
+
+#: root/test.tt:42
+msgid "last"
+msgstr "last"
+
+#: root/main_results.tt:52
+msgid "link to result"
+msgstr "link to result"
+
+#: root/main_results.tt:61
+msgid ""
+"not the first service... Prepare hidden layer contents for services other "
+"than the best one"
+msgstr ""
+"not the first service... Prepare hidden layer contents for services other "
+"than the best one"
+
+#: root/main_request.tt:39
+msgid "oai"
+msgstr "oai"
+
+#: root/main_request.tt:29 root/main_request.tt:31 root/test.tt:51
+msgid "pages"
+msgstr "pages"
+
+#: root/main_request.tt:38
+msgid "pmid"
+msgstr "pmid"
+
+#: root/main_results.tt:87
+msgid "search the web"
+msgstr "search the web"
+
+#: root/main_results.tt:29
+msgid "search the web using"
+msgstr "search the web using"
+
+#: root/main_results.tt:36
+msgid "show other services"
+msgstr "show other services"
+
+#: root/test.tt:15
+msgid "site"
+msgstr "site"
+
+#: root/main_request.tt:13
+msgid "source"
+msgstr "source"
+
+#: root/test.tt:39
+msgid "source/title"
+msgstr "source/title"
+
+#: root/test.tt:51
+msgid "start"
+msgstr "start"
+
+#: root/main_request.tt:33
+msgid "start page"
+msgstr "start page"
+
+#: root/main_results.tt:79
+msgid "table of contents for the issue"
+msgstr "table of contents for the issue"
+
+#: root/main_results.tt:21
+msgid "table of contents for the issue is available from"
+msgstr "table of contents for the issue is available from"
+
+#: root/test.tt:22
+msgid "template"
+msgstr "template"
+
+#: root/main_results.tt:25
+msgid "the article may be available by searching in"
+msgstr "the article may be available by searching in"
+
+#: root/main_results.tt:23
+msgid "the journal is available from"
+msgstr "the journal is available from"
+
+#: root/main_request.tt:2
+msgid "title"
+msgstr "title"
+
+#: root/main_results.tt:89
+msgid "unrecognized service"
+msgstr "unrecognized service"
+
+#: root/main_results.tt:31
+msgid "unrecognized service from"
+msgstr "unrecognized service from"
+
+#: root/main_request.tt:26 root/test.tt:48
+msgid "volume"
+msgstr "volume"

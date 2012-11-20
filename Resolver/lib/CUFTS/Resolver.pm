@@ -2,12 +2,14 @@ package CUFTS::Resolver;
 
 use strict;
 
-use Catalyst::Runtime '5.70';
+use Catalyst::Runtime '5.80';
 
 use Catalyst qw/
     -Debug
     ConfigLoader
     Static::Simple
+    I18N
+    Unicode::Encoding
 /;
 
 use lib '../lib';
@@ -17,6 +19,7 @@ our $VERSION = '2.00.00';
 
 __PACKAGE__->config(
     name       => 'CUFTS::Resolver',
+    encoding => 'UTF-8',
 );
 
 __PACKAGE__->setup;

@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-<head><title>CUFTS Resolver</title>
+<head><title>[% c.loc( 'CUFTS Resolver' ) %]</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" href="[% c.uri_for_static('css/resolver.css') %]" type="text/css" media="screen" />
 <script src="[% c.uri_for_static('js/jquery.js') %]" type="text/javascript"></script>
 <script src="[% c.uri_for_static('js/resolver.js') %]" type="text/javascript"></script>

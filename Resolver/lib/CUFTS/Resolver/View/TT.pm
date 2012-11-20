@@ -3,6 +3,10 @@ package CUFTS::Resolver::View::TT;
 use strict;
 use base 'Catalyst::View::TT';
 
+__PACKAGE__->config( {
+    ENCODING     => 'utf-8',
+} );
+
 =head1 NAME
 
 CUFTS::Resolver::V::TT - TT View Component

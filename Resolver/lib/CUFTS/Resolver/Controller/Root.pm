@@ -6,6 +6,25 @@ use base 'Catalyst::Controller';
 
 __PACKAGE__->config->{namespace} = '';
 
+sub begin : Private {
+     my ( $self, $c ) = @_;
+
+    $c->stash->{lang} = $c->req->cookie('pref_lang')->value if ($c->req->cookie('pref_lang'));
+    if (my $lang = $c->req->param('set_lang')) {
+        $lang =~ s/\W+//isg;
+        if (length($lang) == 2) {
+            $c->res->cookies->{pref_lang} = { value => $lang };
+            $c->stash->{lang} = $lang;
+        }
+    }
+    $c->res->headers->push_header( 'Vary' => 'Accept-Language' );
+    $c->languages( $c->stash->{lang} ? [ $c->stash->{lang} ] : undef );
+
+    $c->stash->{languages_list} = $c->installed_languages;
+    $c->stash->{selected_lang} = $c->language;
+
+}
+
 sub default : Private {
     my ( $self, $c ) = @_;
     $c->redirect('test');
@@ -16,6 +35,9 @@ sub base : Chained('/') PathPart('') CaptureArgs(0) {
     my ($self, $c) = @_;
 
     # Set up basic template vars
+    my $url_base = $c->config->{url_base} || (q{} . $c->req->base);
+    $url_base =~ s{/$}{};    # Remove trailing slash
+    $c->stash->{url_base}  = $url_base;
     $c->stash->{image_dir} = '/static/images/';
     $c->stash->{css_dir}   = '/static/css/';
     $c->stash->{js_dir}    = '/static/js/';
@@ -46,7 +68,8 @@ sub end : ActionClass('RenderView') {
     return 1 if defined($c->response->body);
 
     unless ( $c->response->content_type ) {
-        $c->response->content_type('text/html; charset=iso-8859-1');
+        ### $c->response->content_type('text/html; charset=iso-8859-1');
+        $c->response->content_type('text/html; charset=utf-8');
     }
 
     eval { $c->detach('CUFTS::Resolver::View::TT'); };
