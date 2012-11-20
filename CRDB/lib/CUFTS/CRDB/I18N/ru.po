@@ -1,0 +1,406 @@
+# Russian translations for PACKAGE package
+# Английские переводы для пакета PACKAGE.
+# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# root <a.sokolov@spbu.ru>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2012-11-20 11:00+0400\n"
+"Last-Translator: Andrey Sokolov <a.sokolov@spbu.ru>\n"
+"Language-Team: Russian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: root/browse.tt:84
+msgid "Access"
+msgstr ""
+
+#: root/facet_menu.tt:17 root/facet_menu.tt:37 root/facet_menu.tt:62
+#: root/facet_menu.tt:87
+msgid "Add"
+msgstr "Добавить"
+
+#: root/facet_menu.tt:29 root/main.tt:32
+msgid "All"
+msgstr "Все"
+
+#: root/fatal_error.tt:1
+msgid "An error occurred while processing your request.  The following problems have been logged"
+msgstr "При обработке запроса произошла ошибка. Зарегистрированы следующие проблемы"
+
+#: root/mobile_app.tt:32 root/mobile_app.tt:46 root/mobile_app.tt:56
+#: root/mobile_app.tt:66
+msgid "Back"
+msgstr "Назад"
+
+#: root/main.tt:18
+msgid "Browse"
+msgstr "Просмотр"
+
+#: root/mobile_app.tt:20
+msgid "Browse by"
+msgstr "Просмотр по"
+
+#: root/main.tt:8
+msgid "Browse databases by subject area"
+msgstr "Просмотр ресурсов по предметной области"
+
+#: root/main.tt:25
+msgid "Browse databases by title"
+msgstr "Просмотр ресурсов по названию"
+
+#: root/facet_menu.tt:112
+msgid "By Keyword"
+msgstr "По ключевому слову"
+
+#: root/layout.tt:7 root/page_header.tt:1
+msgid "CRDB"
+msgstr "Электронные ресурсы"
+
+#: root/mobile_app.tt:5 root/mobile_app_footer.tt:1
+msgid "CRDB Mobile"
+msgstr ""
+
+#: root/page_footer.tt:2
+msgid "CUFTS CRDB"
+msgstr ""
+
+#: root/facet_menu.tt:17 root/facet_menu.tt:37 root/facet_menu.tt:62
+#: root/facet_menu.tt:87
+msgid "Change"
+msgstr "Изменить"
+
+#: root/facet_menu.tt:24
+msgid "Choose letter..."
+msgstr "Выберите букву"
+
+#: root/main.tt:59
+msgid "Clear form"
+msgstr "Очистить"
+
+#: root/browse.tt:82 root/display_field.tt:32 root/mobile_crdb_js:242
+#: root/mobile_crdb_js:27
+msgid "Connect"
+msgstr "Вход"
+
+#: root/facet_labels.tt:4 root/facet_menu.tt:87
+msgid "Content Type"
+msgstr "Тип контента"
+
+#: root/resource.tt:85
+msgid "Date fields must be blank or YYYY-MM-DD"
+msgstr "Поле дата должно быть заполнены в формате ГГГГ-ММ-ДД (или оставить пустым)"
+
+#: root/page_title.tt:5
+msgid "Electronic Resources"
+msgstr "Электронные ресурсы"
+
+#: root/main.tt:55
+msgid "Find databases by database title and description"
+msgstr "Поиск ресурсов по названию и описанию"
+
+#: root/main.tt:44
+msgid "Google Scholar"
+msgstr "Google Академия"
+
+#: root/menu.tt:3 root/mobile_app.tt:32 root/mobile_app.tt:46
+#: root/mobile_app.tt:56 root/mobile_app.tt:66
+msgid "Home"
+msgstr "Начало поиска"
+
+#: root/mobile_crdb_js:154
+msgid "Info"
+msgstr "Информация"
+
+#: root/resource.tt:96
+msgid "Integer fields must be blank or contain a valid integer."
+msgstr "Поле должно содержать целое число (или оставить пустым)"
+
+#: root/facet_labels.tt:5
+msgid "Keyword"
+msgstr "Ключевое слово"
+
+#: root/main.tt:39
+msgid "Keyword search for articles on the web"
+msgstr "Поиск статьи в интернет"
+
+#: root/browse_js.tt:191
+msgid "Loading"
+msgstr "Загрузка"
+
+#: root/loggedin.tt:9
+msgid "Log in"
+msgstr "Войти"
+
+#: root/loggedin.tt:4
+msgid "Logged in as"
+msgstr "Вы вошли как"
+
+#: root/facet_labels.tt:6 root/facet_labels.tt:7 root/mobile_app.tt:23
+msgid "Name"
+msgstr "Название"
+
+#: root/mobile_app.tt:32
+msgid "Names"
+msgstr "Названия"
+
+#: root/browse.tt:65
+msgid "No records found for your current search."
+msgstr "Не найдено описаний по Вашему запросу."
+
+#: root/browse.tt:19 root/browse_js.tt:158 root/browse_js.tt:170
+msgid "No subject description."
+msgstr "Нет описание предметной области"
+
+#: root/facet_labels.tt:8
+msgid "Open Access"
+msgstr "Открытый доступ"
+
+#: lib/CUFTS/CRDB/Controller/Mobile.pm:134 root/browse.tt:42
+msgid "Other Resources"
+msgstr "Дополнительные ресурсы"
+
+#: root/facet_menu.tt:12
+msgid "Refine Your Search"
+msgstr "Уточнить поиск"
+
+#: root/mobile_app.tt:66
+msgid "Resource"
+msgstr "Ресурс"
+
+#: root/facet_labels.tt:10
+msgid "Resource Medium"
+msgstr ""
+
+#: root/facet_labels.tt:9 root/facet_menu.tt:62
+msgid "Resource Type"
+msgstr "Тип ресурса"
+
+#: root/page_footer.tt:2
+msgid "SANDBOX"
+msgstr ""
+
+#: root/main.tt:47 root/main.tt:59
+msgid "Search"
+msgstr "Поиск"
+
+#: root/facet_menu_js.tt:8
+msgid "Show less"
+msgstr "Меньше"
+
+#: root/facet_menu.tt:104 root/facet_menu.tt:54 root/facet_menu.tt:79
+#: root/facet_menu_js.tt:8
+msgid "Show more"
+msgstr "Больше"
+
+#: root/current_facets.tt:23
+msgid "Showing all records."
+msgstr "Показаны все описания"
+
+#: root/facet_labels.tt:11 root/facet_menu.tt:37 root/mobile_app.tt:24
+msgid "Subject"
+msgstr "Предмет"
+
+#: root/mobile_app.tt:46
+msgid "Subjects"
+msgstr "Предмет"
+
+#: root/errors.tt:21
+msgid "The following fields are invalid:"
+msgstr "Ошибка при заполнении следующий полей"
+
+#: root/errors.tt:12
+msgid "The following fields are required:"
+msgstr "Необходимо заполнить следующие поля:"
+
+#: root/resource_not_public.tt:1
+msgid "The resource you have attempted to access has been marked private."
+msgstr "Данный ресурс не доступен для публичного просмотра"
+
+#: root/facet_menu.tt:17
+msgid "Title"
+msgstr "Название"
+
+#: lib/CUFTS/CRDB/Controller/Mobile.pm:134 root/browse.tt:27
+msgid "Top Resources"
+msgstr "Рекомендуемые ресурсы"
+
+#: root/current_facets.tt:4
+msgid "Your Current Search"
+msgstr "Ваш текущий поиск"
+
+#: root/loggedin.tt:9
+msgid "a new account to use extra features"
+msgstr "нового пользователя"
+
+#: root/mobile_crdb_js:8
+msgid "access"
+msgstr ""
+
+#: root/account_manage.tt:6
+msgid "account id"
+msgstr ""
+
+#: root/mobile_crdb_js:9
+msgid "alert"
+msgstr "предупреждение"
+
+#: root/mobile_crdb_js:10
+msgid "allows_coursepacks"
+msgstr ""
+
+#: root/mobile_crdb_js:11
+msgid "allows_ereserves"
+msgstr ""
+
+#: root/mobile_crdb_js:12
+msgid "allows_ill"
+msgstr ""
+
+#: root/browse_js.tt:142 root/browse_js.tt:79 root/display_field.tt:95
+msgid "cancel"
+msgstr "отменить"
+
+#: root/mobile_crdb_js:14
+msgid "coverage"
+msgstr ""
+
+#: root/account_create.tt:13 root/loggedin.tt:9
+msgid "create"
+msgstr "создать"
+
+#: root/mobile_crdb_js:15
+msgid "description_full"
+msgstr ""
+
+#: root/display_field.tt:98
+msgid "edit"
+msgstr "изменить"
+
+#: root/account_create.tt:8 root/account_manage.tt:9
+msgid "email"
+msgstr ""
+
+#: root/mobile_crdb_js:24
+msgid "help_url"
+msgstr ""
+
+#: root/mobile_crdb_js:13
+msgid "ill_notes"
+msgstr ""
+
+#: root/loggedin.tt:13 root/login.tt:5
+msgid "login"
+msgstr "вход"
+
+#: root/account_create.tt:6 root/account_manage.tt:7 root/loggedin.tt:13
+#: root/login.tt:3
+msgid "login id"
+msgstr "имя пользователя"
+
+#: root/loggedin.tt:7
+msgid "logout"
+msgstr "выход"
+
+#: root/loggedin.tt:5
+msgid "my account"
+msgstr "мой профиль"
+
+#: root/loggedin.tt:6
+msgid "my tags"
+msgstr "мои закладки"
+
+#: root/account_create.tt:7 root/account_manage.tt:8
+msgid "name"
+msgstr "имя и фамилия"
+
+#: root/fields/boolean.tt:4 root/mobile_crdb_js:236
+msgid "no"
+msgstr "нет"
+
+#: root/mobile_crdb_js:17
+msgid "open_access"
+msgstr ""
+
+#: root/loggedin.tt:9
+msgid "or"
+msgstr "или"
+
+#: root/account_create.tt:9 root/account_manage.tt:11 root/loggedin.tt:13
+#: root/login.tt:4
+msgid "password"
+msgstr "пароль"
+
+#: root/account_create.tt:11 root/account_manage.tt:12
+msgid "password (again)"
+msgstr "пароль (повторить)"
+
+#: root/mobile_crdb_js:18
+msgid "print_equivalents"
+msgstr ""
+
+#: root/mobile_crdb_js:19
+msgid "refworks_compatible"
+msgstr ""
+
+#: root/current_facets.tt:17
+msgid "remove search term"
+msgstr ""
+
+#: root/mobile_crdb_js:20
+msgid "resolver_enabled"
+msgstr ""
+
+#: root/mobile_crdb_js:16
+msgid "resource_name"
+msgstr ""
+
+#: root/mobile_crdb_js:21
+msgid "resource_type"
+msgstr ""
+
+#: root/account_manage.tt:14 root/display_field.tt:94
+msgid "save"
+msgstr "сохранить"
+
+#: root/mobile_crdb_js:22
+msgid "simultaneous_users"
+msgstr ""
+
+#: root/mobile_crdb_js:23
+msgid "subjects"
+msgstr ""
+
+#: root/browse_js.tt:141 root/browse_js.tt:78
+msgid "submit"
+msgstr ""
+
+#: root/mobile_crdb_js:25
+msgid "title_list_url"
+msgstr ""
+
+#: root/resource.tt:162
+msgid "toggle empty fields"
+msgstr "показать пустые поля"
+
+#: root/mobile_crdb_js:26
+msgid "update_frequency"
+msgstr ""
+
+#: root/mobile_crdb_js:28
+msgid "user_documentation"
+msgstr ""
+
+#: root/mobile_crdb_js:29
+msgid "vendor"
+msgstr ""
+
+#: root/fields/boolean.tt:3 root/mobile_crdb_js:236
+msgid "yes"
+msgstr "да"

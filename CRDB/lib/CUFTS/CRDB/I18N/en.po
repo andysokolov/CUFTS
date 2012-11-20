@@ -1,0 +1,405 @@
+# English translations for PACKAGE package.
+# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# root <a.sokolov@spbu.ru>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2012-11-20 10:59+0400\n"
+"Last-Translator: Andrey Sokolov <a.sokolov@spbu.ru>\n"
+"Language-Team: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ASCII\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: root/browse.tt:84
+msgid "Access"
+msgstr "Access"
+
+#: root/facet_menu.tt:17 root/facet_menu.tt:37 root/facet_menu.tt:62
+#: root/facet_menu.tt:87
+msgid "Add"
+msgstr "Add"
+
+#: root/facet_menu.tt:29 root/main.tt:32
+msgid "All"
+msgstr "All"
+
+#: root/fatal_error.tt:1
+msgid "An error occurred while processing your request.  The following problems have been logged"
+msgstr "An error occurred while processing your request.  The following problems have been logged"
+
+#: root/mobile_app.tt:32 root/mobile_app.tt:46 root/mobile_app.tt:56
+#: root/mobile_app.tt:66
+msgid "Back"
+msgstr "Back"
+
+#: root/main.tt:18
+msgid "Browse"
+msgstr "Browse"
+
+#: root/mobile_app.tt:20
+msgid "Browse by"
+msgstr "Browse by"
+
+#: root/main.tt:8
+msgid "Browse databases by subject area"
+msgstr "Browse databases by subject area"
+
+#: root/main.tt:25
+msgid "Browse databases by title"
+msgstr "Browse databases by title"
+
+#: root/facet_menu.tt:112
+msgid "By Keyword"
+msgstr "By Keyword"
+
+#: root/layout.tt:7 root/page_header.tt:1
+msgid "CRDB"
+msgstr "CRDB"
+
+#: root/mobile_app.tt:5 root/mobile_app_footer.tt:1
+msgid "CRDB Mobile"
+msgstr "CRDB Mobile"
+
+#: root/page_footer.tt:2
+msgid "CUFTS CRDB"
+msgstr "CUFTS CRDB"
+
+#: root/facet_menu.tt:17 root/facet_menu.tt:37 root/facet_menu.tt:62
+#: root/facet_menu.tt:87
+msgid "Change"
+msgstr "Change"
+
+#: root/facet_menu.tt:24
+msgid "Choose letter..."
+msgstr "Choose letter..."
+
+#: root/main.tt:59
+msgid "Clear form"
+msgstr "Clear form"
+
+#: root/browse.tt:82 root/display_field.tt:32 root/mobile_crdb_js:242
+#: root/mobile_crdb_js:27
+msgid "Connect"
+msgstr "Connect"
+
+#: root/facet_labels.tt:4 root/facet_menu.tt:87
+msgid "Content Type"
+msgstr "Content Type"
+
+#: root/resource.tt:85
+msgid "Date fields must be blank or YYYY-MM-DD"
+msgstr "Date fields must be blank or YYYY-MM-DD"
+
+#: root/page_title.tt:5
+msgid "Electronic Resources"
+msgstr "Electronic Resources"
+
+#: root/main.tt:55
+msgid "Find databases by database title and description"
+msgstr "Find databases by database title and description"
+
+#: root/main.tt:44
+msgid "Google Scholar"
+msgstr "Google Scholar"
+
+#: root/menu.tt:3 root/mobile_app.tt:32 root/mobile_app.tt:46
+#: root/mobile_app.tt:56 root/mobile_app.tt:66
+msgid "Home"
+msgstr "Home"
+
+#: root/mobile_crdb_js:154
+msgid "Info"
+msgstr "Info"
+
+#: root/resource.tt:96
+msgid "Integer fields must be blank or contain a valid integer."
+msgstr "Integer fields must be blank or contain a valid integer."
+
+#: root/facet_labels.tt:5
+msgid "Keyword"
+msgstr "Keyword"
+
+#: root/main.tt:39
+msgid "Keyword search for articles on the web"
+msgstr "Keyword search for articles on the web"
+
+#: root/browse_js.tt:191
+msgid "Loading"
+msgstr "Loading"
+
+#: root/loggedin.tt:9
+msgid "Log in"
+msgstr "Log in"
+
+#: root/loggedin.tt:4
+msgid "Logged in as"
+msgstr "Logged in as"
+
+#: root/facet_labels.tt:6 root/facet_labels.tt:7 root/mobile_app.tt:23
+msgid "Name"
+msgstr "Name"
+
+#: root/mobile_app.tt:32
+msgid "Names"
+msgstr "Names"
+
+#: root/browse.tt:65
+msgid "No records found for your current search."
+msgstr "No records found for your current search."
+
+#: root/browse.tt:19 root/browse_js.tt:158 root/browse_js.tt:170
+msgid "No subject description."
+msgstr "No subject description."
+
+#: root/facet_labels.tt:8
+msgid "Open Access"
+msgstr "Open Access"
+
+#: lib/CUFTS/CRDB/Controller/Mobile.pm:134 root/browse.tt:42
+msgid "Other Resources"
+msgstr "Other Resources"
+
+#: root/facet_menu.tt:12
+msgid "Refine Your Search"
+msgstr "Refine Your Search"
+
+#: root/mobile_app.tt:66
+msgid "Resource"
+msgstr "Resource"
+
+#: root/facet_labels.tt:10
+msgid "Resource Medium"
+msgstr "Resource Medium"
+
+#: root/facet_labels.tt:9 root/facet_menu.tt:62
+msgid "Resource Type"
+msgstr "Resource Type"
+
+#: root/page_footer.tt:2
+msgid "SANDBOX"
+msgstr "SANDBOX"
+
+#: root/main.tt:47 root/main.tt:59
+msgid "Search"
+msgstr "Search"
+
+#: root/facet_menu_js.tt:8
+msgid "Show less"
+msgstr "Show less"
+
+#: root/facet_menu.tt:104 root/facet_menu.tt:54 root/facet_menu.tt:79
+#: root/facet_menu_js.tt:8
+msgid "Show more"
+msgstr "Show more"
+
+#: root/current_facets.tt:23
+msgid "Showing all records."
+msgstr "Showing all records."
+
+#: root/facet_labels.tt:11 root/facet_menu.tt:37 root/mobile_app.tt:24
+msgid "Subject"
+msgstr "Subject"
+
+#: root/mobile_app.tt:46
+msgid "Subjects"
+msgstr "Subjects"
+
+#: root/errors.tt:21
+msgid "The following fields are invalid:"
+msgstr "The following fields are invalid:"
+
+#: root/errors.tt:12
+msgid "The following fields are required:"
+msgstr "The following fields are required:"
+
+#: root/resource_not_public.tt:1
+msgid "The resource you have attempted to access has been marked private."
+msgstr "The resource you have attempted to access has been marked private."
+
+#: root/facet_menu.tt:17
+msgid "Title"
+msgstr "Title"
+
+#: lib/CUFTS/CRDB/Controller/Mobile.pm:134 root/browse.tt:27
+msgid "Top Resources"
+msgstr "Top Resources"
+
+#: root/current_facets.tt:4
+msgid "Your Current Search"
+msgstr "Your Current Search"
+
+#: root/loggedin.tt:9
+msgid "a new account to use extra features"
+msgstr "a new account to use extra features"
+
+#: root/mobile_crdb_js:8
+msgid "access"
+msgstr "access"
+
+#: root/account_manage.tt:6
+msgid "account id"
+msgstr "account id"
+
+#: root/mobile_crdb_js:9
+msgid "alert"
+msgstr "alert"
+
+#: root/mobile_crdb_js:10
+msgid "allows_coursepacks"
+msgstr "allows_coursepacks"
+
+#: root/mobile_crdb_js:11
+msgid "allows_ereserves"
+msgstr "allows_ereserves"
+
+#: root/mobile_crdb_js:12
+msgid "allows_ill"
+msgstr "allows_ill"
+
+#: root/browse_js.tt:142 root/browse_js.tt:79 root/display_field.tt:95
+msgid "cancel"
+msgstr "cancel"
+
+#: root/mobile_crdb_js:14
+msgid "coverage"
+msgstr "coverage"
+
+#: root/account_create.tt:13 root/loggedin.tt:9
+msgid "create"
+msgstr "create"
+
+#: root/mobile_crdb_js:15
+msgid "description_full"
+msgstr "description_full"
+
+#: root/display_field.tt:98
+msgid "edit"
+msgstr "edit"
+
+#: root/account_create.tt:8 root/account_manage.tt:9
+msgid "email"
+msgstr "email"
+
+#: root/mobile_crdb_js:24
+msgid "help_url"
+msgstr "help_url"
+
+#: root/mobile_crdb_js:13
+msgid "ill_notes"
+msgstr "ill_notes"
+
+#: root/loggedin.tt:13 root/login.tt:5
+msgid "login"
+msgstr "login"
+
+#: root/account_create.tt:6 root/account_manage.tt:7 root/loggedin.tt:13
+#: root/login.tt:3
+msgid "login id"
+msgstr "login id"
+
+#: root/loggedin.tt:7
+msgid "logout"
+msgstr "logout"
+
+#: root/loggedin.tt:5
+msgid "my account"
+msgstr "my account"
+
+#: root/loggedin.tt:6
+msgid "my tags"
+msgstr "my tags"
+
+#: root/account_create.tt:7 root/account_manage.tt:8
+msgid "name"
+msgstr "name"
+
+#: root/fields/boolean.tt:4 root/mobile_crdb_js:236
+msgid "no"
+msgstr "no"
+
+#: root/mobile_crdb_js:17
+msgid "open_access"
+msgstr "open_access"
+
+#: root/loggedin.tt:9
+msgid "or"
+msgstr "or"
+
+#: root/account_create.tt:9 root/account_manage.tt:11 root/loggedin.tt:13
+#: root/login.tt:4
+msgid "password"
+msgstr "password"
+
+#: root/account_create.tt:11 root/account_manage.tt:12
+msgid "password (again)"
+msgstr "password (again)"
+
+#: root/mobile_crdb_js:18
+msgid "print_equivalents"
+msgstr "print_equivalents"
+
+#: root/mobile_crdb_js:19
+msgid "refworks_compatible"
+msgstr "refworks_compatible"
+
+#: root/current_facets.tt:17
+msgid "remove search term"
+msgstr "remove search term"
+
+#: root/mobile_crdb_js:20
+msgid "resolver_enabled"
+msgstr "resolver_enabled"
+
+#: root/mobile_crdb_js:16
+msgid "resource_name"
+msgstr "resource_name"
+
+#: root/mobile_crdb_js:21
+msgid "resource_type"
+msgstr "resource_type"
+
+#: root/account_manage.tt:14 root/display_field.tt:94
+msgid "save"
+msgstr "save"
+
+#: root/mobile_crdb_js:22
+msgid "simultaneous_users"
+msgstr "simultaneous_users"
+
+#: root/mobile_crdb_js:23
+msgid "subjects"
+msgstr "subjects"
+
+#: root/browse_js.tt:141 root/browse_js.tt:78
+msgid "submit"
+msgstr "submit"
+
+#: root/mobile_crdb_js:25
+msgid "title_list_url"
+msgstr "title_list_url"
+
+#: root/resource.tt:162
+msgid "toggle empty fields"
+msgstr "toggle empty fields"
+
+#: root/mobile_crdb_js:26
+msgid "update_frequency"
+msgstr "update_frequency"
+
+#: root/mobile_crdb_js:28
+msgid "user_documentation"
+msgstr "user_documentation"
+
+#: root/mobile_crdb_js:29
+msgid "vendor"
+msgstr "vendor"
+
+#: root/fields/boolean.tt:3 root/mobile_crdb_js:236
+msgid "yes"
+msgstr "yes"
