@@ -38,7 +38,7 @@ msgstr "DOI"
 
 #: root/main_header.tt:5
 msgid "Language"
-msgstr ""
+msgstr "Language"
 
 #: root/test.tt:58
 msgid "PMID"
@@ -78,7 +78,7 @@ msgstr "end"
 
 #: root/test.tt:68
 msgid "fillin"
-msgstr ""
+msgstr "fillin"
 
 #: root/test.tt:43
 msgid "first"
@@ -98,7 +98,7 @@ msgstr "genre"
 
 #: root/resolver_js:5
 msgid "hide other services"
-msgstr "show other services"
+msgstr "hide other services"
 
 #: root/main_request.tt:27 root/test.tt:49
 msgid "issue"
@@ -162,7 +162,7 @@ msgstr "start page"
 
 #: root/test.tt:61
 msgid "submit"
-msgstr ""
+msgstr "submit"
 
 #: root/main_results.tt:79
 msgid "table of contents for the issue"
