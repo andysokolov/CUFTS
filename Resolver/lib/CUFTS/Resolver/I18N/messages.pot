@@ -23,7 +23,7 @@ msgstr ""
 msgid "CUFTS Resolver"
 msgstr ""
 
-#: root/main_header.tt.000:2 root/main_header.tt:2
+#: root/main_header.tt:2
 msgid "CUFTS Resolver logo"
 msgstr ""
 
@@ -31,19 +31,23 @@ msgstr ""
 msgid "CUFTS resolver test"
 msgstr ""
 
-#: root/test.tt:54
+#: root/test.tt:55
 msgid "DOI"
 msgstr ""
 
-#: root/test.tt:57
+#: root/main_header.tt:3
+msgid "Language"
+msgstr ""
+
+#: root/test.tt:58
 msgid "PMID"
 msgstr ""
 
-#: root/test.tt:36
+#: root/test.tt:37
 msgid "article title"
 msgstr ""
 
-#: root/test.tt:42
+#: root/test.tt:43
 msgid "author"
 msgstr ""
 
@@ -59,7 +63,7 @@ msgstr ""
 msgid "database of articles"
 msgstr ""
 
-#: root/main_request.tt:35 root/test.tt:48
+#: root/main_request.tt:35 root/test.tt:49
 msgid "date"
 msgstr ""
 
@@ -67,11 +71,11 @@ msgstr ""
 msgid "doi"
 msgstr ""
 
-#: root/test.tt:51
+#: root/test.tt:52
 msgid "end"
 msgstr ""
 
-#: root/test.tt:42
+#: root/test.tt:43
 msgid "first"
 msgstr ""
 
@@ -83,11 +87,15 @@ msgstr ""
 msgid "fulltext of the article is available from"
 msgstr ""
 
-#: root/test.tt:29
+#: root/test.tt:30
 msgid "genre"
 msgstr ""
 
-#: root/main_request.tt:27 root/test.tt:48
+#: root/static/js/resolver.js:5
+msgid "hide other services"
+msgstr ""
+
+#: root/main_request.tt:27 root/test.tt:49
 msgid "issue"
 msgstr ""
 
@@ -95,7 +103,7 @@ msgstr ""
 msgid "journal home page or list of articles in journal"
 msgstr ""
 
-#: root/test.tt:42
+#: root/test.tt:43
 msgid "last"
 msgstr ""
 
@@ -103,15 +111,11 @@ msgstr ""
 msgid "link to result"
 msgstr ""
 
-#: root/main_results.tt:61
-msgid "not the first service... Prepare hidden layer contents for services other than the best one"
-msgstr ""
-
 #: root/main_request.tt:39
 msgid "oai"
 msgstr ""
 
-#: root/main_request.tt:29 root/main_request.tt:31 root/test.tt:51
+#: root/main_request.tt:29 root/main_request.tt:31 root/test.tt:52
 msgid "pages"
 msgstr ""
 
@@ -127,11 +131,11 @@ msgstr ""
 msgid "search the web using"
 msgstr ""
 
-#: root/main_results.tt:36
+#: root/main_results.tt:36 root/static/js/resolver.js:5
 msgid "show other services"
 msgstr ""
 
-#: root/test.tt:15
+#: root/test.tt:16
 msgid "site"
 msgstr ""
 
@@ -139,16 +143,20 @@ msgstr ""
 msgid "source"
 msgstr ""
 
-#: root/test.tt:39
+#: root/test.tt:40
 msgid "source/title"
 msgstr ""
 
-#: root/test.tt:51
+#: root/test.tt:52
 msgid "start"
 msgstr ""
 
 #: root/main_request.tt:33
 msgid "start page"
+msgstr ""
+
+#: root/test.tt:61
+msgid "submit"
 msgstr ""
 
 #: root/main_results.tt:79
@@ -159,7 +167,7 @@ msgstr ""
 msgid "table of contents for the issue is available from"
 msgstr ""
 
-#: root/test.tt:22
+#: root/test.tt:23
 msgid "template"
 msgstr ""
 
@@ -183,6 +191,6 @@ msgstr ""
 msgid "unrecognized service from"
 msgstr ""
 
-#: root/main_request.tt:26 root/test.tt:48
+#: root/main_request.tt:26 root/test.tt:49
 msgid "volume"
 msgstr ""

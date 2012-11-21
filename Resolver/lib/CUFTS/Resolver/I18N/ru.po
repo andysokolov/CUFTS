@@ -1,32 +1,30 @@
 # Russian translations for PACKAGE package.
 # Copyright (C) 2011 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# root <andrew@lib.pu.ru>, 2011.
+# Andrey Sokolov <andrew@lib.pu.ru>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2011-12-07 12:15+0400\n"
-"Last-Translator: root <andrew@lib.pu.ru>\n"
+"Last-Translator: Andrey Sokolov <andrew@lib.pu.ru>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: root/fatal_error.tt:1
-msgid ""
-"An error occurred while processing your request. The following problems have been logged"
-msgstr "An error occurred while processing your request. The following problems have been logged"
+msgid "An error occurred while processing your request. The following problems have been logged"
+msgstr "При обработке запроса произошла ошибка. Зарегистрированы следующие проблемы"
 
 #: root/main.tt:3
 msgid "CUFTS Resolver"
 msgstr "CUFTS конструктор ссылок"
 
-#: root/main_header.tt.000:2 root/main_header.tt:2
+#: root/main_header.tt:2
 msgid "CUFTS Resolver logo"
 msgstr "Логотип CUFTS конструктора ссылок"
 
@@ -34,19 +32,23 @@ msgstr "Логотип CUFTS конструктора ссылок"
 msgid "CUFTS resolver test"
 msgstr "Тест страница CUFTS конструктора ссылок"
 
-#: root/test.tt:54
+#: root/test.tt:55
 msgid "DOI"
 msgstr "DOI"
 
-#: root/test.tt:57
+#: root/main_header.tt:3
+msgid "Language"
+msgstr "Язык"
+
+#: root/test.tt:58
 msgid "PMID"
 msgstr "PMID"
 
-#: root/test.tt:36
+#: root/test.tt:37
 msgid "article title"
 msgstr "название документа"
 
-#: root/test.tt:42
+#: root/test.tt:43
 msgid "author"
 msgstr "автор"
 
@@ -60,9 +62,9 @@ msgstr "check for holdings in"
 
 #: root/main_results.tt:83
 msgid "database of articles"
-msgstr "database of articles"
+msgstr "основная страница ресурса"
 
-#: root/main_request.tt:35 root/test.tt:48
+#: root/main_request.tt:35 root/test.tt:49
 msgid "date"
 msgstr "дата"
 
@@ -70,11 +72,11 @@ msgstr "дата"
 msgid "doi"
 msgstr "doi"
 
-#: root/test.tt:51
+#: root/test.tt:52
 msgid "end"
 msgstr "последняя"
 
-#: root/test.tt:42
+#: root/test.tt:43
 msgid "first"
 msgstr "имя"
 
@@ -86,19 +88,23 @@ msgstr "полный текст статьи"
 msgid "fulltext of the article is available from"
 msgstr "полный текст статьи доступен на"
 
-#: root/test.tt:29
+#: root/test.tt:30
 msgid "genre"
 msgstr "тип документа"
 
-#: root/main_request.tt:27 root/test.tt:48
+#: root/static/js/resolver.js:5
+msgid "hide other services"
+msgstr "скрыть другие сервисы"
+
+#: root/main_request.tt:27 root/test.tt:49
 msgid "issue"
 msgstr "выпуск"
 
 #: root/main_results.tt:81
 msgid "journal home page or list of articles in journal"
-msgstr "основная страница или список статей журнала"
+msgstr "основная страница журнала или список статей журнала"
 
-#: root/test.tt:42
+#: root/test.tt:43
 msgid "last"
 msgstr "фамилия"
 
@@ -106,15 +112,11 @@ msgstr "фамилия"
 msgid "link to result"
 msgstr "ссылка на результат"
 
-#: root/main_results.tt:61
-msgid "not the first service... Prepare hidden layer contents for services other than the best one"
-msgstr "not the first service... Prepare hidden layer contents for services other than the best one"
-
 #: root/main_request.tt:39
 msgid "oai"
 msgstr "oai"
 
-#: root/main_request.tt:29 root/main_request.tt:31 root/test.tt:51
+#: root/main_request.tt:29 root/main_request.tt:31 root/test.tt:52
 msgid "pages"
 msgstr "страницы"
 
@@ -130,11 +132,11 @@ msgstr "поиск в интернет"
 msgid "search the web using"
 msgstr "поиск в интернет с использованием"
 
-#: root/main_results.tt:36
+#: root/main_results.tt:36 root/static/js/resolver.js:5
 msgid "show other services"
 msgstr "показать другие сервисы"
 
-#: root/test.tt:15
+#: root/test.tt:16
 msgid "site"
 msgstr "организация"
 
@@ -142,17 +144,21 @@ msgstr "организация"
 msgid "source"
 msgstr "название источника документа"
 
-#: root/test.tt:39
+#: root/test.tt:40
 msgid "source/title"
 msgstr "название источника документа"
 
-#: root/test.tt:51
+#: root/test.tt:52
 msgid "start"
 msgstr "первая"
 
 #: root/main_request.tt:33
 msgid "start page"
 msgstr "начальная страница"
+
+#: root/test.tt:61
+msgid "submit"
+msgstr "поиск"
 
 #: root/main_results.tt:79
 msgid "table of contents for the issue"
@@ -162,7 +168,7 @@ msgstr "оглавление выпуска"
 msgid "table of contents for the issue is available from"
 msgstr "оглавление выпуска доступно на"
 
-#: root/test.tt:22
+#: root/test.tt:23
 msgid "template"
 msgstr "шаблон"
 
@@ -186,6 +192,6 @@ msgstr "unrecognized service"
 msgid "unrecognized service from"
 msgstr "unrecognized service from"
 
-#: root/main_request.tt:26 root/test.tt:48
+#: root/main_request.tt:26 root/test.tt:49
 msgid "volume"
 msgstr "том"
