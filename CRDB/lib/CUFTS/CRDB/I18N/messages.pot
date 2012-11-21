@@ -123,6 +123,10 @@ msgstr ""
 msgid "Keyword search for articles on the web"
 msgstr ""
 
+#: root/page_header.tt:4
+msgid "Language"
+msgstr ""
+
 #: root/browse_js.tt:191
 msgid "Loading"
 msgstr ""

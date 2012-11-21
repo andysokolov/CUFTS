@@ -27,7 +27,7 @@ div#results {
 div.request-label {
 	float: left;
 	clear: left;
-	width: 4em;
+	width: 20em;
 	font-weight: bold;
 	font-size: 80%;
 }

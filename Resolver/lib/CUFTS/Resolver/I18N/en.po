@@ -36,7 +36,7 @@ msgstr "CUFTS resolver test"
 msgid "DOI"
 msgstr "DOI"
 
-#: root/main_header.tt:3
+#: root/main_header.tt:5
 msgid "Language"
 msgstr ""
 
@@ -76,6 +76,10 @@ msgstr "doi"
 msgid "end"
 msgstr "end"
 
+#: root/test.tt:68
+msgid "fillin"
+msgstr ""
+
 #: root/test.tt:43
 msgid "first"
 msgstr "first"
@@ -92,7 +96,7 @@ msgstr "fulltext of the article is available from"
 msgid "genre"
 msgstr "genre"
 
-#: root/static/js/resolver.js:5
+#: root/resolver_js:5
 msgid "hide other services"
 msgstr "show other services"
 
@@ -132,7 +136,7 @@ msgstr "search the web"
 msgid "search the web using"
 msgstr "search the web using"
 
-#: root/main_results.tt:36 root/static/js/resolver.js:5
+#: root/main_results.tt:36 root/resolver_js:5
 msgid "show other services"
 msgstr "show other services"
 

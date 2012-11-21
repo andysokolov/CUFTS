@@ -1,7 +1,7 @@
 <div id="page-header-background" style="background: url([% c.uri_for_image('cjdb_header_repeat.gif') %])"><img alt="[% c.loc( 'CRDB' ) %]" id="page-header-image" src="[% c.uri_for_image('cjdb_header.gif') %]" border="0"/></div>
 <div class="langform">
 <form method="post" name="langForm" action="">
-	<select id="set_lang" name="set_lang" onChange="document.langForm.submit();">
+	[% c.loc( 'Language' ) %]: <select id="set_lang" name="set_lang" onChange="document.langForm.submit();">
 		[% FOREACH language IN languages_list.keys.sort %]
 			<option value="[% language %]"[% IF selected_lang==language %] selected[% END %]>[% languages_list.$language %]</option>
 		[% END %]

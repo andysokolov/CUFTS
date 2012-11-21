@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>CUFTS resolver test</title>
+	<title>[% c.loc( 'CUFTS resolver test' ) %]</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="StyleSheet" href="[% c.uri_for_static('css/test.css') %]" type="text/css" media="screen, print" />
 	<script src="[% c.uri_for_static('js/test.js') %]" type="text/javascript"></script>
@@ -65,7 +65,7 @@
 		[% SET tests = [] %]
 		[% PROCESS test_data.tt %]
 		[% FOREACH test IN tests %]
-			<input type="submit" value="fillin" onClick="[%- INCLUDE create_test_js test = test -%] return false;" />[% PROCESS describe_test %]<br />
+			<input type="submit" value="[% c.loc( 'fillin' ) %]" onClick="[%- INCLUDE create_test_js test = test -%] return false;" />[% PROCESS describe_test %]<br />
 		[% END %]
 		
 	</form>

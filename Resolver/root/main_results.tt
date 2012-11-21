@@ -58,7 +58,7 @@
 
     <div class="other-services" style="display: none" id="others[% results_iter.count %]"><ul class="results">
 
-   [% ELSE %] [%# [% c.loc( 'not the first service... Prepare hidden layer contents for services other than the best one' ) %] %]
+   [% ELSE %] [%# not the first service... Prepare hidden layer contents for services other than the best one %]
 
     [% FOREACH result IN service.results %]
       <li><a href="[% result.url %]">[%- INCLUDE service_name_description service_name=service_name -%]</a></li>
