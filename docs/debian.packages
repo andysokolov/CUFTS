@@ -96,3 +96,4 @@ libclass-dbi-perl install
 libclass-accessor-perl install
 libcgi-formbuilder-perl install
 libcatalyst-view-tt-perl install
+gettext install
