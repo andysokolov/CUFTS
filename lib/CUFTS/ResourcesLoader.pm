@@ -48,6 +48,7 @@ BEGIN {
         EBSCO_Generic
         EBSCO_II
         EBSCO
+        eLibrary
         Elsevier_CNSLP
         Elsevier
         ElsevierEurope

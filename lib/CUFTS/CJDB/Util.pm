@@ -5,6 +5,7 @@ use String::Approx qw(amatch);
 use CUFTS::Util::Simple;
 use MARC::Charset;
 use Data::Dumper;
+use Encode;
 
 my @stop_words     = qw(of and the an a la le les der das die et in for);
 
@@ -34,10 +35,11 @@ sub strip_title {
 
     $string =~ s/\s+\&\s+/ and /g;
 
-    $string = latin1_fallback($string);
+    ### $string = latin1_fallback($string);
 
     $string = lc($string);
-    $string =~ s/[^a-z0-9 ]//g;
+    ### $string =~ s/[^a-z0-9 ]//g;
+    $string =~ s/[^\p{IsWord} ]//g;
 
     # !!! Should this go here? We'll see how it works long term
     #	$string =~ s/\s+and\s+/ /g;
@@ -356,7 +358,8 @@ sub strip_tag {
     my $text = shift;
 
     $text = lc($text);
-    $text =~ tr/a-z0-9 //cd;
+    ### $text =~ tr/a-z0-9 //cd;
+    $text =~ s/[^\p{IsWord} ]//g;
     $text =~ s/^\s+//;
     $text =~ s/\s+$//;
 

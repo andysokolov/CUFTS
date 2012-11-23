@@ -29,7 +29,7 @@ use CUFTS::DB::SearchCache;
 use LWP::UserAgent;
 use HTTP::Request::Common;
 
-use URI::Escape qw(uri_escape);
+use URI::Escape qw(uri_escape_utf8);
 use String::Util qw(hascontent);
 use XML::LibXML;
 
@@ -77,25 +77,25 @@ sub get_records {
         $cache_query = 'http://www.crossref.org/openurl/?noredirect=true';
 
         if ( hascontent($request->issn) ) {
-            $cache_query .= '&issn=' . uri_escape($request->issn);
+            $cache_query .= '&issn=' . uri_escape_utf8($request->issn);
         }
         if ( hascontent($request->eissn) ) {
-            $cache_query .= '&eissn=' . uri_escape($request->eissn);
+            $cache_query .= '&eissn=' . uri_escape_utf8($request->eissn);
         }
         if ( hascontent($request->title) ) {
-            $cache_query .= '&title=' . uri_escape($request->title);
+            $cache_query .= '&title=' . uri_escape_utf8($request->title);
         }
         if ( hascontent($request->volume) ) {
-            $cache_query .= '&volume=' . uri_escape($request->volume);
+            $cache_query .= '&volume=' . uri_escape_utf8($request->volume);
         }
         if ( hascontent($request->issue) ) {
-            $cache_query .= '&issue=' . uri_escape($request->issue);
+            $cache_query .= '&issue=' . uri_escape_utf8($request->issue);
         }
         if ( hascontent($request->spage) ) {
-            $cache_query .= '&spage=' . uri_escape($request->spage);
+            $cache_query .= '&spage=' . uri_escape_utf8($request->spage);
         }
         if ( hascontent($year) ) {
-            $cache_query .= '&date=' . uri_escape($year);
+            $cache_query .= '&date=' . uri_escape_utf8($year);
         }
     }
     else {
@@ -113,7 +113,7 @@ sub get_records {
 
         # Add username/password to OpenURL
 
-        my $openurl = $cache_query . '&pid=' . uri_escape($resource->auth_name . ':' . $resource->auth_passwd);
+        my $openurl = $cache_query . '&pid=' . uri_escape_utf8($resource->auth_name . ':' . $resource->auth_passwd);
 
         # Lookup metadata
 
