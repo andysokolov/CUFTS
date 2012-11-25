@@ -21,6 +21,7 @@ libcache-fastmmap-perl install
 libcatalyst-perl install
 libcatalyst-modules-perl install
 libcatalyst-modules-extra-perl install
+libcatalyst-plugin-unicode-encoding-perl install
 libformvalidator-simple-perl install
 libclass-errorhandler-perl install
 libdate-pcalc-perl install

@@ -1,7 +1,7 @@
 # README - CUFTS OpenURL link resolver and electronic resource management system
 
 - This package is a fork of the CUFTS electronic resource management system.
-- Quick start for Debian GNU/Linux 6.0 ("squeeze") https://github.com/andysokolov/CUFTS/wiki
+- Quick start for ubuntu 12.04 LTS https://github.com/andysokolov/CUFTS/wiki
 - Licensed under the GPL version 2
 - See more details and documentation at main site http://researcher.sfu.ca/
 
