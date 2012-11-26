@@ -2,23 +2,23 @@
 
 [% INCLUDE page_title.tt %]
 
-Subjects 
+[% c.loc( 'Subjects' ) %] 
 [% SWITCH search_type %]
  [% CASE 'startswith' %]
-  beginning with 
+  [% c.loc( 'beginning with' ) %] 
  [% CASE 'exact' %]
-  matching
+  [% c.loc( 'matching' ) %]
  [% CASE 'any' %]
-  containing any of these words: 
+  [% c.loc( 'containing any of these words' ) %]: 
  [% CASE 'all' %]
-  containing all of these words: 
+  [% c.loc( 'containing all of these words' ) %]: 
 [% END %]
 "[% search_terms %]":<br />
 <br />
 [% IF subjects.size == 0 %]
-        No results found for search.
+        [% c.loc( 'No results found for search' ) %].
 [% END %]
 [% FOREACH subject = subjects %]
-	<a href="[% url("$url_base/browse/journals", browse_field='subject',search_terms=subject.subject) %]">[% subject.subject | html %]</a><br />
+	<a href="[% url("$url_base/browse/journals", browse_field='subject',search_terms=subject.subject.encode_utf8) %]">[% subject.subject | html %]</a><br />
 [% END %]
 

@@ -2,14 +2,14 @@
 [% PROCESS setup_browse.tt %]
 
 <form method="get" name="browse" action="[% url("$url_base/browse/show") %]">
-<span class="highlight">Search</span> for journals by:
+<span class="highlight">[% c.loc( 'Search' ) %]</span> [% c.loc( 'for journals by' ) %]:
 <p>
 <select name="browse_field" onchange="return changeBrowse();">
- <option value="title">title</option>
- <option value="subject">subject</option>
- <option value="association">association</option>
- <option value="issn">ISSN</option>
- <option value="tag">tag</option>
+ <option value="title">[% c.loc( 'title' ) %]</option>
+ <option value="subject">[% c.loc( 'subject' ) %]</option>
+ <option value="association">[% c.loc( 'association' ) %]</option>
+ <option value="issn">[% c.loc( 'ISSN' ) %]</option>
+ <option value="tag">[% c.loc( 'tag' ) %]</option>
 </select>
 <select name="search_type">
  <option value="startswith">[% search_labels.startswith %]</option>
@@ -18,10 +18,10 @@
  <option value="all">[% search_labels.all %]</option>
  <option value="ft">[% search_labels.ft %]</option>
 </select>
-<input type="text" name="search_terms" size="30" maxlength="256" /> <input type="submit" name="submit" value="Search" /> <input type="reset" value="Clear form" />
+<input type="text" name="search_terms" size="30" maxlength="256" /> <input type="submit" name="submit" value="[% c.loc( 'Search' ) %]" /> <input type="reset" value="[% c.loc( 'Clear form' ) %]" />
 </p>
 </form>
 
-<div><a href="[% url("$url_base/browse/lcc") %]">Browse by journal subject</a></div>
+<div><a href="[% url("$url_base/browse/lcc") %]">[% c.loc( 'Browse by journal subject' ) %]</a></div>
 
-<div><a href="[% url("$url_base/browse/selected_journals") %]">Browse selected journals</a></div>
+<div><a href="[% url("$url_base/browse/selected_journals") %]">[% c.loc( 'Browse selected journals' ) %]</a></div>

@@ -1,6 +1,6 @@
 [% IF erm %]
- <div class="journal-label">ERM:</div>
+ <div class="journal-label">[% c.loc( 'ERM' ) %]:</div>
  <div class="journal-data">
-  ERM data here.
+  [% c.loc( 'ERM data here' ) %].
  </div>
 [% END %]

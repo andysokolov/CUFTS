@@ -1,3 +1,3 @@
-[% INCLUDE page_title.tt add = 'Subjects' %]
+[% INCLUDE page_title.tt add = c.loc( 'Subjects' ) %]
 
 [% INCLUDE lcc_browse_content.tt %]

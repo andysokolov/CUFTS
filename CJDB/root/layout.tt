@@ -1,8 +1,9 @@
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="ROBOTS" content="NOINDEX,NOFOLLOW" />
 <base href="[% url_base %]" />
-<title>CJDB</title>
+<title>[% c.loc( 'CJDB' ) %]</title>
 <link rel="StyleSheet" href="[% css_dir %]cjdb.css" type="text/css" media="screen, print" />
 [% IF site_css_file %]
  <link rel="StyleSheet" href="[% site_css_file %]" type="text/css" media="screen, print" />

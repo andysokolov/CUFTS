@@ -761,3 +761,10 @@ div#tabs-container {
     clear: both;
     width: 99%;
 }
+
+.langform {
+	position: absolute;
+	z-index: auto;
+	top: 30px;
+	right: 10px;
+}

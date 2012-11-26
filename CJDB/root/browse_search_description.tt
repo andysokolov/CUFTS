@@ -1,21 +1,21 @@
-[% browse_type %]
+[% browse_type.replace('titles',c.loc( 'titles' )) %]
 [% IF browse_type == 'titles' %]
  [% SWITCH search_type %]
   [% CASE 'ft' %]
-   with keywords:
+   [% c.loc( 'with keywords' ) %]:
   [% CASE 'startswith' %]
-   beginning with
+   [% c.loc( 'beginning with' ) %]
   [% CASE 'advstartswith' %]
-   beginning with
+   [% c.loc( 'beginning with' ) %]
   [% CASE 'exact' %]
-   matching
+   [% c.loc( 'matching' ) %]
   [% CASE 'any' %]
-   containing any of these words: 
+   [% c.loc( 'containing any of these words' ) %]: 
   [% CASE 'all' %]
-   containing all of these words: 
+   [% c.loc( 'containing all of these words' ) %]: 
  [% END %]
 [% ELSE %]
- with [% browse_field -%][%- 's' IF search_terms.size > 1 %]:
+ [% c.loc( 'with' ) %] [% browse_field.replace('association',c.loc( 'association' )).replace('subject',c.loc( 'subject' )).replace('tag',c.loc( 'tag' )) -%][%- 's' IF search_terms.size > 1 %]:
 [% END %]
 [% FOREACH search_term IN search_terms %]
  "[% search_term | html %]"[% ", " UNLESS loop.last %]

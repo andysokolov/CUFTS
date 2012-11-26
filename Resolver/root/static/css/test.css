@@ -17,12 +17,12 @@ div#test {
 
 label {
 	float: left;
-	width: 9.5em;
+	width: 19.5em;
 }
 
 div.labels {
 	float: left;
-	width: 9.5em;
+	width: 19.5em;
 }
 
 label.col1 {
@@ -60,7 +60,7 @@ input.col3 {
 }
 
 input.submit {
-	margin-left: 11.7em;
+	margin-left: 23.3em;
 }
 
 br {

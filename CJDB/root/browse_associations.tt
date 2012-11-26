@@ -2,23 +2,23 @@
 
 [% INCLUDE page_title.tt %]
 
-Associations/organizations  
+[% c.loc( 'Associations/Organizations' ) %]  
 [% SWITCH search_type %]
  [% CASE 'startswith' %]
-  beginning with
+  [% c.loc( 'beginning with' ) %]
  [% CASE 'exact' %]
-  matching
+  [% c.loc( 'matching' ) %]
  [% CASE 'any' %]
-  containing any of these words: 
+  [% c.loc( 'containing any of these words' ) %]: 
  [% CASE 'all' %]
-  containing all of these words: 
+  [% c.loc( 'containing all of these words' ) %]: 
 [% END %]
 "[% search_terms | html%]":<br />
 <br />
 [% IF associations.size == 0 %]
-        No results found for search.
+        [% c.loc( 'No results found for search' ) %].
 [% END %]
 [% FOREACH association = associations %]
-	<a href="[% url("$url_base/browse/journals", browse_field='association',search_terms=association.association) %]">[% association.association | html %]</a><br />
+	<a href="[% url("$url_base/browse/journals", browse_field='association',search_terms=association.association.encode_utf8) %]">[% association.association | html %]</a><br />
 [% END %]
 

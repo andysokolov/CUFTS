@@ -1,7 +1,7 @@
 [% USE url %]
 [% INCLUDE page_title.tt %]
 
-[% search_details.count %] [% INCLUDE browse_search_description.tt browse_type = browse_type, search_type = search_type, search_terms = search_terms, browse_field = browse_field %]
+[% search_details.count %] [% INCLUDE browse_search_description.tt browse_type = browse_type.replace('journals',c.loc( 'journals' )), search_type = search_type, search_terms = search_terms, browse_field = browse_field %]
 
 [% INCLUDE paging.tt browse_field=browse_field, search_field=search_field, browse_type=browse_type, search_details=search_details %]
 

@@ -17,6 +17,12 @@ use Catalyst::Runtime 5.80;
 #                 application's home directory
 # Static::Simple: will serve static files from the application's root
 #                 directory
+#
+#              I18N: Localization / Internationalization
+# Unicode::Encoding: proper decoding/encoding of incoming request parameters
+#                    and the outgoing body response respectively
+#                    http://wiki.catalystframework.org/wiki/tutorialsandhowtos/using_unicode
+#
 
 use Catalyst qw/
     -Debug
@@ -29,6 +35,8 @@ use Catalyst qw/
     Cache::Store::FastMmap
     FormValidator
     FillInForm
+    I18N
+    Unicode::Encoding
 /;
 
 extends 'Catalyst';
@@ -46,6 +54,7 @@ our $VERSION = '0.01';
 
 __PACKAGE__->config(
     name => 'CUFTS::CJDB',
+    encoding => 'UTF-8',
     # Disable deprecated behavior needed by old applications
     disable_component_resolution_regex_fallback => 1,
 );

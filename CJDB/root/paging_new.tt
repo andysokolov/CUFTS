@@ -1,10 +1,10 @@
 [%- RETURN IF !pager || pager.total_entries == 0 -%]
 <div class="pager results-block">
     <div class="counter">
-        Page [% pager.current_page %] of [% pager.last_page %]. Total results: [% pager.total_entries %]
+        [% c.loc( 'Page' ) %] [% pager.current_page %] [% c.loc( 'of' ) %] [% pager.last_page %]. [% c.loc( 'Total results' ) %]: [% pager.total_entries %]
     </div>
     [% IF pager.last_page > 1 %]
-    <div class="pages">Page: 
+    <div class="pages">[% c.loc( 'Page' ) %]: 
        [% IF pager.previous_page %]
            <span><a href="[% c.req.uri_with( page => pager.first_page ) %]">&laquo;</a></span>
            <span><a href="[% c.req.uri_with( page => pager.previous_page ) %]">&lt;</a></span>

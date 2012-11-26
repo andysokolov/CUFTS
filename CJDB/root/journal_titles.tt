@@ -8,7 +8,7 @@
 
 [% IF final_titles.size > 0 %]
  <div id="alternate-titles" class="details">
- <div id="alternate-titles-heading" class="details-headings">Alternate Titles</div>
+ <div id="alternate-titles-heading" class="details-headings">[% c.loc( 'Alternate Titles' ) %]</div>
  [% FOREACH title IN final_titles %]
   [% NEXT IF title == journal.title %]
   <div class="alternate-title">[% title | html %]</div>

@@ -5,12 +5,17 @@ use warnings;
 
 use base 'Catalyst::View::TT';
 use Template::Config;
+use Encode;
 $Template::Config::STASH = 'Template::Stash::XS';
 
 __PACKAGE__->config(
     TEMPLATE_EXTENSION => '.tt',
+    ENCODING     => 'utf-8',
     render_die => 1,
 );
+
+$Template::Stash::SCALAR_OPS->{encode_utf8} = sub { my $text = shift; $text = Encode::encode_utf8($text); return $text; };
+$Template::Stash::SCALAR_OPS->{decode_utf8} = sub { my $text = shift; $text = Encode::decode_utf8($text); return $text; };
 
 $Template::Stash::LIST_OPS->{ in } = sub {
     my ($list, $val, $field) = @_;

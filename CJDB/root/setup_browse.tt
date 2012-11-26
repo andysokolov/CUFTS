@@ -1,9 +1,9 @@
 [% SET search_labels = {
-    startswith => 'starts with',
-    exact      => 'exact',
-    any        => 'any',
-    all        => 'all',
-    ft         => 'keyword'
+    startswith => c.loc('starts with'),
+    exact      => c.loc('exact'),
+    any        => c.loc('any'),
+    all        => c.loc('all'),
+    ft         => c.loc('keyword')
    }
 %]
 [% SET browse_search_types = {

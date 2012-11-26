@@ -16,19 +16,19 @@
    <a href="[% link.URL %]">[%- PROCESS journals_link_name.tt -%]</a>: 
 
    [% IF link.print_coverage %]
-    <span class="unified-print">in print [% HTML.escape(link.print_coverage).replace("\n", "<br />\n") %]</span>
+    <span class="unified-print">[% c.loc( 'in print' ) %] [% HTML.escape(link.print_coverage).replace("\n", "<br />\n") %]</span>
    [% END %]
 
    [% IF link.fulltext_coverage %]
-    <span class="unified-fulltext">fulltext [% link.fulltext_coverage | html %]</span>
+    <span class="unified-fulltext">[% c.loc( 'fulltext' ) %] [% link.fulltext_coverage | html %]</span>
    [% END %]
 
    [% IF link.embargo %]
     <span class="unified-embargo">
      [%- IF link.fulltext_coverage -%]
-      ([% link.embargo | html %] embargo)
+      ([% link.embargo.replace('months',c.loc( 'months' )).replace('days',c.loc( 'days' )) | html %] [% c.loc( 'embargo' ) %])
      [%- ELSE -%]
-      fulltext with [% link.embargo | html %] embargo
+      [% c.loc( 'fulltext with' ) %] [% link.embargo.replace('months',c.loc( 'months' )).replace('days',c.loc( 'days' )) | html %] [% c.loc( 'embargo' ) %]
      [%- END -%]
      </span>
    [% END %]
@@ -36,9 +36,9 @@
    [% IF link.current %]
     <span class="unified-current">
      [%- IF link.fulltext_coverage || link.embargo -%]
-      (latest [% link.current | html %] only)
+      ([% c.loc( 'latest' ) %] [% link.current | html %] [% c.loc( 'only' ) %])
      [%- ELSE -%]
-      fullext with latest [% link.current | html %] only
+      [% c.loc( 'fulltext with latest' ) %] [% link.current | html %] [% c.loc( 'only' ) %]
      [%- END -%]
      </span>
    [% END %]
@@ -46,19 +46,19 @@
 
    [% IF link.citation_coverage && current_site.cjdb_show_citations && !(link.embargo || link.fulltext_coverage || link.current) %]
    [% IF link.embargo || link.fulltext_coverage %]<br />[% END %]
-   <span class="unified-citation">citation [% link.citation_coverage | html %]</span>
+   <span class="unified-citation">[% c.loc( 'citation' ) %] [% link.citation_coverage | html %]</span>
    [% END %]
 
    [% IF link.journal_cjdb_note %]
      <div class="unified-journal-note">
-      <span class="unified-note-label">Journal Note:</span>
+      <span class="unified-note-label">[% c.loc( 'Journal Note' ) %]:</span>
       <span class="unified-note-data">[% link.journal_cjdb_note | html %]</span>
      </div>
     [% END %]
 
     [% IF resource.cjdb_note %]
      <div class="unified-resource-note">
-      <span class="unified-note-label">Resource Note:</span>
+      <span class="unified-note-label">[% c.loc( 'Resource Note' ) %]:</span>
       <span class="unified-note-data">[% resource.cjdb_note | html %]</span>
      </div>
     [% END %]
@@ -66,6 +66,6 @@
   </div>
  [% END %]
  [% IF count == 0 %]
-  No links are currently available for this journal.
+  [% c.loc( 'No links are currently available for this journal' ) %].
  [% END %]
 </div>

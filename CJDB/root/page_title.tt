@@ -2,6 +2,6 @@
 [% IF replace %]
  [% replace %]
 [% ELSE %]
- Journals[% IF add %] - [% add %][% END %]
+ [% c.loc( 'Journals' ) %][% IF add %] - [% add %][% END %]
 [% END %]
 </div>

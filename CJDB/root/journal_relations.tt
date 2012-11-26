@@ -1,16 +1,16 @@
 [% SET journal_relations = journal.relations.force_list %]
 [% IF journal_relations.size > 0 && journal_relations.first != '' %]
  <div id="relations" class="details">
-  <div id="relations-heading" class="details-headings">Related Titles</div>
+  <div id="relations-heading" class="details-headings">[% c.loc( 'Related Titles' ) %]</div>
   [% FOREACH relation IN journal_relations %]
    <div class="relation">
    [% SWITCH relation.relation %]
     [% CASE 'preceeding' %]
-     Continues
+     [% c.loc( 'Continues' ) %]
     [% CASE 'succeeding' %]
-     Continued by
+     [% c.loc( 'Continued by' ) %]
     [% CASE 'other' %]
-      Other edition:
+      [% c.loc( 'Other edition' ) %]:
     [% END %]
     <a href="[% url("$url_base/browse/show", browse_field='title', search_type='startswith', search_terms=relation.title) %]">[% relation.title | html %]</a>
     [% IF relation.issn %]

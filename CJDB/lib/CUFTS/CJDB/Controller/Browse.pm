@@ -5,6 +5,7 @@ use namespace::autoclean;
 use String::Util qw( trim hascontent );
 use CUFTS::CJDB::Util;
 use CUFTS::Util::Simple;
+use Encode;
 
 BEGIN {extends 'Catalyst::Controller'; }
 
@@ -69,7 +70,7 @@ sub journals :Chained('base') :PathPart('journals') Args(0) {
 
     my $site_id = $c->stash->{current_site}->id;
 
-    my $search = ref($c->req->params->{search_terms}) eq 'ARRAY' ? [@{$c->req->params->{search_terms}}] : [$c->req->params->{search_terms}];
+    my $search = ref($c->req->params->{search_terms}) eq 'ARRAY' ? [@{$c->req->params->{search_terms}}] : [Encode::encode_utf8($c->req->params->{search_terms})];
     my $browse_field = $c->stash->{browse_field} = $c->req->params->{browse_field};
 
     my $start_record = 0;
@@ -234,7 +235,7 @@ sub titles :Chained('base') :PathPart('titles') Args(0) {
     $c->stash->{start_record}   = $start_record;
     $c->stash->{browse_type}    = 'titles';
     $c->stash->{browse_field}   = 'title';
-    $c->stash->{search_terms}   = [ $c->req->params->{search_terms} ];
+    $c->stash->{search_terms}   = [ Encode::encode_utf8($c->req->params->{search_terms}) ];
     $c->stash->{show_unified}   = $c->stash->{current_site}->cjdb_unified_journal_list eq 'unified' ? 1 : 0;
 
     $c->stash->{template} = 'browse_journals.tt';
@@ -425,7 +426,8 @@ sub ajax_title :Chained('base') :PathPart('ajax_title') Args(0) {
     }
 
     $c->response->body("<ul>$response</ul>\n");
-    $c->response->content_type('text/html; charset=iso-8859-1');
+    ### $c->response->content_type('text/html; charset=iso-8859-1');
+    $c->response->content_type('text/html; charset=utf-8');
 }
 
 
@@ -444,7 +446,8 @@ sub ajax_issn :Chained('base') :PathPart('ajax_issn') Args(0) {
     }
 
     $c->response->body("<ul>$response</ul>\n");
-    $c->response->content_type('text/html; charset=iso-8859-1');
+    ### $c->response->content_type('text/html; charset=iso-8859-1');
+    $c->response->content_type('text/html; charset=utf-8');
 }
 
 sub ajax_tag :Chained('base') :PathPart('ajax_tag') Args(0) {
@@ -467,7 +470,8 @@ sub ajax_tag :Chained('base') :PathPart('ajax_tag') Args(0) {
     }
 
     $c->response->body("<ul>$response</ul>\n");
-    $c->response->content_type('text/html; charset=iso-8859-1');
+    ### $c->response->content_type('text/html; charset=iso-8859-1');
+    $c->response->content_type('text/html; charset=utf-8');
 }
 
 sub selected_journals :Chained('base') :PathPart('selected_journals') Args(0) {

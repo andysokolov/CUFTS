@@ -1,1 +1,10 @@
-<div id="page-header-background" style="background: url([% image_dir %]/cjdb_header_repeat.gif)"><img alt="CJDB Logo" id="page-header-image" src="[% image_dir %]cjdb_header.gif" border="0"/></div>
+<div id="page-header-background" style="background: url([% image_dir %]/cjdb_header_repeat.gif)"><img alt="[% c.loc( 'CJDB Logo' ) %]" id="page-header-image" src="[% image_dir %]cjdb_header.gif" border="0"/></div>
+<div class="langform">
+<form method="post" name="langForm" action="">
+	[% c.loc( 'Language' ) %]: <select id="set_lang" name="set_lang" onChange="document.langForm.submit();">
+		[% FOREACH language IN languages_list.keys.sort %]
+			<option value="[% language %]"[% IF selected_lang==language %] selected[% END %]>[% languages_list.$language %]</option>
+		[% END %]
+	</select>
+</form>
+</div>

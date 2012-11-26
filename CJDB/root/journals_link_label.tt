@@ -2,9 +2,9 @@
  [% CASE 0 %]
   [%- current_site.cjdb_print_link_label | html -%]
  [%- CASE 1 -%]
-journal
+[% c.loc( 'journal' ) %]
  [%- CASE 2 -%]
-database
+[% c.loc( 'database' ) %]
  [%- CASE DEFAULT -%]
-Unrecognized link type [% link.link_type -%]
+[% c.loc( 'Unrecognized link type' ) %] [% link.link_type -%]
 [%- END -%]

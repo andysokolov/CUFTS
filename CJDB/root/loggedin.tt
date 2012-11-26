@@ -3,15 +3,15 @@
 <div id="loginblock">
 <div id="loggedin">
 [% IF current_account %]
-Logged in as <b>[% current_account.name | html %]</b> |
-<a href="[% url("$url_base/account/manage") %]">my account</a> |
-<a href="[% url("$url_base/account/tags") %]">my tags</a> |
-<a href="[% url("$url_base/account/logout") %]">logout</a>
+[% c.loc( 'Logged in as' ) %] <b>[% current_account.name | html %]</b> |
+<a href="[% url("$url_base/account/manage") %]">[% c.loc( 'my account' ) %]</a> |
+<a href="[% url("$url_base/account/tags") %]">[% c.loc( 'my tags' ) %]</a> |
+<a href="[% url("$url_base/account/logout") %]">[% c.loc( 'logout' ) %]</a>
 [% ELSE %]
-<a href="[% url("$url_base/account/login") %]" onclick="return showDiv('dologin','loggedin','key');">Log in</a> or <a href="[% url_base %]/account/create">create</a> a new account to use extra features.
+<a href="[% url("$url_base/account/login") %]" onclick="return showDiv('dologin','loggedin','key');">[% c.loc( 'Log in' ) %]</a> [% c.loc( 'or' ) %] <a href="[% url_base %]/account/create">[% c.loc( 'create' ) %]</a> [% c.loc( 'a new account to use extra features' ) %].
 [% END %]
 </div>
 <div id="dologin" style="display: none;">
-<form action="[% url("$url_base/account/login") %]" method="post">Log in: <input id="key" name="key" type="text" size="20" maxlength="128" /> Password: <input name="password" type="password" size="20" maxlength="128" /> <input type="submit" name="login" value="login" /></form>
+<form action="[% url("$url_base/account/login") %]" method="post">[% c.loc( 'Log in' ) %]: <input id="key" name="key" type="text" size="20" maxlength="128" /> [% c.loc( 'Password' ) %]: <input name="password" type="password" size="20" maxlength="128" /> <input type="submit" name="login" value="[% c.loc( 'login' ) %]" /></form>
 </div>
 </div>

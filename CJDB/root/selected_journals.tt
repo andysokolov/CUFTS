@@ -1,6 +1,6 @@
 [% USE url %]
 
-[% INCLUDE page_title.tt add = 'Selected' %]
+[% INCLUDE page_title.tt add = c.loc( 'Selected' ) %]
 
 [% PROCESS selected_journals_data.tt %]
 

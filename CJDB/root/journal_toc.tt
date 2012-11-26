@@ -1,7 +1,7 @@
 [% RETURN IF !rss.defined %]
 
 <div id="toc" class="details">
- <div id="toc-heading" class="details-headings">Table of Contents</div>
+ <div id="toc-heading" class="details-headings">[% c.loc( 'Table of Contents' ) %]</div>
 
  [% FOREACH item IN rss.items %]
   [% SET collapse = item.description.length > 150 ? 1 : 0 %]
@@ -14,22 +14,22 @@
    [% END %]
    </div>
    <div class="toc-item-data">
-    [% IF item.volume %]<span class="toc-item-data-volume">Volume: [% item.volume %]</span>[% END %]
-    [% IF item.issue %]<span class="toc-item-data-issue">Issue: [% item.issue %]</span>[% END %]
-    [% IF item.date %]<span class="toc-item-data-date">Date: [% item.date %]</span>[% END %]
+    [% IF item.volume %]<span class="toc-item-data-volume">[% c.loc( 'Volume' ) %]: [% item.volume %]</span>[% END %]
+    [% IF item.issue %]<span class="toc-item-data-issue">[% c.loc( 'Issue' ) %]: [% item.issue %]</span>[% END %]
+    [% IF item.date %]<span class="toc-item-data-date">[% c.loc( 'Date' ) %]: [% item.date %]</span>[% END %]
     [% IF item.startPage %]
      <span class="toc-item-data-pages">
      [% IF item.endPage %]
-      Pages: [% item.startPage %]-[% item.endPage %]
+      [% c.loc( 'Pages' ) %]: [% item.startPage %]-[% item.endPage %]
      [% ELSE %]
-      Page: [% item.startPage %]
+      [% c.loc( 'Page' ) %]: [% item.startPage %]
      [% END %]
      </span>
     [% END %]
    </div>
    [% IF item.authors %]
    <div class="toc-item-authors">
-    By: [% item.authors.list.join('; ') %]
+    [% c.loc( 'By' ) %]: [% item.authors.list.join('; ') %]
    </div>
    [% END %]
    [% IF collapse %]
