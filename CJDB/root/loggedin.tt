@@ -8,10 +8,11 @@
 <a href="[% url("$url_base/account/tags") %]">[% c.loc( 'my tags' ) %]</a> |
 <a href="[% url("$url_base/account/logout") %]">[% c.loc( 'logout' ) %]</a>
 [% ELSE %]
-<a href="[% url("$url_base/account/login") %]" onclick="return showDiv('dologin','loggedin','key');">[% c.loc( 'Log in' ) %]</a> [% c.loc( 'or' ) %] <a href="[% url_base %]/account/create">[% c.loc( 'create' ) %]</a> [% c.loc( 'a new account to use extra features' ) %].
+<a href="[% url("$url_base/account/login") %]" onClick="$('#dologin').show(); $('#loggedin').hide(); return false;">[% c.loc( 'Log in' ) %]</a> [% c.loc( 'or' ) %] <a href="[% url_base %]/account/create">[% c.loc( 'create' ) %]</a> [% c.loc( 'a new account to use extra features' ) %].
 [% END %]
 </div>
 <div id="dologin" style="display: none;">
-<form action="[% url("$url_base/account/login") %]" method="post">[% c.loc( 'Log in' ) %]: <input id="key" name="key" type="text" size="20" maxlength="128" /> [% c.loc( 'Password' ) %]: <input name="password" type="password" size="20" maxlength="128" /> <input type="submit" name="login" value="[% c.loc( 'login' ) %]" /></form>
+<form action="[% url("$url_base/account/login") %]" method="post">[% c.loc( 'login id' ) %]: <input id="key" name="key" type="text" size="20" maxlength="128" /> [% c.loc( 'password' ) %]: <input name="password" type="password" size="20" maxlength="128" /> <input type="submit" name="login" value="[% c.loc( 'login' ) %]" />
+</form>
 </div>
 </div>

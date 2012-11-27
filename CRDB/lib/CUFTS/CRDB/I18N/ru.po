@@ -41,7 +41,7 @@ msgstr "Назад"
 
 #: root/main.tt:18
 msgid "Browse"
-msgstr "Просмотр"
+msgstr "Начало поиска"
 
 #: root/mobile_app.tt:20
 msgid "Browse by"

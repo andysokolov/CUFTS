@@ -1,0 +1,580 @@
+# Russian translations for PACKAGE package
+# Английские переводы для пакета PACKAGE.
+# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Andrey Sokolov <a.sokolov@spbu.ru>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2012-11-27 10:25+0400\n"
+"Last-Translator: Andrey Sokolov <a.sokolov@spbu.ru>\n"
+"Language-Team: Russian\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: root/journal_availability.tt:73
+msgid "Allows ILL"
+msgstr ""
+
+#: root/journal_availability.tt:83
+msgid "Allows coursepack"
+msgstr ""
+
+#: root/journal_availability.tt:93
+msgid "Allows distance ed"
+msgstr ""
+
+#: root/journal_availability.tt:97
+msgid "Allows downloads"
+msgstr ""
+
+#: root/journal_availability.tt:105
+msgid "Allows emails"
+msgstr ""
+
+#: root/journal_availability.tt:101
+msgid "Allows prints"
+msgstr ""
+
+#: root/journal_titles.tt:11
+msgid "Alternate Titles"
+msgstr "Варианты названия"
+
+#: root/fatal_error.tt:1
+msgid "An error occurred while processing your request. The following problems have been logged"
+msgstr "При обработке запроса произошла ошибка. Зарегистрированы следующие проблемы"
+
+#: root/browse_form_alt.tt:10
+msgid "Association"
+msgstr "Организация"
+
+#: root/browse_associations.tt:5 root/journal_associations.tt:4
+msgid "Associations/Organizations"
+msgstr "Издательство/Ассоциация/Организация"
+
+#: root/journal_availability.tt:3
+msgid "Availability"
+msgstr "Журнал доступен"
+
+#: root/azmenu.tt:4 root/menu.tt:3
+msgid "Browse"
+msgstr "Начало поиска"
+
+#: root/browse_form.tt:25 root/browse_form_alt.tt:80
+msgid "Browse by journal subject"
+msgstr "Просмотр журналов по предметной области"
+
+#: root/browse_form.tt:27 root/browse_form_alt.tt:82
+msgid "Browse selected journals"
+msgstr "Просмотр выделенных журналов"
+
+#: root/journal_toc.tt:32
+msgid "By"
+msgstr ""
+
+#: root/layout.tt:6
+msgid "CJDB"
+msgstr "Электронные журналы"
+
+#: root/page_footer.tt:2
+msgid "CJDB Electronic Journals 2 BETA"
+msgstr ""
+
+#: root/page_header.tt:1
+msgid "CJDB Logo"
+msgstr "Логотип CJDB"
+
+#: root/journal_availability.tt:24
+msgid "Citation Coverage"
+msgstr "библиография"
+
+#: root/browse_form.tt:21
+msgid "Clear form"
+msgstr "Очистить форму"
+
+#: root/journal_relations.tt:11
+msgid "Continued by"
+msgstr "Продолжается под"
+
+#: root/journal_relations.tt:9
+msgid "Continues"
+msgstr "Продолжает"
+
+#: root/journal_availability.tt:88
+msgid "Coursepack notes"
+msgstr ""
+
+#: root/journal_availability.tt:39
+msgid "Current Limit"
+msgstr ""
+
+#: root/journal_toc.tt:19
+msgid "Date"
+msgstr "Дата"
+
+#: root/journal_erm.tt:2
+msgid "ERM"
+msgstr ""
+
+#: root/journal_availability.tt:69
+msgid "ERM License"
+msgstr ""
+
+#: root/journal_erm.tt:4
+msgid "ERM data here"
+msgstr ""
+
+#: root/journal_availability.tt:110
+msgid "Email notes"
+msgstr ""
+
+#: root/journal_availability.tt:34
+msgid "Embargo Period"
+msgstr "период эмбарго"
+
+#: root/journal_availability.tt:29
+msgid "Fulltext Coverage"
+msgstr "полный текст"
+
+#: root/journal_availability.tt:78
+msgid "ILL notes"
+msgstr ""
+
+#: root/browse_form.tt:11 root/browse_form_alt.tt:12
+msgid "ISSN"
+msgstr "ISSN"
+
+#: root/journal_issns.tt:3
+msgid "ISSNs"
+msgstr "ISSN"
+
+#: root/journal_toc.tt:18
+msgid "Issue"
+msgstr "Выпуск"
+
+#: root/browse_journals_unified_data.tt:54 root/journal_availability.tt:48
+msgid "Journal Note"
+msgstr "Примечание к журналу"
+
+#: root/page_title.tt:5
+msgid "Journals"
+msgstr "Электронные журналы"
+
+#: root/page_header.tt:4
+msgid "Language"
+msgstr "Язык"
+
+#: root/journal_availability.tt:40
+msgid "Limited to the latest"
+msgstr "ограничен последним"
+
+#: root/journal_availability.tt:43
+msgid "Link"
+msgstr "ссылка"
+
+#: root/manage_tags_info.tt:12
+msgid "Local public tags can only be seen by users at your institution"
+msgstr "Local public закладки доступны только для пользователей вашей организации"
+
+#: root/loggedin.tt:11
+msgid "Log in"
+msgstr "Войти"
+
+#: root/loggedin.tt:6
+msgid "Logged in as"
+msgstr "Вы зарегистрированы как"
+
+#: root/journal_mytags.tt:3 root/mytags.tt:7
+msgid "My Tags"
+msgstr "Мои закладки"
+
+#: root/browse_journals_unified_data.tt:69 root/journal_availability.tt:119
+msgid "No links are currently available for this journal"
+msgstr "В настоящее время нет доступных ссылок для данного журнала"
+
+#: root/browse_associations.tt:19 root/browse_subjects.tt:19
+msgid "No results found for search"
+msgstr "Не найдено результатов по Вашему запросу"
+
+#: root/journal_relations.tt:13
+msgid "Other edition"
+msgstr "Другое издание"
+
+#: root/journal_toc.tt:25 root/paging_new.tt:4 root/paging_new.tt:7
+msgid "Page"
+msgstr "Страница"
+
+#: root/journal_toc.tt:23
+msgid "Pages"
+msgstr "Страницы"
+
+#: root/journal_availability.tt:19
+msgid "Print Coverage"
+msgstr "печатная версия"
+
+#: root/manage_tags_info.tt:3
+msgid "Private tags are only visible to you and can be used like bookmarks"
+msgstr "Персональные закладки доступны только для Вас"
+
+#: root/manage_tags_info.tt:7
+msgid "Public tags can be seen by everyone, including users at other institutions"
+msgstr "Общедоступные закладки доступны всем, включая пользователей других организиций"
+
+#: root/journal_relations.tt:4
+msgid "Related Titles"
+msgstr "Связанные названия"
+
+#: root/browse_journals_unified_data.tt:61 root/journal_availability.tt:57
+msgid "Resource Note"
+msgstr "Примечания к ресурсу"
+
+#: root/browse_form.tt:21 root/browse_form.tt:5 root/browse_form_alt.tt:26
+#: root/browse_form_alt.tt:40 root/browse_form_alt.tt:54
+#: root/browse_form_alt.tt:63 root/browse_form_alt.tt:72
+msgid "Search"
+msgstr "Поиск"
+
+#: root/browse_form_alt.tt:33
+msgid "Search associations"
+msgstr "Издательство/Организация"
+
+#: root/browse_form_alt.tt:71
+msgid "Search issns"
+msgstr "ISSN"
+
+#: root/browse_form_alt.tt:47
+msgid "Search subjects"
+msgstr "Предметная рубрика"
+
+#: root/browse_form_alt.tt:62
+msgid "Search tags"
+msgstr "Закладка"
+
+#: root/browse_form_alt.tt:18
+msgid "Search titles"
+msgstr "Название журнала"
+
+#: root/menu.tt:5 root/selected_journals.tt:3
+msgid "Selected"
+msgstr "Выделенные"
+
+#: root/browse_form_alt.tt:9
+msgid "Subject"
+msgstr "Предмет"
+
+#: root/browse_subjects.tt:5 root/journal_subjects.tt:4 root/lcc_browse.tt:1
+#: root/menu.tt:4
+msgid "Subjects"
+msgstr "Предметные рубрики"
+
+#: root/journal_toc.tt:4
+msgid "Table of Contents"
+msgstr "Оглавление"
+
+#: root/browse_form_alt.tt:11
+msgid "Tag"
+msgstr "Закладка"
+
+#: root/journal_tags.tt:2
+msgid "Tags"
+msgstr "Закладки"
+
+#: root/errors.tt:21
+msgid "The following fields are invalid"
+msgstr "Следующие поля заполнены не правильно"
+
+#: root/errors.tt:12
+msgid "The following fields are required"
+msgstr "Необходимо заполнить следующие поля"
+
+#: root/manage_tags_info.tt:13
+msgid "These tags can be used to indicate journals that apply to a topic only at your institution such as an individual course"
+msgstr "Данные закладки могут использоваться для журналов, которые относятся к определенной теме только в Вашей организации, такой как образовательная программа или отдельный курс"
+
+#: root/manage_tags_info.tt:8
+msgid "These tags should be short, general terms expressing what the journal contains"
+msgstr "Данные закладки должны быть в виде коротких терминов, обозначающих основное содержание журнала"
+
+#: root/browse_form_alt.tt:8
+msgid "Title"
+msgstr "Название"
+
+#: root/paging_new.tt:4
+msgid "Total results"
+msgstr "Всего результатов"
+
+#: root/journals_link_label.tt:9 root/journals_link_name.tt:9
+msgid "Unrecognized link type"
+msgstr "Неопределенный тип связей"
+
+#: root/journal_toc.tt:17
+msgid "Volume"
+msgstr "Том"
+
+#: root/loggedin.tt:11
+msgid "a new account to use extra features"
+msgstr "нового пользователя"
+
+#: root/account_manage.tt:6
+msgid "account id"
+msgstr "идентификатор пользователя"
+
+#: root/journal_mytags.tt:31 root/journal_mytags.tt:9
+msgid "add tags"
+msgstr "добавить закладки"
+
+#: root/journal_mytags.tt:9
+msgid "add/manage tags"
+msgstr "добавить/изменить закладки"
+
+#: root/setup_browse.tt:5
+msgid "all"
+msgstr "содержит все слова"
+
+#: root/setup_browse.tt:4
+msgid "any"
+msgstr "содержит любое из слов"
+
+#: root/browse_form.tt:10 root/browse_search_description.tt:18
+msgid "association"
+msgstr "организация"
+
+#: root/browse_associations.tt:8 root/browse_search_description.tt:7
+#: root/browse_search_description.tt:9 root/browse_subjects.tt:8
+msgid "beginning with"
+msgstr "начинается с"
+
+#: root/account_create.tt:13 root/account_manage.tt:14
+#: root/journal_mytags.tt:35
+msgid "cancel"
+msgstr "отменить"
+
+#: root/browse_journals_unified_data.tt:49
+msgid "citation"
+msgstr "библиография"
+
+#: root/browse_associations.tt:14 root/browse_search_description.tt:15
+#: root/browse_subjects.tt:14
+msgid "containing all of these words"
+msgstr "содержит все слова"
+
+#: root/browse_associations.tt:12 root/browse_search_description.tt:13
+#: root/browse_subjects.tt:12
+msgid "containing any of these words"
+msgstr "содержит любое из слов"
+
+#: root/account_create.tt:13 root/loggedin.tt:11
+msgid "create"
+msgstr "создать"
+
+#: root/journals_link_label.tt:7
+msgid "database"
+msgstr "база данных"
+
+#: root/browse_journals_unified_data.tt:29
+#: root/browse_journals_unified_data.tt:31 root/journal_availability.tt:35
+msgid "days"
+msgstr "дней"
+
+#: root/journal_mytags.tt:18
+msgid "delete"
+msgstr "удалить"
+
+#: root/account_create.tt:8 root/account_manage.tt:9
+msgid "email"
+msgstr "email"
+
+#: root/browse_journals_unified_data.tt:29
+#: root/browse_journals_unified_data.tt:31
+msgid "embargo"
+msgstr "эмбарго"
+
+#: root/tag_viewing_string.tt:9
+msgid "error"
+msgstr "ошибка"
+
+#: root/setup_browse.tt:3
+msgid "exact"
+msgstr "совпадает с"
+
+#: root/manage_tags_info.tt:9
+msgid "examples: chemistry, crystal structures, english, fiction"
+msgstr "например: химия, кристаллические структуры, английский язык, беллетристика"
+
+#: root/manage_tags_info.tt:4
+msgid "examples: favorite, recommended"
+msgstr "например: рекомендуемый, любимый"
+
+#: root/manage_tags_info.tt:14
+msgid "examples: soc101"
+msgstr "например: soc101"
+
+#: root/browse_form.tt:5
+msgid "for journals by"
+msgstr "журналов"
+
+#: root/browse_journals_unified_data.tt:23
+msgid "fulltext"
+msgstr "полный текст"
+
+#: root/browse_journals_unified_data.tt:31
+msgid "fulltext with"
+msgstr "полный текст с"
+
+#: root/browse_journals_unified_data.tt:41
+msgid "fulltext with latest"
+msgstr "полный текст с последним"
+
+#: root/browse_journals_unified_data.tt:19
+msgid "in print"
+msgstr "печатная версия"
+
+#: root/journals_link_label.tt:5
+msgid "journal"
+msgstr "щелкните здесь, чтобы перейти к журналу"
+
+#: root/browse_journals.tt:4
+msgid "journals"
+msgstr "журнал(а|ов)"
+
+#: root/azmenu.tt:4
+msgid "journals by title"
+msgstr "журналов по названию"
+
+#: root/setup_browse.tt:6
+msgid "keyword"
+msgstr "ключевые слова"
+
+#: root/browse_journals_unified_data.tt:39
+msgid "latest"
+msgstr "последний"
+
+#: root/manage_tags_info.tt:11 root/tag_viewing_string.tt:7
+msgid "local public"
+msgstr ""
+
+#: root/loggedin.tt:15 root/login.tt:5
+msgid "login"
+msgstr "вход"
+
+#: root/account_create.tt:6 root/account_manage.tt:7 root/loggedin.tt:15
+#: root/login.tt:3
+msgid "login id"
+msgstr "имя пользователя"
+
+#: root/loggedin.tt:9
+msgid "logout"
+msgstr "выход"
+
+#: root/browse_associations.tt:10 root/browse_search_description.tt:11
+#: root/browse_subjects.tt:10
+msgid "matching"
+msgstr "совпадает с"
+
+#: root/browse_journals_unified_data.tt:29
+#: root/browse_journals_unified_data.tt:31 root/journal_availability.tt:35
+msgid "months"
+msgstr "мес."
+
+#: root/loggedin.tt:7
+msgid "my account"
+msgstr "мой профиль"
+
+#: root/loggedin.tt:8
+msgid "my tags"
+msgstr "мои закладки"
+
+#: root/account_create.tt:7 root/account_manage.tt:8
+msgid "name"
+msgstr "имя, фамилия"
+
+#: root/journal_availability.tt:102 root/journal_availability.tt:106
+#: root/journal_availability.tt:74 root/journal_availability.tt:84
+#: root/journal_availability.tt:94 root/journal_availability.tt:98
+msgid "no"
+msgstr "нет"
+
+#: root/paging_new.tt:4
+msgid "of"
+msgstr "из"
+
+#: root/browse_journals_unified_data.tt:39
+#: root/browse_journals_unified_data.tt:41 root/journal_availability.tt:40
+msgid "only"
+msgstr "только"
+
+#: root/loggedin.tt:11
+msgid "or"
+msgstr "или"
+
+#: root/account_create.tt:9 root/account_manage.tt:11 root/loggedin.tt:15
+#: root/login.tt:4
+msgid "password"
+msgstr "пароль"
+
+#: root/account_create.tt:11 root/account_manage.tt:12
+msgid "password (again)"
+msgstr "пароль (повторить)"
+
+#: root/manage_tags_info.tt:2 root/tag_viewing_string.tt:3
+msgid "private"
+msgstr "персональная"
+
+#: root/manage_tags_info.tt:6 root/tag_viewing_string.tt:5
+msgid "public"
+msgstr "общедоступная"
+
+#: root/account_manage.tt:14 root/journal_mytags.tt:35
+msgid "save"
+msgstr "сохранить"
+
+#: root/setup_browse.tt:2
+msgid "starts with"
+msgstr "начинается с"
+
+#: root/browse_form.tt:9 root/browse_search_description.tt:18
+msgid "subject"
+msgstr "предмет"
+
+#: root/browse_form.tt:12 root/browse_search_description.tt:18
+#: root/journal_mytags.tt:18
+msgid "tag"
+msgstr "закладка"
+
+#: root/browse_form.tt:8
+msgid "title"
+msgstr "название"
+
+#: root/browse_search_description.tt:1
+msgid "titles"
+msgstr "названи(е|я|й)"
+
+#: root/journal_availability.tt:102 root/journal_availability.tt:106
+#: root/journal_availability.tt:74 root/journal_availability.tt:84
+#: root/journal_availability.tt:94 root/journal_availability.tt:98
+msgid "unknown"
+msgstr "неизвестно"
+
+#: root/journal_mytags.tt:18
+msgid "viewing"
+msgstr "облать видимости"
+
+#: root/browse_search_description.tt:18
+msgid "with"
+msgstr "содержит"
+
+#: root/browse_search_description.tt:5
+msgid "with keywords"
+msgstr "содержит ключевые слова"
+
+#: root/journal_availability.tt:102 root/journal_availability.tt:106
+#: root/journal_availability.tt:74 root/journal_availability.tt:84
+#: root/journal_availability.tt:94 root/journal_availability.tt:98
+msgid "yes"
+msgstr "да"
+

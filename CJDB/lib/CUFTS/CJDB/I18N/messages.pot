@@ -1,0 +1,556 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: root/journal_availability.tt:73
+msgid "Allows ILL"
+msgstr ""
+
+#: root/journal_availability.tt:83
+msgid "Allows coursepack"
+msgstr ""
+
+#: root/journal_availability.tt:93
+msgid "Allows distance ed"
+msgstr ""
+
+#: root/journal_availability.tt:97
+msgid "Allows downloads"
+msgstr ""
+
+#: root/journal_availability.tt:105
+msgid "Allows emails"
+msgstr ""
+
+#: root/journal_availability.tt:101
+msgid "Allows prints"
+msgstr ""
+
+#: root/journal_titles.tt:11
+msgid "Alternate Titles"
+msgstr ""
+
+#: root/fatal_error.tt:1
+msgid "An error occurred while processing your request. The following problems have been logged"
+msgstr ""
+
+#: root/browse_form_alt.tt:10
+msgid "Association"
+msgstr ""
+
+#: root/browse_associations.tt:5 root/journal_associations.tt:4
+msgid "Associations/Organizations"
+msgstr ""
+
+#: root/journal_availability.tt:3
+msgid "Availability"
+msgstr ""
+
+#: root/azmenu.tt:4 root/menu.tt:3
+msgid "Browse"
+msgstr ""
+
+#: root/browse_form.tt:25 root/browse_form_alt.tt:80
+msgid "Browse by journal subject"
+msgstr ""
+
+#: root/browse_form.tt:27 root/browse_form_alt.tt:82
+msgid "Browse selected journals"
+msgstr ""
+
+#: root/journal_toc.tt:32
+msgid "By"
+msgstr ""
+
+#: root/layout.tt:6
+msgid "CJDB"
+msgstr ""
+
+#: root/page_footer.tt:2
+msgid "CJDB Electronic Journals 2 BETA"
+msgstr ""
+
+#: root/page_header.tt:1
+msgid "CJDB Logo"
+msgstr ""
+
+#: root/journal_availability.tt:24
+msgid "Citation Coverage"
+msgstr ""
+
+#: root/browse_form.tt:21
+msgid "Clear form"
+msgstr ""
+
+#: root/journal_relations.tt:11
+msgid "Continued by"
+msgstr ""
+
+#: root/journal_relations.tt:9
+msgid "Continues"
+msgstr ""
+
+#: root/journal_availability.tt:88
+msgid "Coursepack notes"
+msgstr ""
+
+#: root/journal_availability.tt:39
+msgid "Current Limit"
+msgstr ""
+
+#: root/journal_toc.tt:19
+msgid "Date"
+msgstr ""
+
+#: root/journal_erm.tt:2
+msgid "ERM"
+msgstr ""
+
+#: root/journal_availability.tt:69
+msgid "ERM License"
+msgstr ""
+
+#: root/journal_erm.tt:4
+msgid "ERM data here"
+msgstr ""
+
+#: root/journal_availability.tt:110
+msgid "Email notes"
+msgstr ""
+
+#: root/journal_availability.tt:34
+msgid "Embargo Period"
+msgstr ""
+
+#: root/journal_availability.tt:29
+msgid "Fulltext Coverage"
+msgstr ""
+
+#: root/journal_availability.tt:78
+msgid "ILL notes"
+msgstr ""
+
+#: root/browse_form.tt:11 root/browse_form_alt.tt:12
+msgid "ISSN"
+msgstr ""
+
+#: root/journal_issns.tt:3
+msgid "ISSNs"
+msgstr ""
+
+#: root/journal_toc.tt:18
+msgid "Issue"
+msgstr ""
+
+#: root/browse_journals_unified_data.tt:54 root/journal_availability.tt:48
+msgid "Journal Note"
+msgstr ""
+
+#: root/page_title.tt:5
+msgid "Journals"
+msgstr ""
+
+#: root/page_header.tt:4
+msgid "Language"
+msgstr ""
+
+#: root/journal_availability.tt:40
+msgid "Limited to the latest"
+msgstr ""
+
+#: root/journal_availability.tt:43
+msgid "Link"
+msgstr ""
+
+#: root/manage_tags_info.tt:12
+msgid "Local public tags can only be seen by users at your institution"
+msgstr ""
+
+#: root/loggedin.tt:11
+msgid "Log in"
+msgstr ""
+
+#: root/loggedin.tt:6
+msgid "Logged in as"
+msgstr ""
+
+#: root/journal_mytags.tt:3 root/mytags.tt:7
+msgid "My Tags"
+msgstr ""
+
+#: root/browse_journals_unified_data.tt:69 root/journal_availability.tt:119
+msgid "No links are currently available for this journal"
+msgstr ""
+
+#: root/browse_associations.tt:19 root/browse_subjects.tt:19
+msgid "No results found for search"
+msgstr ""
+
+#: root/journal_relations.tt:13
+msgid "Other edition"
+msgstr ""
+
+#: root/journal_toc.tt:25 root/paging_new.tt:4 root/paging_new.tt:7
+msgid "Page"
+msgstr ""
+
+#: root/journal_toc.tt:23
+msgid "Pages"
+msgstr ""
+
+#: root/journal_availability.tt:19
+msgid "Print Coverage"
+msgstr ""
+
+#: root/manage_tags_info.tt:3
+msgid "Private tags are only visible to you and can be used like bookmarks"
+msgstr ""
+
+#: root/manage_tags_info.tt:7
+msgid "Public tags can be seen by everyone, including users at other institutions"
+msgstr ""
+
+#: root/journal_relations.tt:4
+msgid "Related Titles"
+msgstr ""
+
+#: root/browse_journals_unified_data.tt:61 root/journal_availability.tt:57
+msgid "Resource Note"
+msgstr ""
+
+#: root/browse_form.tt:21 root/browse_form.tt:5 root/browse_form_alt.tt:26 root/browse_form_alt.tt:40 root/browse_form_alt.tt:54 root/browse_form_alt.tt:63 root/browse_form_alt.tt:72
+msgid "Search"
+msgstr ""
+
+#: root/browse_form_alt.tt:33
+msgid "Search associations"
+msgstr ""
+
+#: root/browse_form_alt.tt:71
+msgid "Search issns"
+msgstr ""
+
+#: root/browse_form_alt.tt:47
+msgid "Search subjects"
+msgstr ""
+
+#: root/browse_form_alt.tt:62
+msgid "Search tags"
+msgstr ""
+
+#: root/browse_form_alt.tt:18
+msgid "Search titles"
+msgstr ""
+
+#: root/menu.tt:5 root/selected_journals.tt:3
+msgid "Selected"
+msgstr ""
+
+#: root/browse_form_alt.tt:9
+msgid "Subject"
+msgstr ""
+
+#: root/browse_subjects.tt:5 root/journal_subjects.tt:4 root/lcc_browse.tt:1 root/menu.tt:4
+msgid "Subjects"
+msgstr ""
+
+#: root/journal_toc.tt:4
+msgid "Table of Contents"
+msgstr ""
+
+#: root/browse_form_alt.tt:11
+msgid "Tag"
+msgstr ""
+
+#: root/journal_tags.tt:2
+msgid "Tags"
+msgstr ""
+
+#: root/errors.tt:21
+msgid "The following fields are invalid"
+msgstr ""
+
+#: root/errors.tt:12
+msgid "The following fields are required"
+msgstr ""
+
+#: root/manage_tags_info.tt:13
+msgid "These tags can be used to indicate journals that apply to a topic only at your institution such as an individual course"
+msgstr ""
+
+#: root/manage_tags_info.tt:8
+msgid "These tags should be short, general terms expressing what the journal contains"
+msgstr ""
+
+#: root/browse_form_alt.tt:8
+msgid "Title"
+msgstr ""
+
+#: root/paging_new.tt:4
+msgid "Total results"
+msgstr ""
+
+#: root/journals_link_label.tt:9 root/journals_link_name.tt:9
+msgid "Unrecognized link type"
+msgstr ""
+
+#: root/journal_toc.tt:17
+msgid "Volume"
+msgstr ""
+
+#: root/loggedin.tt:11
+msgid "a new account to use extra features"
+msgstr ""
+
+#: root/account_manage.tt:6
+msgid "account id"
+msgstr ""
+
+#: root/journal_mytags.tt:31 root/journal_mytags.tt:9
+msgid "add tags"
+msgstr ""
+
+#: root/journal_mytags.tt:9
+msgid "add/manage tags"
+msgstr ""
+
+#: root/setup_browse.tt:5
+msgid "all"
+msgstr ""
+
+#: root/setup_browse.tt:4
+msgid "any"
+msgstr ""
+
+#: root/browse_form.tt:10 root/browse_search_description.tt:18
+msgid "association"
+msgstr ""
+
+#: root/browse_associations.tt:8 root/browse_search_description.tt:7 root/browse_search_description.tt:9 root/browse_subjects.tt:8
+msgid "beginning with"
+msgstr ""
+
+#: root/account_create.tt:13 root/account_manage.tt:14 root/journal_mytags.tt:35
+msgid "cancel"
+msgstr ""
+
+#: root/browse_journals_unified_data.tt:49
+msgid "citation"
+msgstr ""
+
+#: root/browse_associations.tt:14 root/browse_search_description.tt:15 root/browse_subjects.tt:14
+msgid "containing all of these words"
+msgstr ""
+
+#: root/browse_associations.tt:12 root/browse_search_description.tt:13 root/browse_subjects.tt:12
+msgid "containing any of these words"
+msgstr ""
+
+#: root/account_create.tt:13 root/loggedin.tt:11
+msgid "create"
+msgstr ""
+
+#: root/journals_link_label.tt:7
+msgid "database"
+msgstr ""
+
+#: root/browse_journals_unified_data.tt:29 root/browse_journals_unified_data.tt:31 root/journal_availability.tt:35
+msgid "days"
+msgstr ""
+
+#: root/journal_mytags.tt:18
+msgid "delete"
+msgstr ""
+
+#: root/account_create.tt:8 root/account_manage.tt:9
+msgid "email"
+msgstr ""
+
+#: root/browse_journals_unified_data.tt:29 root/browse_journals_unified_data.tt:31
+msgid "embargo"
+msgstr ""
+
+#: root/tag_viewing_string.tt:9
+msgid "error"
+msgstr ""
+
+#: root/setup_browse.tt:3
+msgid "exact"
+msgstr ""
+
+#: root/manage_tags_info.tt:9
+msgid "examples: chemistry, crystal structures, english, fiction"
+msgstr ""
+
+#: root/manage_tags_info.tt:4
+msgid "examples: favorite, recommended"
+msgstr ""
+
+#: root/manage_tags_info.tt:14
+msgid "examples: soc101"
+msgstr ""
+
+#: root/browse_form.tt:5
+msgid "for journals by"
+msgstr ""
+
+#: root/browse_journals_unified_data.tt:23
+msgid "fulltext"
+msgstr ""
+
+#: root/browse_journals_unified_data.tt:31
+msgid "fulltext with"
+msgstr ""
+
+#: root/browse_journals_unified_data.tt:41
+msgid "fulltext with latest"
+msgstr ""
+
+#: root/browse_journals_unified_data.tt:19
+msgid "in print"
+msgstr ""
+
+#: root/journals_link_label.tt:5
+msgid "journal"
+msgstr ""
+
+#: root/browse_journals.tt:4
+msgid "journals"
+msgstr ""
+
+#: root/azmenu.tt:4
+msgid "journals by title"
+msgstr ""
+
+#: root/setup_browse.tt:6
+msgid "keyword"
+msgstr ""
+
+#: root/browse_journals_unified_data.tt:39
+msgid "latest"
+msgstr ""
+
+#: root/manage_tags_info.tt:11 root/tag_viewing_string.tt:7
+msgid "local public"
+msgstr ""
+
+#: root/loggedin.tt:15 root/login.tt:5
+msgid "login"
+msgstr ""
+
+#: root/account_create.tt:6 root/account_manage.tt:7 root/loggedin.tt:15 root/login.tt:3
+msgid "login id"
+msgstr ""
+
+#: root/loggedin.tt:9
+msgid "logout"
+msgstr ""
+
+#: root/browse_associations.tt:10 root/browse_search_description.tt:11 root/browse_subjects.tt:10
+msgid "matching"
+msgstr ""
+
+#: root/browse_journals_unified_data.tt:29 root/browse_journals_unified_data.tt:31 root/journal_availability.tt:35
+msgid "months"
+msgstr ""
+
+#: root/loggedin.tt:7
+msgid "my account"
+msgstr ""
+
+#: root/loggedin.tt:8
+msgid "my tags"
+msgstr ""
+
+#: root/account_create.tt:7 root/account_manage.tt:8
+msgid "name"
+msgstr ""
+
+#: root/journal_availability.tt:102 root/journal_availability.tt:106 root/journal_availability.tt:74 root/journal_availability.tt:84 root/journal_availability.tt:94 root/journal_availability.tt:98
+msgid "no"
+msgstr ""
+
+#: root/paging_new.tt:4
+msgid "of"
+msgstr ""
+
+#: root/browse_journals_unified_data.tt:39 root/browse_journals_unified_data.tt:41 root/journal_availability.tt:40
+msgid "only"
+msgstr ""
+
+#: root/loggedin.tt:11
+msgid "or"
+msgstr ""
+
+#: root/account_create.tt:9 root/account_manage.tt:11 root/loggedin.tt:15 root/login.tt:4
+msgid "password"
+msgstr ""
+
+#: root/account_create.tt:11 root/account_manage.tt:12
+msgid "password (again)"
+msgstr ""
+
+#: root/manage_tags_info.tt:2 root/tag_viewing_string.tt:3
+msgid "private"
+msgstr ""
+
+#: root/manage_tags_info.tt:6 root/tag_viewing_string.tt:5
+msgid "public"
+msgstr ""
+
+#: root/account_manage.tt:14 root/journal_mytags.tt:35
+msgid "save"
+msgstr ""
+
+#: root/setup_browse.tt:2
+msgid "starts with"
+msgstr ""
+
+#: root/browse_form.tt:9 root/browse_search_description.tt:18
+msgid "subject"
+msgstr ""
+
+#: root/browse_form.tt:12 root/browse_search_description.tt:18 root/journal_mytags.tt:18
+msgid "tag"
+msgstr ""
+
+#: root/browse_form.tt:8
+msgid "title"
+msgstr ""
+
+#: root/browse_search_description.tt:1
+msgid "titles"
+msgstr ""
+
+#: root/journal_availability.tt:102 root/journal_availability.tt:106 root/journal_availability.tt:74 root/journal_availability.tt:84 root/journal_availability.tt:94 root/journal_availability.tt:98
+msgid "unknown"
+msgstr ""
+
+#: root/journal_mytags.tt:18
+msgid "viewing"
+msgstr ""
+
+#: root/browse_search_description.tt:18
+msgid "with"
+msgstr ""
+
+#: root/browse_search_description.tt:5
+msgid "with keywords"
+msgstr ""
+
+#: root/journal_availability.tt:102 root/journal_availability.tt:106 root/journal_availability.tt:74 root/journal_availability.tt:84 root/journal_availability.tt:94 root/journal_availability.tt:98
+msgid "yes"
+msgstr ""
