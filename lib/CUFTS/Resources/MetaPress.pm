@@ -212,10 +212,10 @@ sub build_linkJournal {
         my $url = $resource->url_base;
         $url .= '?genre=journal';
         if ( not_empty_string( $record->e_issn ) ) {
-            $url .= '&eissn=' . $record->e_issn;
+            $url .= '&issn=' . dashed_issn($record->e_issn);
         }
         else {
-            $url .= '&issn=' . $record->issn;
+            $url .= '&issn=' . dashed_issn($record->issn);
         }
 
         my $result = new CUFTS::Result($url);
@@ -271,10 +271,10 @@ sub build_linkTOC {
         my $url = $resource->url_base;
         $url .= '?genre=journal';
         if ( not_empty_string( $record->e_issn ) ) {
-            $url .= '&eissn=' . $record->e_issn;
+            $url .= '&issn=' . dashed_issn($record->e_issn);
         }
         else {
-            $url .= '&issn=' . $record->issn;
+            $url .= '&issn=' . dashed_issn($record->issn);
         }
 
         if ( not_empty_string( $request->issue ) ) {
@@ -318,10 +318,10 @@ sub build_linkFulltext {
         my $url = $resource->url_base;
         $url .= '?genre=article';
         if ( not_empty_string( $record->e_issn ) ) {
-            $url .= '&eissn=' . $record->e_issn;
+            $url .= '&issn=' . dashed_issn($record->e_issn);
         }
         else {
-            $url .= '&issn=' . $record->issn;
+            $url .= '&issn=' . dashed_issn($record->issn);
         }
 
         if ( not_empty_string( $request->volume ) ) {
