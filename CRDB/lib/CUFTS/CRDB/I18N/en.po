@@ -1,7 +1,7 @@
-# English translations for PACKAGE package.
-# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# root <a.sokolov@spbu.ru>, 2012.
+# English translations for CRDB package.
+# Copyright (C) 2012 Andrey Sokolov
+# This file is distributed under the same license as the CUFTS package.
+# Andrey Sokolov <a.sokolov@spbu.ru>, 2012.
 #
 msgid ""
 msgstr ""
@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2012-11-20 10:59+0400\n"
 "Last-Translator: Andrey Sokolov <a.sokolov@spbu.ru>\n"
 "Language-Team: English\n"
-"Language: en_US\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ASCII\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: en_US\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: root/browse.tt:84

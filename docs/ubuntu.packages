@@ -2,15 +2,25 @@ build-essential install
 unzip install
 ftp install
 subversion install
-apache2 install
-apache2-mpm-prefork install
-postgresql install
-postgresql-client install
-postgresql-contrib install
 curl install
 lynx install
 ncftp install
 makepatch install
+gettext install
+
+# apache2 packages
+
+apache2 install
+apache2-mpm-prefork install
+
+# postgresql packages
+
+postgresql install
+postgresql-client install
+postgresql-contrib install
+
+# perl packages
+
 libapache-dbi-perl install
 libapache-dbilogger-perl install
 libapache-session-perl install
@@ -85,7 +95,7 @@ libhtml-tokeparser-simple-perl install
 libhtml-prototype-perl install
 libhtml-fillinform-perl install
 libfcgi-perl install
-libdigest-sha1-perl install
+libdigest-sha-perl install
 libdbi-perl install
 libdbd-sqlite3-perl install
 libdbd-pg-perl install
@@ -98,4 +108,3 @@ libclass-dbi-perl install
 libclass-accessor-perl install
 libcgi-formbuilder-perl install
 libcatalyst-view-tt-perl install
-gettext install
