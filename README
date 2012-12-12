@@ -1,9 +1,9 @@
 # README - CUFTS OpenURL link resolver and electronic resource management system
 
 - This package is a fork of the CUFTS electronic resource management system.
-- Quick start for ubuntu 12.04 LTS https://github.com/andysokolov/CUFTS/wiki
+- [Quick start for ubuntu 12.04 LTS] (https://github.com/andysokolov/CUFTS/wiki)
 - Licensed under the GPL version 2
-- See more details and documentation at main site http://researcher.sfu.ca/
+- See more details and documentation at [reSearcher main site] (http://researcher.sfu.ca/)
 
 ## Overview
 CUFTS is a free, open source (GPL) OpenURL link resolver and electronic resource management system designed for use by library consortia. It supports multiple sites from one server, online management tools, usage statistics, and an advanced journal list system.
