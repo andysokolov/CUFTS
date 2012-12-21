@@ -209,6 +209,28 @@ __PACKAGE__->add_columns(
         is_nullable   => 1,
         size          => 1024
     },
+    'marc_notes' => {
+        data_type     => 'text',
+        default_value => undef,
+        is_nullable   => 1,
+        size          => 64000
+    },
+    'marc_records_url' => {
+        data_type     => 'varchar',
+        default_value => undef,
+        is_nullable   => 1,
+        size          => 1024
+    },
+    'marc_schedule' => {
+        data_type     => 'date',
+        default_value => undef,
+        is_nullable   => 1,
+    },
+    'marc_schedule_interval' => {
+        data_type     => 'integer',
+        default_value => 0,
+        is_nullable   => 1,
+    },
     'requirements' => {
         data_type     => 'text',
         default_value => undef,

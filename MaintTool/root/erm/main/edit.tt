@@ -674,6 +674,47 @@ $( function() {
 
 <div class="field">
  <div class="data">
+  <label for="erm-edit-input-marc_records_url">MARC records URL</label>
+  <input id="erm-edit-input-marc_records_url" name="marc_records_url" value="[% erm.marc_records_url | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  A URL where MARC records for this resource can be downloaded.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-marc_schedule">MARC schedule date</label>
+  <input id="erm-edit-input-marc_schedule" name="marc_schedule" value="[% erm.marc_schedule | html %]" style="width: 10em;" />
+ </div>
+ <div class="help">
+  Next date that MARC records should be downloaded on.<br /><br />Format: YYYY-MM-DD
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-marc_schedule_interval">MARC schedule interval months</label>
+  <input id="erm-edit-input-marc_schedule_interval" name="marc_schedule_interval" value="[% erm.marc_schedule_interval | html %]" style="width: 10em;" />
+ </div>
+ <div class="help">
+  Number of months after last download that MARC records should be downloaded again. Format is a simple integer.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-marc_notes">MARC record notes</label>
+  <textarea id="erm-edit-input-marc_notes" name="marc_notes">[% erm.marc_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Notes on MARC records for this resource.
+ </div>
+</div>
+
+
+<div class="field">
+ <div class="data">
   <label for="erm-edit-input-requirements">requirements</label>
   <input id="erm-edit-input-requirements" name="requirements" value="[% erm.requirements | html %]" style="width: 30em;" />
  </div>

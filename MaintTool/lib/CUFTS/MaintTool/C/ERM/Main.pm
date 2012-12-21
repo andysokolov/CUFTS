@@ -56,6 +56,10 @@ my $form_validate = {
             marc_available
             marc_history
             marc_alert
+            marc_records_url
+            marc_notes
+            marc_schedule
+            marc_schedule_interval
             requirements
             maintenance
             title_list_url
