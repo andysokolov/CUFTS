@@ -16,6 +16,7 @@ use Net::SMTP;
 use DateTime;
 use DateTime::Format::Pg;
 use Getopt::Long;
+use String::Util qw(hascontent);
 
 use strict;
 
@@ -71,6 +72,16 @@ while (my $site = $site_iter->next) {
             if ( $rn_date->ymd eq $now->ymd ) {
                 my $erm_email = $resource->notification_email || $site_email;
                 $emails{$erm_email} .= 'Renewal notification for: ' . $resource->key . '. Contract expires: ' . $end->ymd . "\n";
+            }
+        }
+
+        if ( hascontent($resource->marc_schedule) && $resource->marc_schedule eq $now->ymd ) {
+            $emails{$site_email} .= 'Check for downloadable MARC records for: ' . $resource->key . "\n";
+            
+            if ( my $interval = int($resource->marc_schedule_interval) ) {
+                my $new_date = $now->clone->add( months => $interval );
+                $resource->marc_schedule($new_date->ymd);
+                $resource->update();
             }
         }
 

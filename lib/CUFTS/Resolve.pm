@@ -87,7 +87,7 @@ RESOURCE:
             my $services = $self->get_services( $local_resource, $module, $site, $request );
             my $compiled_results;
 SERVICE:
-            foreach my $service (@$services) {
+            foreach my $service (@$services) { 
                 my $service_name = $service->name;
 
                 # Dedupe providers that have already provided a link at this service level
@@ -318,7 +318,7 @@ sub get_active_resources {
     my @resources = CUFTS::DB::LocalResources->search(
         active => 'true',
         site   => $site->id,
-        { order_by => 'rank desc' }
+        { order_by => 'rank desc nulls last' }
     );
 
     # Filter out resources that are not active at the global level
