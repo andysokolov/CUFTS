@@ -40,7 +40,6 @@ CREATE TABLE erm_main (
     marc_available      BOOLEAN,
     marc_history        TEXT,
     marc_alert          VARCHAR(1024),
-    marc_records_url 	VARCHAR(1024),
     marc_notes 		TEXT,
     marc_schedule 	DATE,
     marc_schedule_interval INT DEFAULT 0,

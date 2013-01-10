@@ -650,71 +650,6 @@ $( function() {
 
 <div class="field">
  <div class="data">
-  <label for="erm-edit-input-marc_available">MARC available</label>
-  <select id="erm-edit-input-marc_available" name="marc_available" style="width: 4em;">
-   <option value=""></option>
-   <option value="1" [% 'selected="selected"' IF erm.marc_available == 1 %]>Yes</option>
-   <option value="0" [% 'selected="selected"' IF erm.marc_available == 0 %]>No</option>
-  </select>
- </div>
- <div class="help">
-  Indicates whether MARC records are available for this resource.
- </div>
-</div>
-
-<div class="field">
- <div class="data">
-  <label for="erm-edit-input-marc_alert">MARC download notification</label>
-  <input id="erm-edit-input-marc_alert" name="marc_alert" value="[% erm.marc_alert | html %]" style="width: 30em;" />
- </div>
- <div class="help">
-  The email address(es) of the person(s) to receive notification of last MARC download.  If no address is given, email will be sent to the general site email address.  Seperate multiple email addresses with commas.
- </div>
-</div>
-
-<div class="field">
- <div class="data">
-  <label for="erm-edit-input-marc_records_url">MARC records URL</label>
-  <input id="erm-edit-input-marc_records_url" name="marc_records_url" value="[% erm.marc_records_url | html %]" style="width: 30em;" />
- </div>
- <div class="help">
-  A URL where MARC records for this resource can be downloaded.
- </div>
-</div>
-
-<div class="field">
- <div class="data">
-  <label for="erm-edit-input-marc_schedule">MARC schedule date</label>
-  <input id="erm-edit-input-marc_schedule" name="marc_schedule" value="[% erm.marc_schedule | html %]" style="width: 10em;" />
- </div>
- <div class="help">
-  Next date that MARC records should be downloaded on.<br /><br />Format: YYYY-MM-DD
- </div>
-</div>
-
-<div class="field">
- <div class="data">
-  <label for="erm-edit-input-marc_schedule_interval">MARC schedule interval months</label>
-  <input id="erm-edit-input-marc_schedule_interval" name="marc_schedule_interval" value="[% erm.marc_schedule_interval | html %]" style="width: 10em;" />
- </div>
- <div class="help">
-  Number of months after last download that MARC records should be downloaded again. Format is a simple integer.
- </div>
-</div>
-
-<div class="field">
- <div class="data">
-  <label for="erm-edit-input-marc_notes">MARC record notes</label>
-  <textarea id="erm-edit-input-marc_notes" name="marc_notes">[% erm.marc_notes | html %]</textarea>
- </div>
- <div class="help">
-  Notes on MARC records for this resource.
- </div>
-</div>
-
-
-<div class="field">
- <div class="data">
   <label for="erm-edit-input-requirements">requirements</label>
   <input id="erm-edit-input-requirements" name="requirements" value="[% erm.requirements | html %]" style="width: 30em;" />
  </div>
@@ -1580,11 +1515,65 @@ $( function() {
 
 <div class="field">
  <div class="data">
+  <label for="erm-edit-input-marc_available">MARC available</label>
+  <select id="erm-edit-input-marc_available" name="marc_available" style="width: 4em;">
+   <option value=""></option>
+   <option value="1" [% 'selected="selected"' IF erm.marc_available == 1 %]>Yes</option>
+   <option value="0" [% 'selected="selected"' IF erm.marc_available == 0 %]>No</option>
+  </select>
+ </div>
+ <div class="help">
+  Indicates whether MARC records are available for this resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
   <label for="erm-edit-marc_url">MARC URL</label>
   <input id="erm-edit-marc_url" name="marc_url" value="[% erm.marc_url | html %]" style="width: 30em;" />
  </div>
  <div class="help">
   URL for downloading MARC records for resource.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-marc_alert">MARC download notification</label>
+  <input id="erm-edit-input-marc_alert" name="marc_alert" value="[% erm.marc_alert | html %]" style="width: 30em;" />
+ </div>
+ <div class="help">
+  The email address(es) of the person(s) to receive notification of last MARC download.  If no address is given, email will be sent to the general site email address.  Seperate multiple email addresses with commas.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-marc_schedule">MARC schedule date</label>
+  <input id="erm-edit-input-marc_schedule" name="marc_schedule" value="[% erm.marc_schedule | html %]" style="width: 10em;" />
+ </div>
+ <div class="help">
+  Next date that MARC records should be downloaded on.<br /><br />Format: YYYY-MM-DD
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-marc_schedule_interval">MARC schedule interval months</label>
+  <input id="erm-edit-input-marc_schedule_interval" name="marc_schedule_interval" value="[% erm.marc_schedule_interval | html %]" style="width: 10em;" />
+ </div>
+ <div class="help">
+  Number of months after last download that MARC records should be downloaded again. Format is a simple integer.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
+  <label for="erm-edit-input-marc_notes">MARC record notes</label>
+  <textarea id="erm-edit-input-marc_notes" name="marc_notes">[% erm.marc_notes | html %]</textarea>
+ </div>
+ <div class="help">
+  Notes on MARC records for this resource.
  </div>
 </div>
 

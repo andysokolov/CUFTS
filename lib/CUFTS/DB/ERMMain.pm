@@ -64,7 +64,6 @@ __PACKAGE__->columns(All => qw(
     marc_available
     marc_history
     marc_alert
-    marc_records_url
     marc_notes
     marc_schedule
     marc_schedule_interval

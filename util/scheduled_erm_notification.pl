@@ -76,7 +76,8 @@ while (my $site = $site_iter->next) {
         }
 
         if ( hascontent($resource->marc_schedule) && $resource->marc_schedule eq $now->ymd ) {
-            $emails{$site_email} .= 'Check for downloadable MARC records for: ' . $resource->key . "\n";
+            my $erm_email = $resource->marc_alert || $site_email;
+            $emails{$erm_email} .= 'Check for downloadable MARC records for: ' . $resource->key . "\n";
             
             if ( my $interval = int($resource->marc_schedule_interval) ) {
                 my $new_date = $now->clone->add( months => $interval );
