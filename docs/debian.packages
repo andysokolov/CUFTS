@@ -98,3 +98,5 @@ libclass-accessor-perl install
 libcgi-formbuilder-perl install
 libcatalyst-view-tt-perl install
 gettext install
+libnet-z3950-zoom-perl
+libdatetime-format-pg-perl
