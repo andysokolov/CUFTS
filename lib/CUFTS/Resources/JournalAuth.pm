@@ -65,6 +65,9 @@ sub get_records {
             }
         }
 
+        # Include that first match as journal_auths match, it will likely come up from the augmentations above, but there are a few rare cases where this works better.
+        $request->journal_auths( [ $ja_match[0]->journal_auth ] );
+
     }
     elsif ( not_empty_string($request->title) ) {
         # No ISSN found, try a title lookup to grab some JA records and attach their ids to the request
