@@ -66,24 +66,25 @@ sub title_list_field_map {
         'BioOne URL'                => 'journal_url',
         'Publisher'                 => 'publisher',
         'Organization'              => 'publisher',
+        'Publishing Organization'   => 'publisher',
     };
 }
 
-sub title_list_split_row {
-    my ( $class, $row ) = @_;
+# sub title_list_split_row {
+#     my ( $class, $row ) = @_;
 
-    my $csv = CUFTS::Util::CSVParse->new();
-    $csv->parse($row)
-        or CUFTS::Exception::App->throw(
-                'Error parsing CSV line: ' . $csv->error_input() );
-    my @fields = $csv->fields;
-    return \@fields;
-}
+#     my $csv = CUFTS::Util::CSVParse->new();
+#     $csv->parse($row)
+#         or CUFTS::Exception::App->throw(
+#                 'Error parsing CSV line: ' . $csv->error_input() );
+#     my @fields = $csv->fields;
+#     return \@fields;
+# }
 
 sub clean_data {
     my ( $class, $record ) = @_;
 
-    my $availability = $record->{'___Availability'} || $record->{'___AVAILABILITY'} || $record->{'___AVAILABILITY ON BIOONE'} || $record->{'___Available on BioOne'};
+    my $availability = $record->{'___Availability'} || $record->{'___AVAILABILITY'} || $record->{'___AVAILABILITY ON BIOONE'} || $record->{'___Available on BioOne'} || $record->{'___Content Available on BioOne'};
     my ($start, $end) = split(" \- ", $availability, 2);
     $start =~ /(.*)\((.*)\)/;
     my $start_vol = $1;
@@ -104,6 +105,11 @@ sub clean_data {
 
     $record->{'ft_start_date'} = $start_date;
     $record->{'vol_ft_start'} = $start_vol;
+
+    $record->{title}        = trim_string( $record->{title}, '"');
+    $record->{publisher}    = trim_string( $record->{publisher}, '"');
+    $record->{journal_url}  = trim_string( $record->{journal_url}, '"');
+
 
     return $class->SUPER::clean_data($record);
 }
