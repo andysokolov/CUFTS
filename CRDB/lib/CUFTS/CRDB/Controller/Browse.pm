@@ -173,8 +173,9 @@ sub json_facets : Chained('facet_options') PathPart('facets/json') Args {
     }
 
     my $rs = $self->_facet_search( $c, \@facets );
-
+    $rs = $rs->search({},{ '+select' => ['print_equivalents'], '+as' => ['print_equivalents'] });
     $rs->result_class('DBIx::Class::ResultClass::HashRefInflator');  # Get a hash so the JSON view can convert
+
     my @records = $rs->all();
 
     if ( exists( $c->stash->{facets}->{subject} ) ) {
