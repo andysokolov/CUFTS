@@ -390,7 +390,7 @@ COLUMN:
     }
 
     scalar(@matched_titles) > 1
-        and CUFTS::Exception::App->throw('Multiple matching title rows found while updating.');
+        and CUFTS::Exception::App->throw('Multiple matching title rows found while updating: ' . $record->{title} );
 
     return scalar(@matched_titles) == 1 
            ? $matched_titles[0] 
