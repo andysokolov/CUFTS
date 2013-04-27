@@ -125,7 +125,8 @@ $( function() {
     }
 </style>
 
-<div id="erm-edit-key">[% erm.key | html %] <a style="margin-left: 15px;" href="[% url("$url_base/erm/main/delete/?erm_main_id=$erm.id") %]">delete</a></div>
+<div id="erm-edit-key">[% erm.key | html %] <a style="margin-left: 15px;" href="[% url("$url_base/erm/main/delete/?erm_main_id=$erm.id") %]">delete</a> <a style="margin-left: 15px;" href="[% url("$url_base/erm/main/clone/?erm_main_id=$erm.id") %]">clone</a>
+</div>
 
 <div id="pages-container" class="tabs-nav" style="width: 100%;">
 

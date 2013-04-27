@@ -176,6 +176,7 @@ __PACKAGE__->has_a('resource_type', 'CUFTS::DB::ERMResourceTypes');
 __PACKAGE__->has_many('subjects', ['CUFTS::DB::ERMSubjectsMain' => 'subject'], 'erm_main');
 __PACKAGE__->has_many('subjectsmain' => 'CUFTS::DB::ERMSubjectsMain');
 __PACKAGE__->has_many('content_types', ['CUFTS::DB::ERMContentTypesMain' => 'content_type'], 'erm_main');
+__PACKAGE__->has_many('content_types_main' => 'CUFTS::DB::ERMContentTypesMain' );
 __PACKAGE__->has_many( 'names' => 'CUFTS::DB::ERMNames'  );
 __PACKAGE__->has_many( 'keywords' => 'CUFTS::DB::ERMKeywords'  );
 __PACKAGE__->has_a( 'license', 'CUFTS::DB::ERMLicense' );
@@ -231,6 +232,67 @@ sub to_hash {
     return \%hash;
 }
 
+
+sub clone {
+    my $self = shift;
+
+    my %hash;
+    foreach my $column ( __PACKAGE__->columns ) {
+        next if !defined($self->$column) or $column eq 'id';
+        
+        # Handle has-a relationship columns
+        if ( grep { $_ eq $column } qw( consortia pricing_model resource_medium resource_type license provider ) ) {
+            $hash{$column} = $self->$column->id;
+        }
+        else {
+            $hash{$column} = $self->$column;
+        }
+    }
+
+    $hash{key} = 'Clone of ' . $hash{key};
+
+    # my $subjects        = delete $clone_hash->{subjects};
+    # my $content_types   = delete $clone_hash->{content_types};
+    # my $names           = delete $clone_hash->{names};
+
+    # use Data::Dumper;
+    # warn(Dumper(\%hash));
+
+    my $clone = CUFTS::DB::ERMMain->insert(\%hash);
+    my $clone_id = $clone->id;
+
+    warn( 'Created: ' . $clone_id );
+
+    foreach my $name ( $self->names ) {
+        CUFTS::DB::ERMNames->insert({
+            name        => $name->main ? 'Clone of ' . $name->name        : $name->name,
+            search_name => $name->main ? 'clone of ' . $name->search_name : $name->search_name,
+            erm_main    => $clone_id,
+            main        => $name->main,
+        });
+    }
+
+    foreach my $content_type ( $self->content_types_main ) {
+        CUFTS::DB::ERMContentTypesMain->insert({
+            content_type  => $content_type->content_type->id,
+            erm_main      => $clone_id,
+        });
+    }
+
+    foreach my $subject ( $self->subjectsmain ) {
+        CUFTS::DB::ERMSubjectsMain->insert({
+            subject     => $subject->subject,
+            rank        => $subject->rank,
+            description => $subject->description,
+            erm_main    => $clone_id,
+        });
+    }
+
+
+    CUFTS::DB::DBI->dbi_commit();
+
+    return CUFTS::DB::ERMMain->retrieve( $clone->id );
+}
 
 
 my @fast_columns = qw(

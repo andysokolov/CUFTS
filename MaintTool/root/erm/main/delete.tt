@@ -1,5 +1,7 @@
 [% USE url %]
 
+<div id="erm-delete-key" style="margin-bottom: 10px;">[% erm_main.key | html %]</div>
+
 [% IF error %]
  There was an error while attempting to delete the ERM resource: [% error %].
 [% ELSE %]

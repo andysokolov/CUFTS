@@ -809,12 +809,12 @@ sub delete : Local {
     unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
     
         if ( $c->form->{valid}->{cancel} ) {
-            return $c->forward('/erm/main/edit/' . $c->form->{valid}->{erm_main_id} );
+            return $c->redirect('/erm/main/edit/' . $c->form->{valid}->{erm_main_id} );
         }
     
         my $erm_main = CUFTS::DB::ERMMain->search({
             site => $c->stash->{current_site}->id,
-            id => $c->form->{valid}->{erm_main_id},
+            id   => $c->form->{valid}->{erm_main_id},
         })->first;
         
         my @erm_links = CUFTS::DB::ERMMainLink->search({
@@ -869,6 +869,56 @@ sub delete : Local {
     $c->stash->{template} = 'erm/main/delete.tt';
 }
 
+
+sub clone : Local {
+    my ( $self, $c ) = @_;
+    
+    $c->form({
+        required => [ qw( erm_main_id ) ],
+        optional => [ qw( confirm cancel delete ) ],
+    });
+    
+    unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
+    
+        if ( $c->form->{valid}->{cancel} ) {
+            return $c->redirect('/erm/main/edit/' . $c->form->{valid}->{erm_main_id} );
+        }
+    
+        my $erm_main = CUFTS::DB::ERMMain->search({
+            site => $c->stash->{current_site}->id,
+            id   => $c->form->{valid}->{erm_main_id},
+        })->first;
+
+        if ( defined($erm_main) ) {
+
+            $c->stash->{erm_main} = $erm_main;
+            if ( $c->form->{valid}->{confirm} ) {
+
+                my $clone;
+                eval {
+                    $clone = $erm_main->clone();
+                };
+                
+                if ($@) {
+                    my $err = $@;
+                    CUFTS::DB::DBI->dbi_rollback;
+                    die($err);
+                }
+            
+                CUFTS::DB::ERMMain->dbi_commit();
+                return $c->redirect('/erm/main/edit/' . $clone->id );
+            }
+        }
+        else {
+            $c->stash->{error} = "Unable to locate ERM record: " . $c->form->{valid}->{erm_main_id};
+        }
+
+    }
+
+    $c->stash->{template} = 'erm/main/clone.tt';
+}
+
+
 sub link : Local {
     my ( $self, $c, $erm_main_id ) = @_;
     
@@ -886,8 +936,6 @@ sub link_ajax : Local {
     my ( $self, $c, $erm_main_id, $link_type, $action ) = @_;
 
     my $current_site_id = $c->stash->{current_site}->id;
-
-    
 
     my $erm_main = CUFTS::DB::ERMMain->search( { id => $erm_main_id, site => $current_site_id } )->first;
     if ( !defined($erm_main) ) {
