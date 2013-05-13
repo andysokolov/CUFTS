@@ -61,4 +61,23 @@ __PACKAGE__->columns(Essential => __PACKAGE__->columns);
 
 __PACKAGE__->sequence('erm_providers_id_seq');
 
+sub clone {
+    my $self = shift;
+
+    my %hash;
+    foreach my $column ( __PACKAGE__->columns ) {
+        next if !defined($self->$column) or $column eq 'id';        
+        $hash{$column} = $self->$column;
+    }
+
+    $hash{key} = 'Clone of ' . $hash{key};
+
+    my $clone = CUFTS::DB::ERMProviders->insert(\%hash);
+    my $clone_id = $clone->id;
+
+    CUFTS::DB::DBI->dbi_commit();
+
+    return CUFTS::DB::ERMProviders->retrieve( $clone->id );
+}
+
 1;

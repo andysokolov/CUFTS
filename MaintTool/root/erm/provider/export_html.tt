@@ -1,0 +1,15 @@
+<table class="erm-selected-export-html">
+ <tr>
+ [% FOREACH column IN columns %]
+  <th>[% column %]</th>
+ [% END %]
+ </tr>
+ 
+ [% FOREACH record IN records %]
+  <tr>
+   [% FOREACH column IN columns %]
+    <td>[% record.$column | html %]</td>
+   [% END %]
+  </tr>
+ [% END %]
+</table>

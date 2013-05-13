@@ -1,0 +1,103 @@
+<h2>ERM License fields to export</h2>
+
+<form action="[% url("$url_base/erm/license/selected_export/") %]" method="post">
+
+Export Format: <select name="format">
+    <option value="html">HTML</option>
+    <option value="csv">CSV</option>
+    <option value="json">JSON</option>
+</select>
+<br /><br />
+<table class="grid" style="width: 30em; margin-bottom: 10px;">
+ <tr><td class="heading"><input class="toggleall" type="checkbox" name="ignore" value=""> toggle all</td></tr>
+</table>
+
+<table class="grid" style="width: 30em; margin-bottom: 10px;">
+ <tr><td class="heading"><input class="toggle" type="checkbox" name="ignore" value=""> toggle group</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="id"> id</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="key"> resource identifier</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="full_on_campus_access"> full on campus access</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="full_on_campus_notes"> full on campus notes</td></tr>
+ <tr> <td><input type="checkbox" name="columns" value="allows_remote_access"> allows remote access</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="allows_proxy_access"> allows proxy access</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="allows_commercial_use"> allows commercial use</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="allows_walkins"> allows walkins</td></tr>
+</table>
+
+
+<table class="grid" style="width: 30em; margin-bottom: 10px;">
+ <tr><td class="heading"><input class="toggle" type="checkbox" name="ignore" value=""> toggle group</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="allows_ill"> allows ill</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="ill_notes"> ill notes</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="allows_ereserves"> allows ereserves</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="ereserves_notes"> e-reserves notes</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="allows_coursepacks"> allows coursepacks</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="coursepack_notes"> coursepack notes</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="allows_distance_ed"> allows distance ed</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="allows_downloads"> allows downloads</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="allows_prints"> allows prints</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="allows_emails"> allows emails</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="emails_notes"> emails notes</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="allows_archiving"> allows archiving</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="archiving_notes"> archiving notes</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="own_data"> own data</td></tr>
+</table>
+
+<table class="grid" style="width: 30em; margin-bottom: 10px;">
+ <tr><td class="heading"><input class="toggle" type="checkbox" name="ignore" value=""> toggle group</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="citation_requirements"> citation requirements</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="requires_print"> requires print</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="requires_print_plus"> requires print plus</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="allowable_downtime"> allowable downtime</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="online_terms"> online terms</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="user_restrictions"> user restrictions</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="termination_requirements"> termination_requirements</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="terms_notes"> terms notes</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="perpetual_access"> perpetual access</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="perpetual_access_notes"> perpetual access notes</td></tr>
+</table>
+
+
+
+<table class="grid" style="width: 30em; margin-bottom: 10px;">
+ <tr><td class="heading"><input class="toggle" type="checkbox" name="ignore" value=""> toggle group</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="contact_name"> contact name</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="contact_role"> contact role</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="contact_address"> contact address</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="contact_phone"> contact phone</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="contact_fax"> contact fax</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="contact_email"> contact email</td></tr>
+ <tr><td><input type="checkbox" name="columns" value="contact_notes"> contact notes</td></tr>
+</table>
+
+
+<input type="submit" name="do_export" value="Export" />
+</form>
+
+<br /><br />
+
+<script>
+
+$(document).ready( function(){
+    $('input.toggle').bind( 'change',
+        function() {
+            var checkbox = $(this).parents('table').find(':checkbox').each(
+                function(i,cb) { $(cb).attr('checked', !$(cb).attr('checked')) }
+            );
+            $(this).attr('checked', !$(this).attr('checked'))
+            return false;
+        }
+    );
+
+    $('input.toggleall').bind( 'change',
+        function() {
+            var checkbox = $(':checkbox').each(
+                function(i,cb) { $(cb).attr('checked', !$(cb).attr('checked')) }
+            );
+            $(this).attr('checked', !$(this).attr('checked'))
+            return false;
+        }
+    );
+
+});
+</script>

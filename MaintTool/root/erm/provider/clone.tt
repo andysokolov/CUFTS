@@ -1,0 +1,23 @@
+[% USE url %]
+
+<div id="erm-clone-key" style="margin-bottom: 10px;">[% erm_provider.key | html %]</div>
+
+[% IF error %]
+ There was an error while attempting to clone the ERM provider record: [% error %].
+[% ELSE %]
+
+    [% IF result %]
+     [% result %]
+    [% ELSE %]
+
+      <div id="erm-clone-form">
+      Do you want to clone this ERM provider record?  
+      <form method="post" action="[% url("$url_base/erm/provider/clone/") %]">
+       <input type="hidden" name="erm_provider_id" value="[% erm_provider.id %]" />
+       <input type="submit" name="confirm" value="yes" />
+       <input type="submit" name="cancel" value="no" />
+      </form>
+      </div>
+
+    [% END %]
+[% END %]

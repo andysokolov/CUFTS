@@ -11,6 +11,10 @@ $( function() {
   <input style="margin-left: 10px;" type="submit" name="delete" value="delete" />
   <input type="hidden" name="erm_provider_id" value="[% erm.id %]" />
  </form> 
+ <form method="post" action="[% url("$url_base/erm/provider/clone/") %]">
+  <input style="margin-left: 10px;" type="submit" name="clone" value="clone" />
+  <input type="hidden" name="erm_provider_id" value="[% erm.id %]" />
+ </form> 
 </div>
 
 <form method="post" name="provider-form" id="provider-form">

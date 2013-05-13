@@ -76,6 +76,25 @@ __PACKAGE__->sequence('erm_license_id_seq');
 
 __PACKAGE__->has_many( 'mains' => 'CUFTS::DB::ERMMain' );
 
+sub clone {
+    my $self = shift;
+
+    my %hash;
+    foreach my $column ( __PACKAGE__->columns ) {
+        next if !defined($self->$column) or $column eq 'id';        
+        $hash{$column} = $self->$column;
+    }
+
+    $hash{key} = 'Clone of ' . $hash{key};
+
+    my $clone = CUFTS::DB::ERMLicense->insert(\%hash);
+    my $clone_id = $clone->id;
+
+    CUFTS::DB::DBI->dbi_commit();
+
+    return CUFTS::DB::ERMLicense->retrieve( $clone->id );
+}
+
 sub to_hash {
     my ( $self ) = @_;
 
