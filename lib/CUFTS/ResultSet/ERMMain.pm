@@ -7,13 +7,14 @@ use Set::Object;
 
 use Data::Dumper;
 
-my @fast_search_columns = qw( 
+my @fast_search_columns = qw(
     id
     key
     vendor
     description_brief
     description_full
     url
+    open_access
     proxy
     access
     alert
@@ -41,12 +42,12 @@ sub facet_search {
     };
 
 
-    # Dispatch to handle special setup for certain fields.  Default to normal field 
+    # Dispatch to handle special setup for certain fields.  Default to normal field
     # search if there is no matching "_facet_search..." handler.
-    
+
     foreach my $field ( keys %$fields ) {
         # Cleanup field, it may end up in an SQL statement.
-        
+
         $field =~ tr/-a-zA-Z_//cd;
 
         my $handler = "_facet_search_${field}";
@@ -57,18 +58,18 @@ sub facet_search {
             # Check that it's a valid column.  This used to skip the check but random
             # searches from exploit searching scripts would cause weird column names to
             # get through and an SQL failure.
-            
-        
+
+
             # if ( $self->result_source->has_column($field) ) {
                 $config->{search}->{ "me.${field}" } = $fields->{$field};
             # }
-            
+
         }
-        
+
     }
 
     # If we're not doing a name search, limit just to main names
-    
+
     if ( $config->{main_name_only} ) {
         $config->{search}->{'names.main'} = 1;
     }
@@ -91,7 +92,7 @@ sub facet_search {
 
 
     # Build +select and +as lists to pass as search attributes
-    
+
     my ( @extra_select_columns, @extra_as_columns );
     foreach my $as_column ( keys %{ $config->{extra_columns} } ) {
         push @extra_as_columns, $as_column;
@@ -100,12 +101,12 @@ sub facet_search {
 
     push @select_columns, 'license.allows_downloads';
     push @as_columns,     'license.allows_downloads';
-    
+
 
     # Build join list from HASH ref.  Flatten with value 1
 
     my @joins = map { defined( $config->{joins}->{$_} ) ? { $_ => $config->{joins}->{$_} } : $_ } keys %{ $config->{joins} };
-    
+
     # Do the search and return a result set
 
     my %search_attrs = (
@@ -125,11 +126,40 @@ sub facet_search {
 
 }
 
+
+sub _facet_search_license_allows_ill           { __facet_search_license_generic_boolean(@_); }
+sub _facet_search_license_allows_ereserves     { __facet_search_license_generic_boolean(@_); }
+sub _facet_search_license_allows_coursepacks   { __facet_search_license_generic_boolean(@_); }
+sub _facet_search_license_allows_walkins       { __facet_search_license_generic_boolean(@_); }
+sub _facet_search_license_allows_distance_ed   { __facet_search_license_generic_boolean(@_); }
+sub _facet_search_license_allows_archiving     { __facet_search_license_generic_boolean(@_); }
+sub _facet_search_license_perpetual_access     { __facet_search_license_generic_boolean(@_); }
+
+sub __facet_search_license_generic_boolean {
+    my ( $class, $field, $data, $config, $sql ) = @_;
+
+    $field =~ s/^license_(\w+)$/license.$1/;
+
+    # Detect some common boolean data values
+
+    if ( $data =~ /^(yes|true)$/i ) {
+        $data = 1;
+    }
+    elsif ( $data =~ /^(no|false)$/i ) {
+        $data = 0;
+    }
+    else {
+        $data =~ $data ? 1 : 0
+    }
+
+    $config->{search}->{$field} = $data;
+}
+
 sub _facet_search_subject {
     my ( $class, $field, $data, $config ) = @_;
 
     $config->{joins}->{subjects_main} ||= undef;
-    
+
     $config->{extra_columns}->{rank} = 'subjects_main.rank';
 
     $config->{replace_columns}->{description_brief} =  \'COALESCE(subjects_main.description, me.description_brief)';
@@ -147,7 +177,7 @@ sub _facet_search_name {
 
 sub _facet_search_name_regex {
     my ( $self, $field, $data, $config ) = @_;
-    
+
     $config->{search}->{'names.search_name'} = { '~' => $data };
     $config->{main_name_only} = 0;
 }
@@ -158,7 +188,7 @@ sub _facet_search_content_type {
     my ( $class, $field, $data, $config ) = @_;
 
     $config->{joins}->{content_types_main} ||= undef;
-    
+
     $config->{search}->{'content_types_main.content_type'} = $data;
 }
 
@@ -227,9 +257,9 @@ sub _facet_search_vendor {
 
 sub restricted_columns {
     my ( $class, $site, $account ) = @_;
-    
+
     my $account_type = $class->get_account_type( $account );
-    
+
     if ( $account_type eq 'patron' ) {
         return grep { grep { $_ eq 'patron' } @{ $class->result_source->column_info($_)->{default_can_view} } } $class->result_source->columns;
     }
@@ -239,12 +269,12 @@ sub restricted_columns {
     else {
         die("Unrecognized account type: ${account_type}");
     }
-    
+
 }
 
 sub get_account_type {
     my ( $class, $account ) = @_;   # CJDB::Schema::Account
-    
+
     # Lowest level access if there is not account
 
     return 'patron' if !defined($account);

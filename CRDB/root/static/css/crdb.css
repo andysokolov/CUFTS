@@ -366,6 +366,13 @@ div.resource-brief-field-name {
     margin: 3px 1px;
 }
 
+div.resource-brief-field-name.open-access a {
+    background-image: url(../../images/open_access.gif);
+    background-repeat: no-repeat;
+    background-position: right;
+    padding-right: 20px;
+}
+
 div.resource-brief-field-description {
     margin: 4px 2px;
 }

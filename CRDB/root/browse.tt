@@ -71,7 +71,7 @@
 [% BLOCK display_record %]
  [% SET record_id = record.id %]
 <div class="resource-brief-record" id="[% record_id %]">
- <div class="resource-brief-field-name">
+ <div class="resource-brief-field-name [% record.open_access == 'yes' ? ' open-access' : '' %]">
   <a href="[% c.uri_for_site( c.controller('Resource').action_for('default_view'), [ record_id ] ) %]">[% record.result_name %][% IF record.vendor.length %] - [% record.vendor %][% END %]</a>
  </div>
  <div class="resource-brief-field-description">[% record.description_brief %]</div>

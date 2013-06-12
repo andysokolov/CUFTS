@@ -304,10 +304,11 @@ sub titles_new :Chained('base') :PathPart('titles_new') Args(0) {
 sub journal_object_to_hash {
     my ( $self, $c, $journal ) = @_;
     return {
-        title        => $journal->result_title || $journal->title,
-        url          => $c->stash->{url_base} . '/journal/' . $journal->journals_auth->id,
-        journal_auth => $journal->journals_auth->id,
-        issns        => defined($journal->issns) ? [ map { $_->issn } $journal->issns ] : undef,
+        title               => $journal->result_title || $journal->title,
+        url                 => $c->stash->{url_base} . '/journal/' . $journal->journals_auth->id,
+        journal_auth        => $journal->journals_auth->id,
+        issns               => defined($journal->issns) ? [ map { $_->issn } $journal->issns ] : undef,
+        fulltext_coverages  => [ map { $_->fulltext_coverage } $journal->links ],
     };
 }
 

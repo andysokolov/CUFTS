@@ -26,7 +26,7 @@ sub base : Chained('/site') PathPart('browse') CaptureArgs(0) {}
 
 sub facet_options : Chained('/facet_options') PathPart('browse') CaptureArgs(0) {}
 
-=head2 browse_index 
+=head2 browse_index
 
 =cut
 
@@ -49,13 +49,13 @@ TODO:  Should this be merged into the html_facets and json_facets actions so the
 
 sub facet_form : Chained('base') PathPart('facet_form') Args(0) {
     my ( $self, $c ) = @_;
-    
+
     my $action = 'html_facets';
-    
+
     my @search_facets;
     foreach my $param ( keys %{ $c->req->params } ) {
          next if $param =~ /^(?:browse|search)$/;  # Get rid of common form search buttons
-                
+
         my $values = $c->req->params->{$param};
 
         # Special case to allow specifying JSON format as a parameter
@@ -97,11 +97,12 @@ sub _facet_search  {
             $facets->{$type} = $data;
         }
     }
-    
-    my $search = { %{$facets} };
-    $search->{public_list} = 't';
+
 
     $c->stash->{facets} = $facets;
+
+    my $search = { %{$facets} };
+    $search->{public_list} = 't';
 
     return $c->model('CUFTS::ERMMain')->facet_search( $c->site->id, $search, $empty ? 0 : undef );
 }
@@ -138,7 +139,7 @@ sub html_facets : Chained('facet_options') PathPart('facets') Args {
             $unranked++;
         }
         push @records, splice @records, 0, $unranked;
-        
+
         # Put the subject into the stash in case we need the subject description
         $c->stash->{subject_description} = $c->model('CUFTS::ERMSubjects')->find( $c->stash->{facets}->{subject} )->description;
 
@@ -193,9 +194,9 @@ sub json_facets : Chained('facet_options') PathPart('facets/json') Args {
         # Default to title sort
         @records = sort { $a->{sort_name} cmp $b->{sort_name} } @records;
     }
-    
+
     # Find any attached files that may link to images for display.. this is kindof hacky
-    
+
     foreach my $record (@records) {
         my $files = $c->model('CUFTS::ERMFiles')->search({ linked_id => $record->{id}, link_type => 'm', description => { 'ilike' => '%public%' } } );
         $record->{files} = [];
@@ -203,7 +204,7 @@ sub json_facets : Chained('facet_options') PathPart('facets/json') Args {
             push @{ $record->{files} }, { description => $file->description, url => $c->uri_for_static( 'erm_files', 'm', $file->UUID . '.' . $file->ext )->as_string };
         }
     }
-    
+
     $c->stash->{json}->{records} = \@records;
     $c->stash->{current_view}  = 'JSON';
 }
@@ -222,12 +223,12 @@ sub count_facets : Chained('base') PathPart('count_facets') Args {
     my ( $self, $c, @facets ) = @_;
 
     my $rs = $self->_facet_search( $c, \@facets );
- 
+
     # Flatten the facets hash to produce a cache key
     my $cache_key = $c->site->id . ' ' . join( ' ', map { $_ . ' ' . $c->stash->{facets}->{$_} } sort keys %{$c->stash->{facets}} );
 
     # Add caching in server session?
-    my $count = $c->cache->get( $cache_key ); 
+    my $count = $c->cache->get( $cache_key );
     if ( !defined($count) ) {
         $count = $rs->count();
         $c->cache->set( $cache_key, $count );
@@ -248,10 +249,10 @@ sub subject_description : Chained('base') PathPart('subject_description') Args(0
     my ( $self, $c ) = @_;
 
     $c->form({
-        required => [ qw( subject_id ) ], 
-        optional => [ qw( change subject_description ) ] 
+        required => [ qw( subject_id ) ],
+        optional => [ qw( change subject_description ) ]
     });
-    
+
     unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
 
         my $subject_id  = $c->form->{valid}->{subject_id};
@@ -262,7 +263,7 @@ sub subject_description : Chained('base') PathPart('subject_description') Args(0
         if ( $c->form->{valid}->{change} ) {
 
             # Try to change the description
-            
+
             my $description = $c->form->{valid}->{subject_description};
             $description = trim_string( $description );
             $description = undef if is_empty_string( $description );

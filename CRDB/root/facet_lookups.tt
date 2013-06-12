@@ -3,6 +3,7 @@
     need to added here.
  %]
 
-[%- SET name_regex_lookup = {
-    '^[^a-z]' => '0-9'
-} -%]
+[%-
+	SET name_regex_lookup = { '^[^a-z]' => '0-9' };
+-%]
+
