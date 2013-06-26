@@ -966,5 +966,17 @@ sub get_group_records {
     return \@records;
 }
 
+# sub clone {
+#     my $self   = shift;
+#     my $schema = $self->result_source->schema;
+
+#     $schema->txn_do( sub {
+#         my $clone = $self->result_source->resultset->new_result( $self );
+#     });
+
+
+# }
+
+
 1;
 

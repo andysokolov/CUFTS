@@ -8,7 +8,7 @@
 ## the terms of the GNU General Public License as published by the Free
 ## Software Foundation; either version 2 of the License, or (at your option)
 ## any later version.
-## 
+##
 ## CUFTS is distributed in the hope that it will be useful, but WITHOUT ANY
 ## WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 ## FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -82,19 +82,6 @@ __PACKAGE__->add_columns(
         is_nullable => 1,
         size => 1024,
     },
-    local_provider_name => {
-        data_type => 'varchar',
-        default_value => undef,
-        is_nullable => 1,
-        size => 1024,
-    },
-    local_provider_name => {
-        data_type => 'varchar',
-        default_value => undef,
-        is_nullable => 1,
-        size => 1024,
-    },
-    
     stats_available => {
         data_type => 'boolean',
         default_value => undef,
@@ -143,7 +130,7 @@ __PACKAGE__->add_columns(
         is_nullable => 1,
         size => 64000,
     },
-    
+
     provider_contact => {
         data_type => 'text',
         default_value => undef,
@@ -156,7 +143,7 @@ __PACKAGE__->add_columns(
         is_nullable => 1,
         size => 64000,
     },
-    
+
     support_email => {
         data_type => 'varchar',
         default_value => undef,
@@ -181,7 +168,7 @@ __PACKAGE__->add_columns(
         is_nullable => 1,
         size => 1024,
     },
-    );                                                                                                        
+);
 
 __PACKAGE__->set_primary_key( 'id' );
 
