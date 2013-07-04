@@ -136,7 +136,25 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key( 'id' );
 
 __PACKAGE__->belongs_to( resource => 'CUFTS::Schema::GlobalResources', 'resource', { join_type => 'left' } );
+__PACKAGE__->belongs_to( erm_main => 'CUFTS::Schema::ERMMain',         'erm_main', { join_type => 'left' } );
 
-# __PACKAGE__->has_many( journals => 'CUFTS::Schema::LocalJournals',  'resource' );
+__PACKAGE__->has_many( local_journals => 'CUFTS::Schema::LocalJournals',  'resource' );
+
+sub name_display {
+    my $self = shift;
+
+    return   hascontent($self->name)  ? $self->name
+           : defined($self->resource) ? $self->resource->name
+                                      : '';
+}
+
+sub provider_display {
+    my $self = shift;
+
+    return   hascontent($self->provider) ? $self->provider
+           : defined($self->resource)    ? $self->resource->provider
+                                         : '';
+}
+
 
 1;

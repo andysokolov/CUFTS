@@ -1,0 +1,178 @@
+header {
+	background: #326ead;
+	width: 100%;
+	color: white;
+}
+
+header h1 {
+	padding: 5px;
+	margin: 0;
+}
+
+.page-header {
+	margin: 10px 0 20px;
+}
+
+footer {
+	margin-top: 15px;
+	padding-top: 10px;
+	border-top: 1px solid #eee;
+	text-align: center;
+}
+
+select[name="t"] {
+	width: 8em;
+}
+
+.a-to-z ul>li>a {
+	font-size: 80%;
+	padding: 3px 9px;
+}
+
+/* Special fonts for the tabs */
+
+.nav {
+	font-size: 90%;
+	font-family: arial, sans-serif;
+}
+
+/* Browse form */
+
+#browse-form  {
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 15px;
+}
+
+/* List sites */
+
+#list-sites ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+/* Cover images */
+
+#browse .covers  {
+	width: 110px;
+	height: 110px;
+	padding: 5px;
+	/*border: 1px solid #eee;*/
+}
+
+#browse .covers div {
+	width: 100px;
+	height: 100px;
+	background: none;
+	position: absolute;  /* Make images appear on top of each other. This is because we show images for all the ISSNs - Syndetics normally shows for only one ISSN, but occassionally will have an image for two. This hides them in a stack. */
+}
+
+#browse .covers img {
+	max-width: 100px;
+	max-height: 100px;
+	margin: 0 auto;
+}
+
+
+/* Browse list */
+
+#browse .journal {
+	border-bottom: 1px solid #eee;
+	padding-bottom: 15px;
+}
+
+#browse #links ul {
+	list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+/* Journal */
+
+#journal .covers {
+	width: 150px;
+	height: 200px;
+	border: 1px solid #eee;
+}
+
+#journal ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+#journal .covers img {
+	position: absolute;
+}
+
+#journal #links .license {
+	/*clear: right;*/
+}
+
+#journal #links h4 {
+	margin-bottom: 5px;
+}
+
+#journal .coverage {
+	font-weight: bold;
+}
+
+#journal #links .links-details {
+	margin-left: 15px;
+}
+
+#journal #links a.btn {
+	margin: 5px 0 8px;
+}
+
+#journal .journal-container {
+	margin-right: 180px;
+}
+
+#journal .license .tab-content {
+	height: 110px;
+	overflow: auto;
+	margin-bottom: 6px;
+	border-bottom: 1px solid #ddd;
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	padding: 5px;
+	-webkit-border-bottom-left-radius: 4px;
+	-moz-border-bottom-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+	-webkit-border-bottom-right-radius: 4px;
+	-moz-border-bottom-right-radius: 4px;
+	border-bottom-right-radius: 4px;
+}
+
+/* Stop license tabs from floating down due to large cover image */
+#journal .nav-tabs::after, #journal .nav-pills::after {
+	clear: left;
+}
+
+/* These are styling for the "journal-note" and "resource-note" fields. Typically shown after a link. */
+
+.availability dl.note {
+	margin: 0;
+}
+
+.availability dl.note dt {
+	margin-left: 10px;
+	text-align: left;
+	width: 120px;
+}
+
+.availability dl.note dd {
+	margin-left: 130px;
+	color: #d11;
+}
+
+/* Icon overrides */
+
+.icon-ok {
+	background-image: url("../images/glyphicons-halflings-green.png");
+}
+
+.icon-remove {
+	background-image: url("../images/glyphicons-halflings-red.png");
+}

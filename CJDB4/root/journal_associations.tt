@@ -1,0 +1,11 @@
+[% SET journal_associations = journal.associations_rs %]
+[% IF journal_associations.count > 0 %]
+ <div id="associations" class="details">
+ 	 <h3>Associations</h3>
+  <ul>
+    [% WHILE ( association = journal_associations.next ) %]
+      <li><a href="">[% association.association | html %]</a></li>
+    [% END %]
+   </ul>
+ </div> <!-- associations -->
+[% END %]

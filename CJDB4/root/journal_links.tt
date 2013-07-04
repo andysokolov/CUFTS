@@ -1,0 +1,44 @@
+<div id="links">
+  <!-- <h3>Availability</h3> -->
+  <ul>
+ [%- SET count = 0 -%]
+ [%- FOREACH link IN rank_name_sort( journal.display_links, resources_display ) -%]
+
+  [%- SET resource = undef -%]
+  [%- IF link.link_type > 0 -%]
+    [% SET resource_id = link.resource;
+      SET resource = resources_display.$resource_id %]
+    [% NEXT UNLESS resource %]
+  [%- END -%]
+  [%- SET count = count + 1 -%]
+
+   <li>
+      <h4>[%- PROCESS journals_link_name.tt -%]</h4>
+      <div class="links-details">
+        [% PROCESS coverage_string.tt %]<br />
+        <a class="btn btn-medium btn-primary" href="[% link.url | html %]">Access Journal</a>
+
+        [%- IF link.journal_cjdb_note %]
+          <dl class="journal-note note dl-horizontal">
+            <dt>Journal Note:</dt><dd>[% link.journal_cjdb_note | html %]</dd>
+          </dl>
+        [%- END -%]
+
+        [%- IF resource.cjdb_note %]
+         <dl class="resource-note note dl-horizontal">
+          <dt>Resource Note:</dt><dd>[% resource.cjdb_note | html %]</dd>
+         </dl>
+        [%- END %]
+
+        [% PROCESS journal_license.tt %]
+
+      </div>
+
+   </li>
+ [%- END -%]
+  </ul>
+ [% IF count == 0 %]
+  No links are currently available for this journal.
+ [% END %]
+</div>
+

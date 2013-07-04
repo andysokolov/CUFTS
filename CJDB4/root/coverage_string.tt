@@ -1,0 +1,32 @@
+[%- IF link.print_coverage -%]
+  <span class="coverage print">Print Coverage: [% link.print_coverage | html_line_break %]</span>
+[%- END -%]
+
+[%- IF link.fulltext_coverage -%]
+  <span class="coverage fulltext">Fulltext Coverage: [% link.fulltext_coverage | html %]</span>
+[%- END -%]
+
+[%- IF link.embargo -%]
+  <span class="coverage embargo">
+    [%- IF link.fulltext_coverage -%]
+      ([% link.embargo | html %] embargo)
+    [%- ELSE -%]
+      Fulltext Coverage: [% link.embargo | html %] embargo
+    [%- END -%]
+  </span>
+[%- END -%]
+
+[%- IF link.current %]
+  <span class="coverage current">
+    [%- IF link.fulltext_coverage OR link.embargo -%]
+      (latest [% link.current | html %] only)
+    [%- ELSE -%]
+      Fulltext Coverage: latest [% link.current | html %] only
+    [%- END -%]
+  </span>
+[% END -%]
+
+[%- IF link.citation_coverage AND current_site.cjdb_show_citations AND !(link.embargo OR link.fulltext_coverage OR link.current) %]
+  [% IF link.embargo OR link.fulltext_coverage %]<br />[% END %]
+  <span class="coverage citation">Citation Coverage: [% link.citation_coverage | html %]</span>
+[% END -%]

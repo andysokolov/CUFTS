@@ -1,0 +1,34 @@
+<div id="links">
+ [%- SET count = 0 -%]
+  <ul>
+ [%- FOREACH link IN rank_name_sort( journal.display_links, resources_display ) -%]
+
+  [%- SET resource = undef -%]
+  [%- IF link.link_type > 0 -%]
+   [% SET resource_id = link.resource;
+      SET resource = resources_display.$resource_id %]
+   [% NEXT UNLESS resource %]
+  [%- END -%]
+  [%-SET count = count + 1 -%]
+
+   <li>
+    <a href="[% link.url | html %]">[%- PROCESS journals_link_name.tt -%]</a>: <br class="visible-phone" />[% PROCESS coverage_string.tt %]
+
+    [%- IF link.journal_cjdb_note %]
+     <dl class="journal-note note dl-horizontal">
+      <dt>Journal Note:</dt><dd>[% link.journal_cjdb_note | html %]</dd>
+     </dl>
+    [%- END -%]
+
+    [%- IF resource.cjdb_note %]
+     <dl class="resource-note note dl-horizontal">
+      <dt>Resource Note:</dt><dd>[% resource.cjdb_note | html %]</dd>
+     </dl>
+    [%- END %]
+  </li>
+ [%- END -%]
+  </ul>
+ [% IF count == 0 %]
+  No links are currently available for this journal.
+ [% END %]
+</div>

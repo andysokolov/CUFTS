@@ -27,7 +27,7 @@ use String::Util qw(hascontent);
 
 use base qw/DBIx::Class::Core/;
 
-__PACKAGE__->load_components(qw/ TimeStamp /);
+__PACKAGE__->load_components(qw/ InflateColumn::DateTime TimeStamp /);
 
 __PACKAGE__->table('journals');
 __PACKAGE__->add_columns(
@@ -193,6 +193,7 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key( 'id' );
 
 __PACKAGE__->belongs_to( global_resource => 'CUFTS::Schema::GlobalResources',  'resource' );
+__PACKAGE__->belongs_to( journal_auth   => 'CUFTS::Schema::JournalsAuth',    'journal_auth',  { join_type => 'left' } );
 
 # sub store_column {
 #     my ( $self, $name, $value ) = @_;

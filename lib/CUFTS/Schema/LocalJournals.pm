@@ -27,7 +27,7 @@ use String::Util qw(hascontent);
 
 use base qw/DBIx::Class::Core/;
 
-__PACKAGE__->load_components(qw/ TimeStamp /);
+__PACKAGE__->load_components(qw/ InflateColumn::DateTime TimeStamp /);
 
 __PACKAGE__->table('local_journals');
 __PACKAGE__->add_columns(
@@ -201,11 +201,39 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key( 'id' );
 
 __PACKAGE__->belongs_to( local_resource => 'CUFTS::Schema::LocalResources',  'resource' );
-__PACKAGE__->belongs_to( global_journal => 'CUFTS::Schema::GlobalJournals',  'journal',  { join_type => 'left' } );
-__PACKAGE__->belongs_to( erm_main       => 'CUFTS::Schema::ERMMain',         'erm_main', { join_type => 'left' } );
+__PACKAGE__->belongs_to( global_journal => 'CUFTS::Schema::GlobalJournals',  'journal',       { join_type => 'left' } );
+__PACKAGE__->belongs_to( journal_auth   => 'CUFTS::Schema::JournalsAuth',    'journal_auth',  { join_type => 'left' } );
+__PACKAGE__->belongs_to( erm_main       => 'CUFTS::Schema::ERMMain',         'erm_main',      { join_type => 'left' } );
 
 __PACKAGE__->has_many( cjdb_links => 'CUFTS::Schema::CJDBLinks', 'local_journal' );
 
+sub journal_auth_merged    { $_[0]->_field_merged('journal_auth') }
+sub title_merged           { $_[0]->_field_merged('title') }
+sub issn_merged            { $_[0]->_field_merged('issn') }
+sub e_issn_merged          { $_[0]->_field_merged('e_issn') }
+sub ft_start_date_merged   { $_[0]->_field_merged('ft_start_date') }
+sub ft_end_date_merged     { $_[0]->_field_merged('ft_end_date') }
+sub cit_start_date_merged  { $_[0]->_field_merged('cit_start_date') }
+sub cit_end_date_merged    { $_[0]->_field_merged('cit_end_date') }
+sub vol_ft_start_merged    { $_[0]->_field_merged('vol_ft_start') }
+sub vol_ft_end_merged      { $_[0]->_field_merged('vol_ft_end') }
+sub iss_ft_start_merged    { $_[0]->_field_merged('iss_ft_start') }
+sub iss_ft_end_merged      { $_[0]->_field_merged('iss_ft_end') }
+sub embargo_days_merged    { $_[0]->_field_merged('embargo_days') }
+sub embargo_months_merged  { $_[0]->_field_merged('embargo_months') }
+
+sub _field_merged {
+    my ( $self, $field ) = @_;
+
+    return   defined($self->journal_auth)   ? $self->$field()
+           : defined($self->global_journal) ? $self->global_journal->$field()
+                                            : undef;
+}
+
+
+sub title_display {
+    return $_->title_merged;
+}
 
 
 # sub store_column {

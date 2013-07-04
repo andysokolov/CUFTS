@@ -1,0 +1,27 @@
+[% PROCESS page_title.tt %]
+[% PROCESS browse_form.tt %]
+<div id="browse">
+
+[% PROCESS pager.tt %]
+
+[% WHILE ( journal = journals_rs.next ) %]
+
+<div class="journal media">
+
+  <div class="covers pull-left hidden-phone"><a class="" href="#">
+   [%- FOREACH issn IN journal.issns -%]
+    <div><img class="media-object" src="http://syndetics.com/index.php?client=simonfu&issn=[% issn.issn %]/sc.jpg"></div>
+   [%- END -%]
+  </a></div>
+
+  <div class="media-body">
+    <h4 class="media-heading"><a href="[% c.uri_for_site( c.controller('Journal').action_for('view'), journal.get_column('journals_auth') ) %]">[% journal.result_title ? journal.result_title : journal.title %]</a></h4>
+    [%- PROCESS browse_journals_links.tt -%]
+  </div>
+
+</div>
+
+[% END %]
+
+[% PROCESS pager.tt %]
+</div>

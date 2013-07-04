@@ -1,0 +1,18 @@
+[% SET journal_titles = journal.titles_rs %]
+[% SET final_titles = [] %]
+[% WHILE ( title = journal_titles.next ) %]
+  [% NEXT IF title.main == 1 %]
+  [% NEXT IF title.title == journal.title %]
+  [% final_titles.push(title.title) %]
+[% END %]
+
+[% IF final_titles.size > 0 %]
+  <div id="alternate-titles" class="details">
+    <h3>Alternate Titles</h3>
+    <ul>
+    [% FOREACH title IN final_titles %]
+      <li>[% title | html %]</li>
+    [% END %]
+     </ul>
+  </div> <!-- alternate-titles -->
+[% END %]

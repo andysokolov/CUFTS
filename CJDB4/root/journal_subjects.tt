@@ -1,0 +1,11 @@
+[% SET journal_subjects = journal.subjects_rs %]
+[% IF journal_subjects.count > 0 %]
+  <div id="subjects" class="details">
+    <h3>Subjects</h3>
+    <ul>
+    [% WHILE ( subject = journal_subjects.next ) %]
+      <li><a href="">[% subject.subject | html %]</a></li>
+    [% END %]
+    </ul>
+  </div> <!-- subjects -->
+[% END %]

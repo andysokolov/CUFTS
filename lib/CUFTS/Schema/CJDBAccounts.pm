@@ -71,8 +71,8 @@ __PACKAGE__->set_primary_key('id');
 
 __PACKAGE__->belongs_to( site => 'CUFTS::Schema::Sites');
 
-__PACKAGE__->has_many( map_user_role => 'CUFTS::Schema::CJDBAccountsRoles' => 'account' );
-__PACKAGE__->many_to_many( roles => 'map_user_role', 'role');
+__PACKAGE__->has_many( accounts_roles => 'CUFTS::Schema::CJDBAccountsRoles' => 'account' );
+__PACKAGE__->many_to_many( roles => 'accounts_roles', 'role');
 
 # Returns a string mapping to the level of access granted to this account.  It
 # can be used to check what fields should be displayed to the user, what goes into

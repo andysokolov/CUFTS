@@ -1,0 +1,42 @@
+<div id="browse-form">
+
+<div id="browse-form-full" class="tabbable hidden-phone">
+  <ul class="nav nav-tabs" id="browse-form-tabs">
+    <li class="active"><a href="#title" data-toggle="tab">Title</a></li>
+    <li><a href="#subject" data-toggle="tab">Subject</a></li>
+    <li><a href="#association" data-toggle="tab">Association</a></li>
+    <li><a href="#tag" data-toggle="tab">Tag</a></li>
+    <li><a href="#issn" data-toggle="tab">ISSN</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane active" id="title">
+     <form method="get" name="browse" class="form-search" action="[% c.uri_for_site( c.controller.action_for('titles') ) %]">
+     <span class="highlight">Search titles: </span>
+     <select name="t">
+      <option value="ft" [% option_selected('t', 'ft') -%]>keyword</option>
+      <option value="startswith" [% option_selected('t', 'startswith') | html -%]>starts with</option>
+      <option value="exact" [% option_selected('t', 'exact') -%]>exact</option>
+     </select>
+     <div class="input-append"><input type="text" class="input-medium search-query" name="q" value="[% c.request.params.q | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">Search</button></div>
+     <input type="hidden" name="browse_field" value="title">
+     </form>
+    </div>
+
+    <div class="tab-pane" id="subject">...</div>
+    <div class="tab-pane" id="association">...</div>
+    <div class="tab-pane" id="tag">...</div>
+    <div class="tab-pane" id="issn">...</div>
+  </div>
+</div>
+
+<div id="browse-form-mobile" class="visible-phone">
+     <form method="get" name="browse" class="form-search" action="[% c.uri_for_site( c.controller.action_for('titles') ) %]">
+     <input type="hidden" name="browse_field" value="title">
+     <input type="hidden" name="t" value="ft">
+     <div class="input-append"><input type="text" class="input-medium search-query" name="q" value="[% c.request.params.q | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">Search Titles</button></div>
+     </form>
+</div>
+
+
+</div>

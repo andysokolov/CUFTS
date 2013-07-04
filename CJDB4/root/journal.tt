@@ -1,0 +1,21 @@
+[% PROCESS page_title.tt %]
+
+<div id="journal">
+
+  <div class="covers pull-right hidden-phone">
+   [%- FOREACH issn IN journal.issns -%]
+     <img src="http://syndetics.com/index.php?client=simonfu&issn=[% issn.issn %]/mc.jpg">
+   [%- END -%]
+  </div>
+
+  <div class="journal-container">
+    <h2>[% journal.title %]</h2>
+
+    [%- PROCESS journal_titles.tt -%]
+    [%- PROCESS journal_links.tt -%]
+    [%- PROCESS journal_subjects.tt -%]
+    [%- PROCESS journal_associations.tt -%]
+    [%- PROCESS journal_relations.tt -%]
+  </div>
+
+</div>
