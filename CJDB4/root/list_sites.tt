@@ -3,7 +3,7 @@
 The following sites are active in CUFTS and may have CJDB data available:
 <ul>
 [% WHILE (site = sites_rs.next) %]
- <li><a href="[% c.uri_for( c.controller('Root').action_for('indexy'), [ site.key ] ) | html %]">[% site.name | html %]</a></li>
+ <li><a href="[% c.uri_for( c.controller('Root').action_for('site_index'), [ site.key ] ) | html %]">[% site.name | html %]</a></li>
 [% END %]
 </ul>
 </div>

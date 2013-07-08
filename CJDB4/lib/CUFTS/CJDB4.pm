@@ -101,7 +101,7 @@ sub redirect_previous {
         $c->redirect($uri);
     }
     else {
-        $c->redirect( $c->uri_for_site( $c->controller('Root')->action_for('indexy') ) );
+        $c->redirect( $c->uri_for_site( $c->controller('Root')->action_for('site_index') ) );
     }
 }
 

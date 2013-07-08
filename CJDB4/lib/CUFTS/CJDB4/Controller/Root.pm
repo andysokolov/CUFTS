@@ -37,23 +37,19 @@ sub site :Chained('/') :PathPart('') :CaptureArgs(1) {
     }
     $c->site($site);
 
+    $self->_cache_local_resources($c);
+
     $c->stash->{sandbox} = $c->session->{sandbox};
     my $box = $c->session->{sandbox} ? 'sandbox' : 'active';
 
     # Set up site specific CSS file if it exists
-
-    my $site_css =   '/sites/' . $site->id . "/static/css/${box}/cjdb.css";
-
+    my $site_css = '/sites/' . $site->id . "/static/css/${box}/cjdb.css";
     if ( -e ($c->config->{root} . $site_css) ) {
-        $c->stash->{site_css_file} = $c->uri_for( $site_css );
+        $c->stash->{site_css_uri} = $c->uri_for( $site_css );
     }
-
-    $self->_cache_local_resources($c);
 
     $c->stash->{additional_template_paths} = [ $c->config->{root} . '/sites/' . $site->id . "/${box}" ];
     $c->stash->{extra_js} = [];
-
-    return 1;
 }
 
 
@@ -104,7 +100,7 @@ sub _cache_local_resources {
 
 =head2 index
 
-The root page (/). Show a list of sites
+The root page (/). Show a list of sites.
 
 =cut
 
@@ -115,7 +111,14 @@ sub index :Path :Args(0) {
     $c->stash->{template} = 'list_sites.tt';
 }
 
-sub indexy :Chained('site') :PathPart('') Args(0) {
+=head2 index
+
+The root page for sites (/). Redirects to the browse page right now. Could be a forward to keep the URL cleaner?
+
+=cut
+
+
+sub site_index :Chained('site') :PathPart('') Args(0) {
     my ( $self, $c ) = @_;
 
     $c->redirect( $c->uri_for_site( $c->controller('Browse')->action_for('browse') ) );
