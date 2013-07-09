@@ -13,7 +13,7 @@
 
        [% start = (pager.current_page - 3) > 0 ? (pager.current_page - 3) : 1;
         FOREACH page IN [ start .. pager.last_page ] %]
-           [% LAST IF loop.count > 6 %]
+           [% LAST IF loop.count > 7 %]
            <li [% pager.current_page == page ? 'class="active"' : '' %]><a href="[% c.req.uri_with( page => page ) | html %]">[% page | format_number %]</a></li>
        [% END %]
 

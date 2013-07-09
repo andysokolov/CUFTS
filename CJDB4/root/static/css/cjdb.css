@@ -1,3 +1,18 @@
+ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+h1 {
+	font-family: DINWebBold, sans-serif;
+	font-size: 32px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+}
+
+
 header {
 	background: #326ead;
 	width: 100%;
@@ -29,26 +44,42 @@ select[name="t"] {
 	padding: 3px 9px;
 }
 
+#content {
+	padding-bottom: 20px;
+}
+
 /* Special fonts for the tabs */
 
 .nav {
 	font-size: 90%;
 	font-family: arial, sans-serif;
+	margin-bottom: 0;
 }
 
 /* Browse form */
 
 #browse-form  {
-	border-bottom: 1px solid #ddd;
 	margin-bottom: 15px;
+}
+
+#browse-form ul.nav {
+	margin-bottom: 0;
+}
+
+#browse-form div.tab-content {
+	border-bottom: 1px solid #ddd;
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	padding: 0px;
+}
+
+#browse-form form {
+	margin: 10px;
 }
 
 /* List sites */
 
 #list-sites ul {
-	margin: 0;
-	padding: 0;
-	list-style: none;
 }
 
 /* Cover images */
@@ -92,13 +123,20 @@ select[name="t"] {
 #journal .covers {
 	width: 150px;
 	height: 200px;
-	border: 1px solid #eee;
+	/*border: 1px solid #eee;*/
+}
+
+#journal h3 {
+	font-family: 'Proxima Nova Bold',"Calibri","Droid Sans","Helvetica Neue","Helvetica","Arial",sans-serif;
+	text-transform: uppercase;
+	font-weight: 700;
+	font-size: 21px;
+	line-height: 30px;
+	color: #444;
+	margin-bottom: 0;
 }
 
 #journal ul {
-	margin: 0;
-	padding: 0;
-	list-style-type: none;
 }
 
 #journal .covers img {
@@ -152,18 +190,29 @@ select[name="t"] {
 
 /* These are styling for the "journal-note" and "resource-note" fields. Typically shown after a link. */
 
-.availability dl.note {
+.links .dl-horizontal:after {
+	clear: left;
+}
+
+.links dl {
 	margin: 0;
+	clear: left;
 }
 
-.availability dl.note dt {
-	margin-left: 10px;
+.links dt {
 	text-align: left;
-	width: 120px;
+	width: 140px;
 }
 
-.availability dl.note dd {
-	margin-left: 130px;
+.links dd {
+	margin-left: 150px;
+}
+
+.links dl.note dt {
+	margin-left: 10px;
+}
+
+.links dd.journal-note, .links dd.resource-note {
 	color: #d11;
 }
 

@@ -1,6 +1,6 @@
 [% SET journal_associations = journal.associations_rs %]
 [% IF journal_associations.count > 0 %]
- <div id="associations" class="details">
+ <div id="associations" class="details hidden-phone">
  	 <h3>Associations</h3>
   <ul>
     [% WHILE ( association = journal_associations.next ) %]

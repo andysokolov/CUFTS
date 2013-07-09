@@ -1,4 +1,4 @@
-<div id="links">
+<div id="links" class="links">
   <!-- <h3>Availability</h3> -->
   <ul>
  [%- SET count = 0 -%]
@@ -15,20 +15,22 @@
    <li>
       <h4>[%- PROCESS journals_link_name.tt -%]</h4>
       <div class="links-details">
-        [% PROCESS coverage_string.tt %]<br />
+        <dl class="dl-horizontal">
+
+          [% PROCESS journal_coverages.tt %]
+
+          [%- IF link.journal_cjdb_note %]
+              <dt class="journal-note note">Journal Note:</dt>
+              <dd class="journal-note note">[% link.journal_cjdb_note | html %]</dd>
+          [%- END -%]
+
+          [%- IF resource.cjdb_note %]
+            <dt class="resource-note note">Resource Note:</dt>
+            <dd class="resource-note note">[% resource.cjdb_note | html %]</dd>
+          [%- END %]
+
+        </dl>
         <a class="btn btn-medium btn-primary" href="[% link.url | html %]">Access Journal</a>
-
-        [%- IF link.journal_cjdb_note %]
-          <dl class="journal-note note dl-horizontal">
-            <dt>Journal Note:</dt><dd>[% link.journal_cjdb_note | html %]</dd>
-          </dl>
-        [%- END -%]
-
-        [%- IF resource.cjdb_note %]
-         <dl class="resource-note note dl-horizontal">
-          <dt>Resource Note:</dt><dd>[% resource.cjdb_note | html %]</dd>
-         </dl>
-        [%- END %]
 
         [% PROCESS journal_license.tt %]
 

@@ -1,18 +1,22 @@
-<div id="links">
+<div class="links">
  [%- SET count = 0 -%]
   <ul>
  [%- FOREACH link IN rank_name_sort( journal.display_links, resources_display ) -%]
-
   [%- SET resource = undef -%]
   [%- IF link.link_type > 0 -%]
-   [% SET resource_id = link.resource;
+   [% SET resource_id = link.get_column('resource');
       SET resource = resources_display.$resource_id %]
    [% NEXT UNLESS resource %]
   [%- END -%]
   [%-SET count = count + 1 -%]
 
+  [% PROCESS coverage_strings.tt coverage_strings={} %]
+
    <li>
-    <a href="[% link.url | html %]">[%- PROCESS journals_link_name.tt -%]</a>: <br class="visible-phone" />[% PROCESS coverage_string.tt %]
+    <a href="[% link.url | html %]">[%- PROCESS journals_link_name.tt -%]</a>: <br class="visible-phone" />
+    [% IF coverage_strings.fulltext %]fulltext [% coverage_strings.fulltext %][% END %]
+    [% IF coverage_strings.print %]in print [% coverage_strings.print %][% END %]
+    [% IF coverage_strings.citation %]citations [% coverage_strings.citation %][% END %]
 
     [%- IF link.journal_cjdb_note %]
      <dl class="journal-note note dl-horizontal">

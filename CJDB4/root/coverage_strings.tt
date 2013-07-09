@@ -1,0 +1,33 @@
+[%- IF link.print_coverage -%]
+ [% SET coverage_strings.print = link.print_coverage %]
+[%- END -%]
+
+[%- SET fulltext_string = '' -%]
+
+[% IF link.fulltext_coverage %]
+  [% SET fulltext_string = link.fulltext_coverage %]
+[%- END -%]
+
+[%- IF link.embargo -%]
+    [%- IF fulltext_string -%]
+      [% SET fulltext_string = fulltext_string _ ' (' _ link.embargo _ ' embargo)' %]
+    [%- ELSE -%]
+      [% SET fulltext_string = fulltext_string _ link.embargo _ ' embargo' %]
+    [%- END -%]
+[%- END -%]
+
+[%- IF link.current %]
+    [%- IF fulltext_string -%]
+      [% SET fulltext_string = fulltext_string _ ' (' _ link.current _ ' only)' %]
+    [%- ELSE -%]
+      [% SET fulltext_string = fulltext_string _ 'latest ' _ link.current _ ' only' %]
+    [%- END -%]
+[% END -%]
+
+[% IF fulltext_string %]
+ [% SET coverage_strings.fulltext = fulltext_string %]
+[% END %]
+
+[%- IF link.citation_coverage AND current_site.cjdb_show_citations AND !(link.embargo OR link.fulltext_coverage OR link.current) %]
+  [% SET coverage_strings.citation = link.citation_coverage %]
+[% END -%]
