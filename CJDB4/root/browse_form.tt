@@ -36,7 +36,18 @@
       </form>
     </div>
 
-    <div class="tab-pane" id="association">...</div>
+    <div class="tab-pane" id="association">
+      <form method="get" name="browse" class="form-search" action="[% c.uri_for_site( c.controller.action_for('associations') ) %]">
+      <span class="highlight">Search associations: </span>
+      <select name="t">
+        <option value="ft" [% option_selected('t', 'ft') -%]>keyword</option>
+        <option value="startswith" [% option_selected('t', 'startswith') | html -%]>starts with</option>
+      </select>
+      <div class="input-append"><input type="text" class="input-medium search-query" name="q" value="[% c.request.params.q | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">Search</button></div>
+      <input type="hidden" name="browse_field" value="association">
+      </form>
+    </div>
+
     <div class="tab-pane" id="tag">...</div>
     <div class="tab-pane" id="issn">...</div>
   </div>

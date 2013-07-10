@@ -91,6 +91,11 @@ sub bylink :Chained('base') :PathPart('bylink') :Args(2) {
         $c->stash->{browse_type} = $type;
         $c->stash->{browse_value} = $c->model('CUFTS::CJDBSubjects')->find($id)->subject;
     }
+    elsif ( $type eq 'association' ) {
+        $c->stash->{journals_rs} = $journals_rs->search( { 'journals_associations.association' => $id }, { join => [ 'journals_associations' ] } );
+        $c->stash->{browse_type} = $type;
+        $c->stash->{browse_value} = $c->model('CUFTS::CJDBAssociations')->find($id)->association;
+    }
 
     $c->stash->{pager}    = $c->stash->{journals_rs}->pager;
     $c->stash->{template} = 'browse_journals.tt';
@@ -124,7 +129,7 @@ sub subjects :Chained('base') :PathPart('subjects') :Args(0) {
             join         => [ 'journals_subjects' ],
             page         => $page,
             rows         => $limit,
-            order_by     => 'subject',
+            order_by     => 'search_subject',
         }
     );
 
@@ -132,6 +137,45 @@ sub subjects :Chained('base') :PathPart('subjects') :Args(0) {
     $c->stash->{pager}           = $c->stash->{subjects_rs}->pager;
     $c->stash->{template}        = 'browse_subjects.tt';
 }
+
+sub associations :Chained('base') :PathPart('associations') :Args(0) {
+    my ($self, $c) = @_;
+
+    my $site_id     = $c->site->id;
+    my $search_term = $c->req->params->{q};
+    my $search_type = $c->req->params->{t};
+    my $page        = $c->req->params->{page} || 1;
+    my $limit       = $c->req->params->{per_page} || 50;    # TODO: Customize this per site
+
+    my $cleaned_search_term = CUFTS::CJDB::Util::strip_title( CUFTS::CJDB::Util::strip_articles($search_term) );
+
+    if ( $search_type eq 'startswith' ) {
+        $cleaned_search_term .= '%';
+    }
+    else {
+        $cleaned_search_term = '%' . $cleaned_search_term . '%';
+    }
+
+    $c->stash->{associations_rs} = $c->model('CUFTS::CJDBAssociations')->search(
+        {
+            site                    => $site_id,
+            'me.search_association' => { 'like' => $cleaned_search_term },
+        },
+        {
+            group_by     => [ 'me.id', 'me.search_association', 'me.association' ],
+            join         => [ 'journals_associations' ],
+            page         => $page,
+            rows         => $limit,
+            order_by     => 'search_association',
+        }
+    );
+
+    $c->stash->{browse_form_tab} = 'subject';
+    $c->stash->{pager}           = $c->stash->{associations_rs}->pager;
+    $c->stash->{template}        = 'browse_associations.tt';
+}
+
+
 
 =head1 AUTHOR
 
