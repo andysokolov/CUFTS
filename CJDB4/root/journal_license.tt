@@ -4,19 +4,14 @@
   [%- SET erm_license = erm_main.license -%]
   [% IF erm_license %]
 
-    [% SET erm_fields = [
-            ['ill',      'Allows ILL',               'allows_ill',             'ill_notes' ],
-            ['course', 'Allows coursepacks', 'allows_coursepacks', 'coursepack_notes' ],
-            ['email',  'Allows emails',      'allows_emails',      'emails_notes' ],
-         ]
-    %]
+  [%- PROCESS setup_license_fields.tt -%]
 
     <div class="license tabbable hidden-phone">
 
-        <ul class="nav nav-tabs" id="browse-form-tabs">
+        <ul class="nav nav-tabs">
             [% FOREACH field IN erm_fields %]
               [% SET flag_method = field.2 %]
-            <li[% IF loop.first %] class="active"[% END %]><a href="#[% field.0 %][% link_id %]" data-toggle="tab"><i class="icon-[% erm_license.$flag_method ? 'ok' : 'remove' %]"></i> [% field.1.upper | html %]</a></li>
+            <li[% IF loop.first %] class="active"[% END %]><a href="#[% field.0 %][% link_id %]" data-toggle="tab"><i class="icon-[% erm_license.$flag_method ? 'ok' : 'remove' %]"></i> [% field.1 | html %]</a></li>
           [% END %]
         </ul>
 
