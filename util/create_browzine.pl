@@ -78,7 +78,7 @@ sub load_site {
             }
         );
 
-        print $OUT join "\t", ( 'source', 'title', 'issn1', 'issn2', 'start', 'end' );
+        print $OUT join "\t", ( 'source', 'title', 'issn1', 'issn2', 'start', 'end', 'embargo_days', 'embargo_months' );
         print $OUT "\n";
 
         my $count = 0;
@@ -102,6 +102,8 @@ sub load_site {
                         exists($issns->[1]) ? $issns->[1] : undef,
                         defined($start) ? $start->ymd : undef,
                         defined($end)   ? $end->ymd   : undef,
+                        $local_journal->embargo_days_merged,
+                        $local_journal->embargo_months_merged,
             );
 
             print $OUT join "\t", @row;
