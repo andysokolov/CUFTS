@@ -112,3 +112,5 @@ libnet-z3950-zoom-perl install
 libclass-std-fast-perl install
 libsoap-wsdl-perl install
 libdatetime-format-pg-perl install
+libtemplate-plugin-number-format-perl install
+libdbix-class-encodedcolumn-perl install

@@ -100,3 +100,5 @@ libcatalyst-view-tt-perl install
 gettext install
 libnet-z3950-zoom-perl install
 libdatetime-format-pg-perl install
+libtemplate-plugin-number-format-perl install
+libdbix-class-encodedcolumn-perl install
