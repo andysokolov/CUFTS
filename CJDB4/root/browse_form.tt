@@ -11,7 +11,7 @@
 
   <div class="tab-content">
 
-    <div class="tab-pane active" id="title">
+    <div class="tab-pane [% (browse_form_tab == 'title' || !browse_form_tab.defined) ? 'active' : '' %]" id="title">
       <form method="get" name="browse" class="form-search" action="[% c.uri_for_site( c.controller.action_for('titles') ) %]">
         <span class="highlight">Search titles: </span>
         <select name="t">
@@ -24,7 +24,7 @@
       </form>
     </div>
 
-    <div class="tab-pane" id="subject">
+    <div class="tab-pane [% browse_form_tab == 'subject' ? 'active' : '' %]" id="subject">
       <form method="get" name="browse" class="form-search" action="[% c.uri_for_site( c.controller.action_for('subjects') ) %]">
       <span class="highlight">Search subjects: </span>
       <select name="t">
@@ -36,7 +36,7 @@
       </form>
     </div>
 
-    <div class="tab-pane" id="association">
+    <div class="tab-pane [% browse_form_tab == 'association' ? 'active' : '' %]" id="association">
       <form method="get" name="browse" class="form-search" action="[% c.uri_for_site( c.controller.action_for('associations') ) %]">
       <span class="highlight">Search associations: </span>
       <select name="t">
@@ -48,8 +48,22 @@
       </form>
     </div>
 
-    <div class="tab-pane" id="tag">...</div>
-    <div class="tab-pane" id="issn">...</div>
+    <div class="tab-pane [% browse_form_tab == 'tag' ? 'active' : '' %]" id="tag">
+      <form method="get" name="browse" class="form-search" action="[% c.uri_for_site( c.controller.action_for('tags') ) %]">
+      <span class="highlight">Search journals tagged: </span>
+      <div class="input-append"><input id="browse-tag-input" autocomplete="off" type="text" class="input-medium search-query" name="q" value="[% c.request.params.q | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">Search</button></div>
+      <input type="hidden" name="browse_field" value="tag">
+      </form>
+    </div>
+
+    <div class="tab-pane [% browse_form_tab == 'issn' ? 'active' : '' %]" id="issn">
+      <form method="get" name="browse" class="form-search" action="[% c.uri_for_site( c.controller.action_for('issns') ) %]">
+      <span class="highlight">Search journals by ISSN: </span>
+      <div class="input-append"><input id="browse-issn-input" autocomplete="off" type="text" class="input-medium search-query" name="q" value="[% c.request.params.q | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">Search</button></div>
+      <input type="hidden" name="browse_field" value="issn">
+      </form>
+    </div>
+
   </div>
 </div>
 

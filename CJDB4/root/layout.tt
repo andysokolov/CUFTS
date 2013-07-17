@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+[%- PROCESS site_setup.tt -%]
 <head>
- <title>CJDB</title>
+ <title>Electronic Journals</title>
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
  <link href="[% c.uri_for_static('bootstrap/css/bootstrap.min.css') | html %]" rel="stylesheet" media="screen" />
  <link href="[% c.uri_for_static('css/cjdb.css') | html %]" rel="stylesheet" media="screen" />
@@ -14,6 +15,7 @@
 [%- PROCESS page_header.tt -%]
 
 <div id="content" class="container-fluid">
+[%- PROCESS breadcrumbs.tt -%]
 [%- PROCESS nav_line.tt -%]
 [%- PROCESS errors.tt -%]
 [%- content -%]
@@ -21,7 +23,14 @@
 
 [% PROCESS page_footer.tt %]
 </div></div>
-
+<script>
+	var URLs = {
+		data: {
+			ISSN: '[% c.uri_for_site( c.controller('Data').action_for('issns') ) | html %]',
+			tag: '[% c.uri_for_site( c.controller('Data').action_for('tags') ) | html %]'
+		}
+	};
+</script>
 <script src="[% c.uri_for_static('bootstrap/js/bootstrap.min.js') | html %]"></script>
 <script src="[% c.uri_for_static('js/cjdb.js') | html %]"></script>
 </body>

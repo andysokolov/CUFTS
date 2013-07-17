@@ -1,0 +1,11 @@
+[% SET journal_issns = journal.issns_rs %]
+[% RETURN IF journal_issns.count == 0 %]
+
+<div id="issns" class="details">
+  <h3>ISSNs</h3>
+  <ul>
+    [% WHILE ( issn = journal_issns.next ) %]
+      <li>[% issn.issn_dashed | html %]</li>
+    [% END %]
+  </ul>
+</div> <!-- issns -->

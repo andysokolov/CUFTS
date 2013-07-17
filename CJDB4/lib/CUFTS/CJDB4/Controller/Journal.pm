@@ -63,6 +63,8 @@ sub view :Chained('base') :PathPart('') :Args(1) {
     # $c->stash->{tags} = CJDB::DB::Tags->get_tag_summary($journals_auth_id, $c->site->id, (defined($c->account) ? $c->account->id : undef));
     $c->stash->{journal} = $journal;
     $c->stash->{template} = 'journal.tt';
+
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Journal')->action_for('view') ), 'Journal' ];
 }
 
 

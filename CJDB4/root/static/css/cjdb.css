@@ -48,6 +48,12 @@ select[name="t"] {
 	padding-bottom: 20px;
 }
 
+ul.breadcrumb {
+	background: none;
+	padding: 0;
+	margin: 10px 0 5px 3px;
+}
+
 /* Special fonts for the tabs */
 
 .nav {
@@ -168,7 +174,7 @@ select[name="t"] {
 }
 
 #journal .license .tab-content {
-	height: 110px;
+	height: 70px;
 	overflow: auto;
 	margin-bottom: 6px;
 	border-bottom: 1px solid #ddd;

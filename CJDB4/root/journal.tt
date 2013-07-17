@@ -1,3 +1,5 @@
+[%- breadcrumbs.push([ c.uri_for_site( c.controller('Browse').action_for('browse') ) ), 'Journals' -%]
+[%- breadcrumbs.push(journal.title) -%]
 [% PROCESS page_title.tt %]
 
 <div id="journal">
@@ -15,6 +17,7 @@
     [%- PROCESS journal_titles.tt -%]
     [%- PROCESS journal_subjects.tt -%]
     [%- PROCESS journal_associations.tt -%]
+    [%- PROCESS journal_issns.tt -%]
     [%- PROCESS journal_relations.tt -%]
   </div>
 
