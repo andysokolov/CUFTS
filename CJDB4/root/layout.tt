@@ -7,8 +7,14 @@
  <link href="[% c.uri_for_static('bootstrap/css/bootstrap.min.css') | html %]" rel="stylesheet" media="screen" />
  <link href="[% c.uri_for_static('css/cjdb.css') | html %]" rel="stylesheet" media="screen" />
  <link href="[% c.uri_for_static('bootstrap/css/bootstrap-responsive.min.css') | html %]" rel="stylesheet" media="screen" />
-  [% IF site_css_uri %]<link href="[% site_css_uri | html %]" rel="stylesheet" media="screen" />[% END %]
  <script src="[% c.uri_for_static('js/jquery-1.10.1.min.js') | html %]"></script>
+ [% FOREACH css IN extra_css %]
+  <link href="[% css | html %]" rel="stylesheet" media="screen" />
+ [% END %]
+ [% FOREACH js IN extra_js %]
+  <script src="[% js | html %]"></script>
+ [% END %]
+ [% IF site_css_uri %]<link href="[% site_css_uri | html %]" rel="stylesheet" media="screen" />[% END %]
 </head>
 <body>
 <div id="page"><div id="page-container">

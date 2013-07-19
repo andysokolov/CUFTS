@@ -85,6 +85,14 @@ sub uri_for_static {
     return $c->uri_for( '/static', @_ );
 }
 
+# TODO: Make pay attention to sandbox flag
+sub uri_for_site_static {
+    my $c = shift;
+    my @path = ( '/sites', $c->site->id, 'static', 'active', @_ );
+
+    return $c->uri_for( @path );
+}
+
 sub redirect {
     my ( $c, $uri ) = @_;
 
