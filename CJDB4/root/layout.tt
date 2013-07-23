@@ -29,6 +29,7 @@
 
 [% PROCESS page_footer.tt %]
 </div></div>
+[% IF c.site %]
 <script>
 	var URLs = {
 		data: {
@@ -37,6 +38,7 @@
 		}
 	};
 </script>
+[% END %]
 <script src="[% c.uri_for_static('bootstrap/js/bootstrap.min.js') | html %]"></script>
 <script src="[% c.uri_for_static('js/cjdb.js') | html %]"></script>
 </body>
