@@ -127,9 +127,17 @@ ul.breadcrumb {
 /* Journal */
 
 #journal .covers {
-	width: 150px;
+	width: 15%;
+	max-width: 150px;
 	height: 200px;
+	position: relative;
 	/*border: 1px solid #eee;*/
+}
+
+#journal .covers img {
+	width: 100%;
+	position: absolute;
+	top: 0;
 }
 
 #journal h3 {
@@ -143,10 +151,6 @@ ul.breadcrumb {
 }
 
 #journal ul {
-}
-
-#journal .covers img {
-	position: absolute;
 }
 
 #journal #links .license {
@@ -170,7 +174,13 @@ ul.breadcrumb {
 }
 
 #journal .journal-container {
-	margin-right: 180px;
+	margin-right: 16%;
+}
+
+@media (max-width: 979px) {
+	#journal .journal-container {
+		margin-right: 10px;
+	}
 }
 
 #journal .license .tab-content {

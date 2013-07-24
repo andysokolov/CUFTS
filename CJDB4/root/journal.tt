@@ -2,9 +2,10 @@
 
 <div id="journal">
 
-  <div class="covers pull-right hidden-phone">
+  <div class="covers pull-right visible-desktop">
    [%- FOREACH issn IN journal.issns -%]
-     <img src="http://syndetics.com/index.php?client=simonfu&issn=[% issn.issn %]/mc.jpg">
+     <img class="cover-medium" src="http://syndetics.com/index.php?client=simonfu&issn=[% issn.issn %]/mc.jpg">
+     <!-- <img class="cover-small" src="http://syndetics.com/index.php?client=simonfu&issn=[% issn.issn %]/sc.jpg"> -->
    [%- END -%]
   </div>
 
