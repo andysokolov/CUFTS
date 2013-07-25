@@ -13,10 +13,13 @@
   [% PROCESS coverage_strings.tt coverage_strings={} %]
 
    <li>
-    <a href="[% link.url | html %]">[%- PROCESS journals_link_name.tt -%]</a>: <br class="visible-phone" />
-    [% IF coverage_strings.fulltext %][% coverage_strings.fulltext %][% END %]
-    [% IF coverage_strings.print %]in print [% coverage_strings.print %][% END %]
-    [% IF coverage_strings.citation %]citations [% coverage_strings.citation %][% END %]
+    <a href="[% link.url | html %]">
+    [%- IF coverage_strings.fulltext %][% coverage_strings.fulltext %][% END -%]
+    [%- IF coverage_strings.print %]in print [% coverage_strings.print %][% END -%]
+    [%- IF coverage_strings.citation %]citations [% coverage_strings.citation %][% END -%]
+    </a>
+    from <br class="visible-phone" />
+    [%- PROCESS journals_link_name.tt -%]
 
     [%- IF link.journal_cjdb_note %]
      <dl class="journal-note note dl-horizontal">

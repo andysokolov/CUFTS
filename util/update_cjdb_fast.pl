@@ -709,14 +709,17 @@ sub get_cufts_ft_coverage {
 
     if ( defined( $local_journal->ft_start_date ) || defined( $local_journal->ft_end_date ) ) {
         $ft_coverage = format_date_vol_iss( $local_journal->ft_start_date, $local_journal->vol_ft_start, $local_journal->iss_ft_start );
-        $ft_coverage .= ' - ';
+        $ft_coverage .= ' to ';
 
         my $end_date = $local_journal->ft_end_date;
         $end_date =~ s/\-//g;
 
-        if ( $end_date <= get_current_date() ) {
+        if ( hascontent($end_date) && $end_date <= get_current_date() ) {
             $ft_coverage .= format_date_vol_iss( $local_journal->ft_end_date, $local_journal->vol_ft_end, $local_journal->iss_ft_end );
         }
+        else {
+            $ft_coverage .= 'current';
+		}
     }
 
     return $ft_coverage;
@@ -729,14 +732,17 @@ sub get_cufts_cit_coverage {
 
     if ( defined( $local_journal->cit_start_date ) || defined( $local_journal->cit_end_date ) ) {
         $cit_coverage = format_date_vol_iss( $local_journal->cit_start_date, $local_journal->vol_cit_start, $local_journal->iss_cit_start );
-        $cit_coverage .= ' - ';
+        $cit_coverage .= ' to ';
 
         my $end_date = $local_journal->cit_end_date;
         $end_date =~ s/\-//g;
 
-        if ( $end_date <= get_current_date() ) {
+        if ( hascontent($end_date) && $end_date <= get_current_date() ) {
             $cit_coverage .= format_date_vol_iss( $local_journal->cit_end_date, $local_journal->vol_cit_end, $local_journal->iss_cit_end );
         }
+        else {
+            $cit_coverage .= 'current';
+		}
     }
 
     return $cit_coverage;
@@ -799,7 +805,7 @@ sub format_date_vol_iss {
     if ( hascontent($vol) || hascontent($iss) ) {
         $string .= ' (';
         $string .= "v.$vol" if hascontent($vol);
-        $string .= ' ' if hascontent($vol) && hascontent($iss);
+        $string .= ', ' if hascontent($vol) && hascontent($iss);
         $string .= "i.$iss" if hascontent($iss);
         $string .= ')';
     }
