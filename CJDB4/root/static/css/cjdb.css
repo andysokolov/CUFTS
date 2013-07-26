@@ -217,11 +217,14 @@ ul.breadcrumb {
 
 .links dt {
 	text-align: left;
-	width: 140px;
+	float: left;
+	width: auto;
 }
 
 .links dd {
-	margin-left: 150px;
+	float: left;
+	width: auto;
+	margin: 0 0 0 .3em;
 }
 
 .links dl.note dt {

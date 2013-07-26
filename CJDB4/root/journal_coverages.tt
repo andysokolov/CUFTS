@@ -1,16 +1,16 @@
 [% PROCESS coverage_strings.tt coverage_strings={} %]
 
 [%- IF coverage_strings.print -%]
-  <dt class="coverage print">Print Coverage:</dt>
+  <dt class="coverage print">Available in print from </dt>
   <dd>[% coverage_strings.print | html_line_break %]</dd>
 [%- END -%]
 
 [% IF coverage_strings.fulltext %]
-  <dt class="coverage fulltext">Fulltext Coverage:</dt>
+  <dt class="coverage fulltext">Fulltext from </dt>
   <dd class="coverage fulltext">[% fulltext_string | html %]</dd>
 [% END %]
 
 [%- IF coverage_strings.citation %]
-  <dt class="coverage citation">Citation Coverage:</dt>
+  <dt class="coverage citation">Citations and indexing from </dt>
   <dd class="coverage citation">[% link.citation_coverage | html %]</dd>
 [% END -%]
