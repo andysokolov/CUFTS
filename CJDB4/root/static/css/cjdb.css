@@ -83,6 +83,14 @@ ul.breadcrumb {
 	margin: 10px;
 }
 
+#browse-form-mobile form {
+	margin: 0;
+}
+
+#browse-form-mobile input.search-query {
+	position: relative;
+}
+
 /* List sites */
 
 #list-sites ul {
@@ -159,6 +167,12 @@ ul.breadcrumb {
 
 #journal #links h4 {
 	margin-bottom: 5px;
+	font-size: 18px;
+	margin-top: 15px;
+}
+
+#journal #links .journal-link-name {
+	font-style: italic;
 }
 
 #journal .coverage {

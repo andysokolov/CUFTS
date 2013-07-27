@@ -1,12 +1,13 @@
 <div class="a-to-z pagination">
  <ul class="hidden-phone">
-  <li><a href="[% c.uri_for_site( c.controller('Browse').action_for('titles') ) %]?t=startswith&page=1&q=%5B0-9%5D">0-9</a></li>
   [% FOREACH letter IN ['A' .. 'Z'] %]<li><a href="[% c.uri_for_site( c.controller('Browse').action_for('titles') ) %]?t=startswith&page=1&q=[% letter %]">[% letter %]</a></li>[% END %]
+  <li><a href="[% c.uri_for_site( c.controller('Browse').action_for('titles') ) %]?t=startswith&page=1&q=%5B0-9%5D">0-9</a></li>
  </ul>
- <form class="visible-phone" method="get" action="[% c.uri_for_site( c.controller('Browse').action_for('titles') ) %]"><input type="hidden" name="t" value="startswith" /><input type="hidden" name="browse_field" value="title">
-  <select name="q">
-   <option value="[0-9]">0-9</option>
+ <form class="visible-phone" method="get" action="[% c.uri_for_site( c.controller('Browse').action_for('titles') ) %]">Titles starting with:
+  <input type="hidden" name="t" value="startswith" /><input type="hidden" name="browse_field" value="title">
+  <select name="q" class="input-small">
    [% FOREACH letter IN ['A' .. 'Z'] %]<option value="[% letter %]">[% letter %]</option>[% END %]
+   <option value="[0-9]">0-9</option>
   </select>
  </form>
 </div>

@@ -1,7 +1,8 @@
 [% SET erm_fields = [
-        ['ill',         'Allows ILL',         'allows_ill',         'ill_notes' ],
-        ['course',      'Allows coursepacks', 'allows_coursepacks', 'coursepack_notes' ],
-        ['reserves',    'Allows reserves',    'allows_ereserves',   'ereserves_notes' ],
-        ['email',       'Allows emails',      'allows_emails',      'emails_notes' ],
+        ['reserves',    'Allows e-reserves',         'allows_ereserves',   'ereserves_notes' ],
+        ['course',      'Allows coursepacks',        'allows_coursepacks', 'coursepack_notes' ],
+        ['ill',         'Allows interlibrary loan',  'allows_ill',         'ill_notes' ],
      ]
 %]
+
+[%#         ['email',       'Allows emails',      'allows_emails',      'emails_notes' ], %]
