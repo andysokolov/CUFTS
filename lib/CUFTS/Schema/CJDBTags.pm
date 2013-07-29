@@ -50,4 +50,6 @@ __PACKAGE__->belongs_to( journal_auth => 'CUFTS::Schema::JournalsAuth', 'journal
 __PACKAGE__->belongs_to( account      => 'CUFTS::Schema::CJDBAccounts', 'account' );
 __PACKAGE__->belongs_to( site         => 'CUFTS::Schema::Sites',        'site' );
 
+__PACKAGE__->has_many( journals => 'CUFTS::Schema::CJDBJournals', 'journals_auth' );
+
 1;

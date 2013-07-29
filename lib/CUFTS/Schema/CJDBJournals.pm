@@ -3,7 +3,7 @@ package CUFTS::Schema::CJDBJournals;
 use strict;
 use base qw/DBIx::Class::Core/;
 
-__PACKAGE__->load_components(qw/ TimeStamp /);
+__PACKAGE__->load_components(qw/ TimeStamp Helper::ResultSet::SetOperations /);
 __PACKAGE__->table('cjdb_journals');
 __PACKAGE__->add_columns(
     id => {
@@ -78,6 +78,8 @@ __PACKAGE__->belongs_to( site => 'CUFTS::Schema::Sites' );
 __PACKAGE__->has_many( links     => 'CUFTS::Schema::CJDBLinks',      'journal' );
 __PACKAGE__->has_many( issns     => 'CUFTS::Schema::CJDBISSNs',      'journal' );
 __PACKAGE__->has_many( relations => 'CUFTS::Schema::CJDBRelations',  'journal' );
+
+__PACKAGE__->has_many( tags => 'CUFTS::Schema::CJDBTags', { 'foreign.journals_auth' => 'self.journals_auth' } );
 
 __PACKAGE__->has_many( journals_titles       => 'CUFTS::Schema::CJDBJournalsTitles',       'journal' );
 __PACKAGE__->has_many( journals_subjects     => 'CUFTS::Schema::CJDBJournalsSubjects',     'journal' );

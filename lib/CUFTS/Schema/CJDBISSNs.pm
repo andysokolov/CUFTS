@@ -36,6 +36,12 @@ __PACKAGE__->set_primary_key('id');
 __PACKAGE__->belongs_to( site    => 'CUFTS::Schema::Sites',        'site' );
 __PACKAGE__->belongs_to( journal => 'CUFTS::Schema::CJDBJournals', 'journal' );
 
+sub issn_dashed {
+    my $self = shift;
+    my $issn = $self->issn;
+    return substr($issn,0,4) . '-' . substr($issn,4,4);
+}
+
 # sub normalize_column_values {
 #     my ( $self, $values ) = @_;
 

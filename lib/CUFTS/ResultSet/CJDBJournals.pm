@@ -75,4 +75,72 @@ sub search_distinct_title_by_journal_main {
 }
 
 
+sub search_distinct_by_tags {
+    my ($self, $tags, $level, $site, $account, $viewing) = @_;
+
+    scalar(@$tags) == 0 and
+        return $self;
+
+    if ( ref($site) ne 'SCALAR' && $site->can('id') ) {
+        $site = $site->id;
+    }
+
+    my @rs_list;
+    foreach my $tag (@$tags) {
+        my %search;
+
+        if ( $viewing == 0 ) {
+            %search = ( 'tags.viewing' => 0 );
+            $search{'tags.account'} = $account if $account;
+        }
+        elsif ( $viewing == 1 ) {
+            %search = ( 'tags.viewing' => 1, 'tags.site' => $site );
+            $search{'tags.account'} = $account if $account;
+        }
+        elsif ( $viewing == 2 ) {
+            %search = ( 'tags.viewing' => 2, 'tags.site' => $site );
+            $search{'tags.account'} = $account if $account;
+        }
+        elsif ( $viewing == 3 ) {
+            %search = (
+                '-or' => [
+                    'tags.viewing' => 1,
+                    { 'tags.viewing' => 2, 'tags.site' => $site },
+                ]
+            );
+            if ( $account ) {
+                push @{$search{'-or'}}, { 'tags.viewing' => 0, 'tags.account' => $account };
+            }
+        }
+        elsif ( $viewing == 4 ) {
+            %search = (
+                'tags.site' => $site,
+                '-or' => [
+                    'tags.viewing' => 1,
+                    'tags.viewing' => 2,
+                ]
+            );
+        }
+
+        if ( $level ) {
+            $search{'tags.level'} = { '>=' => $level };
+        }
+
+        $search{'tags.tag'} = $tag;
+        $search{'me.site'}  = $site;
+        
+        my $rs = $self->search( \%search, { join => 'tags' } );
+        push @rs_list, $rs;
+    }
+
+    my $final_rs = pop @rs_list;
+    foreach my $rs ( @rs_list ) {
+        $final_rs = $final_rs->intersect( $rs );
+    }
+
+    return $final_rs;
+}
+
+
+
 1;
