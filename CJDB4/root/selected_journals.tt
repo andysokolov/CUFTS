@@ -1,0 +1,20 @@
+[% PROCESS selected_journals_data.tt %]
+
+[% SET sorted_keys = selected_journals_data.keys.sort %]
+[% SET midpoint = ((sorted_keys.size + 1) div 2) + 1%]
+
+<h3>Selected Journals</h3>
+
+<div id="selected-journals">
+<div class="selected-column-one"><ol>
+[% FOREACH key IN sorted_keys %]
+  [% IF loop.count == midpoint %]
+    </ol></div>
+    <div class="selected-column-two"><ol>
+  [% END %]
+
+  [% SET url_data = selected_journals_data.$key %]
+  <li><a href="[% c.uri_for_site( c.controller('Browse').action_for('tags'), { q => url_data } ) | html %]">[% key | html %]</a></li>
+[% END %]
+</ol></div>
+</div>

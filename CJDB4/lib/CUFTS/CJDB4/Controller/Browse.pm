@@ -274,6 +274,21 @@ sub issns :Chained('base') :PathPart('issns') :Args(0) {
     push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('issns') ), 'By ISSN' ];
 }
 
+sub selected_journals :Chained('base') :PathPart('selected_journals') Args(0) {
+    my ($self, $c) = @_;
+
+    $c->stash->{template} = 'selected_journals.tt';
+
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('selected_journals') ), 'Selected' ];
+}
+
+
+sub lcc :Chained('base') :PathPart('lcc') Args(0) {
+    my ($self, $c) = @_;
+
+    $c->stash->{template} = 'lcc_browse.tt';
+}
+
 
 
 =head1 AUTHOR

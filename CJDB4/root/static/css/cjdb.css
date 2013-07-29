@@ -258,3 +258,30 @@ ul.breadcrumb {
 .icon-remove {
 	background-image: url("../images/glyphicons-halflings-red.png");
 }
+
+/* Selected journals */
+
+#selected-journals ol {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#selected-journals li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#selected-journals .selected-column-one {
+	padding-right: 15px;
+	float: left;
+}
+
+#selected-journals .selected-column-two {
+	padding-right: 15px;
+	float: left;
+}
+
+
+
