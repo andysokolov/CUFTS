@@ -91,6 +91,10 @@ ul.breadcrumb {
 	position: relative;
 }
 
+#browse-form .subjects-also {
+	margin-left: 10px;
+}
+
 /* List sites */
 
 #list-sites ul {
