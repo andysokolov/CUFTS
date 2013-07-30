@@ -1,0 +1,65 @@
+[%- SET count1 = 0; SET count2 = 0; -%]
+<div id="lcc-browse">
+
+<h3>Journal Subjects</h3>
+
+<ol class="lcc-browse1">
+
+[% FOREACH subject1 IN subjects.keys.sort %]
+
+	[%- SET count1 = count1 + 1 -%]
+	[%- SET subclasses1 = subjects.$subject1.keys.size -%]
+	<li>
+
+  [% IF subclasses1 %]
+   	<a class="lcc-browse-trigger" data-group="1-[% count1 %]" href="#[% subject1 | html %]"><div class="trigger-content">+</div><div class="trigger-content" style="display: none;">-</div></a>
+  [% ELSE %]
+    <span> </span>
+  [% END %]
+
+  [% PROCESS make_link, subject = subject1 %]
+
+
+  [% IF subclasses1 %]
+
+    <ol id="group-1-[% count1 %]" class="lcc-browse2" style="display: none;">
+
+  	[%- SET count2 = count2 + 1 -%]
+    [% FOREACH subject2 IN subjects.$subject1.keys.sort %]
+
+    	[%- SET subclasses2 = subjects.$subject1.$subject2.keys.size -%]
+
+			<li>[% PROCESS make_link, subject = subject2 %]</li>
+
+			[% IF subclasses2 %]
+
+				<ol id="group-2-[% count2 %]" class="lcc-browse3">
+
+		    [% FOREACH subject3 IN subjects.$subject1.$subject2.keys.sort %]
+
+					<li>[% PROCESS make_link, subject = subject3 %]</li>
+
+        [% END %]
+
+        </ol>
+      [% END %]
+
+    [% END %]
+
+    </ol>
+  [% END %]
+
+	</li>
+
+[% END %]
+
+</div>
+
+[% BLOCK make_link %]
+  [% IF subject_info.$subject %]
+    <a href="[% c.uri_for_site( c.controller('Browse').action_for('bylink'), [ 'subject', subject_info.$subject.id ] ) | html %]">[% subject | html %]</a> : <span class="lcc-count">[% subject_info.$subject.count | html %] journals</span>
+  [% ELSE %]
+    [% subject | html %] : <span class="lcc-count">0 journals</span>
+  [% END %]
+[% END %]
+

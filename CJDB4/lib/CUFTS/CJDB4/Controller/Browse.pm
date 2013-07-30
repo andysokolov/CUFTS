@@ -286,7 +286,84 @@ sub selected_journals :Chained('base') :PathPart('selected_journals') Args(0) {
 sub lcc :Chained('base') :PathPart('lcc') Args(0) {
     my ($self, $c) = @_;
 
-    $c->stash->{template} = 'lcc_browse.tt';
+    # Set up stash early since we may exit out on a cache
+
+    $c->stash->{template}     = 'lcc_browse.tt';
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('lcc_browse') ), 'Subject Browse' ];
+
+    # Check for cached LCC data since it's moderately expensive to generate
+
+    my $cache_key = 'lcc-browse-cache-' . $c->site->id;
+
+    my $cached = $c->cache->get($cache_key);
+    if ( defined($cached) ) {
+        $c->stash->{subjects}     = $cached->{subjects};
+        $c->stash->{subject_info} = $cached->{subject_info};
+        return;
+    }
+
+    # Check if the site has any LCC Subjects loaded. If not, fall back to using
+    # the global LCC subject data.
+
+    my $subjects_rs;
+    if ( $c->model('CUFTS::CJDBLCCSubjects')->search({ site => $c->site->id })->count > 0 ) {
+        $subjects_rs = $c->model('CUFTS::CJDBLCCSubjects')->search({ site => $c->site->id });
+    }
+    else {
+        $subjects_rs = $c->model('CUFTS::CJDBLCCSubjects')->search({ site => undef });
+    }
+
+    # Build three level subject hierarchy
+
+    my %subject_hierarchy;
+    my @subjects;
+    while (my $subject = $subjects_rs->next) {
+        if (defined($subject->subject3) && $subject->subject3 ne '') {
+            $subject_hierarchy{$subject->subject1}->{$subject->subject2}->{$subject->subject3} = {};
+        } elsif (defined($subject->subject2) && $subject->subject2 ne '') {
+            exists($subject_hierarchy{$subject->subject1}->{$subject->subject2}) or
+                $subject_hierarchy{$subject->subject1}->{$subject->subject2} = {};
+        } elsif (defined($subject->subject1) && $subject->subject1 ne '') {
+            exists($subject_hierarchy{$subject->subject1}) or
+                $subject_hierarchy{$subject->subject1} = {};
+        }
+
+        push @subjects, grep { hascontent($_) } ( $subject->subject1, $subject->subject2, $subject->subject3 );
+    }
+
+    # Get counts and IDs for all subjects that exist for this site in their CJDB
+
+    my %subject_info;
+    foreach my $subject (@subjects) {
+
+        my $subject_count = $c->model('CUFTS::CJDBSubjects')->search(
+            {
+                site                => $c->site->id,
+                'me.search_subject' => CUFTS::CJDB::Util::strip_title( CUFTS::CJDB::Util::strip_articles( $subject ) ),
+            },
+            {
+                group_by     => [ 'me.id' ],
+                select       => [ 'me.id', { count => 'journals_subjects' } ],
+                as           => [ 'id', 'journal_count' ],
+                join         => [ 'journals_subjects' ],
+            }
+        )->first;
+
+        if ( $subject_count ) {
+            $subject_info{$subject}->{id}    = $subject_count->id;
+            $subject_info{$subject}->{count} = $subject_count->get_column('journal_count');
+        }
+    }
+
+    $c->cache->set($cache_key,
+        {
+            subjects     => \%subject_hierarchy,
+            subject_info => \%subject_info,
+        }
+    );
+
+    $c->stash->{subjects}     = \%subject_hierarchy;
+    $c->stash->{subject_info} = \%subject_info;
 }
 
 

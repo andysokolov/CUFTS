@@ -1,0 +1,193 @@
+[% USE url %]
+<div id="lcc-browse-content">
+<div class="lcc-browse1"><a href="#subject-group1" id="lcc-browse-group1-button" onClick="return simpleHideClick('lcc-browse-group1', 'lcc-browse2-group-visible', 'lcc-browse2-group-hidden', 'lcc-browse-group1-buttonimage', '[% image_dir %]plus.gif', '[% image_dir %]minus.gif')"><img name="lcc-browse-group1-buttonimage" src="[% image_dir %]plus.gif" /></a> <a href="[% url("$url_base/browse/journals?search_terms=Archaeology%2C%20Biography%20and%20Genealogy&browse_field=subject") %]">Archaeology, Biography and Genealogy</a></div>
+<div id="lcc-browse-group1" class="lcc-browse2-group-hidden">
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Archaeology&browse_field=subject") %]">Archaeology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Archives&browse_field=subject") %]">Archives</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Biography&browse_field=subject") %]">Biography</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Civilization&browse_field=subject") %]">Civilization</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Genealogy&browse_field=subject") %]">Genealogy</a></div>
+</div>
+<div class="lcc-browse1"><a href="#subject-group2" id="lcc-browse-group2-button" onClick="return simpleHideClick('lcc-browse-group2', 'lcc-browse2-group-visible', 'lcc-browse2-group-hidden', 'lcc-browse-group2-buttonimage', '[% image_dir %]plus.gif', '[% image_dir %]minus.gif')"><img name="lcc-browse-group2-buttonimage" src="[% image_dir %]plus.gif" /></a> <a href="[% url("$url_base/browse/journals?search_terms=Business%20and%20Economics&browse_field=subject") %]">Business and Economics</a></div>
+<div id="lcc-browse-group2" class="lcc-browse2-group-hidden">
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Accounting&browse_field=subject") %]">Accounting</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Advertising&browse_field=subject") %]">Advertising</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Business&browse_field=subject") %]">Business</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Commerce&browse_field=subject") %]">Commerce</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Economic%20History&browse_field=subject") %]">Economic History</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Economics&browse_field=subject") %]">Economics</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Finance&browse_field=subject") %]">Finance</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Labour&browse_field=subject") %]">Labour</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Management&browse_field=subject") %]">Management</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Marketing&browse_field=subject") %]">Marketing</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Statistics&browse_field=subject") %]">Statistics</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Theory%20and%20Demography&browse_field=subject") %]">Theory and Demography</a></div>
+</div>
+<div class="lcc-browse1"><a href="#subject-group3" id="lcc-browse-group3-button" onClick="return simpleHideClick('lcc-browse-group3', 'lcc-browse2-group-visible', 'lcc-browse2-group-hidden', 'lcc-browse-group3-buttonimage', '[% image_dir %]plus.gif', '[% image_dir %]minus.gif')"><img name="lcc-browse-group3-buttonimage" src="[% image_dir %]plus.gif" /></a> <a href="[% url("$url_base/browse/journals?search_terms=Education&browse_field=subject") %]">Education</a></div>
+<div id="lcc-browse-group3" class="lcc-browse2-group-hidden">
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Administration&browse_field=subject") %]">Administration</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Educational%20Psychology&browse_field=subject") %]">Educational Psychology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Educational%20Theory%20and%20Practice&browse_field=subject") %]">Educational Theory and Practice</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Higher%20Education&browse_field=subject") %]">Higher Education</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=History%20of%20Education&browse_field=subject") %]">History of Education</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Pre-school%20-%20Grade%2012&browse_field=subject") %]">Pre-school - Grade 12</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Teacher%20Education&browse_field=subject") %]">Teacher Education</a></div>
+</div>
+<div class="lcc-browse1"><a href="#subject-group4" id="lcc-browse-group4-button" onClick="return simpleHideClick('lcc-browse-group4', 'lcc-browse2-group-visible', 'lcc-browse2-group-hidden', 'lcc-browse-group4-buttonimage', '[% image_dir %]plus.gif', '[% image_dir %]minus.gif')"><img name="lcc-browse-group4-buttonimage" src="[% image_dir %]plus.gif" /></a> <a href="[% url("$url_base/browse/journals?search_terms=Fine%20Arts%20and%20Music&browse_field=subject") %]">Fine Arts and Music</a></div>
+<div id="lcc-browse-group4" class="lcc-browse2-group-hidden">
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Architecture&browse_field=subject") %]">Architecture</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Dance&browse_field=subject") %]">Dance</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Decorative%20Arts%2C%20Applied%20Arts%2C%20Crafts&browse_field=subject") %]">Decorative Arts, Applied Arts, Crafts</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Fine%20Arts&browse_field=subject") %]">Fine Arts</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Graphic%20Arts%2C%20Drawing%2C%20Design&browse_field=subject") %]">Graphic Arts, Drawing, Design</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Music&browse_field=subject") %]">Music</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Painting&browse_field=subject") %]">Painting</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Sculpture&browse_field=subject") %]">Sculpture</a></div>
+</div>
+<div class="lcc-browse1"><a href="#subject-group5" id="lcc-browse-group5-button" onClick="return simpleHideClick('lcc-browse-group5', 'lcc-browse2-group-visible', 'lcc-browse2-group-hidden', 'lcc-browse-group5-buttonimage', '[% image_dir %]plus.gif', '[% image_dir %]minus.gif')"><img name="lcc-browse-group5-buttonimage" src="[% image_dir %]plus.gif" /></a> <a href="[% url("$url_base/browse/journals?search_terms=Health%20Science&browse_field=subject") %]">Health Science</a></div>
+<div id="lcc-browse-group5" class="lcc-browse2-group-hidden">
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Dentistry&browse_field=subject") %]">Dentistry</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Dermatology&browse_field=subject") %]">Dermatology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Disease&browse_field=subject") %]">Disease</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Geriatrics&browse_field=subject") %]">Geriatrics</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Gynecology&browse_field=subject") %]">Gynecology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Homeopathy&browse_field=subject") %]">Homeopathy</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Medicine&browse_field=subject") %]">Medicine</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Neurology&browse_field=subject") %]">Neurology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Nursing&browse_field=subject") %]">Nursing</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Obstetrics&browse_field=subject") %]">Obstetrics</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Pathology&browse_field=subject") %]">Pathology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Pediatrics&browse_field=subject") %]">Pediatrics</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Pharmacology&browse_field=subject") %]">Pharmacology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Pharmacy&browse_field=subject") %]">Pharmacy</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Psychiatry&browse_field=subject") %]">Psychiatry</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Radiology&browse_field=subject") %]">Radiology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Surgery&browse_field=subject") %]">Surgery</a></div>
+</div>
+<div class="lcc-browse1"><a href="#subject-group6" id="lcc-browse-group6-button" onClick="return simpleHideClick('lcc-browse-group6', 'lcc-browse2-group-visible', 'lcc-browse2-group-hidden', 'lcc-browse-group6-buttonimage', '[% image_dir %]plus.gif', '[% image_dir %]minus.gif')"><img name="lcc-browse-group6-buttonimage" src="[% image_dir %]plus.gif" /></a> <a href="[% url("$url_base/browse/journals?search_terms=History&browse_field=subject") %]">History</a></div>
+<div id="lcc-browse-group6" class="lcc-browse2-group-hidden">
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=African&browse_field=subject") %]">African</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Asian&browse_field=subject") %]">Asian</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Canadian&browse_field=subject") %]">Canadian</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Early%20North%20American&browse_field=subject") %]">Early North American</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=European&browse_field=subject") %]">European</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Latin%20American&browse_field=subject") %]">Latin American</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Oceania&browse_field=subject") %]">Oceania</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=United%20States&browse_field=subject") %]">United States</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=World%20History&browse_field=subject") %]">World History</a></div>
+</div>
+<div class="lcc-browse1"><a href="#subject-group7" id="lcc-browse-group7-button" onClick="return simpleHideClick('lcc-browse-group7', 'lcc-browse2-group-visible', 'lcc-browse2-group-hidden', 'lcc-browse-group7-buttonimage', '[% image_dir %]plus.gif', '[% image_dir %]minus.gif')"><img name="lcc-browse-group7-buttonimage" src="[% image_dir %]plus.gif" /></a> <a href="[% url("$url_base/browse/journals?search_terms=Language%20and%20Literature&browse_field=subject") %]">Language and Literature</a></div>
+<div id="lcc-browse-group7" class="lcc-browse2-group-hidden">
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=American%20Literature&browse_field=subject") %]">American Literature</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Broadcasting&browse_field=subject") %]">Broadcasting</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Canadian%20Literature&browse_field=subject") %]">Canadian Literature</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Communication%2C%20Mass%20media&browse_field=subject") %]">Communication, Mass media</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Drama&browse_field=subject") %]">Drama</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=English%20Literature&browse_field=subject") %]">English Literature</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Fiction&browse_field=subject") %]">Fiction</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Journalism&browse_field=subject") %]">Journalism</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Juvenile&browse_field=subject") %]">Juvenile</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Languages&browse_field=subject") %]">Languages</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Linguistics&browse_field=subject") %]">Linguistics</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Literary%20History&browse_field=subject") %]">Literary History</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Literature&browse_field=subject") %]">Literature</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Motion%20Pictures&browse_field=subject") %]">Motion Pictures</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Poetry&browse_field=subject") %]">Poetry</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Theatre&browse_field=subject") %]">Theatre</a></div>
+</div>
+<div class="lcc-browse1"><a href="#subject-group8" id="lcc-browse-group8-button" onClick="return simpleHideClick('lcc-browse-group8', 'lcc-browse2-group-visible', 'lcc-browse2-group-hidden', 'lcc-browse-group8-buttonimage', '[% image_dir %]plus.gif', '[% image_dir %]minus.gif')"><img name="lcc-browse-group8-buttonimage" src="[% image_dir %]plus.gif" /></a> <a href="[% url("$url_base/browse/journals?search_terms=Philosophy%20and%20Religion&browse_field=subject") %]">Philosophy and Religion</a></div>
+<div id="lcc-browse-group8" class="lcc-browse2-group-hidden">
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Buddhism&browse_field=subject") %]">Buddhism</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Christianity&browse_field=subject") %]">Christianity</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Islam&browse_field=subject") %]">Islam</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Judaism&browse_field=subject") %]">Judaism</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Logic&browse_field=subject") %]">Logic</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Philosophy&browse_field=subject") %]">Philosophy</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Religion&browse_field=subject") %]">Religion</a></div>
+</div>
+<div class="lcc-browse1"><a href="#subject-group9" id="lcc-browse-group9-button" onClick="return simpleHideClick('lcc-browse-group9', 'lcc-browse2-group-visible', 'lcc-browse2-group-hidden', 'lcc-browse-group9-buttonimage', '[% image_dir %]plus.gif', '[% image_dir %]minus.gif')"><img name="lcc-browse-group9-buttonimage" src="[% image_dir %]plus.gif" /></a> <a href="[% url("$url_base/browse/journals?search_terms=Political%20Science%2C%20Government%20and%20Law&browse_field=subject") %]">Political Science, Government and Law</a></div>
+<div id="lcc-browse-group9" class="lcc-browse2-group-hidden">
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Armed%20Forces&browse_field=subject") %]">Armed Forces</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Canada&browse_field=subject") %]">Canada</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Canada%20-%20Cities&browse_field=subject") %]">Canada - Cities</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Canada%20-%20Provinces%2C%20Territories&browse_field=subject") %]">Canada - Provinces, Territories</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Emigration%20and%20Immigration&browse_field=subject") %]">Emigration and Immigration</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=International%20Law&browse_field=subject") %]">International Law</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Law&browse_field=subject") %]">Law</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Local%20Government&browse_field=subject") %]">Local Government</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Other%20Jurisdictions&browse_field=subject") %]">Other Jurisdictions</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Political%20Institutions%20and%20Public%20Administration&browse_field=subject") %]">Political Institutions and Public Administration</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Political%20Institutions%20and%20Public%20Administration%20-%20Canada&browse_field=subject") %]">Political Institutions and Public Administration - Canada</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Political%20Institutions%20and%20Public%20Administration%20-%20Europe&browse_field=subject") %]">Political Institutions and Public Administration - Europe</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Political%20Institutions%20and%20Public%20Administration%20-%20International&browse_field=subject") %]">Political Institutions and Public Administration - International</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Political%20Institutions%20and%20Public%20Administration%20-%20Latin%20America&browse_field=subject") %]">Political Institutions and Public Administration - Latin America</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Political%20Institutions%20and%20Public%20Administration%20-%20United%20States&browse_field=subject") %]">Political Institutions and Public Administration - United States</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Political%20Science&browse_field=subject") %]">Political Science</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Political%20Theory&browse_field=subject") %]">Political Theory</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=United%20States%20-%20Cities&browse_field=subject") %]">United States - Cities</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=United%20States%20-%20Federal&browse_field=subject") %]">United States - Federal</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=United%20States%20-%20States%20and%20Territories&browse_field=subject") %]">United States - States and Territories</a></div>
+</div>
+<div class="lcc-browse1"><a href="#subject-group10" id="lcc-browse-group10-button" onClick="return simpleHideClick('lcc-browse-group10', 'lcc-browse2-group-visible', 'lcc-browse2-group-hidden', 'lcc-browse-group10-buttonimage', '[% image_dir %]plus.gif', '[% image_dir %]minus.gif')"><img name="lcc-browse-group10-buttonimage" src="[% image_dir %]plus.gif" /></a> <a href="[% url("$url_base/browse/journals?search_terms=Science%2C%20Technology%20and%20Agriculture&browse_field=subject") %]">Science, Technology and Agriculture</a></div>
+<div id="lcc-browse-group10" class="lcc-browse2-group-hidden">
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Agriculture&browse_field=subject") %]">Agriculture</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Anatomy&browse_field=subject") %]">Anatomy</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Animals&browse_field=subject") %]">Animals</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Astronomy&browse_field=subject") %]">Astronomy</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Biology&browse_field=subject") %]">Biology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Botany&browse_field=subject") %]">Botany</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Chemistry&browse_field=subject") %]">Chemistry</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Computing%20Science&browse_field=subject") %]">Computing Science</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Engineering&browse_field=subject") %]">Engineering</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Fisheries&browse_field=subject") %]">Fisheries</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Forestry&browse_field=subject") %]">Forestry</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Geology&browse_field=subject") %]">Geology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Manufacturing&browse_field=subject") %]">Manufacturing</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Mathematics&browse_field=subject") %]">Mathematics</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Meteorology&browse_field=subject") %]">Meteorology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Microbiology&browse_field=subject") %]">Microbiology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Microbiology%20and%20Immunology&browse_field=subject") %]">Microbiology and Immunology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Molecular%20Biology%20and%20Biochemistry&browse_field=subject") %]">Molecular Biology and Biochemistry</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Natural%20History&browse_field=subject") %]">Natural History</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Parasitology&browse_field=subject") %]">Parasitology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Pathology&browse_field=subject") %]">Pathology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Photography&browse_field=subject") %]">Photography</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Physics&browse_field=subject") %]">Physics</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Physiology&browse_field=subject") %]">Physiology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Plants&browse_field=subject") %]">Plants</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Resouce%20and%20Environmental%20Management&browse_field=subject") %]">Resouce and Environmental Management</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Science&browse_field=subject") %]">Science</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Technology&browse_field=subject") %]">Technology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Veterinary%20Medicine&browse_field=subject") %]">Veterinary Medicine</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Zoology&browse_field=subject") %]">Zoology</a></div>
+</div>
+<div class="lcc-browse1"><a href="#subject-group11" id="lcc-browse-group11-button" onClick="return simpleHideClick('lcc-browse-group11', 'lcc-browse2-group-visible', 'lcc-browse2-group-hidden', 'lcc-browse-group11-buttonimage', '[% image_dir %]plus.gif', '[% image_dir %]minus.gif')"><img name="lcc-browse-group11-buttonimage" src="[% image_dir %]plus.gif" /></a> <a href="[% url("$url_base/browse/journals?search_terms=Social%20Sciences&browse_field=subject") %]">Social Sciences</a></div>
+<div id="lcc-browse-group11" class="lcc-browse2-group-hidden">
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Anthropology&browse_field=subject") %]">Anthropology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Criminology&browse_field=subject") %]">Criminology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Enviromental%20Science&browse_field=subject") %]">Enviromental Science</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Ethics&browse_field=subject") %]">Ethics</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=First%20Nations&browse_field=subject") %]">First Nations</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Geography&browse_field=subject") %]">Geography</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Gerontology&browse_field=subject") %]">Gerontology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Human%20Geography&browse_field=subject") %]">Human Geography</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Kinesiology&browse_field=subject") %]">Kinesiology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Oceanography&browse_field=subject") %]">Oceanography</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Physical%20Geography&browse_field=subject") %]">Physical Geography</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Psychology&browse_field=subject") %]">Psychology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Social%20Work&browse_field=subject") %]">Social Work</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Sociology&browse_field=subject") %]">Sociology</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Women%20Studies&browse_field=subject") %]">Women Studies</a></div>
+</div>
+<div class="lcc-browse1"><a href="#subject-group12" id="lcc-browse-group12-button" onClick="return simpleHideClick('lcc-browse-group12', 'lcc-browse2-group-visible', 'lcc-browse2-group-hidden', 'lcc-browse-group12-buttonimage', '[% image_dir %]plus.gif', '[% image_dir %]minus.gif')"><img name="lcc-browse-group12-buttonimage" src="[% image_dir %]plus.gif" /></a> <a href="[% url("$url_base/browse/journals?search_terms=Writing%2C%20Publishing%2C%20Libraries&browse_field=subject") %]">Writing, Publishing, Libraries</a></div>
+<div id="lcc-browse-group12" class="lcc-browse2-group-hidden">
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Bibliography&browse_field=subject") %]">Bibliography</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Copyright&browse_field=subject") %]">Copyright</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Humanities&browse_field=subject") %]">Humanities</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Libraries&browse_field=subject") %]">Libraries</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Museums&browse_field=subject") %]">Museums</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Printing&browse_field=subject") %]">Printing</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Publishing&browse_field=subject") %]">Publishing</a></div>
+<div class="lcc-browse2"><a href="[% url("$url_base/browse/journals?search_terms=Writing&browse_field=subject") %]">Writing</a></div>
+</div>
+</div>

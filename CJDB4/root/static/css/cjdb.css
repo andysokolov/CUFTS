@@ -283,5 +283,27 @@ ul.breadcrumb {
 	float: left;
 }
 
+/* LCC Subject Browse */
 
+#lcc-browse>ol {
+	margin: 0;
+	padding: 0;
+}
 
+#lcc-browse a.lcc-browse-trigger {
+	font-size: 18px;
+	float: left;
+}
+
+#lcc-browse ol, #lcc-browse li {
+	list-style: none;
+}
+
+.lcc-count {
+	color: #888;
+	font-style: italic;
+}
+
+#lcc-browse .trigger-content {
+	width: 1em;
+}
