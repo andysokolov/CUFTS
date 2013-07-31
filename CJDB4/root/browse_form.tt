@@ -34,7 +34,7 @@
       <div class="input-append"><input type="text" class="input-medium search-query" name="q" value="[% c.request.params.q | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">Search</button></div>
       <input type="hidden" name="browse_field" value="subject">
       </form>
-      <div class="subjects-also">See also: <a href="[% c.uri_for_site( c.controller('Browse').action_for('selected_journals') ) %]">Selected Journals</a> and <a href="[% c.uri_for_site( c.controller('Browse').action_for('lcc') ) %]">Automatically Assigned Subjects</a></div>
+      <div class="subjects-also">See also: <a href="[% c.uri_for_site( c.controller('Browse').action_for('selected_journals') ) %]">Librarian-chosen journals by subject</a> and <a href="[% c.uri_for_site( c.controller('Browse').action_for('lcc') ) %]">Automatically Assigned Subjects</a></div>
     </div>
 
     <div class="tab-pane [% browse_form_tab == 'association' ? 'active' : '' %]" id="association">
