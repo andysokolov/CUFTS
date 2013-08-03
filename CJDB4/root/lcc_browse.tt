@@ -57,7 +57,7 @@
 
 [% BLOCK make_link %]
   [% IF subject_info.$subject %]
-    <a href="[% c.uri_for_site( c.controller('Browse').action_for('bylink'), [ 'subject', subject_info.$subject.id ] ) | html %]">[% subject | html %]</a> : <span class="lcc-count">[% subject_info.$subject.count | html %] journals</span>
+    <a href="[% c.uri_for_site( c.controller('Browse').action_for('bylink'), 'subject', subject_info.$subject.id ) | html %]">[% subject | html %]</a> : <span class="lcc-count">[% subject_info.$subject.count | html %] journals</span>
   [% ELSE %]
     [% subject | html %] : <span class="lcc-count">0 journals</span>
   [% END %]

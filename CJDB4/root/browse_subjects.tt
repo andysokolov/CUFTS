@@ -7,7 +7,7 @@
 [% WHILE ( subject = subjects_rs.next ) %]
 
 <div class="subject">
-	<a href="[% c.uri_for_site( c.controller('Browse').action_for('bylink'), [ 'subject', subject.id ] ) %]">[% subject.subject | html %]</a>
+	<a href="[% c.uri_for_site( c.controller('Browse').action_for('bylink'), 'subject', subject.id ) %]">[% subject.subject | html %]</a>
 </div>
 
 [% END %]

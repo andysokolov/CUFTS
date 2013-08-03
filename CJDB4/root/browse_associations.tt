@@ -7,7 +7,7 @@
 [% WHILE ( association = associations_rs.next ) %]
 
 <div class="association">
-	<a href="[% c.uri_for_site( c.controller('Browse').action_for('bylink'), [ 'association', association.id ] ) %]">[% association.association | html %]</a>
+	<a href="[% c.uri_for_site( c.controller('Browse').action_for('bylink'), 'association', association.id ) %]">[% association.association | html %]</a>
 </div>
 
 [% END %]
