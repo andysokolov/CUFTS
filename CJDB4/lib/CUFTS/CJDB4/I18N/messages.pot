@@ -1,0 +1,276 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: root/static/js/jquery-1.10.1.min.js:6
+msgid "<div>"
+msgstr ""
+
+#: root/static/js/jquery-1.10.1.min.js:6
+msgid "<iframe frameborder='0' width='0' height='0'/>"
+msgstr ""
+
+#: root/journal_links.tt:31
+msgid "Access Journal"
+msgstr ""
+
+#: root/journal_titles.tt:11
+msgid "Alternate Titles"
+msgstr ""
+
+#: root/browse_form.tt:7
+msgid "Association"
+msgstr ""
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:184 root/journal_associations.tt:4
+msgid "Associations"
+msgstr ""
+
+#: root/browse_form.tt:37
+msgid "Automatically Assigned Subjects"
+msgstr ""
+
+#: root/journal_links.tt:2
+msgid "Availability"
+msgstr ""
+
+#: root/browse_journals.tt:5
+msgid "Browsing journals by"
+msgstr ""
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:103
+msgid "By Association"
+msgstr ""
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:274
+msgid "By ISSN"
+msgstr ""
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:96
+msgid "By Subject"
+msgstr ""
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:231
+msgid "By Tag"
+msgstr ""
+
+#: root/page_footer.tt:2
+msgid "CJDB Electronic Journals 4.0 *ALPHA*"
+msgstr ""
+
+#: root/list_sites.tt:2
+msgid "CJDB Sites"
+msgstr ""
+
+#: root/page_header.tt:1
+msgid "CUFTS: CJDB"
+msgstr ""
+
+#: root/journal_coverages.tt:12
+msgid "Citations and indexing"
+msgstr ""
+
+#: root/journal_relations.tt:12
+msgid "Continued by"
+msgstr ""
+
+#: root/journal_relations.tt:10
+msgid "Continues"
+msgstr ""
+
+#: root/layout.tt:5
+msgid "Electronic Journals"
+msgstr ""
+
+#: root/journal_coverages.tt:8
+msgid "Fulltext"
+msgstr ""
+
+#: root/browse_form.tt:9
+msgid "ISSN"
+msgstr ""
+
+#: root/journal_issns.tt:5
+msgid "ISSNs"
+msgstr ""
+
+#: root/journal_coverages.tt:4
+msgid "In print"
+msgstr ""
+
+#: root/browse_journals_links.tt:26 root/journal_links.tt:21
+msgid "Journal Note"
+msgstr ""
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:29 lib/CUFTS/CJDB4/Controller/Journal.pm:67 root/page_title.tt:1
+msgid "Journals"
+msgstr ""
+
+#: root/page_header.tt:4
+msgid "Language"
+msgstr ""
+
+#: root/browse_form.tt:37
+msgid "Librarian-chosen journals by subject"
+msgstr ""
+
+#: root/browse_journals_links.tt:39 root/journal_links.tt:41
+msgid "No links are currently available for this journal"
+msgstr ""
+
+#: root/journal_relations.tt:14
+msgid "Other edition"
+msgstr ""
+
+#: root/pager.tt:5
+msgid "Page"
+msgstr ""
+
+#: root/journal_relations.tt:4
+msgid "Related Journals"
+msgstr ""
+
+#: root/browse_journals_links.tt:32 root/journal_links.tt:26
+msgid "Resource Note"
+msgstr ""
+
+#: root/browse_form.tt:22 root/browse_form.tt:34 root/browse_form.tt:47 root/browse_form.tt:55 root/browse_form.tt:63
+msgid "Search"
+msgstr ""
+
+#: root/browse_form.tt:75
+msgid "Search Titles"
+msgstr ""
+
+#: root/browse_form.tt:42
+msgid "Search associations"
+msgstr ""
+
+#: root/browse_form.tt:62
+msgid "Search journals by ISSN"
+msgstr ""
+
+#: root/browse_form.tt:54
+msgid "Search journals tagged"
+msgstr ""
+
+#: root/browse_form.tt:29
+msgid "Search subjects"
+msgstr ""
+
+#: root/browse_form.tt:16
+msgid "Search titles"
+msgstr ""
+
+#: root/browse_form.tt:37
+msgid "See also"
+msgstr ""
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:282
+msgid "Selected"
+msgstr ""
+
+#: root/selected_journals.tt:6
+msgid "Selected Journals"
+msgstr ""
+
+#: root/browse_form.tt:6
+msgid "Subject"
+msgstr ""
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:292
+msgid "Subject Browse"
+msgstr ""
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:145 root/journal_subjects.tt:4
+msgid "Subjects"
+msgstr ""
+
+#: root/browse_form.tt:8
+msgid "Tag"
+msgstr ""
+
+#: root/list_sites.tt:3
+msgid "The following sites are active in CUFTS and may have CJDB data available"
+msgstr ""
+
+#: root/browse_form.tt:5
+msgid "Title"
+msgstr ""
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:72
+msgid "Titles"
+msgstr ""
+
+#: root/azmenu.tt:6
+msgid "Titles starting with"
+msgstr ""
+
+#: root/pager.tt:5
+msgid "Total results"
+msgstr ""
+
+#: root/journals_link_name.tt:9
+msgid "Unrecognized link type"
+msgstr ""
+
+#: root/browse_form.tt:37
+msgid "and"
+msgstr ""
+
+#: root/browse_journals.tt:5
+msgid "association"
+msgstr ""
+
+#: root/browse_journals_links.tt:19
+msgid "citations"
+msgstr ""
+
+#: root/browse_journals_links.tt:17 root/journal_coverages.tt:8
+msgid "current"
+msgstr ""
+
+#: root/browse_form.tt:20
+msgid "exact"
+msgstr ""
+
+#: root/browse_journals_links.tt:21 root/journal_links.tt:16
+msgid "from"
+msgstr ""
+
+#: root/static/js/jquery-1.10.1.min.js:6
+msgid "head"
+msgstr ""
+
+#: root/browse_journals_links.tt:18
+msgid "in print"
+msgstr ""
+
+#: root/browse_form.tt:18 root/browse_form.tt:31 root/browse_form.tt:44
+msgid "keyword"
+msgstr ""
+
+#: root/pager.tt:5
+msgid "of"
+msgstr ""
+
+#: root/browse_form.tt:19 root/browse_form.tt:32 root/browse_form.tt:45
+msgid "starts with"
+msgstr ""
+
+#: root/browse_journals_links.tt:17 root/journal_coverages.tt:8
+msgid "to"
+msgstr ""

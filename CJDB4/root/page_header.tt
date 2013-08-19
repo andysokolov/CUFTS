@@ -1,1 +1,10 @@
-<header><h1>CUFTS: CJDB</h1></header>
+<header><h1>[% c.loc( 'CUFTS: CJDB' ) %]</h1></header>
+<div class="langform">
+<form method="post" name="langForm" action="">
+	[% c.loc( 'Language' ) %]: <select id="set_lang" name="set_lang" onChange="document.langForm.submit();">
+		[% FOREACH language IN languages_list.keys.sort %]
+			<option value="[% language %]"[% IF selected_lang==language %] selected[% END %]>[% languages_list.$language %]</option>
+		[% END %]
+	</select>
+</form>
+</div>

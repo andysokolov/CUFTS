@@ -3,7 +3,7 @@
   [% FOREACH letter IN ['A' .. 'Z'] %]<li><a href="[% c.uri_for_site( c.controller('Browse').action_for('titles') ) %]?t=startswith&page=1&q=[% letter %]">[% letter %]</a></li>[% END %]
   <li><a href="[% c.uri_for_site( c.controller('Browse').action_for('titles') ) %]?t=startswith&page=1&q=%5B0-9%5D">0-9</a></li>
  </ul>
- <form class="visible-phone" method="get" action="[% c.uri_for_site( c.controller('Browse').action_for('titles') ) %]">Titles starting with:
+ <form class="visible-phone" method="get" action="[% c.uri_for_site( c.controller('Browse').action_for('titles') ) %]">[% c.loc( 'Titles starting with' ) %]:
   <input type="hidden" name="t" value="startswith" /><input type="hidden" name="browse_field" value="title">
   <select name="q" class="input-small">
    [% FOREACH letter IN ['A' .. 'Z'] %]<option value="[% letter %]">[% letter %]</option>[% END %]

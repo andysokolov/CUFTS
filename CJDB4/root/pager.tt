@@ -2,7 +2,7 @@
 [%- RETURN IF !pager || pager.total_entries == 0 -%]
 <div class="pagination">
     <div class="counter">
-        Page [% pager.current_page | format_number %] of [% pager.last_page | format_number %]. Total results: [% pager.total_entries | format_number%]
+        [% c.loc( 'Page' ) %] [% pager.current_page | format_number %] [% c.loc( 'of' ) %] [% pager.last_page | format_number %]. [% c.loc( 'Total results' ) %]: [% pager.total_entries | format_number%]
     </div>
     [% IF pager.last_page > 1 %]
     <ul class="hidden-phone">

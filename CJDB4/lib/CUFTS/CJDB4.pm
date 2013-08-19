@@ -25,7 +25,10 @@ use Catalyst qw/
     Session::State::Cookie
     Cache
     Cache::Store::FastMmap
+    I18N
+    Unicode::Encoding
 /;
+
 
 extends 'Catalyst';
 
@@ -52,6 +55,7 @@ has 'account' => (
 
 __PACKAGE__->config(
     name => 'CUFTS::CJDB4',
+    encoding => 'UTF-8',
     # Disable deprecated behavior needed by old applications
     disable_component_resolution_regex_fallback => 1,
     enable_catalyst_header => 1, # Send X-Catalyst header

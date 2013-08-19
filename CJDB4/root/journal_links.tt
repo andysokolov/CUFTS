@@ -1,5 +1,5 @@
 <div id="links" class="links">
-  <!-- <h3>Availability</h3> -->
+  <!-- <h3>[% c.loc( 'Availability' ) %]</h3> -->
   <ul>
  [%- SET count = 0 -%]
  [%- FOREACH link IN rank_name_sort( journal.display_links, resources_display ) -%]
@@ -13,22 +13,22 @@
   [%- SET count = count + 1 -%]
 
    <li>
-      <h4>[% PROCESS journal_coverages.tt %] from <span class="journal-link-name">[%- PROCESS journals_link_name.tt -%]</span></h4>
+      <h4>[% PROCESS journal_coverages.tt %] [% c.loc( 'from' ) %] <span class="journal-link-name">[%- PROCESS journals_link_name.tt -%]</span></h4>
       <div class="links-details">
         <dl class="dl-horizontal">
 
           [%- IF link.journal_cjdb_note %]
-              <dt class="journal-note note">Journal Note:</dt>
+              <dt class="journal-note note">[% c.loc( 'Journal Note' ) %]:</dt>
               <dd class="journal-note note">[% link.journal_cjdb_note | html %]</dd>
           [%- END -%]
 
           [%- IF resource.cjdb_note %]
-            <dt class="resource-note note">Resource Note:</dt>
+            <dt class="resource-note note">[% c.loc( 'Resource Note' ) %]:</dt>
             <dd class="resource-note note">[% resource.cjdb_note | html %]</dd>
           [%- END %]
 
         </dl>
-        <a class="btn btn-medium btn-primary" href="[% link.url | html %]">Access Journal</a>
+        <a class="btn btn-medium btn-primary" href="[% link.url | html %]">[% c.loc( 'Access Journal' ) %]</a>
 
         [% PROCESS journal_license.tt %]
 
@@ -38,7 +38,7 @@
  [%- END -%]
   </ul>
  [% IF count == 0 %]
-  No links are currently available for this journal.
+  [% c.loc( 'No links are currently available for this journal' ) %].
  [% END %]
 </div>
 

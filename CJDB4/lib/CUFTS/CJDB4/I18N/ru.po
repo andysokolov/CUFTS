@@ -1,0 +1,268 @@
+# Russian translations for CJDB package
+# Русские переводы для пакета CJDB.
+# Copyright (C) 2013 THE CJDB'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the CJDB package.
+# root <a.sokolov@spbu.ru>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: CJDB 4\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2013-08-17 23:06+0400\n"
+"Last-Translator: Andrey Sokolov <a.sokolov@spbu.ru>\n"
+"Language-Team: Russian\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: root/journal_links.tt:31
+msgid "Access Journal"
+msgstr "доступ к журналу"
+
+#: root/journal_titles.tt:11
+msgid "Alternate Titles"
+msgstr "Другие названия"
+
+#: root/browse_form.tt:7
+msgid "Association"
+msgstr "Ресурс"
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:184 root/journal_associations.tt:4
+msgid "Associations"
+msgstr "Ресурсы"
+
+#: root/browse_form.tt:37
+msgid "Automatically Assigned Subjects"
+msgstr "Автоматически присвоенные предметные области"
+
+#: root/journal_links.tt:2
+msgid "Availability"
+msgstr "Журнал доступен"
+
+#: root/browse_journals.tt:5
+msgid "Browsing journals by"
+msgstr "Просмотр журналов"
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:103
+msgid "By Association"
+msgstr "Ресурс"
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:274
+msgid "By ISSN"
+msgstr "ISSN"
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:96
+msgid "By Subject"
+msgstr "Предметная область"
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:231
+msgid "By Tag"
+msgstr "Закладка"
+
+#: root/page_footer.tt:2
+msgid "CJDB Electronic Journals 4.0 *ALPHA*"
+msgstr ""
+
+#: root/list_sites.tt:2
+msgid "CJDB Sites"
+msgstr ""
+
+#: root/page_header.tt:1
+msgid "CUFTS: CJDB"
+msgstr ""
+
+#: root/journal_coverages.tt:12
+msgid "Citations and indexing"
+msgstr ""
+
+#: root/journal_relations.tt:12
+msgid "Continued by"
+msgstr "Продолжается под"
+
+#: root/journal_relations.tt:10
+msgid "Continues"
+msgstr "Продолжает"
+
+#: root/layout.tt:5
+msgid "Electronic Journals"
+msgstr "Электронные журналы"
+
+#: root/journal_coverages.tt:8
+msgid "Fulltext"
+msgstr "Полный текст с"
+
+#: root/browse_form.tt:9
+msgid "ISSN"
+msgstr "ISSN"
+
+#: root/journal_issns.tt:5
+msgid "ISSNs"
+msgstr "ISSN"
+
+#: root/journal_coverages.tt:4
+msgid "In print"
+msgstr ""
+
+#: root/browse_journals_links.tt:26 root/journal_links.tt:21
+msgid "Journal Note"
+msgstr "Примечание к журналу"
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:29
+#: lib/CUFTS/CJDB4/Controller/Journal.pm:67 root/page_title.tt:1
+msgid "Journals"
+msgstr "Журналы"
+
+#: root/page_header.tt:4
+msgid "Language"
+msgstr "Язык"
+
+#: root/browse_form.tt:37
+msgid "Librarian-chosen journals by subject"
+msgstr "Предметные области определенные библиотекарем"
+
+#: root/browse_journals_links.tt:39 root/journal_links.tt:41
+msgid "No links are currently available for this journal"
+msgstr "В настоящее время нет доступных ссылок для данного журнала"
+
+#: root/journal_relations.tt:14
+msgid "Other edition"
+msgstr "Другие издания"
+
+#: root/pager.tt:5
+msgid "Page"
+msgstr "Страница"
+
+#: root/journal_relations.tt:4
+msgid "Related Journals"
+msgstr "Связанные названия"
+
+#: root/browse_journals_links.tt:32 root/journal_links.tt:26
+msgid "Resource Note"
+msgstr "Примечание к ресурсу"
+
+#: root/browse_form.tt:22 root/browse_form.tt:34 root/browse_form.tt:47
+#: root/browse_form.tt:55 root/browse_form.tt:63
+msgid "Search"
+msgstr "Поиск"
+
+#: root/browse_form.tt:75
+msgid "Search Titles"
+msgstr "Поиск названия"
+
+#: root/browse_form.tt:42
+msgid "Search associations"
+msgstr "Название ресурса"
+
+#: root/browse_form.tt:62
+msgid "Search journals by ISSN"
+msgstr "ISSN журнала"
+
+#: root/browse_form.tt:54
+msgid "Search journals tagged"
+msgstr "Закладка"
+
+#: root/browse_form.tt:29
+msgid "Search subjects"
+msgstr "Предметная область"
+
+#: root/browse_form.tt:16
+msgid "Search titles"
+msgstr "Название журнала"
+
+#: root/browse_form.tt:37
+msgid "See also"
+msgstr "Дополнительно"
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:282
+msgid "Selected"
+msgstr ""
+
+#: root/selected_journals.tt:6
+msgid "Selected Journals"
+msgstr ""
+
+#: root/browse_form.tt:6
+msgid "Subject"
+msgstr "Предмет"
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:292
+msgid "Subject Browse"
+msgstr "Предметные рубрики"
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:145 root/journal_subjects.tt:4
+msgid "Subjects"
+msgstr "Предметные рубрики"
+
+#: root/browse_form.tt:8
+msgid "Tag"
+msgstr "Закладка"
+
+#: root/list_sites.tt:3
+msgid "The following sites are active in CUFTS and may have CJDB data available"
+msgstr "Список действующих сайтов"
+
+#: root/browse_form.tt:5
+msgid "Title"
+msgstr "Название"
+
+#: lib/CUFTS/CJDB4/Controller/Browse.pm:72
+msgid "Titles"
+msgstr "Названия"
+
+#: root/azmenu.tt:6
+msgid "Titles starting with"
+msgstr "Название начинается с"
+
+#: root/pager.tt:5
+msgid "Total results"
+msgstr "Найдено названий"
+
+#: root/journals_link_name.tt:9
+msgid "Unrecognized link type"
+msgstr ""
+
+#: root/browse_form.tt:37
+msgid "and"
+msgstr "и"
+
+#: root/browse_journals.tt:5
+msgid "association"
+msgstr "ресурса"
+
+#: root/browse_journals_links.tt:19
+msgid "citations"
+msgstr ""
+
+#: root/browse_journals_links.tt:17 root/journal_coverages.tt:8
+msgid "current"
+msgstr "настоящее время"
+
+#: root/browse_form.tt:20
+msgid "exact"
+msgstr "совпадает с"
+
+#: root/browse_journals_links.tt:21 root/journal_links.tt:16
+msgid "from"
+msgstr "на ресурсе"
+
+#: root/browse_journals_links.tt:18
+msgid "in print"
+msgstr ""
+
+#: root/browse_form.tt:18 root/browse_form.tt:31 root/browse_form.tt:44
+msgid "keyword"
+msgstr "ключевые слова"
+
+#: root/pager.tt:5
+msgid "of"
+msgstr "из"
+
+#: root/browse_form.tt:19 root/browse_form.tt:32 root/browse_form.tt:45
+msgid "starts with"
+msgstr "начинается с"
+
+#: root/browse_journals_links.tt:17 root/journal_coverages.tt:8
+msgid "to"
+msgstr "по"

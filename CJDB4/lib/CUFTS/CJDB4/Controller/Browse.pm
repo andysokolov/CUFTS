@@ -26,7 +26,7 @@ Catalyst Controller.
 sub base :Chained('../site') :PathPart('browse') :CaptureArgs(0) {
     my ( $self, $c ) = @_;
 
-    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('browse') ), 'Journals' ];
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('browse') ), $c->loc('Journals') ];
 }
 
 
@@ -69,7 +69,7 @@ sub titles :Chained('base') :PathPart('titles') :Args(0) {
     $c->stash->{pager}           = $c->stash->{journals_rs}->pager;
     $c->stash->{template}        = 'browse_journals.tt';
 
-    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('titles') ), 'Titles' ];
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('titles') ), $c->loc('Titles') ];
 }
 
 sub bylink :Chained('base') :PathPart('bylink') :Args(2) {
@@ -93,14 +93,14 @@ sub bylink :Chained('base') :PathPart('bylink') :Args(2) {
         $c->stash->{journals_rs} = $journals_rs->search( { 'journals_subjects.subject' => $id }, { join => [ 'journals_subjects' ] } );
         $c->stash->{browse_type} = $type;
         $c->stash->{browse_value} = $c->model('CUFTS::CJDBSubjects')->find($id)->subject;
-        push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('bylink'), [ $type, $id ] ), 'By Subject' ];
+        push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('bylink'), [ $type, $id ] ), $c->loc('By Subject') ];
 
     }
     elsif ( $type eq 'association' ) {
         $c->stash->{journals_rs} = $journals_rs->search( { 'journals_associations.association' => $id }, { join => [ 'journals_associations' ] } );
         $c->stash->{browse_type} = $type;
         $c->stash->{browse_value} = $c->model('CUFTS::CJDBAssociations')->find($id)->association;
-        push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('bylink'), [ $type, $id ] ), 'By Association' ];
+        push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('bylink'), [ $type, $id ] ), $c->loc('By Association') ];
     }
 
     $c->stash->{pager}    = $c->stash->{journals_rs}->pager;
@@ -142,7 +142,7 @@ sub subjects :Chained('base') :PathPart('subjects') :Args(0) {
     $c->stash->{browse_form_tab} = 'subject';
     $c->stash->{pager}           = $c->stash->{subjects_rs}->pager;
     $c->stash->{template}        = 'browse_subjects.tt';
-    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('subjects') ), 'Subjects' ];
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('subjects') ), $c->loc('Subjects') ];
 }
 
 sub associations :Chained('base') :PathPart('associations') :Args(0) {
@@ -181,7 +181,7 @@ sub associations :Chained('base') :PathPart('associations') :Args(0) {
     $c->stash->{pager}           = $c->stash->{associations_rs}->pager;
     $c->stash->{template}        = 'browse_associations.tt';
 
-    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('associations') ), 'Associations' ];
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('associations') ), $c->loc('Associations') ];
 }
 
 
@@ -228,7 +228,7 @@ sub tags :Chained('base') :PathPart('tags') :Args(0) {
     $c->stash->{browse_form_tab} = 'tag';
     $c->stash->{template}        = 'browse_journals.tt';
 
-    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('tags') ), 'By Tag' ];
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('tags') ), $c->loc('By Tag') ];
 }
 
 sub issns :Chained('base') :PathPart('issns') :Args(0) {
@@ -271,7 +271,7 @@ sub issns :Chained('base') :PathPart('issns') :Args(0) {
     $c->stash->{browse_form_tab} = 'issn';
     $c->stash->{template}        = 'browse_journals.tt';
 
-    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('issns') ), 'By ISSN' ];
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('issns') ), $c->loc('By ISSN') ];
 }
 
 sub selected_journals :Chained('base') :PathPart('selected_journals') Args(0) {
@@ -279,7 +279,7 @@ sub selected_journals :Chained('base') :PathPart('selected_journals') Args(0) {
 
     $c->stash->{template} = 'selected_journals.tt';
 
-    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('selected_journals') ), 'Selected' ];
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('selected_journals') ), $c->loc('Selected') ];
 }
 
 
@@ -289,7 +289,7 @@ sub lcc :Chained('base') :PathPart('lcc') Args(0) {
     # Set up stash early since we may exit out on a cache
 
     $c->stash->{template}     = 'lcc_browse.tt';
-    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('lcc_browse') ), 'Subject Browse' ];
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('lcc_browse') ), $c->loc('Subject Browse') ];
 
     # Check for cached LCC data since it's moderately expensive to generate
 

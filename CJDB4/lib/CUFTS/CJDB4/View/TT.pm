@@ -6,6 +6,7 @@ extends 'Catalyst::View::TT';
 
 __PACKAGE__->config(
     TEMPLATE_EXTENSION => '.tt',
+    ENCODING => 'utf-8',
     render_die => 1,
     expose_methods => [qw( option_selected rank_name_sort )],
 );

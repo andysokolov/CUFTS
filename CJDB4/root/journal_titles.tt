@@ -8,7 +8,7 @@
 
 [% IF final_titles.size > 0 %]
   <div id="alternate-titles" class="details">
-    <h3>Alternate Titles</h3>
+    <h3>[% c.loc( 'Alternate Titles' ) %]</h3>
     <ul>
     [% FOREACH title IN final_titles %]
       <li>[% title | html %]</li>

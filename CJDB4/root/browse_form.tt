@@ -2,65 +2,65 @@
 
 <div id="browse-form-full" class="tabbable hidden-phone">
   <ul class="nav nav-tabs" id="browse-form-tabs">
-    <li [% (browse_form_tab == 'title' || !browse_form_tab.defined) ? 'class="active"' : '' %]><a href="#title" data-toggle="tab">Title</a></li>
-    <li [% browse_form_tab == 'subject'     ? 'class="active"' : '' %]><a href="#subject" data-toggle="tab">Subject</a></li>
-    <li [% browse_form_tab == 'association' ? 'class="active"' : '' %]><a href="#association" data-toggle="tab">Association</a></li>
-    <li [% browse_form_tab == 'tag'         ? 'class="active"' : '' %]><a href="#tag" data-toggle="tab">Tag</a></li>
-    <li [% browse_form_tab == 'issn'        ? 'class="active"' : '' %]><a href="#issn" data-toggle="tab">ISSN</a></li>
+    <li [% (browse_form_tab == 'title' || !browse_form_tab.defined) ? 'class="active"' : '' %]><a href="#title" data-toggle="tab">[% c.loc( 'Title' ) %]</a></li>
+    <li [% browse_form_tab == 'subject'     ? 'class="active"' : '' %]><a href="#subject" data-toggle="tab">[% c.loc( 'Subject' ) %]</a></li>
+    <li [% browse_form_tab == 'association' ? 'class="active"' : '' %]><a href="#association" data-toggle="tab">[% c.loc( 'Association' ) %]</a></li>
+    <li [% browse_form_tab == 'tag'         ? 'class="active"' : '' %]><a href="#tag" data-toggle="tab">[% c.loc( 'Tag' ) %]</a></li>
+    <li [% browse_form_tab == 'issn'        ? 'class="active"' : '' %]><a href="#issn" data-toggle="tab">[% c.loc( 'ISSN' ) %]</a></li>
   </ul>
 
   <div class="tab-content">
 
     <div class="tab-pane [% (browse_form_tab == 'title' || !browse_form_tab.defined) ? 'active' : '' %]" id="title">
       <form method="get" name="browse" class="form-search" action="[% c.uri_for_site( c.controller.action_for('titles') ) %]">
-        <span class="highlight">Search titles: </span>
+        <span class="highlight">[% c.loc( 'Search titles' ) %]: </span>
         <select name="t">
-          <option value="ft" [% option_selected('t', 'ft') -%]>keyword</option>
-          <option value="startswith" [% option_selected('t', 'startswith') | html -%]>starts with</option>
-          <option value="exact" [% option_selected('t', 'exact') -%]>exact</option>
+          <option value="ft" [% option_selected('t', 'ft') -%]>[% c.loc( 'keyword' ) %]</option>
+          <option value="startswith" [% option_selected('t', 'startswith') | html -%]>[% c.loc( 'starts with' ) %]</option>
+          <option value="exact" [% option_selected('t', 'exact') -%]>[% c.loc( 'exact' ) %]</option>
         </select>
-        <div class="input-append"><input type="text" class="input-medium search-query" name="q" value="[% c.request.params.q | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">Search</button></div>
+        <div class="input-append"><input type="text" class="input-medium search-query" name="q" value="[% c.request.params.q | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">[% c.loc( 'Search' ) %]</button></div>
         <input type="hidden" name="browse_field" value="title">
       </form>
     </div>
 
     <div class="tab-pane [% browse_form_tab == 'subject' ? 'active' : '' %]" id="subject">
       <form method="get" name="browse" class="form-search" action="[% c.uri_for_site( c.controller.action_for('subjects') ) %]">
-      <span class="highlight">Search subjects: </span>
+      <span class="highlight">[% c.loc( 'Search subjects' ) %]: </span>
       <select name="t">
-        <option value="ft" [% option_selected('t', 'ft') -%]>keyword</option>
-        <option value="startswith" [% option_selected('t', 'startswith') | html -%]>starts with</option>
+        <option value="ft" [% option_selected('t', 'ft') -%]>[% c.loc( 'keyword' ) %]</option>
+        <option value="startswith" [% option_selected('t', 'startswith') | html -%]>[% c.loc( 'starts with' ) %]</option>
       </select>
-      <div class="input-append"><input type="text" class="input-medium search-query" name="q" value="[% c.request.params.q | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">Search</button></div>
+      <div class="input-append"><input type="text" class="input-medium search-query" name="q" value="[% c.request.params.q | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">[% c.loc( 'Search' ) %]</button></div>
       <input type="hidden" name="browse_field" value="subject">
       </form>
-      <div class="subjects-also">See also: <a href="[% c.uri_for_site( c.controller('Browse').action_for('selected_journals') ) %]">Librarian-chosen journals by subject</a> and <a href="[% c.uri_for_site( c.controller('Browse').action_for('lcc') ) %]">Automatically Assigned Subjects</a></div>
+      <div class="subjects-also">[% c.loc( 'See also' ) %]: <a href="[% c.uri_for_site( c.controller('Browse').action_for('selected_journals') ) %]">[% c.loc( 'Librarian-chosen journals by subject' ) %]</a> [% c.loc( 'and' ) %] <a href="[% c.uri_for_site( c.controller('Browse').action_for('lcc') ) %]">[% c.loc( 'Automatically Assigned Subjects' ) %]</a></div>
     </div>
 
     <div class="tab-pane [% browse_form_tab == 'association' ? 'active' : '' %]" id="association">
       <form method="get" name="browse" class="form-search" action="[% c.uri_for_site( c.controller.action_for('associations') ) %]">
-      <span class="highlight">Search associations: </span>
+      <span class="highlight">[% c.loc( 'Search associations' ) %]: </span>
       <select name="t">
-        <option value="ft" [% option_selected('t', 'ft') -%]>keyword</option>
-        <option value="startswith" [% option_selected('t', 'startswith') | html -%]>starts with</option>
+        <option value="ft" [% option_selected('t', 'ft') -%]>[% c.loc( 'keyword' ) %]</option>
+        <option value="startswith" [% option_selected('t', 'startswith') | html -%]>[% c.loc( 'starts with' ) %]</option>
       </select>
-      <div class="input-append"><input type="text" class="input-medium search-query" name="q" value="[% c.request.params.q | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">Search</button></div>
+      <div class="input-append"><input type="text" class="input-medium search-query" name="q" value="[% c.request.params.q | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">[% c.loc( 'Search' ) %]</button></div>
       <input type="hidden" name="browse_field" value="association">
       </form>
     </div>
 
     <div class="tab-pane [% browse_form_tab == 'tag' ? 'active' : '' %]" id="tag">
       <form method="get" name="browse" class="form-search" action="[% c.uri_for_site( c.controller.action_for('tags') ) %]">
-      <span class="highlight">Search journals tagged: </span>
-      <div class="input-append"><input id="browse-tag-input" autocomplete="off" type="text" class="input-medium search-query" name="q" value="[% c.request.params.q | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">Search</button></div>
+      <span class="highlight">[% c.loc( 'Search journals tagged' ) %]: </span>
+      <div class="input-append"><input id="browse-tag-input" autocomplete="off" type="text" class="input-medium search-query" name="q" value="[% c.request.params.q | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">[% c.loc( 'Search' ) %]</button></div>
       <input type="hidden" name="browse_field" value="tag">
       </form>
     </div>
 
     <div class="tab-pane [% browse_form_tab == 'issn' ? 'active' : '' %]" id="issn">
       <form method="get" name="browse" class="form-search" action="[% c.uri_for_site( c.controller.action_for('issns') ) %]">
-      <span class="highlight">Search journals by ISSN: </span>
-      <div class="input-append"><input id="browse-issn-input" autocomplete="off" type="text" class="input-medium search-query" name="q" value="[% c.request.params.q | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">Search</button></div>
+      <span class="highlight">[% c.loc( 'Search journals by ISSN' ) %]: </span>
+      <div class="input-append"><input id="browse-issn-input" autocomplete="off" type="text" class="input-medium search-query" name="q" value="[% c.request.params.q | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">[% c.loc( 'Search' ) %]</button></div>
       <input type="hidden" name="browse_field" value="issn">
       </form>
     </div>
@@ -72,7 +72,7 @@
      <form method="get" name="browse" class="form-search" action="[% c.uri_for_site( c.controller.action_for('titles') ) %]">
      <input type="hidden" name="browse_field" value="title">
      <input type="hidden" name="t" value="ft">
-     <div class="input-append"><input type="text" class="search-query" name="q" value="[% c.request.params.q | html %]" maxlength="256" /><button type="submit" class="btn">Search Titles</button></div>
+     <div class="input-append"><input type="text" class="search-query" name="q" value="[% c.request.params.q | html %]" maxlength="256" /><button type="submit" class="btn">[% c.loc( 'Search Titles' ) %]</button></div>
      </form>
 </div>
 

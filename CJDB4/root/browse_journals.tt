@@ -2,7 +2,7 @@
 [% PROCESS browse_form.tt %]
 <div id="browse">
 
-[% IF browse_type AND browse_value %]Browsing journals by [% browse_type %]: [% browse_value %][% END %]
+[% IF browse_type AND browse_value %][% c.loc( 'Browsing journals by' ) %] [% browse_type.replace('association',c.loc( 'association' )) %]: [% browse_value %][% END %]
 
 [% PROCESS pager.tt %]
 
