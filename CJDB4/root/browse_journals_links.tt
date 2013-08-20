@@ -22,14 +22,14 @@
     [%- PROCESS journals_link_name.tt -%]
 
     [%- IF link.journal_cjdb_note %]
-     <dl class="journal-note note">
+     <dl class="dl-horizontal>
       <dt class="journal-note note">[% c.loc( 'Journal Note' ) %]:</dt>
       <dd class="journal-note note">[% link.journal_cjdb_note | html %]</dd>
      </dl>
     [%- END -%]
 
     [%- IF resource.cjdb_note %]
-     <dl class="resource-note note">
+     <dl class="dl-horizontal>
       <dt class="resource-note note">[% c.loc( 'Resource Note' ) %]:</dt>
       <dd class="resource-note note">[% resource.cjdb_note | html %]</dd>
      </dl>
