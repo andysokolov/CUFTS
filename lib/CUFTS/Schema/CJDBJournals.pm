@@ -65,7 +65,7 @@ __PACKAGE__->add_columns(
     },
 );
 
-__PACKAGE__->mk_group_accessors( column => qw/ result_title / );
+# __PACKAGE__->mk_group_accessors( column => qw/ result_title / );
 
 __PACKAGE__->set_primary_key('id');
 
@@ -90,6 +90,13 @@ __PACKAGE__->many_to_many( titles       => 'journals_titles',       'title' );
 __PACKAGE__->many_to_many( subjects     => 'journals_subjects',     'subject' );
 __PACKAGE__->many_to_many( associations => 'journals_associations', 'association' );
 
+sub result_title {
+    my $self = shift;
+    if ( $self->has_column('result_title') && hascontent($self->has_column('result_title')) ) {
+        return $self->get_column('result_title');
+    }
+    return $self->title;
+}
 
 sub display_links {
     my ( $self ) = @_;

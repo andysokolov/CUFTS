@@ -381,7 +381,7 @@ sub lcc :Chained('base') :PathPart('lcc') Args(0) {
 sub _journal_object_to_hash {
     my ( $c, $journal ) = @_;
     return {
-        title               => $journal->result_title || $journal->title,
+        title               => $journal->result_title,
         url                 => $c->uri_for_site( $c->controller('Journal')->action_for('view'), [ $journal->get_column('journals_auth') ] )->as_string,
         journal_auth        => $journal->get_column('journals_auth'),
         issns               => defined($journal->issns) ? [ map { $_->issn } $journal->issns ] : undef,
