@@ -65,7 +65,7 @@ __PACKAGE__->add_columns(
     },
 );
 
-__PACKAGE__->mk_group_accessors( column => qw/ result_name / );
+__PACKAGE__->mk_group_accessors( column => qw/ result_title / );
 
 __PACKAGE__->set_primary_key('id');
 
@@ -74,6 +74,7 @@ __PACKAGE__->set_primary_key('id');
 __PACKAGE__->resultset_class('CUFTS::ResultSet::CJDBJournals');
 
 __PACKAGE__->belongs_to( site => 'CUFTS::Schema::Sites' );
+__PACKAGE__->belongs_to( journals_auth => 'CUFTS::Schema::JournalsAuth' );
 
 __PACKAGE__->has_many( links     => 'CUFTS::Schema::CJDBLinks',      'journal' );
 __PACKAGE__->has_many( issns     => 'CUFTS::Schema::CJDBISSNs',      'journal' );

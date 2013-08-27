@@ -65,6 +65,18 @@ sub titles :Chained('base') :PathPart('titles') :Args(0) {
         $c->stash->{journals_rs} = $c->model('CUFTS::CJDBJournals')->search_distinct_title_by_journal_main( $site_id, $cleaned_search_term, $page, $rows );
     }
 
+
+    if ( defined($c->req->params->{format}) && $c->req->params->{format} eq 'json' ) {
+        $c->stash->{json} = {
+            total_count     => $c->stash->{journals_rs}->pager->total_entries,
+            start_page      => int($page),
+            per_page        => int($rows),
+            journals        => [ map { _journal_object_to_hash($c, $_) } $c->stash->{journals_rs}->all ],
+        };
+        return $c->forward('View::JSON');
+    }
+
+
     $c->stash->{browse_form_tab} = 'title';
     $c->stash->{pager}           = $c->stash->{journals_rs}->pager;
     $c->stash->{template}        = 'browse_journals.tt';
@@ -365,6 +377,18 @@ sub lcc :Chained('base') :PathPart('lcc') Args(0) {
     $c->stash->{subjects}     = \%subject_hierarchy;
     $c->stash->{subject_info} = \%subject_info;
 }
+
+sub _journal_object_to_hash {
+    my ( $c, $journal ) = @_;
+    return {
+        title               => $journal->result_title || $journal->title,
+        url                 => $c->uri_for_site( $c->controller('Journal')->action_for('view'), [ $journal->get_column('journals_auth') ] )->as_string,
+        journal_auth        => $journal->get_column('journals_auth'),
+        issns               => defined($journal->issns) ? [ map { $_->issn } $journal->issns ] : undef,
+        fulltext_coverages  => [ map { $_->fulltext_coverage } $journal->links ],
+    };
+}
+
 
 
 
