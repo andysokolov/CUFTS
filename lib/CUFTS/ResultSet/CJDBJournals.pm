@@ -15,7 +15,7 @@ sub search_distinct_title_by_journal_main_ft {
 
     my $titles_rs = $self->result_source->schema->resultset('CJDBTitles')->search({},
         {
-            select   => \"DISTINCT ON (journals_titles.journal) me.title, me.search_title, journals_titles.journal AS journal_id, ts_rank_cd( to_tsvector('english', search_title), plainto_tsquery('english', ?), 8 ) AS rank",
+            select   => \"DISTINCT ON (journals_titles.journal) me.title, me.search_title, journals_titles.journal AS journal_id, ts_rank( to_tsvector('english', search_title), plainto_tsquery('english', ?), 8 ) AS rank",
             bind     => [ $title, $title, $site ],
             join     => 'journals_titles',
             where    => \"to_tsvector('english', search_title) @@ plainto_tsquery('english', ?) AND site = ?",
