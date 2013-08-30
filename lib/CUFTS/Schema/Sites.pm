@@ -320,6 +320,7 @@ __PACKAGE__->set_primary_key( 'id' );
 #__PACKAGE__->has_many( domains => 'CUFTS::DB::SiteDomains' );
 
 __PACKAGE__->has_many( local_resources => 'CUFTS::Schema::LocalResources', 'site' );
+__PACKAGE__->has_many( cjdb_accounts   => 'CUFTS::Schema::CJDBAccounts', 'site' );
 
 
 sub inflate_packed_field_lists {

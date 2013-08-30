@@ -1,5 +1,7 @@
 package CUFTS::Schema::CJDBJournals;
 
+use String::Util qw(hascontent);
+
 use strict;
 use base qw/DBIx::Class::Core/;
 
@@ -92,10 +94,7 @@ __PACKAGE__->many_to_many( associations => 'journals_associations', 'association
 
 sub result_title {
     my $self = shift;
-    if ( $self->has_column('result_title') && hascontent($self->has_column('result_title')) ) {
-        return $self->get_column('result_title');
-    }
-    return $self->title;
+    return $self->has_column_loaded('result_title') && hascontent($self->get_column('result_title')) ? $self->get_column('result_title') : $self->title;
 }
 
 sub display_links {
