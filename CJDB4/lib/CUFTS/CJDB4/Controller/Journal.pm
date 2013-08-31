@@ -2,6 +2,8 @@ package CUFTS::CJDB4::Controller::Journal;
 use Moose;
 use namespace::autoclean;
 
+use CUFTS::CJDB::Util;
+
 BEGIN { extends 'Catalyst::Controller'; }
 
 =head1 NAME
@@ -45,7 +47,9 @@ sub view :Chained('base') :PathPart('') :Args(1) {
 
     # Check for attached ERM records
 
-    foreach my $link ( $journal->links ) {
+    my $links = $journal->display_links;
+
+    foreach my $link ( @$links ) {
         next if $link->link_type == 0;  # Print, no ERM would be attached
 
         my $local_resource = $link->local_resource;
@@ -59,6 +63,7 @@ sub view :Chained('base') :PathPart('') :Args(1) {
         }
     }
 
+    $c->stash->{links} = CUFTS::CJDB::Util::links_rank_name_sort( $links, $c->stash->{resources_display} );
     $c->stash->{staff} = ( $c->account && $c->account->has_role('staff') ) ? 1 : 0;
     # $c->stash->{tags} = CJDB::DB::Tags->get_tag_summary($journals_auth_id, $c->site->id, (defined($c->account) ? $c->account->id : undef));
     $c->stash->{journal} = $journal;

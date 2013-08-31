@@ -99,13 +99,7 @@ sub result_title {
 
 sub display_links {
     my ( $self ) = @_;
-    my @results = $self->links->search({},
-        {
-            '+select' => \'COALESCE(local_journal.cjdb_note, global_journal.cjdb_note)',
-            '+as' => 'journal_cjdb_note',
-            'join' => { 'local_journal' => 'global_journal' },
-        }
-    )->all;
+    my @results = $self->links->search_display_notes->all;
 
     return \@results;
 }

@@ -68,6 +68,7 @@ __PACKAGE__->add_columns(
 );
 
 __PACKAGE__->mk_group_accessors( column => qw/ journal_cjdb_note / );
+__PACKAGE__->resultset_class('CUFTS::ResultSet::CJDBLinks');
 
 __PACKAGE__->set_primary_key('id');
 

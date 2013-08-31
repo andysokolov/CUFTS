@@ -1,7 +1,7 @@
 <div class="links">
  [%- SET count = 0 -%]
   <ul>
- [%- FOREACH link IN rank_name_sort( journal.display_links, resources_display ) -%]
+ [%- FOREACH link IN links.$journal_id -%]
   [%- SET resource = undef -%]
   [%- IF link.link_type > 0 -%]
    [% SET resource_id = link.get_column('resource');

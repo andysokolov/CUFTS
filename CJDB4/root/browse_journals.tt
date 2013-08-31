@@ -6,12 +6,12 @@
 
 [% PROCESS pager.tt %]
 
-[% WHILE ( journal = journals_rs.next ) %]
-
-<div class="journal media">
+[% FOREACH journal IN journals %]
+ [% SET journal_id = journal.id %]
+ <div class="journal media">
 
   <div class="covers pull-left hidden-phone"><a class="" href="#">
-   [%- FOREACH issn IN journal.issns -%]
+   [%- FOREACH issn IN issns.$journal_id -%]
     <div><img class="media-object" src="http://syndetics.com/index.php?client=simonfu&issn=[% issn.issn %]/sc.jpg"></div>
    [%- END -%]
   </a></div>

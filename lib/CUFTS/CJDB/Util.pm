@@ -452,6 +452,32 @@ sub strip_title_for_matching {
     return $title;
 }
 
+
+# Used in the CJDB to sort a list of links by rank, falling back to resource display name (in $displays), or the print/fulltext coverage string
+
+sub links_rank_name_sort {
+    my ( $links, $displays ) = @_;
+
+    sub __get_name {
+        my ( $link, $displays ) = @_;
+        my $col = $link->get_column('resource');
+        return '' if !defined $col;
+        return '' if !exists $displays->{ $col };
+        return $displays->{ $a->get_column('resource') }->{name};
+    }
+
+    my @new_array = sort {
+           int( $b->rank || 0 ) <=> int( $a->rank || 0 )
+        or __get_name($a, $displays) cmp __get_name($b, $displays)
+        or ( $a->print_coverage || '' ) cmp ( $b->print_coverage || '' )
+        or ( $a->fulltext_coverage || '' ) cmp ( $b->fulltext_coverage || '' )
+    } @$links;
+
+    return \@new_array;
+}
+
+
+
 1;
 
 __END__

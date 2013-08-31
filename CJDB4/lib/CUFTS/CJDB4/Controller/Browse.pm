@@ -65,7 +65,8 @@ sub titles :Chained('base') :PathPart('titles') :Args(0) {
         $c->stash->{journals_rs} = $c->model('CUFTS::CJDBJournals')->search_distinct_title_by_journal_main( $site_id, $cleaned_search_term, $page, $rows );
     }
 
-
+    # If a JSON response is wanted, create the results and return the JSON view
+	
     if ( defined($c->req->params->{format}) && $c->req->params->{format} eq 'json' ) {
         $c->stash->{json} = {
             total_count     => $c->stash->{journals_rs}->pager->total_entries,
@@ -76,7 +77,16 @@ sub titles :Chained('base') :PathPart('titles') :Args(0) {
         return $c->forward('View::JSON');
     }
 
+    # For optimization reasons, go get all the ISSNs and links. Doing it this way means two big database calls rather
+    # than 200 small ones. Even to a local database it's about twice as fast.
 
+    my @journals = $c->stash->{journals_rs}->all;
+    my @ids      = map {$_->id} @journals;
+    _stash_issns($c, \@ids);
+    _stash_links($c, \@ids);
+
+
+    $c->stash->{journals}        = \@journals;
     $c->stash->{browse_form_tab} = 'title';
     $c->stash->{pager}           = $c->stash->{journals_rs}->pager;
     $c->stash->{template}        = 'browse_journals.tt';
@@ -115,6 +125,15 @@ sub bylink :Chained('base') :PathPart('bylink') :Args(2) {
         push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('bylink'), [ $type, $id ] ), $c->loc('By Association') ];
     }
 
+    # For optimization reasons, go get all the ISSNs and links. Doing it this way means two big database calls rather
+    # than 200 small ones. Even to a local database it's about twice as fast.
+
+    my @journals = $c->stash->{journals_rs}->all;
+    my @ids      = map {$_->id} @journals;
+    _stash_issns($c, \@ids);
+    _stash_links($c, \@ids);
+
+    $c->stash->{journals} = \@journals;
     $c->stash->{pager}    = $c->stash->{journals_rs}->pager;
     $c->stash->{template} = 'browse_journals.tt';
 }
@@ -156,6 +175,7 @@ sub subjects :Chained('base') :PathPart('subjects') :Args(0) {
     $c->stash->{template}        = 'browse_subjects.tt';
     push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('subjects') ), $c->loc('Subjects') ];
 }
+
 
 sub associations :Chained('base') :PathPart('associations') :Args(0) {
     my ($self, $c) = @_;
@@ -237,11 +257,22 @@ sub tags :Chained('base') :PathPart('tags') :Args(0) {
     }
 
 
+    # For optimization reasons, go get all the ISSNs and links. Doing it this way means two big database calls rather
+    # than 200 small ones. Even to a local database it's about twice as fast.
+
+    my @journals = $c->stash->{journals_rs}->all;
+    my @ids      = map {$_->id} @journals;
+    _stash_issns($c, \@ids);
+    _stash_links($c, \@ids);
+
+
+    $c->stash->{journals}        = \@journals;
     $c->stash->{browse_form_tab} = 'tag';
     $c->stash->{template}        = 'browse_journals.tt';
 
     push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('tags') ), $c->loc('By Tag') ];
 }
+
 
 sub issns :Chained('base') :PathPart('issns') :Args(0) {
     my ($self, $c) = @_;
@@ -272,6 +303,16 @@ sub issns :Chained('base') :PathPart('issns') :Args(0) {
             }
         );
 
+        # For optimization reasons, go get all the ISSNs and links. Doing it this way means two big database calls rather
+        # than 200 small ones. Even to a local database it's about twice as fast.
+
+        my @journals = $rs->all;
+        my @ids      = map {$_->id} @journals;
+        _stash_issns($c, \@ids);
+        _stash_links($c, \@ids);
+
+
+        $c->stash->{journals}    = \@journals;
         $c->stash->{journals_rs} = $rs;
         $c->stash->{pager}       = $c->stash->{journals_rs}->pager;
 
@@ -377,6 +418,33 @@ sub lcc :Chained('base') :PathPart('lcc') Args(0) {
     $c->stash->{subjects}     = \%subject_hierarchy;
     $c->stash->{subject_info} = \%subject_info;
 }
+
+
+sub _stash_issns {
+    my ( $c, $ids ) = @_;
+
+    my $rs = $c->model('CUFTS::CJDBISSNs')->search({ 'me.journal' => { '-in' => $ids } });
+    my %results;
+    while ( my $issn = $rs->next ) {
+        push @{ $results{$issn->get_column('journal')} }, $issn;
+    }
+    $c->stash->{issns} = \%results;
+}
+
+sub _stash_links {
+    my ( $c, $ids ) = @_;
+
+    my $rs = $c->model('CUFTS::CJDBLinks')->search_display_notes({ 'me.journal' => { '-in' => $ids } });
+    my %results;
+    while ( my $link = $rs->next ) {
+        push @{ $results{$link->get_column('journal')} }, $link;
+    }
+    foreach my $id (keys %results) {
+        $results{$id} = CUFTS::CJDB::Util::links_rank_name_sort( $results{$id}, $c->stash->{resources_display} );
+    }
+    $c->stash->{links} = \%results;
+}
+
 
 sub _journal_object_to_hash {
     my ( $c, $journal ) = @_;
