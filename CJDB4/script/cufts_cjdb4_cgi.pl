@@ -1,5 +1,7 @@
 #!/usr/bin/env perl
 
+use lib '../lib';
+
 use Catalyst::ScriptRunner;
 Catalyst::ScriptRunner->run('CUFTS::CJDB4', 'CGI');
 

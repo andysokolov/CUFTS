@@ -42,6 +42,7 @@
             [
                 [ '/tools/compare',     'Resource Comparison' ],
                 [ '/tools/newresource', 'New Resource' ],
+                [ '/public/search',     'Journal Search' ],
             ],
             'Tools'
         ]);
