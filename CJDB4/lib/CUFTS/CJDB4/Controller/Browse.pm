@@ -226,7 +226,8 @@ sub tags :Chained('base') :PathPart('tags') :Args(0) {
     my $rows        = $c->req->params->{per_page} || 50;    # TODO: Customize this per site
     my $level       = $c->req->params->{level};
 
-    my @tags = map { CUFTS::CJDB::Util::strip_tag($_) } map {split /,/} $search_term;
+    $search_term = ref $search_term eq 'ARRAY' ? $search_term : [$search_term];
+    my @tags = map { CUFTS::CJDB::Util::strip_tag($_) } map {split /,/} @$search_term;
 
 
     # If a viewing level has not been defined, check the local param for local search only,

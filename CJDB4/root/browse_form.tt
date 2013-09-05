@@ -52,7 +52,7 @@
     <div class="tab-pane [% browse_form_tab == 'tag' ? 'active' : '' %]" id="tag">
       <form method="get" name="browse" class="form-search" action="[% c.uri_for_site( c.controller.action_for('tags') ) %]">
       <span class="highlight">[% c.loc( 'Search journals tagged' ) %]: </span>
-      <div class="input-append"><input id="browse-tag-input" autocomplete="off" type="text" class="input-medium search-query" name="q" value="[% c.request.params.q | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">[% c.loc( 'Search' ) %]</button></div>
+      <div class="input-append"><input id="browse-tag-input" autocomplete="off" type="text" class="input-medium search-query" name="q" value="[% c.request.params.q.join(',') | html %]" size="30" maxlength="256" /> <button type="submit" class="btn">[% c.loc( 'Search' ) %]</button></div>
       <input type="hidden" name="browse_field" value="tag">
       </form>
     </div>

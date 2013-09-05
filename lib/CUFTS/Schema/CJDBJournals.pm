@@ -5,7 +5,7 @@ use String::Util qw(hascontent);
 use strict;
 use base qw/DBIx::Class::Core/;
 
-__PACKAGE__->load_components(qw/ TimeStamp Helper::ResultSet::SetOperations /);
+__PACKAGE__->load_components(qw/ TimeStamp /);
 __PACKAGE__->table('cjdb_journals');
 __PACKAGE__->add_columns(
     id => {

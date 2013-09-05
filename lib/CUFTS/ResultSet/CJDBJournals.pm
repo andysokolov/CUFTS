@@ -3,6 +3,8 @@ package CUFTS::ResultSet::CJDBJournals;
 use strict;
 use base 'DBIx::Class::ResultSet';
 
+ __PACKAGE__->load_components( qw(Helper::ResultSet::SetOperations) );
+
 # Use a fulltext search through the titles and return in relevance order. Note that the ResultSet returned here is a little
 # fragile due to the weirdo subquery.
 
