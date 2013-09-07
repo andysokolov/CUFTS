@@ -1,5 +1,3 @@
-[% PROCESS page_title.tt %]
-
 <div id="journal">
 
   <div class="covers pull-right visible-desktop">
@@ -18,6 +16,8 @@
     [%- PROCESS journal_associations.tt -%]
     [%- PROCESS journal_issns.tt -%]
     [%- PROCESS journal_relations.tt -%]
+    [%- PROCESS journal_account_tags.tt -%]
+    [%- PROCESS journal_tags.tt -%]
   </div>
 
 </div>

@@ -31,13 +31,13 @@ __PACKAGE__->add_columns(
         data_type => 'char',
         is_nullable => 0,
         size => 40,
-        encode_column => 1,
-        encode_class  => 'Digest',
-        encode_args   => {
-            algorithm => 'SHA-1',
-            format => 'hex'
-        },
-        encode_check_method => 'check_password',
+        # encode_column => 1,
+        # encode_class  => 'Digest',
+        # encode_args   => {
+        #     algorithm => 'SHA-1',
+        #     format => 'hex'
+        # },
+        # encode_check_method => 'check_password',
     },
     email => {
         data_type => 'varchar',
@@ -72,6 +72,8 @@ __PACKAGE__->set_primary_key('id');
 __PACKAGE__->belongs_to( site => 'CUFTS::Schema::Sites');
 
 __PACKAGE__->has_many( accounts_roles => 'CUFTS::Schema::CJDBAccountsRoles' => 'account' );
+__PACKAGE__->has_many( tags => 'CUFTS::Schema::CJDBTags' => 'account' );
+
 __PACKAGE__->many_to_many( roles => 'accounts_roles', 'role');
 
 # Returns a string mapping to the level of access granted to this account.  It
@@ -96,6 +98,20 @@ sub has_role {
     return !!scalar grep { $_->role eq $role } $self->roles;
 }
 
+sub tag_summary {
+    my ( $self ) = @_;
 
+    my $rs = $self->tags->search({},
+        {
+            select   => [ 'tag', 'viewing', { 'count' => 'tag' } ],
+            as       => [ 'tag', 'viewing', 'count' ],
+            group_by => [ 'tag', 'viewing' ],
+            order_by => [ 'tag' ],
+        }
+    );
+    $rs->result_class('DBIx::Class::ResultClass::HashRefInflator');
+
+    return [ map { [ $_->{tag}, $_->{viewing}, $_->{count} ] } $rs->all ];
+}
 
 1;

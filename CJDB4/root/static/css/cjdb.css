@@ -54,6 +54,23 @@ ul.breadcrumb {
 	margin: 10px 0 5px 3px;
 }
 
+/* Account */
+
+#account-bar {
+	margin-top: 3px;
+	float: right;
+}
+
+#account-bar .account-name {
+	margin-right: 15px;
+}
+
+#account-manage {}
+
+#account-manage .controls.account-key {
+	padding-top: 5px;
+}
+
 /* Special fonts for the tabs */
 
 .nav {
@@ -311,6 +328,18 @@ ul.breadcrumb {
 
 #lcc-browse .trigger-content {
 	width: 1em;
+}
+
+/* Tags */
+
+table.tags {
+	width: auto;
+}
+
+ol.tags, ol.tags li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
 }
 
 .langform {

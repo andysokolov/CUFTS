@@ -37,11 +37,15 @@ our $VERSION = '4.00';
 has 'site' => (
     is => 'rw',
     isa => 'Object',
+    clearer   => 'clear_site',
+    predicate => 'has_site',
 );
 
 has 'account' => (
     is => 'rw',
     isa => 'Object',
+    clearer   => 'clear_account',
+    predicate => 'has_account',
 );
 
 # Configure the application.

@@ -1,4 +1,3 @@
-[% PROCESS page_title.tt %]
 [% PROCESS azmenu.tt %]
 
 [% empty_search.defined ? empty_search : '' %]

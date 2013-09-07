@@ -1,0 +1,54 @@
+[% RETURN UNLESS c.has_account AND account_tags.size > 0 %]
+<div id="journal-account-tags">
+  <h3>My Tags</h3>
+
+  <div id="journal-account-tags-existing">
+    <ol class="tags">
+    [% FOREACH tag IN account_tags %]
+      <li>[% tag.tag | html %] ([%- INCLUDE account_tags_view_string.tt viewing = tag.viewing -%])</li>
+    [% END %]
+    </ol>
+
+    <div style="margin-top: .5em;">
+     <a href="#" id="journal-account-tag-management-trigger">[% IF account_tags.size %]add/manage tags[% ELSE %]add tags[% END %]</a>
+    </div>
+  </div>
+
+   <div id="journal-account-tag-management" style="display: none;">
+    <form method="post" class="form form-horizontal">
+
+      <h4>Existing Tags</h4>
+
+      <table class="table table-bordered tags">
+        <tr><th>delete</th><th>tag</th><th>viewing</th></tr>
+
+        [% FOREACH tag IN account_tags %]
+          <tr>
+            <td><input type="checkbox" name="delete_[% tag.id %]" /></td>
+            <td><input type="text" name="edit_[% tag.id %]" size="20" maxlength="512" value="[% tag.tag %]" /></td>
+            <td><select name="viewing_[% tag.id %]">
+              <option value="0" [% IF tag.viewing == 0 %]selected="selected"[% END %]>[%- INCLUDE account_tags_view_string.tt viewing = 0 -%]</option>
+              <option value="1" [% IF tag.viewing == 1 %]selected="selected"[% END %]>[%- INCLUDE account_tags_view_string.tt viewing = 1 -%]</option>
+              <option value="2" [% IF tag.viewing == 2 %]selected="selected"[% END %]>[%- INCLUDE account_tags_view_string.tt viewing = 2 -%]</option>
+            </select></td>
+          </tr>
+        [% END %]
+      </table>
+
+      <h4>Add Tags</h4>
+
+      <div class="control-group">
+        <input type="text" name="new_tag" maxlength="1024" />
+        <select name="new_viewing">
+          <option value="0" [% IF tag.viewing == 0 %]selected="selected"[% END %]>[%- INCLUDE account_tags_view_string.tt viewing = 0 -%]</option>
+          <option value="1" [% IF tag.viewing == 1 %]selected="selected"[% END %]>[%- INCLUDE account_tags_view_string.tt viewing = 1 -%]</option>
+          <option value="2" [% IF tag.viewing == 2 %]selected="selected"[% END %]>[%- INCLUDE account_tags_view_string.tt viewing = 2 -%]</option>
+        </select>
+      </div>
+      [%# INCLUDE manage_tags_info.tt %]
+
+      <input type="submit" class="btn" name="save" value="Save Changes" />
+
+    </form>
+  </div>
+</div>

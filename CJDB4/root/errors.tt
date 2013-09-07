@@ -1,5 +1,5 @@
-[% RETURN UNLESS error.size OR c.form.has_missing OR c.form.has_invalid %]
-<div id="errors">
+[% RETURN UNLESS error.size %]
+<div class="alert alert-error">
 [% IF error.size > 0 %]
  <ul>
  [% FOREACH error_msg IN error %]
@@ -7,23 +7,4 @@
  [% END %]
  </ul>
 [% END %]
-
-[% IF c.form.has_missing %]
- <span class="error-heading">The following fields are required:</span>
- <ul>
- [% FOREACH missing IN c.form.missing %]
-  <li>[% missing | html %]</li>
- [% END %]
- </ul>
-[% END %]
-
-[% IF c.form.has_invalid %]
- <span class="error-heading">The following fields are invalid:</span>
- <ul>
- [% FOREACH mssing IN c.form.invalid %]
-  <li>[% invalid | html %]</li>
- [% END %]
- </ul>
-[% END %]
-
 </div>

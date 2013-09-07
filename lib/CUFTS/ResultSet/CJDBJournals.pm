@@ -87,6 +87,10 @@ sub search_distinct_by_tags {
         $site = $site->id;
     }
 
+    if ( ref($account) ne 'SCALAR' && $account->can('id') ) {
+        $account = $account->id;
+    }
+
     my @rs_list;
     foreach my $tag (@$tags) {
         my %search;
@@ -130,7 +134,7 @@ sub search_distinct_by_tags {
 
         $search{'tags.tag'} = $tag;
         $search{'me.site'}  = $site;
-        
+
         my $rs = $self->search( \%search, { join => 'tags' } );
         push @rs_list, $rs;
     }

@@ -1,7 +1,20 @@
-<form method="post">
-<table>
-<tr><td>Log in</td><td><input name="key" type="text" size="20" maxlength="128" /></td></tr>
-<tr><td>Password</td><td><input name="password" type="password" size="20" maxlength="128" /></td></tr>
-<tr><td colspan="2"><input type="submit" name="login" value="login" /></td></tr>
-</table>
+<form method="post" class="form-horizontal">
+<div class="control-group">
+	<label class="control-label" for="login_key">Login</label>
+  <div class="controls">
+    <input type="text" id="login_key" name="login_key">
+  </div>
+</div>
+<div class="control-group">
+	<label class="control-label" for="login_password">Password</label>
+  <div class="controls">
+    <input type="password" id="login_password" name="login_password">
+  </div>
+</div>
+
+ <div class="control-group">
+  <div class="controls">
+    <button type="submit" class="btn">Sign in</button>
+  </div>
+</div>
 </form>

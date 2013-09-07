@@ -26,9 +26,20 @@ $().ready( function() {
     }
   });
 
+  /* Toggle blocks in the LCC browse hierarchy */
+
   $('#lcc-browse a.lcc-browse-trigger').on('click', function(event) {
     $(this).find('.trigger-content').toggle();
     $( '#group-' + $(this).attr('data-group') ).toggle();
+    return false;
+  });
+
+
+  /* Display "My Tags" on a journal page if someone is logged in */
+
+  $('#journal-account-tag-management-trigger').on('click', function(event) {
+    $('#journal-account-tags-existing').hide();
+    $('#journal-account-tag-management').toggle();
     return false;
   });
 

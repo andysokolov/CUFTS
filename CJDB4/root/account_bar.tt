@@ -1,0 +1,10 @@
+<div id="account-bar">
+[% IF c.has_account %]
+ Logged in as: <span class="account-name">[% c.account.name | html %]</span>
+ <a href="[% c.uri_for_site( c.controller('Account').action_for('tags') )   | html %]">my tags</a> |
+ <a href="[% c.uri_for_site( c.controller('Account').action_for('manage') ) | html %]">manage</a> |
+ <a href="[% c.uri_for_site( c.controller('Account').action_for('logout') ) | html %]">logout</a>
+[% ELSE %]
+ <a href="[% c.uri_for_site( c.controller('Account').action_for('login') ) | html %]">login</a>
+[% END %]
+</div>

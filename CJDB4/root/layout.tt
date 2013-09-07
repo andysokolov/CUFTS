@@ -21,9 +21,12 @@
 [%- PROCESS page_header.tt -%]
 
 <div id="content" class="container-fluid">
+[%- PROCESS account_bar.tt -%]
 [%- PROCESS breadcrumbs.tt -%]
 [%- PROCESS nav_line.tt -%]
+[%- PROCESS page_title.tt -%]
 [%- PROCESS errors.tt -%]
+[%- PROCESS results.tt -%]
 [%- content -%]
 </div>
 

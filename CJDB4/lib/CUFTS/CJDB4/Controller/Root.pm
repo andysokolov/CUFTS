@@ -72,6 +72,14 @@ sub site :Chained('/') :PathPart('') :CaptureArgs(1) {
     $c->stash->{breadcrumbs} = [];
 
     $c->stash->{additional_template_paths} = [ $c->config->{root} . '/sites/' . $site->id . "/${box}" ];
+
+    # Also setup the account variable
+
+    if ( my $account_id = $c->session->{ $site->id }->{current_account_id} ) {
+        my $account = $site->cjdb_accounts->find({ id =>  $account_id });
+        $c->account($account);
+    }
+
 }
 
 

@@ -30,7 +30,7 @@ sub logout :Chained('base') :PathPart('logout') :Args(0) {
     my ($self, $c) = @_;
 
     delete $c->session->{ $c->site->id }->{current_account_id};
-    $c->account(undef);
+    $c->clear_account;
 
 	$c->redirect( $c->uri_for_site( $c->controller('Root')->action_for('site_index') ) );
 }
@@ -39,10 +39,10 @@ sub logout :Chained('base') :PathPart('logout') :Args(0) {
 sub login :Chained('base') :PathPart('login') :Args(0) {
     my ( $self, $c ) = @_;
 
-    if ( $c->req->params->{login} ) {
+    if ( $c->req->params->{login_key} || $c->req->params->{login_password} ) {
 
-    	my $key      = trim( $c->req->params->{key} );
-    	my $password = trim( $c->req->params->{password} );
+    	my $key      = trim( $c->req->params->{login_key} );
+    	my $password = trim( $c->req->params->{login_password} );
     	my $site     = $c->site;
 
         if ( hascontent($key) ) {
@@ -52,7 +52,7 @@ sub login :Chained('base') :PathPart('login') :Args(0) {
             if ( hascontent($site->cjdb_authentication_module) ) {
                 # Get our internal record, then check external system for password
 
-                $account = $site->cjdb_accounts->retrieve({ key => $key });
+                $account = $site->cjdb_accounts->find({ key => $key });
                 if ( defined($account) ) {
                     my $module = 'CUFTS::CJDB::Authentication::' . $site->cjdb_authentication_module;
                     eval {
@@ -68,7 +68,7 @@ sub login :Chained('base') :PathPart('login') :Args(0) {
             else {
                 # Use internal authentication
                 my $crypted_pass = crypt($password, $key);
-                $account = $site->cjdb_accounts->retrieve({ key => $key, password => $crypted_pass });
+                $account = $site->cjdb_accounts->find({ key => $key, password => $crypted_pass });
             }
 
             if ( defined($account) ) {
@@ -89,6 +89,58 @@ sub login :Chained('base') :PathPart('login') :Args(0) {
     }
 
     $c->stash->{template} = 'login.tt';
+}
+
+
+
+
+sub manage :Chained('base') :PathPart('manage') :Args(0) {
+    my ($self, $c) = @_;
+
+    $c->has_account or
+        return $c->redirect( $c->uri_for_site( $c->controller('Browse')->action_for('browse') ) );
+
+    $c->stash->{template} = 'account_manage.tt';
+
+    if ( defined($c->req->params->{save}) ) {
+
+        if ( !hascontent($c->req->params->{name}) ) {
+            push @{$c->stash->{error}}, 'Name is a required field.';
+        }
+        if ( !hascontent($c->req->params->{email}) ) {
+            push @{$c->stash->{error}}, 'Email is a required field.';
+        }
+
+        my ($password, $password2) = ($c->req->params->{password}, $c->req->params->{password2});
+
+        if ( hascontent($password) || hascontent($password2) ) {
+            if ($password eq $password2) {
+                $c->account->password(crypt($password, $c->account->key));
+            } else {
+                push @{$c->stash->{error}}, "Passwords do not match.";
+            }
+        }
+
+        $c->account->name(  trim($c->req->params->{name}) );
+        $c->account->email( trim($c->req->params->{email}) );
+
+        if ( !defined($c->stash->{error}) ) {
+            $c->account->update;
+            $c->stash->{results} = 'Updated account settings.';
+        }
+
+    }
+}
+
+
+sub tags :Chained('base') :PathPart('tags') :Args(0) {
+    my ($self, $c) = @_;
+
+    $c->has_account or
+        return $c->redirect( $c->uri_for_site( $c->controller('Browse')->action_for('browse') ) );
+
+    $c->stash->{tags} = $c->account->tag_summary;
+    $c->stash->{template} = 'account_tags.tt';
 }
 
 

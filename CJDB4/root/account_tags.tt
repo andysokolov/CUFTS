@@ -1,0 +1,14 @@
+[%# tags format: [ tag name, level, count ] %]
+<div id="account-tags">
+<h3>My Tags</h3>
+<table class="tags table table-bordered">
+<tr><th>tag</th><th>view</th><th>count</th></tr>
+[% FOREACH tag IN tags %]
+<tr>
+	<td class="tag"><a href="[% c.uri_for_site( c.controller('Browse').action_for('tags'), { q => tag.0, viewing => [tag.1], limit_to => 'mytags' } ) | html %]">[% tag.0 | html %]</a></td>
+	<td class="viewing">[% PROCESS account_tags_view_string.tt viewing=tag.1 %]</td>
+	<td class="count">[% tag.2 | html %]</td>
+</tr>
+[% END %]
+</table>
+</div>

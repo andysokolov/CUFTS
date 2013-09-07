@@ -1,0 +1,10 @@
+[%- SWITCH viewing -%]
+[%- CASE 0 -%]
+private
+[%- CASE 1 -%]
+public
+[%- CASE 2 -%]
+local public
+[%- CASE -%]
+error
+[%- END -%]

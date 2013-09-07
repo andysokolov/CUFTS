@@ -104,4 +104,49 @@ sub display_links {
     return \@results;
 }
 
+sub tag_summary {
+    my ( $self, $site, $account, $skip_account ) = @_;
+
+    if ( ref($site) ne 'SCALAR' && $site->can('id') ) {
+        $site = $site->id;
+    }
+
+    if ( defined($account) && ref($account) ne 'SCALAR' && $account->can('id') ) {
+        $account = $account->id;
+    }
+
+    if ( defined($skip_account) && ref($skip_account) ne 'SCALAR' && $skip_account->can('id') ) {
+        $skip_account = $skip_account->id;
+    }
+
+    my $search = {
+        '-or' => [
+            { site => $site, viewing => 2 },
+            { viewing => 1 },
+        ],
+    };
+    if ( $account ) {
+        $search->{account} = $account;
+    }
+    if ( $skip_account ) {
+        $search->{account} = { '!=' => $skip_account };
+    }
+
+    my $rs = $self->tags->search( $search,
+        {
+            select   => [ 'tag', { count => 'tag' } ],
+            as       => [ 'tag', 'count' ],
+            group_by => [ 'tag' ],
+            order_by => [ 'tag' ],
+        }
+    );
+    $rs->result_class('DBIx::Class::ResultClass::HashRefInflator');
+
+    my $results = [ map { [ $_->{tag}, $_->{count} ] } $rs->all ];
+
+    return $results;
+}
+
+
+
 1;

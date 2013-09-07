@@ -224,9 +224,10 @@ sub tags :Chained('base') :PathPart('tags') :Args(0) {
     my $search_term = $c->req->params->{q};
     my $page        = $c->req->params->{page} || 1;
     my $rows        = $c->req->params->{per_page} || 50;    # TODO: Customize this per site
+    my $limit_to    = $c->req->params->{limit_to};
     my $level       = $c->req->params->{level};
 
-    $search_term = ref $search_term eq 'ARRAY' ? $search_term : [$search_term];
+    $search_term = ref($search_term) eq 'ARRAY' ? $search_term : [$search_term];
     my @tags = map { CUFTS::CJDB::Util::strip_tag($_) } map {split /,/} @$search_term;
 
 
@@ -239,15 +240,14 @@ sub tags :Chained('base') :PathPart('tags') :Args(0) {
 
     # Add account to the parameters so that /browse/bytags will search on only that account
 
-    # if ( !hascontent( $c->req->params->{account} ) && defined( $c->stash->{current_account} ) ) {
-    #     $c->req->params->{account} = $c->stash->{current_account}->id;
-    # }
-
     if ( scalar(@tags) ) {
-
         my $rs = $c->model('CUFTS::CJDBJournals')->search_distinct_by_tags( \@tags, $level, $c->site, $c->account, $viewing );
 
         $rs = $rs->search({}, { page => $page, rows => $rows, order_by => 'stripped_sort_title' });
+
+        if ( $limit_to eq 'mytags' && $c->has_account ) {
+            $rs = $rs->search({ 'tags.account' => $c->account->id });
+        }
 
         $c->stash->{journals_rs} = $rs;
         $c->stash->{pager}       = $c->stash->{journals_rs}->pager;
