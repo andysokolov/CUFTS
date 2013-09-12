@@ -1,4 +1,4 @@
-[% RETURN UNLESS c.has_account AND account_tags.size > 0 %]
+[% RETURN UNLESS c.has_account %]
 <div id="journal-account-tags">
   <h3>My Tags</h3>
 

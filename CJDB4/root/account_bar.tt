@@ -1,4 +1,4 @@
-<div id="account-bar">
+<div id="account-bar" class="hidden-phone">
 [% IF c.has_account %]
  Logged in as: <span class="account-name">[% c.account.name | html %]</span>
  <a href="[% c.uri_for_site( c.controller('Account').action_for('tags') )   | html %]">my tags</a> |
