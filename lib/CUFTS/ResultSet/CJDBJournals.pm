@@ -87,7 +87,7 @@ sub search_distinct_by_tags {
         $site = $site->id;
     }
 
-    if ( ref($account) ne 'SCALAR' && $account->can('id') ) {
+    if ( defined($account) && ref($account) ne 'SCALAR' && $account->can('id') ) {
         $account = $account->id;
     }
 
