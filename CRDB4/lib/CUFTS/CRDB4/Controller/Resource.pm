@@ -1,0 +1,73 @@
+package CUFTS::CRDB4::Controller::Resource;
+use Moose;
+use namespace::autoclean;
+
+BEGIN { extends 'Catalyst::Controller'; }
+
+=head1 NAME
+
+CUFTS::CRDB4::Controller::Resource - Catalyst Controller
+
+=head1 DESCRIPTION
+
+Catalyst Controller.
+
+=head1 METHODS
+
+=cut
+
+sub base :Chained('/site') :PathPart('resource') :CaptureArgs(0) {}
+
+sub load_resource :Chained('base') :PathPart('') :CaptureArgs(1) {
+    my ( $self, $c, $resource_id ) = @_;
+
+    my $erm = $c->model('CUFTS::ERMMain')->find({
+        id          => $resource_id,
+        site        => $c->site->id,
+        public_list => 't',
+    });
+
+    $c->stash->{erm} = $erm;
+}
+
+sub goto : Chained('load_resource') PathPart('goto') Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $erm = $c->stash->{erm};
+
+    # count click
+
+    $c->model('CUFTS::ERMUses')->create({ erm_main => $erm->id });
+
+    $c->response->redirect( $erm->proxied_url( $c->site ) );
+    $c->detach();
+}
+
+
+sub resource :Chained('load_resource') :PathPart('') :Args(0) {
+    my ( $self, $c ) = @_;
+
+    $c->stash->{display_fields} = [
+        $c->model('CUFTS::ERMDisplayFields')->search( { site => $c->site->id }, { order_by => 'display_order' } )->all
+    ];
+
+    $c->stash->{template} = 'resource.tt';
+}
+
+
+=encoding utf8
+
+=head1 AUTHOR
+
+Todd Holbrook
+
+=head1 LICENSE
+
+This library is free software. You can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
+
+__PACKAGE__->meta->make_immutable;
+
+1;

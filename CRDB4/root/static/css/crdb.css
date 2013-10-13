@@ -1,0 +1,250 @@
+ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+h1 {
+    font-family: DINWebBold, Verdana, sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+}
+
+
+header {
+    background: #326ead;
+    width: 100%;
+    color: white;
+}
+
+header h1 {
+    padding: 5px;
+    margin: 0;
+}
+
+.page-header {
+    margin: 10px 0 12px;
+    padding: 0;
+}
+
+footer {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+    text-align: center;
+}
+
+#content {
+    padding-bottom: 20px;
+}
+
+ul.breadcrumb {
+    background: none;
+    padding: 0;
+    margin: 10px 0 5px 3px;
+}
+
+/* Account */
+
+#account-bar {
+    margin-top: 3px;
+    float: right;
+}
+
+#account-bar .account-name {
+    margin-right: 15px;
+}
+
+#account-manage {}
+
+#account-manage .controls.account-key {
+    padding-top: 5px;
+}
+
+/* Special fonts for the tabs */
+
+.nav {
+    font-size: 90%;
+    font-family: arial, sans-serif;
+    margin-bottom: 0;
+}
+
+/* Browse form */
+
+#browse-form  {
+    margin-bottom: 15px;
+}
+
+#browse-form ul.nav {
+    margin-bottom: 0;
+}
+
+#browse-form div.tab-content {
+    border-bottom: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    padding: 0px;
+}
+
+#browse-form form {
+    margin: 10px;
+}
+
+#browse-form-mobile form {
+    margin: 0;
+}
+
+#browse-form-mobile input.search-query {
+    position: relative;
+}
+
+#browse-form .subjects-also {
+    margin-left: 10px;
+}
+
+
+/* List sites */
+
+#list-sites ul {
+}
+
+
+/* Facet Menu */
+
+#facet-menu h1 {
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 16px;
+    margin-top: 0;
+}
+
+#facet-menu h2 {
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 16px;
+    margin: 0;
+    padding: 10px 15px 10px 15px;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+#facet-menu .well {
+    padding: 0;
+}
+
+#facet-menu form {
+    margin-bottom: 0;
+}
+
+
+.facet-menu-heading {
+}
+
+.facet-menu-content {
+    margin: 10px 15px 10px 15px;
+}
+
+
+.facet-menu {
+    position: relative;
+}
+
+#current-facets {
+    margin-bottom: 10px;
+}
+
+.facet-menu-collapse-control {
+    margin-top: 5px;
+}
+
+/* Browse list */
+
+#browse h2 {
+    font-size: 20px;
+    margin: 2px 0;
+}
+
+#browse-brief-subject_description {
+    margin-bottom: 5px;
+}
+
+#browse-brief-subject_description p {
+    margin: 10px 0;
+}
+
+#browse-brief-subject_description p:first-child {
+    margin-top: 0;
+}
+#browse-brief-subject_description p:last-child {
+    margin-bottom: 0;
+}
+
+#browse .resource {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 10px;
+}
+
+#browse .browse-field-name {
+    font-weight: bold;
+    font-size: 17.5px;
+}
+
+#browse .browse-field-description {
+    margin: 5px 0;
+}
+
+#browse #links ul {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+/* Resource */
+
+#resource td {
+    vertical-align: top;
+    padding: 5px 0;
+}
+
+#resource td.resource-field-label {
+    width: 10.5em;
+}
+
+#resource td.resource-edit-control {
+    text-align: center;
+    width: 50px;
+    white-space: nowrap;
+}
+
+
+/* Icon overrides */
+
+.icon-ok {
+    background-image: url("../images/glyphicons-halflings-green.png");
+}
+
+.icon-remove {
+    background-image: url("../images/glyphicons-halflings-red.png");
+}
+
+/* Size */
+
+@media (min-width: 768px) {
+    #facet-menu {
+        width: 250px;
+        float: left;
+        padding: 0;
+        margin: 0;
+    }
+
+    #browse {
+        margin-left: 275px;
+        width: auto;
+    }
+}
+

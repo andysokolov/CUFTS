@@ -1,0 +1,49 @@
+<div id="account-manage">
+<form method="post" class="form-horizontal"><fieldset>
+
+  <div class="control-group">
+    <label class="control-label" for="login">[% c.loc('Login') | html %]</label>
+    <div class="controls account-key">[% c.account.key | html %]</div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label" for="email">[% c.loc('Name') | html %]</label>
+    <div class="controls">
+      <input type="text" id="name" name="name" value="[% c.account.name | html %]" />
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label" for="email">[% c.loc('Email') | html %]</label>
+    <div class="controls">
+      <input type="text" id="email" name="email" value="[% c.account.email | html %]" />
+    </div>
+  </div>
+
+
+  [% IF !c.site.cjdb_authentication_module %]
+
+  <div class="control-group">
+    <label class="control-label" for="password">[% c.loc('Password') | html %]</label>
+    <div class="controls">
+      <input type="password" id="password" name="password" />
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label" for="password2">[% c.loc('Password (repeat)') | html %]</label>
+    <div class="controls">
+      <input type="password" id="password2" name="password2" />
+    </div>
+  </div>
+
+  [% END %]
+
+  <div class="control-group">
+    <div class="controls">
+      <button type="submit" class="btn" name="save">[% c.loc('Save') | html %]</button>
+    </div>
+  </div>
+
+</fieldset></form>
+</div>

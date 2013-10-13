@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+[%- PROCESS site_setup.tt -%]
+<head>
+ <title>[% c.loc('Electronic Resources') | html %]</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <link href="[% c.uri_for_static('bootstrap/css/bootstrap.min.css') | html %]" rel="stylesheet" media="screen" />
+ <link href="[% c.uri_for_static('css/crdb.css') | html %]" rel="stylesheet" media="screen" />
+ <link href="[% c.uri_for_static('bootstrap/css/bootstrap-responsive.min.css') | html %]" rel="stylesheet" media="screen" />
+ <script src="[% c.uri_for_static('js/jquery-1.10.1.min.js') | html %]"></script>
+ [% FOREACH css IN extra_css %]
+  <link href="[% css | html %]" rel="stylesheet" media="screen" />
+ [% END %]
+ [% FOREACH js IN extra_js %]
+  <script src="[% js | html %]"></script>
+ [% END %]
+ [% IF site_css_uri %]<link href="[% site_css_uri | html %]" rel="stylesheet" media="screen" />[% END %]
+</head>
+<body>
+<div id="page"><div id="page-container">
+[%- PROCESS page_header.tt -%]
+
+<div id="content" class="container-fluid">
+[%- PROCESS account_bar.tt -%]
+[%- PROCESS breadcrumbs.tt -%]
+[%- PROCESS nav_line.tt -%]
+[%- PROCESS page_title.tt -%]
+[%- PROCESS errors.tt -%]
+[%- PROCESS results.tt -%]
+[%- content -%]
+</div>
+
+[% PROCESS page_footer.tt %]
+</div></div>
+[% IF c.site %]
+<script>
+	var URLs = {
+		data: {
+			ISSN: '[%# c.uri_for_site( c.controller('Data').action_for('issns') ) | html %]',
+			tag: '[%# c.uri_for_site( c.controller('Data').action_for('tags') ) | html %]'
+		}
+	};
+</script>
+[% END %]
+<script src="[% c.uri_for_static('bootstrap/js/bootstrap.min.js') | html %]"></script>
+<script src="[% c.uri_for_static('js/crdb.js') | html %]"></script>
+</body>
+</html>

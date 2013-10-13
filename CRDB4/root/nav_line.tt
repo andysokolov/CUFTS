@@ -1,0 +1,2 @@
+[%- RETURN UNLESS c.has_site -%]
+<nav></nav>

@@ -1,0 +1,90 @@
+[% IF c.check_user_roles('edit_erm_records') AND facets.subject AND facets.size == 1 %]
+ [% SET sorting_enabled = 1 %]
+[% END %]
+[% IF c.check_user_roles('edit_erm_records') AND facets.subject %]
+ [% SET editing_enabled = 1 %]
+[% END %]
+
+
+[%# PROCESS browse_js.tt %]
+
+<div class="row-fluid" style="position: relative;">
+  <div id="facet-menu">[% PROCESS facet_menu.tt %]</div>
+  <div id="browse">
+
+    [% IF subject_description.length OR editing_enabled %]
+      <div id="browse-brief-subject_description" class="alert alert-info"><div id="browse-brief-subject_description-content">
+        [% subject_description || c.loc('No subject description.') %]
+      </div></div>
+    [% END %]
+
+    <div id="browse-resources">
+
+      [% IF facets.subject AND facets.size == 1 %]
+        <h2>[% c.loc('Top Resources') | html %]</h2>
+
+        <div id="browse-resources-top">
+
+          [%- SET record_index = 0 -%]
+          [% FOREACH record IN records %]
+            [%- LAST IF record.rank == 0 -%]
+            [%- SET record_index = record_index + 1 -%]
+            [% PROCESS display_record %]
+          [% END %]
+        </div>
+
+        [% IF record_index < records.size OR sorting_enabled %]
+          <h2>[% c.loc('Other Resources') | html %]</h2>
+
+          <div id="browse-resources-records-other">
+            [% WHILE record_index < records.size %]
+              [%- SET record = records.$record_index -%]
+              [%- SET record_index = record_index + 1 -%]
+              [% PROCESS display_record %]
+            [% END %]
+          </div>
+
+        [% END %]
+
+      [% ELSE %]
+
+        [% FOREACH record IN records %]
+          [% PROCESS display_record %]
+        [% END %]
+
+      [% END %]
+
+      [% IF records.size == 0 %]
+        <p>[% c.loc('No records found for your current search.') | html %]</p>
+      [% END %]
+
+    </div>
+  </div>
+
+</div>
+
+[% BLOCK display_record %]
+  [%- SET record_id = record.id -%]
+  <div class="resource" id="[% record_id %]">
+
+    <div class="browse-field-name [% record.open_access == 'yes' ? ' open-access' : '' %]">
+      <a href="[% c.uri_for_site( c.controller('Resource').action_for('resource'), [ record_id ] ) %]">[% record.result_name | html %][% IF record.vendor.length %] - [% record.vendor | html %][% END %]</a>
+    </div>
+
+    <div class="browse-field-description">[% record.description_brief %]</div>
+
+    [% IF record.alert %]
+      <div class="browse-field-alert">[% record.alert %]</div>
+    [% END %]
+
+    [% IF record.url %]
+      <div class="browse-url"><a class="btn btn-medium btn-primary" href="[% c.uri_for_site( c.controller('Resource').action_for('goto'), [ record_id ] ) %]">[% c.loc('Connect') | html %]</a></div>
+    [% ELSIF record.access %]
+      <div class="browse-access">[% c.loc('Access:') | html %] [% record.access %]</div>
+    [% END %]
+
+    [% IF c.check_user_roles('edit_erm_records') AND facets.subject AND facets.size == 1 %]
+      <div class="browse-rank-handle"><span style="cursor: move" class="handle">[ rank ]</span></div>
+    [% END %]
+  </div>
+[% END %]

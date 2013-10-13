@@ -1,0 +1,9 @@
+<div id="list-sites">
+<h2>CRDB Sites</h2>
+The following sites are active in CUFTS and may have CRDB data available:
+<ul>
+[% WHILE (site = sites_rs.next) %]
+ <li><a href="[% c.uri_for( c.controller('Root').action_for('site_index'), [ site.key ] ) | html %]">[% site.name | html %]</a></li>
+[% END %]
+</ul>
+</div>

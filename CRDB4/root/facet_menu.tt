@@ -1,0 +1,95 @@
+[% PROCESS facet_labels.tt %]
+[%# PROCESS facet_menu_js.tt %]
+
+
+[% PROCESS current_facets.tt %]
+
+<div id="facet-menu-container">
+
+ <h1>[% c.loc('Refine Your Search') | html %]</h1>
+
+ <div class="facet-menu well" id="facet-menu-title">
+  <div class="facet-menu-heading"><h2>[% facets.name ? c.loc('Change Title') : c.loc('Add Title') | html %]</h2></div>
+  <div class="facet-menu-content">
+   <form method="get" id="facet-title" action="[% c.uri_for_facets( undef, 'name' ) %]">
+    <select name="name" id="name-select">
+     <option value="">[% c.loc('Choose letter...') | html %]</option>
+     [% FOREACH letter IN [ 'A'..'Z' ] %]
+      <option value="[% letter %]" [% facets.name == letter ? 'selected="selected"' : '' %]>[% letter | html %]</option>
+     [% END %]
+     <option value="0-9">0-9</option>
+     <option value="">[% c.loc('All') | html %]</option>
+    </select>
+   </form>
+  </div>
+ </div>
+
+
+
+ <div class="facet-menu well" id="facet-menu-subjects">
+  <h2>[% facets.subject ? c.loc('Change Subject') : c.loc('Add Subject') | html %]</h2>
+  <div class="facet-menu-content">
+   <ul id="collapsable-subjects">
+   [%- SET collapse = 0 -%]
+   [% FOREACH subject_id IN subjects_order %]
+    [% SET subject = subjects.$subject_id %]
+    [% IF loop.count == 10 %]
+     [% SET collapse = 1 %]
+    [% END %]
+    <li[% IF collapse %] class="collapsable" style="display: none;" [% END %]><a href="[% c.uri_for_facets( [ 'subject', subject_id ] ) %]">[% subject | html %]</a></li>
+   [% END %]
+   </ul>
+   [% IF collapse %]
+    <div class="facet-menu-collapse-control"><a href="#" class="show-more">Show more</a></div>
+   [% END %]
+  </div>
+ </div>
+
+ <div class="facet-menu well" id="facet-menu-resource_type">
+  <h2>[% facets.resource_type ? c.loc('Change Resource Type') : c.loc('Add Resource Type') | html %]</h2>
+  <div class="facet-menu-content">
+   <ul id="collapsable-resource_types">
+   [% SET collapse = 0 %]
+   [% FOREACH resource_type_id IN resource_types_order %]
+    [% SET resource_type = resource_types.$resource_type_id %]
+    [% IF loop.count == 10 %]
+     [% SET collapse = 1 %]
+    [% END %]
+    <li[% IF collapse %] class="collapsable" style="display: none;"[% END %]><a href="[% c.uri_for_facets( [ 'resource_type', resource_type_id ] ) %]">[% resource_type %]</a></li>
+   [% END %]
+   </ul>
+   [% IF collapse %]
+    <div class="facet-menu-collapse-control"><a class="show-more" href="#">Show more</a></div>
+   [% END %]
+  </div>
+ </div>
+
+ <div class="facet-menu well" id="facet-menu-content_type">
+  <h2>[% facets.content_type ? c.loc('Change Content Type') : c.loc('Add Content Type') | html %]</h2>
+  <div class="facet-menu-content">
+   <ul id="collapsable-content_types">
+   [% SET collapse = 0 %]
+   [% FOREACH content_type_id IN content_types_order %]
+    [% SET content_type = content_types.$content_type_id %]
+    [% IF loop.count == 10 %]
+     [% SET collapse = 1 %]
+    [% END %]
+    <li[% IF collapse %] class="collapsable" style="display: none;"[% END %]><a href="[% c.uri_for_facets( [ 'content_type' content_type_id ] ) %]">[% content_type %]</a></li>
+   [% END %]
+   </ul>
+   [% IF collapse %]
+    <div class="facet-menu-collapse-control"><a class="show-more" href="#">Show more</a></div>
+   [% END %]
+  </div>
+ </div>
+
+ <div class="facet-menu well" id="facet-menu-keyword">
+  <h2>[% c.loc('By Keyword') | html %]</h2>
+  <div class="facet-menu-content">
+   <form id="keyword-form" action="[% c.uri_for_facets( undef, 'keyword' ) %]">
+    <input id="keyword-input" name="q" type="text" value="" />
+   </form>
+  </div>
+ </div>
+
+</div>

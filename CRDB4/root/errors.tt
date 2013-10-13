@@ -1,0 +1,10 @@
+[% RETURN UNLESS error.size %]
+<div class="alert alert-error">
+[% IF error.size > 0 %]
+ <ul>
+ [% FOREACH error_msg IN error %]
+  <li>[% error_msg | html %]</li>
+ [% END %]
+ </ul>
+[% END %]
+</div>

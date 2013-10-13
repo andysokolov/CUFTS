@@ -1,0 +1,22 @@
+[%#- PROCESS facet_lookups.tt -%]
+<div id="current-facets">
+ <h1>[% c.loc('Your Current Search') | html %]</h1>
+ [% IF facets.size %]
+  <dl>
+  [% FOREACH facet IN facets.keys %]
+   [% SET facet_value = facets.$facet %]
+   [% SET facet_lookup = facet _ "_lookup" %]
+   [% IF facet_labels.$facet.defined %]
+    <dt>[% facet_labels.$facet | html %]</dt>
+   [% END %]
+   [% SET display_value = $facet_lookup.$facet_value %]
+   <dd>
+    <a href="[% c.uri_for_facets( undef, facet ) %]" title="remove facet term"><i class="icon-remove"></i></a>
+    [% display_value.length ? display_value : facet_value | html %]
+   </dd>
+ [% END %]
+</dl>
+[% ELSE %]
+ [% c.loc('Showing all records') | html %]
+[% END %]
+</div>

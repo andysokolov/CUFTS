@@ -1,0 +1,10 @@
+[% RETURN UNLESS results.size %]
+<div class="alert alert-success">
+[% IF results.size > 0 %]
+ <ul>
+ [% FOREACH result IN results %]
+  <li>[% result | html %]</li>
+ [% END %]
+ </ul>
+[% END %]
+</div>
