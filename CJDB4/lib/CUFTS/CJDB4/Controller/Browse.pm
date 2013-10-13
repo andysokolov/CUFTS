@@ -66,7 +66,7 @@ sub titles :Chained('base') :PathPart('titles') :Args(0) {
     }
 
     # If a JSON response is wanted, create the results and return the JSON view
-	
+
     if ( defined($c->req->params->{format}) && $c->req->params->{format} eq 'json' ) {
         $c->stash->{json} = {
             total_count     => $c->stash->{journals_rs}->pager->total_entries,
@@ -151,6 +151,9 @@ sub subjects :Chained('base') :PathPart('subjects') :Args(0) {
 
     if ( $search_type eq 'startswith' ) {
         $cleaned_search_term .= '%';
+    }
+    elsif ( $search_type eq 'equals' ) {
+        # Legitimately do nothing - this is for documentation.
     }
     else {
         $cleaned_search_term = '%' . $cleaned_search_term . '%';
@@ -451,7 +454,7 @@ sub _journal_object_to_hash {
     my ( $c, $journal ) = @_;
     return {
         title               => $journal->result_title,
-        url                 => $c->uri_for_site( $c->controller('Journal')->action_for('view'), [ $journal->get_column('journals_auth') ] )->as_string,
+        url                 => $c->uri_for_site( $c->controller('Journal')->action_for('view'), $journal->get_column('journals_auth') )->as_string,
         journal_auth        => $journal->get_column('journals_auth'),
         issns               => defined($journal->issns) ? [ map { $_->issn } $journal->issns ] : undef,
         fulltext_coverages  => [ map { $_->fulltext_coverage } $journal->links ],
