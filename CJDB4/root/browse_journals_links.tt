@@ -14,23 +14,23 @@
 
    <li>
     <a href="[% link.url | html %]">
-    [%- IF coverage_strings.fulltext %][% coverage_strings.fulltext.replace('to',c.loc( 'to' )).replace('current',c.loc( 'current' )) %][% END -%]
-    [%- IF coverage_strings.print %][% c.loc( 'in print' ) %] [% coverage_strings.print %][% END -%]
-    [%- IF coverage_strings.citation %][% c.loc( 'citations' ) %] [% coverage_strings.citation %][% END -%]
+    [%- IF coverage_strings.fulltext %][% coverage_strings.fulltext.replace('to',c.loc('to')).replace('current',c.loc('current')) | html %][% END -%]
+    [%- IF coverage_strings.print %]in print [% coverage_strings.print %][% END -%]
+    [%- IF coverage_strings.citation %]citations [% coverage_strings.citation %][% END -%]
     </a>
-    [% c.loc( 'from' ) %] <br class="visible-phone" />
+    [% c.loc('from') | html %] <br class="visible-phone" />
     [%- PROCESS journals_link_name.tt -%]
 
     [%- IF link.journal_cjdb_note %]
-     <dl class="dl-horizontal>
-      <dt class="journal-note note">[% c.loc( 'Journal Note' ) %]:</dt>
-      <dd class="journal-note note">[% link.journal_cjdb_note | html %]</dd>
+     <dl class="dl-horizontal">
+        <dt class="journal-note note">[% c.loc('Journal Note:') | html %]</dt>
+        <dd class="journal-note note">[% link.journal_cjdb_note | html %]</dd>
      </dl>
     [%- END -%]
 
     [%- IF resource.cjdb_note %]
-     <dl class="dl-horizontal>
-      <dt class="resource-note note">[% c.loc( 'Resource Note' ) %]:</dt>
+     <dl class="dl-horizontal">
+      <dt class="resource-note note">[% c.loc('Resource Note:') | html %]</dt>
       <dd class="resource-note note">[% resource.cjdb_note | html %]</dd>
      </dl>
     [%- END %]
@@ -38,6 +38,6 @@
  [%- END -%]
   </ul>
  [% IF count == 0 %]
-  [% c.loc( 'No links are currently available for this journal' ) %].
+   [% c.loc('No links are currently available for this journal.') | html %]
  [% END %]
 </div>

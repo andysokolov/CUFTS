@@ -1,10 +1,10 @@
 [%- SWITCH viewing -%]
 [%- CASE 0 -%]
-private
+ [% c.loc('private') | html %]
 [%- CASE 1 -%]
-public
+ [% c.loc('public') | html %]
 [%- CASE 2 -%]
-local public
+ [% c.loc('local public') | html %]
 [%- CASE -%]
-error
+ [% c.loc('error') | html %]
 [%- END -%]

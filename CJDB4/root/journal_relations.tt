@@ -1,21 +1,21 @@
 [% SET journal_relations = journal.relations_rs %]
 [% IF journal_relations.count > 0 %]
  <div id="relations" class="details hidden-phone">
- 	<h3>[% c.loc( 'Related Journals' ) %]</h3>
+ 	<h3>[% c.loc('Related Journals') | html %]</h3>
   <ul>
     [% WHILE ( relation = journal_relations.next ) %]
    <div class="relation"><li>
    [%- SWITCH relation.relation -%]
     [% CASE 'preceeding' %]
-     [% c.loc( 'Continues' ) %]
+      [% c.loc('Continues') | html %]
     [% CASE 'succeeding' %]
-     [% c.loc( 'Continued by' ) %]
+      [% c.loc('Continued by') | html %]
     [% CASE 'other' %]
-      [% c.loc( 'Other edition' ) %]:
+      [% c.loc('Other edition:') | html %]
     [% END %]
     <a href="[% c.uri_for_site( c.controller('Browse').action_for('titles'), { browse_field =>'title', t => 'startswith', q => relation.title } ) | html %]">[% relation.title | html %]</a>
     [% IF relation.issn %]
-     (<a href="[% url("$url_base/browse/journals", browse_field='issn',search_terms=relation.issn) %]">[% relation.issn.substr(0,4) %]-[% relation.issn.substr(4,4) %]</a>)
+     (<a href="[% c.uri_for_site( c.controller('Browse').action_for('issns'), { q => relation.issn } ) | html %]">[% relation.issn.substr(0,4) %]-[% relation.issn.substr(4,4) %]</a>)
     [%- END -%]
    </li>
     [% END %]

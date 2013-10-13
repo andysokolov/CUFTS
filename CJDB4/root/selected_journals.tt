@@ -3,7 +3,7 @@
 [% SET sorted_keys = selected_journals_data.keys.sort %]
 [% SET midpoint = ((sorted_keys.size + 1) div 2) + 1%]
 
-<h3>Selected Journals</h3>
+<h3>[% c.loc('Selected Journals') | html %]</h3>
 
 <div id="selected-journals">
 <div class="selected-column-one"><ol>

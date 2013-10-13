@@ -6,5 +6,5 @@
  [%- CASE 2 -%]
   [%- resource.name -%]
  [%- CASE DEFAULT -%]
-[% c.loc( 'Unrecognized link type' ) %] [% link.link_type -%]
+  [% c.loc('Unrecognized link type') | html %] [% link.link_type -%]
 [%- END -%]

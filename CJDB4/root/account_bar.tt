@@ -1,10 +1,11 @@
+[% RETURN UNLESS c.has_site %]
 <div id="account-bar" class="hidden-phone">
 [% IF c.has_account %]
- Logged in as: <span class="account-name">[% c.account.name | html %]</span>
- <a href="[% c.uri_for_site( c.controller('Account').action_for('tags') )   | html %]">my tags</a> |
- <a href="[% c.uri_for_site( c.controller('Account').action_for('manage') ) | html %]">manage</a> |
- <a href="[% c.uri_for_site( c.controller('Account').action_for('logout') ) | html %]">logout</a>
+ [% c.loc('Logged in as:') | html %] <span class="account-name">[% c.account.name | html %]</span>
+ <a href="[% c.uri_for_site( c.controller('Account').action_for('tags') )   | html %]">[% c.loc('my tags') | html %]</a> |
+ <a href="[% c.uri_for_site( c.controller('Account').action_for('manage') ) | html %]">[% c.loc('manage') | html %]</a> |
+ <a href="[% c.uri_for_site( c.controller('Account').action_for('logout') ) | html %]">[% c.loc('logout') | html %]</a>
 [% ELSE %]
- <a href="[% c.uri_for_site( c.controller('Account').action_for('login') ) | html %]">login</a>
+ <a href="[% c.uri_for_site( c.controller('Account').action_for('login') ) | html %]">[% c.loc('login') | html %]</a>
 [% END %]
 </div>

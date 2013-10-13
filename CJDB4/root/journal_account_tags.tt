@@ -1,6 +1,6 @@
 [% RETURN UNLESS c.has_account %]
 <div id="journal-account-tags">
-  <h3>My Tags</h3>
+  <h3>[% c.loc('My Tags') | html %]</h3>
 
   <div id="journal-account-tags-existing">
     <ol class="tags">
@@ -17,10 +17,10 @@
    <div id="journal-account-tag-management" style="display: none;">
     <form method="post" class="form form-horizontal">
 
-      <h4>Existing Tags</h4>
+      <h4>[% c.loc('Existing Tags') | html %]</h4>
 
       <table class="table table-bordered tags">
-        <tr><th>delete</th><th>tag</th><th>viewing</th></tr>
+        <tr><th>[% c.loc('delete') | html %]</th><th>[% c.loc('tag') | html %]</th><th>[% c.loc('viewing') | html %]</th></tr>
 
         [% FOREACH tag IN account_tags %]
           <tr>
@@ -35,7 +35,7 @@
         [% END %]
       </table>
 
-      <h4>Add Tags</h4>
+      <h4>[% c.loc('Add Tags') | html %]</h4>
 
       <div class="control-group">
         <input type="text" name="new_tag" maxlength="1024" />

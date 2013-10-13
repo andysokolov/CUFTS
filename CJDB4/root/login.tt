@@ -1,12 +1,12 @@
 <form method="post" class="form-horizontal">
 <div class="control-group">
-	<label class="control-label" for="login_key">Login</label>
+	<label class="control-label" for="login_key">[% c.loc('Login') | html %]</label>
   <div class="controls">
     <input type="text" id="login_key" name="login_key">
   </div>
 </div>
 <div class="control-group">
-	<label class="control-label" for="login_password">Password</label>
+	<label class="control-label" for="login_password">[% c.loc('Password') | html %]</label>
   <div class="controls">
     <input type="password" id="login_password" name="login_password">
   </div>
@@ -14,7 +14,7 @@
 
  <div class="control-group">
   <div class="controls">
-    <button type="submit" class="btn">Sign in</button>
+    <button type="submit" class="btn">[% c.loc('Sign in') | html %]</button>
   </div>
 </div>
 </form>

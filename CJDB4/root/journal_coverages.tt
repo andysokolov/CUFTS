@@ -1,13 +1,13 @@
 [% PROCESS coverage_strings.tt coverage_strings={} %]
 
 [%- IF coverage_strings.print -%]
-  <span class="coverage print">[% c.loc( 'In print' ) %] <a href="[% link.url | html %]"><span class="coverage-string">[% coverage_strings.print | html_line_break %]</span></a></span>
+  <span class="coverage print">[% c.loc('In print') | html %] <a href="[% link.url | html %]"><span class="coverage-string">[% coverage_strings.print | html_line_break %]</span></a></span>
 [%- END -%]
 
 [% IF coverage_strings.fulltext %]
-  <span class="coverage fulltext">[% c.loc( 'Fulltext' ) %] <a href="[% link.url | html %]"><span class="coverage-string">[% fulltext_string.replace('to',c.loc( 'to' )).replace('current',c.loc( 'current' )) | html %]</span></a></span>
+  <span class="coverage fulltext">[% c.loc('Fulltext') | html %] <a href="[% link.url | html %]"><span class="coverage-string">[% fulltext_string.replace('to',c.loc('to')).replace('current',c.loc('current')) | html %]</span></a></span>
 [% END %]
 
 [%- IF coverage_strings.citation %]
-  <span class="coverage citation">[% c.loc( 'Citations and indexing' ) %] <a href="[% link.url | html %]"><span class="coverage-string">[% link.citation_coverage | html %]</span></a></span>
+  <span class="coverage citation">[% c.loc('Citations and indexing') | html %] <a href="[% link.url | html %]"><span class="coverage-string">[% link.citation_coverage | html %]</span></a></span>
 [% END -%]

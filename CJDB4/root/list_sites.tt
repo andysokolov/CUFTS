@@ -1,6 +1,6 @@
 <div id="list-sites">
-<h2>[% c.loc( 'CJDB Sites' ) %]</h2>
-[% c.loc( 'The following sites are active in CUFTS and may have CJDB data available' ) %]:
+<h2>[% c.loc('CJDB Sites') | html %]</h2>
+[% c.loc('The following sites are active in CUFTS and may have CJDB data available:') | html %]
 <ul>
 [% WHILE (site = sites_rs.next) %]
  <li><a href="[% c.uri_for( c.controller('Root').action_for('site_index'), [ site.key ] ) | html %]">[% site.name | html %]</a></li>

@@ -1,7 +1,7 @@
 [% RETURN IF !tags.size > 0 %]
 [%# tags format: [ tag name, level, count ] %]
 <div id="tags" class="hidden-phone">
-  <h3>Tags</h3>
+  <h3>[% c.loc('Tags') | html %]</h3>
   <ol class="tags">
   [% FOREACH tag IN tags %]
     <li>

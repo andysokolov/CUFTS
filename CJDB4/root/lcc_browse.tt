@@ -1,7 +1,7 @@
 [%- SET count1 = 0; SET count2 = 0; -%]
 <div id="lcc-browse">
 
-<h3>Journal Subjects</h3>
+<h3>[% c.loc('Journal Subjects') | html %]</h3>
 
 <ol class="lcc-browse1">
 
