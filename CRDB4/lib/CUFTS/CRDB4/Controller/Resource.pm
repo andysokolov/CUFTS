@@ -21,6 +21,13 @@ sub base :Chained('/site') :PathPart('resource') :CaptureArgs(0) {}
 sub load_resource :Chained('base') :PathPart('') :CaptureArgs(1) {
     my ( $self, $c, $resource_id ) = @_;
 
+    if ( $c->has_account && $c->account->has_role('edit_erm_records') ) {
+        $c->stash->{editing_enabled} = 1;
+        if ( exists $c->stash->{facets} && exists $c->stash->{facets}->{subject} && scalar(keys(%{$c->stash->{facets}})) == 1 ) {
+            $c->stash->{sorting_enabled} = 1;
+        }
+    }
+
     my $erm = $c->model('CUFTS::ERMMain')->find({
         id          => $resource_id,
         site        => $c->site->id,
@@ -46,6 +53,10 @@ sub goto : Chained('load_resource') PathPart('goto') Args(0) {
 
 sub resource :Chained('load_resource') :PathPart('') :Args(0) {
     my ( $self, $c ) = @_;
+
+    # Create links to subject searches
+    $c->stash->{subject_links} = [ map { [ $_->subject, $c->uri_for_site( $c->controller('Browse')->action_for('browse'), { subject => $_->id } ) ] }  
+                                    sort { $a->subject cmp $b->subject } $c->stash->{erm}->subjects ];
 
     $c->stash->{display_fields} = [
         $c->model('CUFTS::ERMDisplayFields')->search( { site => $c->site->id }, { order_by => 'display_order' } )->all

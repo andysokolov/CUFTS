@@ -83,26 +83,25 @@
  [% END %]
 
   <tr id="resource-[% field_name %]" class="[% has_data ? 'has_data' : 'no_data' %]">
-   [% IF !hide_label OR c.check_user_roles('edit_erm_records') %]
+   [% IF !hide_label OR editing_enabled %]
     <td id="resource-term-[% field_name %]" class="resource-field-label">[% field_label | html %]</td>
    [% END %]
-   [% IF c.check_user_roles('edit_erm_records') %]
+   [% IF editing_enabled %]
     [% IF display_field.staff_edit %]
-    <td class="resource-edit-control">
-      [% SET ajax_edit_URL = c.uri_for_site( c.controller('Resource::Field').action_for('edit'), [ erm.id ], field_name ) %]
+     <td class="resource-edit-control" data-url="[% c.uri_for_site( c.controller('Resource::Field').action_for('edit'), [ erm.id ], field_name ) | html %]" data-field="[% field_name | html %]">
       <span class="resource-edit-control-savecancel" style="display: none">
-       <a href="#" onClick="ajax_save_edit( '[% field_name %]', '[% ajax_edit_URL %]'); return false;" ><img class="icon" src="[% c.uri_for_image('tick.png') %]" alt="save" /></a>
-       <a href="#" onClick="ajax_cancel_edit( '[% field_name %]' ); return false;" ><img class="icon" src="[% c.uri_for_image('cross.png') %]" alt="cancel" /></a>
+       <a href="#" class="edit-save"><i class="icon icon-ok" title="save"></i></a>
+       <a href="#" class="edit-cancel"><i class="icon icon-remove" title="cancel"></i></a>
       </span>
       <span class="resource-edit-control-edit">
-       <a href="#" onClick="ajax_get_edit( '[% field_name %]', '[% ajax_edit_URL %]' ); return false;" ><img class="icon" src="[% c.uri_for_image('pencil.png') %]" alt="edit" /></a>
+       <a href="#" class="edit-edit"><i class="icon icon-pencil" title="edit"></i></a>
       </span>
      </td>
     [% ELSE %]
      <td></td>
     [% END %]
    [% END %]
-   <td id="resource-definition-[% field_name %]" class="resource-field-data" [% IF hide_label AND !c.check_user_roles('edit_erm_records') %]colspan="3"[% END %]>
+   <td id="resource-definition-[% field_name %]" class="resource-field-data" [% IF hide_label AND !editing_enabled %]colspan="3"[% END %]>
     <div class="field-data">
      [% field_data %]&nbsp;
     </div>

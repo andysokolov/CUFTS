@@ -1,0 +1,1 @@
+<form><input class="edit-in-place" type="text" name="[% field %]" value="[% value | html %]" /><input type="hidden" name="update_value" value="1" /></form>

@@ -28,11 +28,11 @@ use Catalyst qw/
     Session::State::Cookie
     Cache
     Cache::Store::FastMmap
-    Authentication
-    Authorization::Roles
     FormValidator
 	I18N
 /;
+    # Authentication
+    # Authorization::Roles
 
 extends 'Catalyst';
 
@@ -98,6 +98,14 @@ sub uri_for_static {
     return $c->uri_for( '/static', @_ );
 }
 
+# TODO: Make pay attention to sandbox flag
+sub uri_for_site_static {
+    my $c = shift;
+    my @path = ( '/sites', $c->site->id, 'static', 'active', @_ );
+
+    return $c->uri_for( @path );
+}
+
 sub uri_for_facets {
     my ( $c, $add, $remove ) = @_;
 
@@ -115,6 +123,26 @@ sub uri_for_facets {
     }
 
     return $c->uri_for_site( $c->controller->action_for('browse'), \%new_facets );
+}
+
+sub assert_user_role {
+    my ($c, $role) = @_;
+
+    if ( !$c->has_site || !$c->has_account || !$c->account->has_role($role) ) {
+        $c->forward( $c->controller('Root')->action_for('not_allowed') );
+        $c->detach;
+    }
+}
+
+sub assert_user_role_json {
+    my ($c, $role) = @_;
+
+    if ( !$c->has_site || !$c->has_account || !$c->account->has_role($role) ) {
+        $c->stash->{json}->{message} = $c->loc('User does not have the appropriate role.');
+        $c->stash->{json}->{success} = 0;
+        $c->forward( 'View::JSON' );
+        $c->detach;
+    }
 }
 
 

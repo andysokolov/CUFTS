@@ -1,71 +1,74 @@
-[% IF c.check_user_roles('edit_erm_records') AND facets.subject AND facets.size == 1 %]
- [% SET sorting_enabled = 1 %]
+[% IF c.account.has_role('edit_erm_records') %]
+  [% SET editing_enabled = 1 %]
+  [% IF facets.subject AND facets.size == 1 %]
+    [% SET sorting_enabled = 1 %]
+  [% END %]
 [% END %]
-[% IF c.check_user_roles('edit_erm_records') AND facets.subject %]
- [% SET editing_enabled = 1 %]
-[% END %]
-
 
 [%# PROCESS browse_js.tt %]
 
-<div class="row-fluid" style="position: relative;">
+<div class="row-fluid">
   <div id="facet-menu">[% PROCESS facet_menu.tt %]</div>
-  <div id="browse">
+  <div id="browse" [% IF sorting_enabled %]data-subject="[% facets.subject %]"[% END %]>
 
-    [% IF subject_description.length OR editing_enabled %]
-      <div id="browse-brief-subject_description" class="alert alert-info"><div id="browse-brief-subject_description-content">
+    [% IF subject_description.length OR sorting_enabled %]
+      <div id="browse-brief-subject_description" class="alert alert-info">
+        [% IF sorting_enabled %]<a href="#" class="edit-browse-subject"><i class="icon-pencil"></i></a>[% END %]
+        <div id="browse-brief-subject_description-content">
         [% subject_description || c.loc('No subject description.') %]
       </div></div>
     [% END %]
 
-    <div id="browse-resources">
+    [% IF facets.subject AND facets.size == 1 %]
 
-      [% IF facets.subject AND facets.size == 1 %]
-        <h2>[% c.loc('Top Resources') | html %]</h2>
+      <h2>[% c.loc('Top Resources') | html %]</h2>
+      <ol class="browse-resources browse-resources-top [% IF sorting_enabled %]sortable[% END %]">
 
-        <div id="browse-resources-top">
+        [%- SET record_index = 0 -%]
+        [% FOREACH record IN records %]
+          [%- LAST IF record.rank == 0 -%]
+          [%- SET record_index = record_index + 1 -%]
+          [% PROCESS display_record %]
+        [% END %]
+      </ol>
 
-          [%- SET record_index = 0 -%]
-          [% FOREACH record IN records %]
-            [%- LAST IF record.rank == 0 -%]
+
+      [% IF record_index < records.size OR sorting_enabled %]
+        <h2>[% c.loc('Other Resources') | html %]</h2>
+        <ol class="browse-resources browse-resources-other [% IF sorting_enabled %]sortable[% END %]">
+
+          [% WHILE record_index < records.size %]
+            [%- SET record = records.$record_index -%]
             [%- SET record_index = record_index + 1 -%]
             [% PROCESS display_record %]
           [% END %]
-        </div>
 
-        [% IF record_index < records.size OR sorting_enabled %]
-          <h2>[% c.loc('Other Resources') | html %]</h2>
+        </ol>
 
-          <div id="browse-resources-records-other">
-            [% WHILE record_index < records.size %]
-              [%- SET record = records.$record_index -%]
-              [%- SET record_index = record_index + 1 -%]
-              [% PROCESS display_record %]
-            [% END %]
-          </div>
+      [% END %]
 
-        [% END %]
+    [% ELSE %]
 
-      [% ELSE %]
-
+      <ol class="browse-resources">
         [% FOREACH record IN records %]
           [% PROCESS display_record %]
         [% END %]
+      </ol>
 
-      [% END %]
+    [% END %]
 
-      [% IF records.size == 0 %]
-        <p>[% c.loc('No records found for your current search.') | html %]</p>
-      [% END %]
+    [% IF records.size == 0 %]
+      <p>[% c.loc('No records found for your current search.') | html %]</p>
+    [% END %]
 
-    </div>
   </div>
 
 </div>
 
 [% BLOCK display_record %]
   [%- SET record_id = record.id -%]
-  <div class="resource" id="[% record_id %]">
+  <li class="resource" id="[% record_id %]" data-resource="[% record_id %]">
+    [% IF sorting_enabled %]<i class="sortable-icon icon-resize-vertical"></i>[% END %]
 
     <div class="browse-field-name [% record.open_access == 'yes' ? ' open-access' : '' %]">
       <a href="[% c.uri_for_site( c.controller('Resource').action_for('resource'), [ record_id ] ) %]">[% record.result_name | html %][% IF record.vendor.length %] - [% record.vendor | html %][% END %]</a>
@@ -83,8 +86,5 @@
       <div class="browse-access">[% c.loc('Access:') | html %] [% record.access %]</div>
     [% END %]
 
-    [% IF c.check_user_roles('edit_erm_records') AND facets.subject AND facets.size == 1 %]
-      <div class="browse-rank-handle"><span style="cursor: move" class="handle">[ rank ]</span></div>
-    [% END %]
-  </div>
+  </li>
 [% END %]

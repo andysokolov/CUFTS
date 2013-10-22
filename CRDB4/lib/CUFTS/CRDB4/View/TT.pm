@@ -9,6 +9,22 @@ __PACKAGE__->config(
     render_die => 1,
 );
 
+$Template::Stash::LIST_OPS->{ in } = sub {
+	my ($list, $val, $field) = @_;
+	return 0 unless scalar(@$list);
+	defined($val) or
+		die("Value to match on not passed into 'in' virtual method");
+
+	if (defined($field) && $field ne '') {
+		no strict 'refs';
+		return((grep { (ref($_) eq 'HASH' ?
+		                  $_->{$field} :
+				  $_->$field()) eq $val} @$list) ? 1 : 0);
+	} else {
+		return((grep {$_ eq $val} @$list) ? 1 : 0);
+	}
+};
+
 =head1 NAME
 
 CUFTS::CRDB4::View::TT - TT View for CUFTS::CRDB4

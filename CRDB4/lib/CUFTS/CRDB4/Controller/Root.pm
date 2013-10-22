@@ -63,6 +63,7 @@ sub site :Chained('/') :PathPart('') :CaptureArgs(1) {
         $c->account($account);
     }
 
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('browse') ), $c->loc('Electronic Resources') ];
 }
 
 
@@ -140,6 +141,13 @@ sub default :Path {
     my ( $self, $c ) = @_;
     $c->response->body( 'Page not found' );
     $c->response->status(404);
+}
+
+
+sub not_allowed :Private {
+    my ( $self, $c ) = @_;
+
+    $c->stash->{template} = 'not_allowed.tt';
 }
 
 =head2 end

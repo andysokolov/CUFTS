@@ -1,85 +1,234 @@
+String.prototype.escape_html = function() {
+    return this.replace(/&/g, "&amp;")
+               .replace(/</g, "&lt;")
+               .replace(/>/g, "&gt;")
+               .replace(/"/g, "&quot;");
+}
+
 $().ready( function() {
 
-  $('#name-select').bind('change', function(e) {
-    $(this).parent().submit();
-  });
+    $('#name-select').bind('change', function(e) {
+        $(this).parent().submit();
+    });
 
-  $('.show-more').bind('click', function(e) {
-    $(this).parents('.facet-menu').find('.collapsable').show();
-    $(this).hide();
-  });
+    $('.show-more').bind('click', function(e) {
+        $(this).parents('.facet-menu').find('.collapsable').show();
+        $(this).hide();
+    });
+
+    $('.browse-resources.sortable').sortable({
+        group: 'browse-resources',
+        nested: false,
+        onDragStart: function(item, container, _super) {
+            var offset = item.offset(),
+                pointer = container.rootGroup.pointer
+
+            adjustment = {
+                left: pointer.left - offset.left,
+                top: pointer.top - offset.top
+            }
+
+            _super(item, container)
+        },
+        onDrag: function(item, position) {
+            item.css({
+                left: position.left - adjustment.left,
+                top: position.top - adjustment.top
+            });
+        },
+        onDrop: function(item, container, _super) {
+            var top = $('.browse-resources-top').find('li').map(
+                function() { return $(this).data('resource'); }
+            ).get();
+
+            var other = $('.browse-resources-other').find('li').map(
+                function() { return $(this).data('resource'); }
+            ).get();
+
+            var subject = $('#browse').data('subject');
+
+            $.ajax({
+                type: 'POST',
+                url: CRDB.URLs.rerank,
+                dataType: 'json',
+                traditional: true,
+                data: {
+                    subject: subject,
+                    resource_order: top,
+                    resource_other: other
+                },
+                success: function( data ) {
+                    $('#browse .results').remove();
+                    if ( data.success ) {
+                        $('#browse').prepend( $('<div />').addClass('alert alert-success results').text(data.message) );
+                    }
+                    else {
+                        $('#browse').prepend( $('<div />').addClass('alert alert-error results').text(data.message) );
+                    }
+                }
+            });
+
+            _super(item, container);
+        }
+
+    });
+
+    $('.edit-browse-subject').bind( 'click', function(event) {
+
+        event.preventDefault();
+
+        $.ajax({
+            type: 'POST',
+            url:  CRDB.URLs.subject_description,
+            dataType: 'json',
+            data: {
+                subject_id: $('#browse').data('subject')
+            },
+            success: function( data ) {
+
+                var subject_description = data.subject_description ? data.subject_description.escape_html() : '';
+
+                var content_field = $('#browse-brief-subject_description-content');
+                $('#browse-brief-subject_description-edit').remove();
+                var edit_field = $('<div />')
+                    .attr('id', 'browse-brief-subject_description-edit')
+                    .append( '<textarea id="browse-brief-subject_description-textarea" rows="5">' + subject_description + '</textarea><br />' )
+                    .append( '<button class="btn" id="browse-brief-subject_description-submit">save</button> ' )
+                    .append( '<button class="btn" id="browse-brief-subject_description-cancel">cancel</button>' )
+                    .insertAfter(content_field);
+                content_field.hide();
+
+                $('#browse-brief-subject_description-textarea')[0].focus();
+
+                $('#browse-brief-subject_description-submit').bind( 'click', function(event) {
+                    event.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url:  CRDB.URLs.subject_description,
+                        dataType: 'json',
+                        data: {
+                            subject_id: $('#browse').data('subject'),
+                            subject_description: $('#browse-brief-subject_description-textarea').val(),
+                            change: 1
+                        },
+                        success: function( new_data ) {
+                            $('#browse .results').remove();
+                            if ( new_data.success ) {
+                                content_field.empty().append( new_data.subject_description ? new_data.subject_description : 'No subject description.' ).show();
+                                edit_field.hide().remove();
+                                $('#browse').prepend( $('<div />').addClass('alert alert-success results').text(new_data.message) );
+                            } else {
+                                $('#browse').prepend( $('<div />').addClass('alert alert-error results').text(new_data.message) );
+                            }
+                        }
+                    });
+                });
+
+                 /* Cancel button - empty the div tag and put back the regular description */
+
+                $( '#browse-brief-subject_description-cancel' ).bind( 'click', function(event) {
+                    event.preventDefault();
+                    content_field.empty().append( data.subject_description ? data.subject_description : 'No subject description.' ).show();
+                    edit_field.hide().remove();
+                });
+
+            }
+        });
+
+    });
+
+    $('.resource-fields').on( 'click', 'a.edit-edit', function(event) {
+
+        event.preventDefault();
+
+        var control = $(this).parents('td.resource-edit-control');
+        var url     = control.data('url');
+        var field   = control.data('field');
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            dataType: 'html',
+            success: function( html ) {
+                $('#resource-definition-' + field).find('.field-data').hide();
+
+                $('#resource-definition-' + field).append(
+                    '<div class="field-editing">' + html + '</div>'
+                );
+
+                $('#resource-' + field).find('.resource-edit-control-savecancel').show();
+                $('#resource-' + field).find('.resource-edit-control-edit').hide();
+
+           }
+        });
+
+    });
+
+    $('.resource-fields').on( 'click', 'a.edit-cancel', function(event) {
+
+        event.preventDefault();
+
+        var control = $(this).parents('td.resource-edit-control');
+        var field   = control.data('field');
+
+        $('#resource-definition-' + field).find('.field-editing').remove();
+        $('#resource-definition-' + field).find('.field-data').show();
+
+        $('#resource-' + field).find('.resource-edit-control-savecancel').hide();
+        $('#resource-' + field).find('.resource-edit-control-edit').show();
+
+    });
+
+    $('.resource-fields').on( 'click', 'a.edit-save', function(event) {
+
+        event.preventDefault();
+
+        var control = $(this).parents('td.resource-edit-control');
+        var url     = control.data('url');
+        var field   = control.data('field');
+
+        var editfield = $('#resource-definition-' + field + ' .validate');
+        if ( editfield.length == 1 ) {
+            if ( !validate_field(editfield) ) {
+                return;
+            }
+        }
+
+        $.ajax({
+           type: 'POST',
+           url: url,
+           data: $('#resource-definition-' + field).find('.field-editing form').serialize(),
+           success: function( html ) {
+               $('#resource-' + field).replaceWith( html );
+
+               $('#resource-' + field).find('.resource-edit-control-savecancel').hide();
+               $('#resource-' + field).find('.resource-edit-control-edit').show();
+
+               hide_nodata_fields();
+
+                $('#resource .results').remove();
+                $('#resource').prepend( $('<div />').addClass('alert alert-success results').text('Updated field data.') );
+
+           }
+        });
+
+    });
+
+    hide_nodata_fields();
 
 });
 
 var CRDB = {};
 CRDB.show_nodata_fields = 0;
 
-
 function toggle_nodata_fields( ) {
     CRDB.show_nodata_fields = !CRDB.show_nodata_fields;
-    nodata_fields();
+    hide_nodata_fields();
 }
 
-function nodata_fields( ) {
+function hide_nodata_fields() {
     $('.no_data').each( function(i) {
         this.style.display = CRDB.show_nodata_fields ? '' : 'none';
-    });
-}
-
-$( function ( ) {
-    nodata_fields();
-} );
-
-
-function ajax_get_edit( field, url ) {
-    $.ajax({
-        type: 'GET',
-        url: url,
-        dataType: 'html',
-        success: function( html ) {
-            $('#resource-definition-' + field).find('.field-data').hide();
-
-            $('#resource-definition-' + field).append(
-                '<div class="field-editing">' + html + '</div>'
-            );
-
-            $('#resource-' + field).find('.resource-edit-control-savecancel').show();
-            $('#resource-' + field).find('.resource-edit-control-edit').hide();
-
-       }
-    });
-}
-
-function ajax_cancel_edit( field ) {
-    $('#resource-definition-' + field).find('.field-editing').remove();
-    $('#resource-definition-' + field).find('.field-data').show();
-
-    $('#resource-' + field).find('.resource-edit-control-savecancel').hide();
-    $('#resource-' + field).find('.resource-edit-control-edit').show();
-
-}
-
-function ajax_save_edit( field, url ) {
-
-    var editfield = $('#resource-definition-' + field + ' .validate');
-    if ( editfield.length == 1 ) {
-        if ( !validate_field(editfield) ) {
-            return;
-        }
-    }
-
-    $.ajax({
-       type: 'POST',
-       url: url,
-       data: $('#resource-definition-' + field).find('.field-editing form').serialize(),
-       success: function( html ) {
-           $('#resource-' + field).replaceWith( html );
-
-           $('#resource-' + field).find('.resource-edit-control-savecancel').hide();
-           $('#resource-' + field).find('.resource-edit-control-edit').show();
-
-           nodata_fields();
-       }
     });
 }
 
@@ -109,49 +258,4 @@ function validate_field( field ) {
         }
     }
 
-}
-
-function delete_subject( subject_id ) {
-    CRDB.to_delete[ subject_id ] = 1;
-    CRDB.to_add[ subject_id ] = 0;
-
-    $('#edit-subjects-add').addOption( subject_id, CRDB.all_subjects[subject_id], false ).sortOptions();
-    $('div#edit-all-subjects-' + subject_id).hide();
-
-    update_subject_fields();
-
-    return false;
-}
-
-function add_subject() {
-    var subject_id = $('#edit-subjects-add').find("option:selected")[0].value;
-
-    CRDB.to_delete[ subject_id ] = 0;
-    CRDB.to_add[ subject_id ] = 1;
-
-    $('#edit-subjects-add').removeOption( subject_id, false );
-    $('div#edit-all-subjects-' + subject_id).show();
-
-    update_subject_fields();
-
-    return false;
-}
-
-function update_subject_fields() {
-    var key;
-    var array = new Array();
-    for (key in CRDB.to_add) {
-        if ( CRDB.to_add[key] ) {
-            array.push(key)
-        }
-    }
-    $('#edit-subjects-add-field').val( array.join(',') );
-
-    array = new Array();
-    for (key in CRDB.to_delete) {
-        if ( CRDB.to_delete[key] ) {
-            array.push(key)
-        }
-    }
-    $('#edit-subjects-delete-field').val( array.join(',') );
 }

@@ -1,3 +1,4 @@
+[%- IF no_wrap %][% content %][% RETURN %][% END -%]
 <!DOCTYPE html>
 <html lang="en">
 [%- PROCESS site_setup.tt -%]
@@ -27,14 +28,20 @@
 [%- PROCESS page_title.tt -%]
 [%- PROCESS errors.tt -%]
 [%- PROCESS results.tt -%]
+<div id="content-spacer"></div>
 [%- content -%]
 </div>
 
 [% PROCESS page_footer.tt %]
 </div></div>
+<script src="[% c.uri_for_static('bootstrap/js/bootstrap.min.js') | html %]"></script>
+<script src="[% c.uri_for_static('js/jquery-sortable.js') | html %]"></script>
+<script src="[% c.uri_for_static('js/crdb.js') | html %]"></script>
 [% IF c.site %]
 <script>
-	var URLs = {
+	CRDB.URLs = {
+		rerank: "[% c.uri_for_site( c.controller('Resources').action_for('rerank') ) %]",
+		subject_description: "[% c.uri_for_site( c.controller('Resources').action_for('subject_description') ) %]",
 		data: {
 			ISSN: '[%# c.uri_for_site( c.controller('Data').action_for('issns') ) | html %]',
 			tag: '[%# c.uri_for_site( c.controller('Data').action_for('tags') ) | html %]'
@@ -42,7 +49,5 @@
 	};
 </script>
 [% END %]
-<script src="[% c.uri_for_static('bootstrap/js/bootstrap.min.js') | html %]"></script>
-<script src="[% c.uri_for_static('js/crdb.js') | html %]"></script>
 </body>
 </html>

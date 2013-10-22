@@ -148,6 +148,9 @@ ul.breadcrumb {
     margin: 10px 15px 10px 15px;
 }
 
+.facet-menu-content select {
+    margin-bottom: 0;
+}
 
 .facet-menu {
     position: relative;
@@ -155,6 +158,11 @@ ul.breadcrumb {
 
 #current-facets {
     margin-bottom: 10px;
+}
+
+#current-facets dd {
+    text-indent: -19px;
+    margin-left: 25px;
 }
 
 .facet-menu-collapse-control {
@@ -166,6 +174,12 @@ ul.breadcrumb {
 #browse h2 {
     font-size: 20px;
     margin: 2px 0;
+}
+
+ol.browse-resources, ol.browse-resources li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
 #browse-brief-subject_description {
@@ -204,6 +218,54 @@ ul.breadcrumb {
     margin: 0px;
 }
 
+/* Browse list editing */
+
+#browse-brief-subject_description {
+    position: relative;
+}
+
+.edit-browse-subject {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    color: #9da0a4;
+    -webkit-border-radius: 0 4px 0 4px;
+    -moz-border-radius: 0 4px 0 4px;
+    border-radius: 0 4px 0 4px;
+}
+
+.sortable-icon {
+    float: right;
+    padding: 3px 3px;
+}
+
+
+body.dragging, body.dragging * {
+  cursor: move !important;
+}
+
+.dragged {
+  position: absolute;
+  opacity: 0.5;
+  z-index: 2000;
+}
+
+ol.browse-resources li.placeholder {
+  position: relative;
+}
+ol.browse-resources li.placeholder:before {
+  position: absolute;
+}
+
+#browse-brief-subject_description-textarea {
+    width: 95%;
+}
+
 /* Resource */
 
 #resource td {
@@ -221,6 +283,16 @@ ul.breadcrumb {
     white-space: nowrap;
 }
 
+/* Field Editing */
+
+.field-editing textarea {
+    width: 80%;
+    height: 5.5em;
+}
+
+.field-editing form {
+    margin-bottom: 0;
+}
 
 /* Icon overrides */
 
