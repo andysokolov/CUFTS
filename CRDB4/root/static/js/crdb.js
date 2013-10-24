@@ -7,7 +7,7 @@ String.prototype.escape_html = function() {
 
 $().ready( function() {
 
-    $('#name-select').bind('change', function(e) {
+    $('#facet-menu select, #facet-menu input').bind('change', function(e) {
         $(this).parent().submit();
     });
 

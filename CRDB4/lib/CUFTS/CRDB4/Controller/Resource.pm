@@ -35,6 +35,7 @@ sub load_resource :Chained('base') :PathPart('') :CaptureArgs(1) {
     });
 
     $c->stash->{erm} = $erm;
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Resource')->action_for('resource'), [ $resource_id ] ), $erm->main_name ];
 }
 
 sub goto : Chained('load_resource') PathPart('goto') Args(0) {

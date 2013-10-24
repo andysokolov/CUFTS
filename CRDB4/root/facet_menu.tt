@@ -9,27 +9,28 @@
  <h1>[% c.loc('Refine Your Search') | html %]</h1>
 
  <div class="facet-menu well" id="facet-menu-title">
-  <div class="facet-menu-heading"><h2>[% facets.name ? c.loc('Change Title') : c.loc('Add Title') | html %]</h2></div>
+  <h2><span class="hidden-phone">[% facets.name ? c.loc('Change ') : c.loc('Add ') | html %]</span>[% c.loc('Title') | html %]</h2>
   <div class="facet-menu-content">
-   <form method="get" id="facet-title" action="[% c.uri_for_facets( undef, 'name' ) %]">
+
+   <form method="post" id="facet-title" action="[% c.uri_for_facets( undef, 'name' ) %]">
     <select name="name" id="name-select">
-     <option value="">[% c.loc('Choose letter...') | html %]</option>
+     <option value="">[% c.loc('All') | html %]</option>
      [% FOREACH letter IN [ 'A'..'Z' ] %]
       <option value="[% letter %]" [% facets.name == letter ? 'selected="selected"' : '' %]>[% letter | html %]</option>
      [% END %]
-     <option value="0-9">0-9</option>
-     <option value="">[% c.loc('All') | html %]</option>
+     <option value="0-9" [% facets.name == '0-9' ? 'selected="selected"' : '' %]>0-9</option>
     </select>
    </form>
+
   </div>
  </div>
 
 
 
  <div class="facet-menu well" id="facet-menu-subjects">
-  <h2>[% facets.subject ? c.loc('Change Subject') : c.loc('Add Subject') | html %]</h2>
+  <h2><span class="hidden-phone">[% facets.subject ? c.loc('Change ') : c.loc('Add ') | html %]</span>[% c.loc('Subject') | html %]</h2>
   <div class="facet-menu-content">
-   <ul id="collapsable-subjects">
+   <ul id="collapsable-subjects" class="hidden-phone">
    [%- SET collapse = 0 -%]
    [% FOREACH subject_id IN subjects_order %]
     [% SET subject = subjects.$subject_id %]
@@ -40,15 +41,26 @@
    [% END %]
    </ul>
    [% IF collapse %]
-    <div class="facet-menu-collapse-control"><a href="#" class="show-more">Show more</a></div>
+    <div class="facet-menu-collapse-control hidden-phone"><a href="#" class="show-more">[% c.loc('Show more') | html %]</a></div>
    [% END %]
+
+   <form method="post" id="facet-subject" action="[% c.uri_for_facets( undef, 'subject' ) %]" class="visible-phone">
+    <select name="subject" id="subject-select">
+     <option value="">[% c.loc('All') | html %]</option>
+     [% FOREACH subject_id IN subjects_order %]
+      [% SET subject = subjects.$subject_id %]
+       <option value="[% subject_id %]" [% facets.subject == subject_id ? 'selected="selected"' : '' %]>[% subject | html %]</option>
+     [% END %]
+    </select>
+   </form>
+
   </div>
  </div>
 
- <div class="facet-menu well" id="facet-menu-resource_type">
-  <h2>[% facets.resource_type ? c.loc('Change Resource Type') : c.loc('Add Resource Type') | html %]</h2>
+ <div class="facet-menu well hidden-phone" id="facet-menu-resource_type">
+  <h2><span class="hidden-phone">[% facets.resource_type ? c.loc('Change ') : c.loc('Add ') | html %]</span>[% c.loc('Resource Type') | html %]</h2>
   <div class="facet-menu-content">
-   <ul id="collapsable-resource_types">
+   <ul id="collapsable-resource_types" class="hidden-phone">
    [% SET collapse = 0 %]
    [% FOREACH resource_type_id IN resource_types_order %]
     [% SET resource_type = resource_types.$resource_type_id %]
@@ -59,35 +71,58 @@
    [% END %]
    </ul>
    [% IF collapse %]
-    <div class="facet-menu-collapse-control"><a class="show-more" href="#">Show more</a></div>
+    <div class="facet-menu-collapse-control hidden-phone"><a class="show-more" href="#">[% c.loc('Show more') | html %]</a></div>
    [% END %]
+
+   <form method="post" id="facet-resource_types" action="[% c.uri_for_facets( undef, 'resource_type' ) %]" class="visible-phone">
+    <select name="resource_types" id="resource_types-select">
+     <option value="">[% c.loc('All') | html %]</option>
+     [% FOREACH resource_type_id IN resource_types_order %]
+      [% SET resource_type = resource_types.$resource_type_id %]
+       <option value="[% resource_type_id %]" [% facets.resource_type == resource_type_id ? 'selected="selected"' : '' %]>[% resource_type | html %]</option>
+     [% END %]
+    </select>
+   </form>
+
   </div>
  </div>
 
- <div class="facet-menu well" id="facet-menu-content_type">
-  <h2>[% facets.content_type ? c.loc('Change Content Type') : c.loc('Add Content Type') | html %]</h2>
+ <div class="facet-menu well hidden-phone" id="facet-menu-content_type">
+  <h2><span class="hidden-phone">[% facets.content_type ? c.loc('Change ') : c.loc('Add ') | html %]</span>[% c.loc('Content Type') | html %]</h2>
   <div class="facet-menu-content">
-   <ul id="collapsable-content_types">
+   <ul id="collapsable-content_types" class="hidden-phone">
    [% SET collapse = 0 %]
    [% FOREACH content_type_id IN content_types_order %]
     [% SET content_type = content_types.$content_type_id %]
     [% IF loop.count == 10 %]
      [% SET collapse = 1 %]
     [% END %]
-    <li[% IF collapse %] class="collapsable" style="display: none;"[% END %]><a href="[% c.uri_for_facets( [ 'content_type' content_type_id ] ) %]">[% content_type %]</a></li>
+    <li[% IF collapse %] class="collapsable" style="display: none;"[% END %]><a href="[% c.uri_for_facets( [ 'content_type' content_type_id ] ) | html %]">[% content_type | html %]</a></li>
    [% END %]
    </ul>
    [% IF collapse %]
-    <div class="facet-menu-collapse-control"><a class="show-more" href="#">Show more</a></div>
+    <div class="facet-menu-collapse-control hidden-phone"><a class="show-more" href="#">[% c.loc('Show more') | html %]</a></div>
    [% END %]
+
+   <form method="post" id="facet-content_type" action="[% c.uri_for_facets( undef, 'content_type' ) | html %]" class="visible-phone">
+    <select name="content_types" id="content_type-select">
+     <option value="">[% c.loc('All') | html %]</option>
+     [% FOREACH content_type_id IN content_types_order %]
+      [% SET content_type = content_types.$content_type_id %]
+       <option value="[% content_type_id %]" [% facets.content_type == content_type_id ? 'selected="selected"' : '' %]>[% content_type | html %]</option>
+     [% END %]
+    </select>
+   </form>
+
+
   </div>
  </div>
 
  <div class="facet-menu well" id="facet-menu-keyword">
-  <h2>[% c.loc('By Keyword') | html %]</h2>
+  <h2>[% c.loc('Keyword') | html %]</h2>
   <div class="facet-menu-content">
-   <form id="keyword-form" action="[% c.uri_for_facets( undef, 'keyword' ) %]">
-    <input id="keyword-input" name="q" type="text" value="" />
+   <form method="post" id="keyword-form" action="[% c.uri_for_facets( undef, 'keyword' ) | html %]">
+    <input id="keyword-input" name="keyword" type="text" value="[% facets.keyword | html %]" />
    </form>
   </div>
  </div>

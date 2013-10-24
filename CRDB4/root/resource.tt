@@ -9,11 +9,11 @@
 
   [% IF editing_enabled %]<a href="#toggle" onClick="toggle_nodata_fields(); return false;">toggle empty fields</a>[% END %]
 
-  <table class="resource-fields">
+  <dl id="resource-fields">
     [% FOREACH display_field IN display_fields %]
       [% PROCESS display_field.tt | trim %]
     [% END %]
-  </table>
+  </dl>
 </div>
 
 

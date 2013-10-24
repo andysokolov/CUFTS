@@ -1,5 +1,5 @@
 [%#- PROCESS facet_lookups.tt -%]
-<div id="current-facets">
+<div id="current-facets" class="hidden-phone">
  <h1>[% c.loc('Your Current Search') | html %]</h1>
  [% IF facets.size %]
   <dl>

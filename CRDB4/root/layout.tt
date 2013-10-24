@@ -6,8 +6,8 @@
  <title>[% c.loc('Electronic Resources') | html %]</title>
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
  <link href="[% c.uri_for_static('bootstrap/css/bootstrap.min.css') | html %]" rel="stylesheet" media="screen" />
- <link href="[% c.uri_for_static('css/crdb.css') | html %]" rel="stylesheet" media="screen" />
  <link href="[% c.uri_for_static('bootstrap/css/bootstrap-responsive.min.css') | html %]" rel="stylesheet" media="screen" />
+ <link href="[% c.uri_for_static('css/crdb.css') | html %]" rel="stylesheet" media="screen" />
  <script src="[% c.uri_for_static('js/jquery-1.10.1.min.js') | html %]"></script>
  [% FOREACH css IN extra_css %]
   <link href="[% css | html %]" rel="stylesheet" media="screen" />

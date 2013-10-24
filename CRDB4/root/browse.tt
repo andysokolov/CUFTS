@@ -11,9 +11,9 @@
   <div id="facet-menu">[% PROCESS facet_menu.tt %]</div>
   <div id="browse" [% IF sorting_enabled %]data-subject="[% facets.subject %]"[% END %]>
 
-    [% IF subject_description.length OR sorting_enabled %]
+    [% IF ( facets.subject AND facets.size == 1 AND subject_description.length ) OR sorting_enabled %]
       <div id="browse-brief-subject_description" class="alert alert-info">
-        [% IF sorting_enabled %]<a href="#" class="edit-browse-subject"><i class="icon-pencil"></i></a>[% END %]
+        [% IF sorting_enabled %]<a href="#" class="edit-browse-subject hidden-phone"><i class="icon-pencil"></i></a>[% END %]
         <div id="browse-brief-subject_description-content">
         [% subject_description || c.loc('No subject description.') %]
       </div></div>
@@ -68,7 +68,7 @@
 [% BLOCK display_record %]
   [%- SET record_id = record.id -%]
   <li class="resource" id="[% record_id %]" data-resource="[% record_id %]">
-    [% IF sorting_enabled %]<i class="sortable-icon icon-resize-vertical"></i>[% END %]
+    [% IF sorting_enabled %]<i class="sortable-icon icon-resize-vertical hidden-phone"></i>[% END %]
 
     <div class="browse-field-name [% record.open_access == 'yes' ? ' open-access' : '' %]">
       <a href="[% c.uri_for_site( c.controller('Resource').action_for('resource'), [ record_id ] ) %]">[% record.result_name | html %][% IF record.vendor.length %] - [% record.vendor | html %][% END %]</a>

@@ -45,7 +45,7 @@ sub site :Chained('/') :PathPart('') :CaptureArgs(1) {
     my $box = $c->session->{sandbox} ? 'sandbox' : 'active';
 
     # Set up site specific CSS file if it exists
-    my $site_css = '/sites/' . $site->id . "/static/${box}/css/cjdb.css";
+    my $site_css = '/sites/' . $site->id . "/static/${box}/css/crdb.css";
     if ( -e ($c->config->{root} . $site_css) ) {
         $c->stash->{site_css_uri} = $c->uri_for( $site_css );
     }

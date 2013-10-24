@@ -35,8 +35,6 @@ sub browse :Chained('facet_options') :PathPart('') :Args(0) {
 
     my %search = ( public_list => 't' );
 
-    my $q = $c->request->params->{q};
-
     $self->_facets_from_params($c, \%search);
 
     my $empty = !exists $c->stash->{facets};
@@ -77,7 +75,7 @@ sub browse :Chained('facet_options') :PathPart('') :Args(0) {
 sub _facets_from_params {
     my ( $self, $c, $hash ) = @_;
 
-    foreach my $param ( qw( resource_type resource_medium subject content_type name ) ) {
+    foreach my $param ( qw( resource_type resource_medium subject content_type name keyword ) ) {
         my $val = $c->request->params->{$param};
         next if !hascontent($val);
 
