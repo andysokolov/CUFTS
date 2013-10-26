@@ -137,11 +137,11 @@ $().ready( function() {
 
     });
 
-    $('.resource-fields').on( 'click', 'a.edit-edit', function(event) {
+    $('#resource-fields').on( 'click', 'a.edit-edit', function(event) {
 
         event.preventDefault();
 
-        var control = $(this).parents('td.resource-edit-control');
+        var control = $(this).parents('.resource-edit-control');
         var url     = control.data('url');
         var field   = control.data('field');
 
@@ -150,40 +150,42 @@ $().ready( function() {
             url: url,
             dataType: 'html',
             success: function( html ) {
-                $('#resource-definition-' + field).find('.field-data').hide();
+                var resource_field = $('#resource-' + field + '-data');
 
-                $('#resource-definition-' + field).append(
-                    '<div class="field-editing">' + html + '</div>'
+                resource_field.find('.field-data').hide();
+                resource_field.append(
+                    $('<span />').addClass('field-editing').append(html)
                 );
 
-                $('#resource-' + field).find('.resource-edit-control-savecancel').show();
-                $('#resource-' + field).find('.resource-edit-control-edit').hide();
-
+                resource_field.find('.resource-edit-control-savecancel').show();
+                resource_field.find('.resource-edit-control-edit').hide();
            }
         });
 
     });
 
-    $('.resource-fields').on( 'click', 'a.edit-cancel', function(event) {
+    $('#resource-fields').on( 'click', 'a.edit-cancel', function(event) {
 
         event.preventDefault();
 
-        var control = $(this).parents('td.resource-edit-control');
+        var control = $(this).parents('.resource-edit-control');
         var field   = control.data('field');
 
-        $('#resource-definition-' + field).find('.field-editing').remove();
-        $('#resource-definition-' + field).find('.field-data').show();
+        var resource_field = $('#resource-' + field + '-data');
 
-        $('#resource-' + field).find('.resource-edit-control-savecancel').hide();
-        $('#resource-' + field).find('.resource-edit-control-edit').show();
+        resource_field.find('.field-editing').remove();
+        resource_field.find('.field-data').show();
+
+        resource_field.find('.resource-edit-control-savecancel').hide();
+        resource_field.find('.resource-edit-control-edit').show();
 
     });
 
-    $('.resource-fields').on( 'click', 'a.edit-save', function(event) {
+    $('#resource-fields').on( 'click', 'a.edit-save', function(event) {
 
         event.preventDefault();
 
-        var control = $(this).parents('td.resource-edit-control');
+        var control = $(this).parents('.resource-edit-control');
         var url     = control.data('url');
         var field   = control.data('field');
 
@@ -197,17 +199,20 @@ $().ready( function() {
         $.ajax({
            type: 'POST',
            url: url,
-           data: $('#resource-definition-' + field).find('.field-editing form').serialize(),
+           data: control.parents('.resource-data').find('form').serialize(),
            success: function( html ) {
-               $('#resource-' + field).replaceWith( html );
 
-               $('#resource-' + field).find('.resource-edit-control-savecancel').hide();
-               $('#resource-' + field).find('.resource-edit-control-edit').show();
+               var resource_field = $('#resource-' + field + '-data');
+
+               resource_field.replaceWith( html );
+
+               // resource_field.find('.resource-edit-control-savecancel').hide();
+               // resource_field.find('.resource-edit-control-edit').show();
 
                hide_nodata_fields();
 
-                $('#resource .results').remove();
-                $('#resource').prepend( $('<div />').addClass('alert alert-success results').text('Updated field data.') );
+               $('#resource .results').remove();
+               $('#resource').prepend( $('<div />').addClass('alert alert-success results').text('Updated field data.') );
 
            }
         });

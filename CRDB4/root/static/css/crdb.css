@@ -16,7 +16,6 @@ h1 {
     font-weight: normal;
 }
 
-
 header {
     background: #326ead;
     width: 100%;
@@ -272,19 +271,28 @@ ol.browse-resources li.placeholder:before {
 
 /* Resource */
 
-#resource td {
-    vertical-align: top;
-    padding: 5px 0;
+#resource h3 {
+    margin: 0;
 }
 
-#resource td.resource-field-label {
-    width: 10.5em;
+dl#resource-fields {
+    margin-top: 0;
 }
 
-#resource td.resource-edit-control {
-    text-align: center;
-    width: 50px;
-    white-space: nowrap;
+#resource-fields dd, #resource-fields dt {
+    padding-top: 10px;
+}
+
+#resource-fields .no-data {
+    display: none;
+}
+
+#resource-fields dd.no-label {
+    margin-left: 0;
+}
+
+#resource-fields dt.no-label {
+    display: none;
 }
 
 /* Field Editing */
@@ -296,6 +304,7 @@ ol.browse-resources li.placeholder:before {
 
 .field-editing form {
     margin-bottom: 0;
+    display: inline;
 }
 
 /* Icon overrides */
@@ -391,4 +400,15 @@ ol.browse-resources li.placeholder:before {
         border-radius: 0;
     }
 
+    #resource-fields dd {
+        padding-top: 3px;
+    }
+
+    #resource-fields dd.no-label {
+        margin-bottom: 10px;
+    }
+
+    dl#resource-fields {
+        padding: 0 5px;
+    }
 }
