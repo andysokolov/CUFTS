@@ -20,9 +20,15 @@ Catalyst Controller.
 
 sub base :Chained('/site') :PathPart('browse') :CaptureArgs(0) {
     my ( $self, $c ) = @_;
+
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('browse') ), $c->loc('Browse') ];
 }
 
-sub facet_options :Chained('/facet_options') :PathPart('browse') :CaptureArgs(0) {}
+sub facet_options :Chained('/facet_options') :PathPart('browse') :CaptureArgs(0) {
+    my ( $self, $c ) = @_;
+
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('browse') ), $c->loc('Browse') ];
+}
 
 =head2 browse_index
 

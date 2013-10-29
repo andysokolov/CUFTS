@@ -87,7 +87,7 @@
   <dt id="resource-[% field_name %]-label" class="resource-label [% has_data ? 'has-data' : 'no-data' %] [% !hide_label OR editing_enabled ? 'has-label' : 'no-label' %]">[% field_label | html %]</dt>
   <dd id="resource-[% field_name %]-data" class="resource-data [% has_data ? 'has-data' : 'no-data' %] [% !hide_label OR editing_enabled ? 'has-label' : 'no-label' %]">
     [% IF editing_enabled AND display_field.staff_edit %]
-     <span class="resource-edit-control" data-url="[% c.uri_for_site( c.controller('Resource::Field').action_for('edit'), [ erm.id ], field_name ) | html %]" data-field="[% field_name | html %]">
+     <span class="resource-edit-control hidden-phone" data-url="[% c.uri_for_site( c.controller('Resource::Field').action_for('edit'), [ erm.id ], field_name ) | html %]" data-field="[% field_name | html %]">
       <span class="resource-edit-control-savecancel" style="display: none">
        <a href="#" class="edit-save"><i class="icon icon-ok" title="save"></i></a>
        <a href="#" class="edit-cancel"><i class="icon icon-remove" title="cancel"></i></a>
@@ -97,6 +97,6 @@
       </span>
      </span>
     [% END %]
-    <span class="field-data">[% field_data %]</span>
+    <span class="field-data">[% field_data %]&nbsp;</span>
   </dd>
 [% END %]

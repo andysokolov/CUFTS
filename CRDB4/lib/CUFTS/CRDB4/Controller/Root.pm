@@ -63,7 +63,7 @@ sub site :Chained('/') :PathPart('') :CaptureArgs(1) {
         $c->account($account);
     }
 
-    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Browse')->action_for('browse') ), $c->loc('Electronic Resources') ];
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Root')->action_for('site_index') ), $c->loc('Electronic Resources') ];
 }
 
 
@@ -124,10 +124,10 @@ The root page for sites (/). Redirects to the browse page right now. Could be a 
 =cut
 
 
-sub site_index :Chained('site') :PathPart('') Args(0) {
+sub site_index :Chained('facet_options') :PathPart('') Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->redirect( $c->uri_for_site( $c->controller('Browse')->action_for('browse') ) );
+    $c->stash->{template} = 'main.tt';
 }
 
 

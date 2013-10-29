@@ -1,0 +1,57 @@
+[% SET facet_browse_url = c.uri_for_site( c.controller('Browse').action_for('html_facets') ) %]
+
+<div id="main">
+
+<div class="main-box" id="main-subject">
+ <h2>[% c.loc('Browse databases by subject area:') | html %]</h2>
+ <div class="main-box-content">
+  <form action="[% c.uri_for_site( c.controller('Browse').action_for('browse') ) %]" method="GET">
+   <select name="subject">
+    <option value="">[% c.loc('Choose subject...') | html %]</option>
+    [% FOREACH subject_id IN subjects_order %]
+     [% SET subject = subjects.$subject_id %]
+     <option value="[% subject_id %]">[% subject | html %]</option>
+    [% END %]
+   </select>
+  </form>
+ </div>
+</div>
+
+<div class="main-box pagination" id="main-title">
+ <h2>[% c.loc('Browse databases by title:') | html %]</h2>
+ <ul class="hidden-phone">
+  [% FOREACH letter IN ['A' .. 'Z'] %]<li><a href="[% c.uri_for_site( c.controller('Browse').action_for('browse'), { name => letter } ) | html %]">[% letter %]</a></li>[% END %]
+  <li><a href="[% c.uri_for_site( c.controller('Browse').action_for('browse'), { name => '0-9' } ) | html %]">0-9</a></li>
+ </ul>
+ <form class="visible-phone" method="get" action="[% c.uri_for_site( c.controller('Browse').action_for('browse') ) %]"><span class="hidden-phone">[% c.loc('Resources starting with:') | html %]</span>
+  <select name="name" class="input-small">
+   [% FOREACH letter IN ['A' .. 'Z'] %]<option value="[% letter %]">[% letter %]</option>[% END %]
+   <option value="0-9">0-9</option>
+  </select>
+ </form>
+</div>
+
+<div id="main-google" class="main-box">
+ <h2>[% c.loc('Keyword search for articles on the web:') | html %]</h2>
+ <div class="main-box-content">
+  <div id="main-google-form">
+   <form class="form-inline" method="get" action="http://scholar.google.com/scholar">
+    <img src="http://static.lib.sfu.ca/images/scholar_sm.gif" alt="Google Scholar" width="105" height="40" border="0" align="absmiddle" /></a>
+    <input type="hidden" name="hl" value="en">
+    <input type="text" class="input" name="q" maxlength="255" value="" />
+    <input type="submit" class="btn" name="btnG" value="[% c.loc('Search') | html %]" />
+   </form>
+  </div>
+ </div>
+</div>
+
+<div id="main-keyword" class="main-box">
+ <h2>[% c.loc('Find databases by database title and description:') | html %]</h2>
+ <div class="main-box-content">
+  <form class="form-inline" method="get" action="[% c.uri_for_site( c.controller('Browse').action_for('browse') ) %]">
+   <input type="text" class="input" name="keyword" value="" /> <input class="btn" type="submit" name="search" value="Search" />
+  </form>
+ </div>
+</div>
+
+</div>

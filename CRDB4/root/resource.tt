@@ -7,7 +7,7 @@
 <div id="resource">
   <h3>[% erm.main_name | html %]</h3>
 
-  [% IF editing_enabled %]<a href="#toggle" onClick="toggle_nodata_fields(); return false;">toggle empty fields</a>[% END %]
+  [% IF editing_enabled %]<a href="#" id="toggle-empty-fields" class="hidden-phone">[% c.loc('toggle empty fields') %]</a>[% END %]
 
   <dl id="resource-fields" class="dl-horizontal">
     [% FOREACH display_field IN display_fields %]

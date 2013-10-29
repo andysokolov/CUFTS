@@ -16,6 +16,10 @@ h1 {
     font-weight: normal;
 }
 
+h2 {
+    font-size: 16px;
+}
+
 header {
     background: #326ead;
     width: 100%;
@@ -72,6 +76,15 @@ ul.breadcrumb {
     font-size: 90%;
     font-family: arial, sans-serif;
     margin-bottom: 0;
+}
+
+/* Main screen */
+
+#main .main-box {
+}
+
+#main>h2 {
+    line-height: 20px;
 }
 
 /* Browse form */
@@ -346,6 +359,20 @@ dl#resource-fields {
         padding: 0;
     }
 
+    #main .main-box {
+        padding: 0 5px;
+    }
+
+    #facet-menu h1 {
+        margin-left: 5px;
+    }
+
+    #facet-menu, #browse {
+        float: left;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
     #facet-menu .facet-menu-content {
         float: right;
     }
@@ -410,5 +437,11 @@ dl#resource-fields {
 
     dl#resource-fields {
         padding: 0 5px;
+    }
+
+    #resource h3 {
+        font-size: 22px;
+        line-height: 30px;
+        margin: 0 5px;
     }
 }

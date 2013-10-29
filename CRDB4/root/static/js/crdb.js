@@ -7,13 +7,12 @@ String.prototype.escape_html = function() {
 
 $().ready( function() {
 
-    $('#facet-menu select, #facet-menu input').bind('change', function(e) {
+    $('#facet-menu select, #facet-menu input, #main select, #main input').on( 'change', function(event) {
         $(this).parent().submit();
     });
 
-    $('.show-more').bind('click', function(e) {
-        $(this).parents('.facet-menu').find('.collapsable').show();
-        $(this).hide();
+    $('.show-more').on('click', function(event) {
+        $(this).hide().parents('.facet-menu').find('.collapsable').show();
     });
 
     $('.browse-resources.sortable').sortable({
@@ -73,7 +72,7 @@ $().ready( function() {
 
     });
 
-    $('.edit-browse-subject').bind( 'click', function(event) {
+    $('.edit-browse-subject').on( 'click', function(event) {
 
         event.preventDefault();
 
@@ -84,7 +83,7 @@ $().ready( function() {
             data: {
                 subject_id: $('#browse').data('subject')
             },
-            success: function( data ) {
+            success: function(data) {
 
                 var subject_description = data.subject_description ? data.subject_description.escape_html() : '';
 
@@ -202,12 +201,13 @@ $().ready( function() {
            data: control.parents('.resource-data').find('form').serialize(),
            success: function( html ) {
 
-               var resource_field = $('#resource-' + field + '-data');
+               var resource_label = $('#resource-' + field + '-label');
+               var resource_data  = $('#resource-' + field + '-data');
 
-               resource_field.replaceWith( html );
+               resource_label.before(html);
 
-               // resource_field.find('.resource-edit-control-savecancel').hide();
-               // resource_field.find('.resource-edit-control-edit').show();
+               resource_data.remove();
+               resource_label.remove();
 
                hide_nodata_fields();
 
@@ -219,6 +219,12 @@ $().ready( function() {
 
     });
 
+
+    $('#toggle-empty-fields').on( 'click', function(event) {
+        event.preventDefault();
+        toggle_nodata_fields();
+    });
+
     hide_nodata_fields();
 
 });
@@ -226,18 +232,18 @@ $().ready( function() {
 var CRDB = {};
 CRDB.show_nodata_fields = 0;
 
-function toggle_nodata_fields( ) {
+function toggle_nodata_fields() {
     CRDB.show_nodata_fields = !CRDB.show_nodata_fields;
     hide_nodata_fields();
 }
 
 function hide_nodata_fields() {
-    $('.no_data').each( function(i) {
-        this.style.display = CRDB.show_nodata_fields ? '' : 'none';
+    $('.no-data').each( function(i) {
+        this.style.display = CRDB.show_nodata_fields ? 'block' : 'none';
     });
 }
 
-function validate_field( field ) {
+function validate_field(field) {
     var message_field = field.parent().find('.validate-message');
 
     if ( field.hasClass('validate-date') ) {
