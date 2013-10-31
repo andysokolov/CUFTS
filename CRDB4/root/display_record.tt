@@ -1,0 +1,21 @@
+[%- SET record_id = record.id -%]
+<li class="resource" id="[% record_id %]" data-resource="[% record_id %]">
+  [% IF sorting_enabled %]<i class="sortable-icon icon-resize-vertical hidden-phone"></i>[% END %]
+
+  <div class="browse-field-name [% record.open_access == 'yes' ? ' open-access' : '' %]">
+    <a href="[% c.uri_for_site( c.controller('Resource').action_for('resource'), [ record_id ] ) %]">[% record.result_name | html %][% IF record.vendor.length %] - [% record.vendor | html %][% END %]</a>
+  </div>
+
+  <div class="browse-field-description">[% record.description_brief %]</div>
+
+  [% IF record.alert %]
+    <div class="browse-field-alert">[% record.alert %]</div>
+  [% END %]
+
+  [% IF record.url %]
+    <div class="browse-url"><a class="btn btn-medium btn-primary" href="[% c.uri_for_site( c.controller('Resource').action_for('goto'), [ record_id ] ) %]">[% c.loc('Connect') | html %]</a></div>
+  [% ELSIF record.access %]
+    <div class="browse-access">[% c.loc('Access:') | html %] [% record.access %]</div>
+  [% END %]
+
+</li>

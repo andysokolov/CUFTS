@@ -2,7 +2,7 @@
 
 <div id="main">
 
-<div class="main-box" id="main-subject">
+<div class="main-box well" id="main-subject">
  <h2>[% c.loc('Browse databases by subject area:') | html %]</h2>
  <div class="main-box-content">
   <form action="[% c.uri_for_site( c.controller('Browse').action_for('browse') ) %]" method="GET">
@@ -17,7 +17,7 @@
  </div>
 </div>
 
-<div class="main-box pagination" id="main-title">
+<div class="main-box pagination well" id="main-title">
  <h2>[% c.loc('Browse databases by title:') | html %]</h2>
  <ul class="hidden-phone">
   [% FOREACH letter IN ['A' .. 'Z'] %]<li><a href="[% c.uri_for_site( c.controller('Browse').action_for('browse'), { name => letter } ) | html %]">[% letter %]</a></li>[% END %]
@@ -25,13 +25,14 @@
  </ul>
  <form class="visible-phone" method="get" action="[% c.uri_for_site( c.controller('Browse').action_for('browse') ) %]"><span class="hidden-phone">[% c.loc('Resources starting with:') | html %]</span>
   <select name="name" class="input-small">
+   <option value="">[% c.loc('All') %]</option>
    [% FOREACH letter IN ['A' .. 'Z'] %]<option value="[% letter %]">[% letter %]</option>[% END %]
    <option value="0-9">0-9</option>
   </select>
  </form>
 </div>
 
-<div id="main-google" class="main-box">
+<div id="main-google well" class="main-box well">
  <h2>[% c.loc('Keyword search for articles on the web:') | html %]</h2>
  <div class="main-box-content">
   <div id="main-google-form">
@@ -45,7 +46,7 @@
  </div>
 </div>
 
-<div id="main-keyword" class="main-box">
+<div id="main-keyword" class="main-box well">
  <h2>[% c.loc('Find databases by database title and description:') | html %]</h2>
  <div class="main-box-content">
   <form class="form-inline" method="get" action="[% c.uri_for_site( c.controller('Browse').action_for('browse') ) %]">

@@ -13,6 +13,7 @@
 
     [% IF ( facets.subject AND facets.size == 1 AND subject_description.length ) OR sorting_enabled %]
       <div id="browse-brief-subject_description" class="alert alert-info">
+        <h4>[% SET val = facets.subject %][% subject_lookup.$val %]</h4>
         [% IF sorting_enabled %]<a href="#" class="edit-browse-subject hidden-phone"><i class="icon-pencil"></i></a>[% END %]
         <div id="browse-brief-subject_description-content">
         [% subject_description || c.loc('No subject description.') %]
@@ -28,7 +29,7 @@
         [% FOREACH record IN records %]
           [%- LAST IF record.rank == 0 -%]
           [%- SET record_index = record_index + 1 -%]
-          [% PROCESS display_record %]
+          [% PROCESS display_record.tt %]
         [% END %]
       </ol>
 
@@ -40,7 +41,7 @@
           [% WHILE record_index < records.size %]
             [%- SET record = records.$record_index -%]
             [%- SET record_index = record_index + 1 -%]
-            [% PROCESS display_record %]
+            [% PROCESS display_record.tt %]
           [% END %]
 
         </ol>
@@ -51,7 +52,7 @@
 
       <ol class="browse-resources">
         [% FOREACH record IN records %]
-          [% PROCESS display_record %]
+          [% PROCESS display_record.tt %]
         [% END %]
       </ol>
 
@@ -65,26 +66,5 @@
 
 </div>
 
-[% BLOCK display_record %]
-  [%- SET record_id = record.id -%]
-  <li class="resource" id="[% record_id %]" data-resource="[% record_id %]">
-    [% IF sorting_enabled %]<i class="sortable-icon icon-resize-vertical hidden-phone"></i>[% END %]
+![% hide_vendor_name %]!
 
-    <div class="browse-field-name [% record.open_access == 'yes' ? ' open-access' : '' %]">
-      <a href="[% c.uri_for_site( c.controller('Resource').action_for('resource'), [ record_id ] ) %]">[% record.result_name | html %][% IF record.vendor.length %] - [% record.vendor | html %][% END %]</a>
-    </div>
-
-    <div class="browse-field-description">[% record.description_brief %]</div>
-
-    [% IF record.alert %]
-      <div class="browse-field-alert">[% record.alert %]</div>
-    [% END %]
-
-    [% IF record.url %]
-      <div class="browse-url"><a class="btn btn-medium btn-primary" href="[% c.uri_for_site( c.controller('Resource').action_for('goto'), [ record_id ] ) %]">[% c.loc('Connect') | html %]</a></div>
-    [% ELSIF record.access %]
-      <div class="browse-access">[% c.loc('Access:') | html %] [% record.access %]</div>
-    [% END %]
-
-  </li>
-[% END %]
