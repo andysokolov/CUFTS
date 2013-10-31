@@ -81,6 +81,7 @@ ul.breadcrumb {
 /* Main screen */
 
 #main .main-box {
+    margin-bottom: 15px;
 }
 
 #main h2 {
@@ -89,7 +90,16 @@ ul.breadcrumb {
 }
 
 #main form {
-    margin: 0;
+    margin-bottom: 10px;
+}
+
+#main input, #main select {
+    margin-bottom: 0;
+}
+
+#main .pagination {
+    margin-top: 0;
+    margin-bottom: 15px;
 }
 
 /* Browse form */
@@ -436,6 +446,15 @@ dl#resource-fields {
         float: left;
         clear: both;
         margin-top: 10px;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        border-radius: 0;
+    }
+
+    #main div.main-box {
+        border-right: none;
+        border-left: none;
+        margin-bottom: 5px;
         -webkit-border-radius: 0;
         -moz-border-radius: 0;
         border-radius: 0;

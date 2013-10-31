@@ -5,8 +5,6 @@
   [% END %]
 [% END %]
 
-[%# PROCESS browse_js.tt %]
-
 <div class="row-fluid">
   <div id="facet-menu">[% PROCESS facet_menu.tt %]</div>
   <div id="browse" [% IF sorting_enabled %]data-subject="[% facets.subject %]"[% END %]>
@@ -65,6 +63,3 @@
   </div>
 
 </div>
-
-![% hide_vendor_name %]!
-
