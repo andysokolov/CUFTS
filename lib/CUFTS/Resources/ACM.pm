@@ -87,23 +87,23 @@ sub clean_data {
             ( $volume, $issue, $date ) = ( $1, $2, $3 );
             $volume =~ s/Volume\s*// if not_empty_string($volume);
             $issue =~ s/Issue\s*// if not_empty_string($issue);
-        }
 
-        if ( $date =~ /([a-zA-Z]+)\s*\d+,\s*(\d+)/ || $date =~ /([a-zA-Z]*)\s*(\d+)/ || $date =~ /([a-zA-Z]+).+(\d{4})/ ) {
-            my ($month, $year) = ($1, $2);
-            $month = get_month($month) || 1;
-            $record->{ft_start_date} = sprintf("%04i-%02i-01", $year, $month);
-            if (!$volume) {
-                delete $record->{vol_ft_start};
-            }
-            else {
-                $record->{vol_ft_start} = $volume;
-            }
-            if (!$issue) {
-                delete $record->{iss_ft_start};
-            }
-            else {
-                $record->{iss_ft_start} = $issue;
+            if ( $date =~ /([a-zA-Z]+)\s*\d+,\s*(\d+)/ || $date =~ /([a-zA-Z]+)\s*(\d+)/ || $date =~ /([a-zA-Z]+).+(\d{4})/ || $date =~ /()((?:19|20)\d{2})/ ) {
+                my ($month, $year) = ($1, $2);
+                $month = get_month($month, 'start') || 1;
+                $record->{ft_start_date} = sprintf("%04i-%02i-01", $year, $month);
+                if (!$volume) {
+                    delete $record->{vol_ft_start};
+                }
+                else {
+                    $record->{vol_ft_start} = $volume;
+                }
+                if (!$issue) {
+                    delete $record->{iss_ft_start};
+                }
+                else {
+                    $record->{iss_ft_start} = $issue;
+                }
             }
         }
     }
@@ -113,30 +113,30 @@ sub clean_data {
             ( $volume, $issue, $date ) = ( $1, $2, $3 );
             $volume =~ s/Volume\s*// if not_empty_string($volume);
             $issue =~ s/Issue\s*// if not_empty_string($issue);
-        }
 
-        if ( $date =~ /(\w+)\s*(\d+)/ || $date =~ /(\w+)\s*\d+,\s*(\d+)/ ) {
-            my ($month, $year) = ($1, $2);
-            my $current_year = (localtime)[5] + 1900;
-            if ( int($year) >= $current_year ) {
-                delete $record->{iss_ft_end};
-                delete $record->{vol_ft_end};
-                delete $record->{ft_end_date};
-            }
-            else {
-                $month = get_month($month) || 12;
-                $record->{ft_end_date} = sprintf("%04i-%02i-01", $year, $month);
-                if (!$volume) {
-                    delete $record->{vol_ft_end};
-                }
-                else {
-                    $record->{vol_ft_end} = $volume;
-                }
-                if (!$issue) {
+            if ( $date =~ /(\w+)\s*((?:19|20)\d{2})/ || $date =~ /(\w+)\s*\d+,\s*((?:19|20)\d{2})/ || $date =~ /()((?:19|20)\d{2})/ ) {
+                my ($month, $year) = ($1, $2);
+                my $current_year = (localtime)[5] + 1900;
+                if ( int($year) >= $current_year ) {
                     delete $record->{iss_ft_end};
+                    delete $record->{vol_ft_end};
+                    delete $record->{ft_end_date};
                 }
                 else {
-                    $record->{iss_ft_end} = $issue;
+                    $month = get_month($month, 'end') || 12;
+                    $record->{ft_end_date} = sprintf("%04i-%02i-01", $year, $month);
+                    if (!$volume) {
+                        delete $record->{vol_ft_end};
+                    }
+                    else {
+                        $record->{vol_ft_end} = $volume;
+                    }
+                    if (!$issue) {
+                        delete $record->{iss_ft_end};
+                    }
+                    else {
+                        $record->{iss_ft_end} = $issue;
+                    }
                 }
             }
         }
@@ -145,7 +145,7 @@ sub clean_data {
     $record->{title} = HTML::Entities::decode_entities( $record->{title} );
 
     sub get_month {
-        my ( $month ) = @_;
+        my ( $month, $period ) = @_;
 
         if    ( $month =~ /^Jan/i ) { return 1 }
         elsif ( $month =~ /^Feb/i ) { return 2 }
@@ -159,6 +159,11 @@ sub clean_data {
         elsif ( $month =~ /^Oct/i ) { return 10 }
         elsif ( $month =~ /^Nov/i ) { return 11 }
         elsif ( $month =~ /^Dec/i ) { return 12 }
+        elsif ( $month =~ /^Spr/i ) { return $period eq 'start' ? 1 : 6 }
+        elsif ( $month =~ /^Sum/i ) { return $period eq 'start' ? 3 : 9 }
+        elsif ( $month =~ /^Fal/i ) { return $period eq 'start' ? 6 : 12 }
+        elsif ( $month =~ /^Aut/i ) { return $period eq 'start' ? 6 : 12 }
+        elsif ( $month =~ /^Win/i ) { return $period eq 'start' ? 9 : 12 }
         else {
             return undef;
         }
