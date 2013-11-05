@@ -41,16 +41,11 @@ sub load_resource :Chained('base') :PathPart('') :CaptureArgs(1) {
 sub goto : Chained('load_resource') PathPart('goto') Args(0) {
     my ( $self, $c ) = @_;
 
-    my $erm = $c->stash->{erm};
+    $c->stash->{erm}->add_to_uses({});  # Add click count
 
-    # count click
-
-    $c->model('CUFTS::ERMUses')->create({ erm_main => $erm->id });
-
-    $c->response->redirect( $erm->proxied_url( $c->site ) );
+    $c->response->redirect( $c->stash->{erm}->proxied_url( $c->site ) );
     $c->detach();
 }
-
 
 sub resource :Chained('load_resource') :PathPart('') :Args(0) {
     my ( $self, $c ) = @_;
