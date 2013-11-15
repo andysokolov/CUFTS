@@ -1,7 +1,7 @@
 [% FOREACH grouped_record IN erm.get_group_records %]
  [% fragment = BLOCK %]
  <div class="resource-definition-grouped_record">
-  <h3><a href="[% c.uri_for_site( c.controller('Resource').action_for('default_view'), [ grouped_record.id ] ) %]">[% grouped_record.main_name %]</a></h3>
+  <h3><a href="[% c.uri_for_site( c.controller('Resource').action_for('resource'), [ grouped_record.id ] ) %]">[% grouped_record.main_name %]</a></h3>
   [% grouped_record.description_brief %]
  </div>
  [% END %]
