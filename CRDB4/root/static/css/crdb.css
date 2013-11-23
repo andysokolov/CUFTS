@@ -248,8 +248,19 @@ ol.browse-resources, ol.browse-resources li {
     font-size: 17.5px;
 }
 
-#browse .browse-field-description {
+#browse .browse-field-name.open-access a {
+    background-image: url(../images/open_access.gif);
+    background-repeat: no-repeat;
+    background-position: right;
+    padding-right: 20px;
+}
+
+#browse .browse-field-description, #browse .browse-field-alert {
     margin: 5px 0;
+}
+
+#browse .browse-field-alert {
+    color: red;
 }
 
 #browse #links ul {
@@ -332,6 +343,10 @@ dl#resource-fields {
     display: none;
 }
 
+#resource-alert-data {
+    color: red;
+}
+
 /* Field Editing */
 
 .field-editing textarea {
@@ -368,6 +383,14 @@ dl#resource-fields {
     #browse {
         margin-left: 275px;
         width: auto;
+    }
+
+    #resource .dl-horizontal dt {
+        width: 200px;
+    }
+
+    #resource .dl-horizontal dd {
+        margin-left: 220px;
     }
 }
 
