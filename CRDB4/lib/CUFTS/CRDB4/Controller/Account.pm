@@ -102,6 +102,7 @@ sub manage :Chained('base') :PathPart('manage') :Args(0) {
         return $c->redirect( $c->uri_for_site( $c->controller('Browse')->action_for('browse') ) );
 
     $c->stash->{template} = 'account_manage.tt';
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Account')->action_for('manage') ), $c->loc('Manage Account') ];
 
     if ( defined($c->req->params->{save}) ) {
 
@@ -122,13 +123,95 @@ sub manage :Chained('base') :PathPart('manage') :Args(0) {
             }
         }
 
-        $c->account->name(  trim($c->req->params->{name}) );
+        $c->account->name(  trim($c->req->params->{name})  );
         $c->account->email( trim($c->req->params->{email}) );
 
         if ( !defined($c->stash->{error}) ) {
             $c->account->update;
             $c->stash->{results} = $c->loc('Updated account settings.');
         }
+
+    }
+}
+
+
+sub create : Chained('base') PathPart('create') Args(0) {
+    my ($self, $c) = @_;
+
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Account')->action_for('create') ), $c->loc('Create Account') ];
+    $c->stash->{template} = 'account_create.tt';
+
+    if ( $c->req->params->{create} eq 'create' ) {
+
+        my $key       = trim($c->req->params->{key});
+        my $name      = trim($c->req->params->{name});
+        my $email     = trim($c->req->params->{name});
+        my $password  = trim($c->req->params->{password});
+        my $password2 = trim($c->req->params->{password2});
+
+        if ( !hascontent($key) ) {
+            push @{$c->stash->{error}}, $c->loc('Key is a required field.');
+        }
+        if ( !hascontent($name) ) {
+            push @{$c->stash->{error}}, $c->loc('Name is a required field.');
+        }
+
+        my $site = $c->site;
+
+        my $crypted_pass;
+        my $level;
+
+        if ( $site->cjdb_accounts({ key => $key })->count() ) {
+            push @{$c->stash->{error}}, "The user id '$key' already exists.";
+            return;
+        }
+
+        if ( hascontent($site->cjdb_authentication_module) ) {
+            my $module = 'CUFTS::CJDB::Authentication::' . $site->cjdb_authentication_module;
+            eval {
+                $level = $module->authenticate($site, $key, $password);
+            };
+            if ($@) {
+                # External validation error.
+                warn($@);
+                push @{$c->stash->{error}}, "Unable to authenticate user against external service.";
+                return;
+            }
+        }
+        else {
+            # Use internal authentication
+
+            if ( !hascontent($password) ) {
+                push @{$c->stash->{error}}, $c->loc('Password is a required field.');
+            }
+
+            if ($password ne $password2) {
+                push @{$c->stash->{error}}, $c->loc('Passwords do not match.');
+                return;
+            }
+
+            $crypted_pass = crypt($password, $key);
+
+        }
+
+        my $account = $site->add_to_cjdb_accounts({
+            name      => $name,
+            email     => $email,
+            key       => $key,
+            password  => $crypted_pass,
+            active    => 'true',
+            level     => $level || 0,
+        });
+
+
+        if (!defined($account)) {
+            push @{$c->stash->{error}}, "Error creating account.";
+            return;
+        }
+
+        $c->account($account);
+        $c->session->{ $site->id }->{current_account_id} = $account->id;
+        $c->redirect( $c->uri_for_site( $c->controller('Root')->action_for('site_index') ) );
 
     }
 }
