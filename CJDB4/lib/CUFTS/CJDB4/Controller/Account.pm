@@ -15,7 +15,6 @@ CUFTS::CJDB4::Controller::Account - Catalyst Controller
 =head1 DESCRIPTION
 
 Catalyst Controller.
-
 =head1 METHODS
 
 =cut
@@ -105,10 +104,10 @@ sub manage :Chained('base') :PathPart('manage') :Args(0) {
     if ( defined($c->req->params->{save}) ) {
 
         if ( !hascontent($c->req->params->{name}) ) {
-            push @{$c->stash->{error}}, 'Name is a required field.';
+            push @{$c->stash->{error}}, $c->loc('Name is a required field.');
         }
         if ( !hascontent($c->req->params->{email}) ) {
-            push @{$c->stash->{error}}, 'Email is a required field.';
+            push @{$c->stash->{error}}, $c->loc('Email is a required field.');
         }
 
         my ($password, $password2) = ($c->req->params->{password}, $c->req->params->{password2});
@@ -117,7 +116,7 @@ sub manage :Chained('base') :PathPart('manage') :Args(0) {
             if ($password eq $password2) {
                 $c->account->password(crypt($password, $c->account->key));
             } else {
-                push @{$c->stash->{error}}, "Passwords do not match.";
+                push @{$c->stash->{error}}, $c->loc('Passwords do not match.');
             }
         }
 
@@ -126,11 +125,93 @@ sub manage :Chained('base') :PathPart('manage') :Args(0) {
 
         if ( !defined($c->stash->{error}) ) {
             $c->account->update;
-            $c->stash->{results} = 'Updated account settings.';
+            $c->stash->{results} = $c->loc('Updated account settings.');
         }
 
     }
 }
+
+sub create : Chained('base') PathPart('create') Args(0) {
+    my ($self, $c) = @_;
+
+    push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Account')->action_for('create') ), $c->loc('Create Account') ];
+    $c->stash->{template} = 'account_create.tt';
+
+    if ( $c->req->params->{create} eq 'create' ) {
+
+        my $key       = trim($c->req->params->{key});
+        my $name      = trim($c->req->params->{name});
+        my $email     = trim($c->req->params->{name});
+        my $password  = trim($c->req->params->{password});
+        my $password2 = trim($c->req->params->{password2});
+
+        if ( !hascontent($key) ) {
+            push @{$c->stash->{error}}, $c->loc('Key is a required field.');
+        }
+        if ( !hascontent($name) ) {
+            push @{$c->stash->{error}}, $c->loc('Name is a required field.');
+        }
+
+        my $site = $c->site;
+
+        my $crypted_pass;
+        my $level;
+
+        if ( $site->cjdb_accounts({ key => $key })->count() ) {
+            push @{$c->stash->{error}}, "The user id '$key' already exists.";
+            return;
+        }
+
+        if ( hascontent($site->cjdb_authentication_module) ) {
+            my $module = 'CUFTS::CJDB::Authentication::' . $site->cjdb_authentication_module;
+            eval {
+                $level = $module->authenticate($site, $key, $password);
+            };
+            if ($@) {
+                # External validation error.
+                warn($@);
+                push @{$c->stash->{error}}, "Unable to authenticate user against external service.";
+                return;
+            }
+        }
+        else {
+            # Use internal authentication
+
+            if ( !hascontent($password) ) {
+                push @{$c->stash->{error}}, $c->loc('Password is a required field.');
+            }
+
+            if ($password ne $password2) {
+                push @{$c->stash->{error}}, $c->loc('Passwords do not match.');
+                return;
+            }
+
+            $crypted_pass = crypt($password, $key);
+
+        }
+
+        my $account = $site->add_to_cjdb_accounts({
+            name      => $name,
+            email     => $email,
+            key       => $key,
+            password  => $crypted_pass,
+            active    => 'true',
+            level     => $level || 0,
+        });
+
+
+        if (!defined($account)) {
+            push @{$c->stash->{error}}, "Error creating account.";
+            return;
+        }
+
+        $c->account($account);
+        $c->session->{ $site->id }->{current_account_id} = $account->id;
+        $c->redirect( $c->uri_for_site( $c->controller('Root')->action_for('site_index') ) );
+
+    }
+}
+
 
 
 sub tags :Chained('base') :PathPart('tags') :Args(0) {
