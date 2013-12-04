@@ -88,7 +88,12 @@ sub uri_for_site {
         }
     }
 
-    unshift @$captures_copy, $c->site->key;
+    my $key = $c->site->key;
+    if ( $c->stash->{sandbox} ) {
+        $key .= '!sandbox';
+    }
+
+    unshift @$captures_copy, $key;
 
     return $c->uri_for( $url, $captures_copy, @rest );
 }
@@ -101,7 +106,10 @@ sub uri_for_static {
 # TODO: Make pay attention to sandbox flag
 sub uri_for_site_static {
     my $c = shift;
-    my @path = ( '/sites', $c->site->id, 'static', 'active', @_ );
+
+    my $box = $c->stash->{sandbox} ? 'sandbox' : 'active';
+
+    my @path = ( '/sites', $c->site->id, 'static', $box, @_ );
 
     return $c->uri_for( @path );
 }
