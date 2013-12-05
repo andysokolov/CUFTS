@@ -3,13 +3,10 @@
 
 <tr><td><table class="outlined" style="width: 100%;">
 <tr><td class="heading-bar">test links</td></tr>
-[% IF cjdb_url %]
-<tr><td class="field0"><a href="[% cjdb_url %]/[% current_site.key %]/set_box/sandbox/" target="_blank">sandbox</a></td></tr>
-<tr><td class="field1"><a href="[% cjdb_url %]/[% current_site.key %]/set_box/active/" target="_blank">active</a></td></tr>
-[% ELSIF crdb_url %]
-<tr><td class="field0"><a href="[% crdb_url %]/[% current_site.key %]/set_box/sandbox/" target="_blank">sandbox</a></td></tr>
-<tr><td class="field1"><a href="[% crdb_url %]/[% current_site.key %]/set_box/active/" target="_blank">active</a></td></tr>
-[% END %]
+
+
+<tr><td class="field0"><a href="[% sandbox_url | html %]" target="_blank">sandbox</a></td></tr>
+<tr><td class="field1"><a href="[% active_url | html %]" target="_blank">active</a></td></tr>
 </table></td></tr>
 
 <tr><td><br /></td></tr>
