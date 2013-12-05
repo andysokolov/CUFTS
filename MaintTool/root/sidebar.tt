@@ -24,14 +24,16 @@
         
         menu.push([
             [
-                [ '/site/edit',               'General' ],
-                [ '/site/template/menu_cjdb', 'CJDB Templates' ],
-                [ '/site/template/menu_crdb', 'CRDB Templates' ],
-                [ '/site/cjdb/settings',      'CJDB Settings' ],
-                [ '/site/cjdb/data',          'CJDB Data' ],
-                [ '/site/crdb/settings',      'CRDB Settings' ],
-                [ '/site/cjdb/accounts',      'C*DB Accounts' ],
-                [ '/site/googlescholar/edit', 'Google Scholar' ],
+                [ '/site/edit',                'General' ],
+                [ '/site/template/menu_cjdb',  'CJDB Templates' ],
+                [ '/site/template/menu_cjdb4', 'CJDB4 Templates' ],
+                [ '/site/template/menu_crdb',  'CRDB Templates' ],
+                [ '/site/template/menu_crdb4', 'CRDB4 Templates' ],
+                [ '/site/cjdb/settings',       'CJDB Settings' ],
+                [ '/site/cjdb/data',           'CJDB Data' ],
+                [ '/site/crdb/settings',       'CRDB Settings' ],
+                [ '/site/cjdb/accounts',       'C*DB Accounts' ],
+                [ '/site/googlescholar/edit',  'Google Scholar' ],
             ],
             'Site Settings'
         ]);
