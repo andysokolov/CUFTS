@@ -514,7 +514,8 @@ sub delete : Local {
             and unlink "${site_dir}/${template_name}"
                 or die("Unable to unlink template file '${site_dir}/${template_name}': $!");
 
-    my $forward_type = substr($type,0,4);
+    my $forward_type = $type;
+    $forward_type =~ s/_.+$//;
     $c->redirect("/site/template/menu_${forward_type}");
 }
 
@@ -543,7 +544,8 @@ sub transfer : Local {
 
     `cp ${sandbox_dir}/${template_name} ${active_dir}/${template_name}`;
 
-    my $forward_type = substr($type,0,4);
+    my $forward_type = $type;
+    $forward_type =~ s/_.+$//;
     $c->redirect("/site/template/menu_${forward_type}");
 }
 
