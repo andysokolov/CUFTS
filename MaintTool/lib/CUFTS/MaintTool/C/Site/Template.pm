@@ -217,8 +217,8 @@ sub menu_cjdb4 : Local {
     $c->stash->{active_csses}  = \@cjdb_active_css;
     $c->stash->{sandbox_csses} = \@cjdb_sandbox_css;
 
-    $c->stash->{active_url}  = $CUFTS::Config::CJDB4_URL . $site->key . '/set_box/active';
-    $c->stash->{sandbox_url} = $CUFTS::Config::CJDB4_URL . $site->key . '/set_box/sandbox';
+    $c->stash->{active_url}  = $CUFTS::Config::CJDB4_URL . $site->key . '/';
+    $c->stash->{sandbox_url} = $CUFTS::Config::CJDB4_URL . $site->key . '!sandbox/';
 
     $c->stash->{header_section} = 'CJDB4 Templates';
 

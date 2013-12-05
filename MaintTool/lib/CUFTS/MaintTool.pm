@@ -58,7 +58,6 @@ sub begin : Private {
         }
     }
     elsif ( $c->req->action ne 'login' ) {
-
         # If we have no current user then show the login screen
 
         $c->req->action(undef);
