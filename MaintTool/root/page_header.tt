@@ -1,1 +1,1 @@
-<div id="page-header" style="background: url([% image_dir %]cufts_tile1.jpg)"><img id="page-header-main-image" src="[% image_dir %]cufts_header1.jpg" /><span id="page-header-section">[% header_section %]</span></div>
+<div id="page-header"><img id="page-header-main-image" src="[% image_dir %]cufts_header1.jpg" /><span id="page-header-section">[% header_section %]</span></div>

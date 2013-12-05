@@ -581,17 +581,16 @@ div#page-header {
     margin: 0px;
     padding: 0px;
     float: left;
+    background: #3874b3;
+    border-bottom: 1px solid #004997;
+    width: 100%;
 }
 
 img#page-header-main-image {
     float: left;
     border: none;
-    padding: 0px;
-    
-    /* IE hack, Firefox uses !important, IE uses the second width */
-    
-    margin-left: 0px !important;
-    margin-left: -3px;
+    padding: 0;
+    margin: 0;
 }
 
 div#page-layout {
@@ -616,6 +615,14 @@ div#navigation-main {
     font: normal 12px Verdana, sans-serif;
     border: none;
     width: 149px;
+
+    background: #D0DEED;
+    border-right: 1px solid #004997;
+    border-bottom: 1px solid #004997;
+
+    -webkit-border-bottom-right-radius: 15px;
+    -moz-border-radius-bottomright: 15px;
+    border-bottom-right-radius: 15px;
 }
 
 div#navigation-main ul {

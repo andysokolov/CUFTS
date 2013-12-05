@@ -32,7 +32,7 @@
 <body>
 [%- PROCESS page_header.tt -%]
 <div id="page-layout">
- <div id="navigation-main" style="background: transparent url([% image_dir %]corner.png) no-repeat bottom right">
+ <div id="navigation-main">
   [% PROCESS sidebar.tt %]
  </div>
  <div id="content-container">
