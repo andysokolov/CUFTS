@@ -552,24 +552,21 @@ sub transfer : Local {
 sub get_base_dir {
     my ($type) = @_;
 
-    if ( $type eq 'cjdb_css' ) {
-        return $CUFTS::Config::CJDB_CSS_DIR;
-    }
-    elsif ( $type eq 'cjdb_template' ) {
-        return $CUFTS::Config::CJDB_TEMPLATE_DIR;
-    }
-    if ( $type eq 'cjdb4_css' ) {
-        return $CUFTS::Config::CJDB4_CSS_DIR;
-    }
-    elsif ( $type eq 'cjdb4_template' ) {
-        return $CUFTS::Config::CJDB4_TEMPLATE_DIR;
-    }
-    elsif ( $type eq 'crdb_css' ) {
-        return $CUFTS::Config::CRDB_CSS_DIR;
-    }
-    elsif ( $type eq 'crdb_template' ) {
-        return $CUFTS::Config::CRDB_TEMPLATE_DIR;
-    }
+    my %dir_map = (
+        cjdb_css            => $CUFTS::Config::CJDB_CSS_DIR,
+        cjdb_template       => $CUFTS::Config::CJDB_TEMPLATE_DIR,
+
+        cjdb4_css           => $CUFTS::Config::CJDB4_CSS_DIR,
+        cjdb4_template      => $CUFTS::Config::CJDB4_TEMPLATE_DIR,
+
+        crdb_css            => $CUFTS::Config::CRDB_CSS_DIR,
+        crdb_template       => $CUFTS::Config::CRDB_TEMPLATE_DIR,
+
+        crdb4_css           => $CUFTS::Config::CRDB4_CSS_DIR,
+        crdb4_template      => $CUFTS::Config::CRDB4_TEMPLATE_DIR,
+    );
+
+    return $dir_map{$type};
 }
 
 sub get_site_base_dir {
