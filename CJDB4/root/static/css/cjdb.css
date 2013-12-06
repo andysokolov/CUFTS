@@ -1,3 +1,6 @@
+/* NOTE: Sites should not use this file as is. It will already be inlcuded in the HTML. You're better off
+         starting with blank CSS and overriding only what you need to. Otherwise future updates may break. */
+
 ul {
 	margin: 0;
 	padding: 0;
