@@ -1,3 +1,6 @@
+var CRDB = {};
+CRDB.show_nodata_fields = 0;
+
 String.prototype.escape_html = function() {
     return this.replace(/&/g, "&amp;")
                .replace(/</g, "&lt;")
@@ -5,7 +8,7 @@ String.prototype.escape_html = function() {
                .replace(/"/g, "&quot;");
 }
 
-$().ready( function() {
+jQuery(document).ready( function($) {
 
     $('#facet-menu select, #facet-menu input, #main select, #main input').on( 'change', function(event) {
         $(this).parent().submit();
@@ -229,8 +232,6 @@ $().ready( function() {
 
 });
 
-var CRDB = {};
-CRDB.show_nodata_fields = 0;
 
 function toggle_nodata_fields() {
     CRDB.show_nodata_fields = !CRDB.show_nodata_fields;
@@ -238,7 +239,7 @@ function toggle_nodata_fields() {
 }
 
 function hide_nodata_fields() {
-    $('.no-data').each( function(i) {
+    jQuery('.no-data').each( function(i) {
         this.style.display = CRDB.show_nodata_fields ? 'block' : 'none';
     });
 }
