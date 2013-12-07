@@ -1,4 +1,4 @@
-$().ready( function() {
+jQuery(document).ready( function($) {
 
   $('.a-to-z select').change( function() {
   	$(this).parent('form').submit();
@@ -42,7 +42,5 @@ $().ready( function() {
     $('#journal-account-tag-management').toggle();
     return false;
   });
-
-
 
 });
