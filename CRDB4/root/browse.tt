@@ -1,3 +1,5 @@
+[%- PROCESS site_setup.tt -%]
+
 [% IF c.account.has_role('edit_erm_records') %]
   [% SET editing_enabled = 1 %]
   [% IF facets.subject AND facets.size == 1 %]

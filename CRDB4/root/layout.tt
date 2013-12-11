@@ -1,7 +1,6 @@
 [%- IF no_wrap %][% content %][% RETURN %][% END -%]
 <!DOCTYPE html>
 <html lang="en">
-[%- PROCESS site_setup.tt -%]
 <head>
  <title>[% site_page_header_title || c.loc('Electronic Resources') | html %]</title>
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />

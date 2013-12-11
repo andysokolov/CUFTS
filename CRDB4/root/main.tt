@@ -1,3 +1,4 @@
+[%- PROCESS site_setup.tt -%]
 [% SET facet_browse_url = c.uri_for_site( c.controller('Browse').action_for('html_facets') ) %]
 
 <div id="main">

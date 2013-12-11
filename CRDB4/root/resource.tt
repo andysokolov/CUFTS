@@ -1,3 +1,4 @@
+[%- PROCESS site_setup.tt -%]
 [%# extra_js.push( c.uri_for_js('jquery.selectboxes.js') ) %]
 
 <style>
