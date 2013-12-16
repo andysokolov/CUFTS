@@ -10,6 +10,7 @@
     resource_medium => "Resource Medium",
     subject         => "Subject",
     license_allows_walkins => "Allows Walkins",
+    name_exact_keyword => "Name/Keyword",
 } %]
 
 <script type="text/javascript">

@@ -103,6 +103,13 @@ sub json :Chained('facet_options') :PathPart('json') :Args(0) {
     }
 
     foreach my $record (@records) {
+
+        # Add URL for record
+
+        $record->{resource_url} = $c->uri_for_site( $c->controller('Resource')->action_for('resource'), [$record->{id}] )->as_string;
+
+        # Add links to attached files if they exist
+
         my $files = $c->model('CUFTS::ERMFiles')->search({ linked_id => $record->{id}, link_type => 'm', description => { 'ilike' => '%public%' } } );
         $record->{files} = [];
         while ( my $file = $files->next ) {
@@ -119,6 +126,12 @@ sub json :Chained('facet_options') :PathPart('json') :Args(0) {
 sub facets_uri_redirect :Chained('base') :PathPart('facets') :Args {
     my ( $self, $c, @facets ) = @_;
 
+    my $action = 'browse';
+    if ( $facets[0] eq 'json' ) {
+        shift @facets;
+        $action = 'json';
+    }
+
     my %facets;
     while ( my ( $type, $data ) = splice( @facets, 0, 2 ) ) {
         if ( $type eq 'id' ) {
@@ -130,13 +143,13 @@ sub facets_uri_redirect :Chained('base') :PathPart('facets') :Args {
         }
     }
 
-    $c->redirect( $c->uri_for_site( $c->controller->action_for('browse'), \%facets ) );
+    $c->redirect( $c->uri_for_site( $c->controller->action_for($action), \%facets ) );
 }
 
 sub _facets_from_params {
     my ( $self, $c, $hash ) = @_;
 
-    foreach my $param ( qw( resource_type resource_medium subject content_type name keyword ) ) {
+    foreach my $param ( qw( resource_type resource_medium subject content_type name keyword name_exact_keyword license_generic_boolean vendor publisher ) ) {
         my $val = $c->request->params->{$param};
         next if !hascontent($val);
 
