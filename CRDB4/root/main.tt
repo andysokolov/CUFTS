@@ -37,7 +37,7 @@
  <h2>[% c.loc('Keyword search for articles on the web:') | html %]</h2>
  <div class="main-box-content">
   <div id="main-google-form">
-   <form class="form-inline" method="get" action="[% google_scholar_url OR 'http://scholar.google.com/scholar' | html %]">
+   <form class="form-inline" method="post" action="[% google_scholar_url OR 'http://scholar.google.com/scholar' | html %]">
     <img src="http://static.lib.sfu.ca/images/scholar_sm.gif" alt="Google Scholar" width="105" height="40" border="0" align="absmiddle" /></a>
     <input type="hidden" name="hl" value="en">
     <input type="text" class="input" name="q" maxlength="255" value="" />
