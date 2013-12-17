@@ -11,6 +11,7 @@
     subject         => "Subject",
     license_allows_walkins => "Allows Walkins",
     name_exact_keyword => "Name/Keyword",
+    subscription_status => "Subscription Status",
 } %]
 
 <script type="text/javascript">
