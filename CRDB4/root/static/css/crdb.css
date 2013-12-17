@@ -350,6 +350,12 @@ dl#resource-fields {
     color: red;
 }
 
+.resource-data ul {
+    margin-left: 17px;
+    padding: 0;
+    list-style-type: disc;
+}
+
 /* Field Editing */
 
 .field-editing textarea {
