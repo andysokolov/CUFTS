@@ -149,7 +149,7 @@ sub facets_uri_redirect :Chained('base') :PathPart('facets') :Args {
 sub _facets_from_params {
     my ( $self, $c, $hash ) = @_;
 
-    foreach my $param ( qw( resource_type resource_medium subject content_type name keyword name_exact_keyword license_generic_boolean vendor publisher subscription_status ) ) {
+    foreach my $param ( qw( resource_type resource_medium subject content_type name keyword name_exact_keyword license_generic_boolean vendor publisher subscription_status license_allows_walkins open_access ) ) {
         my $val = $c->request->params->{$param};
         next if !hascontent($val);
 
