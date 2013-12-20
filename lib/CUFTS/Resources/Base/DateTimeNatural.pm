@@ -38,7 +38,7 @@ sub parse_date {
         $date = trim_string($date);
         next if is_empty_string($date);
 
-        my $dt = $dt_parser->parse_datetime( $date );
+        my $dt = $dt_parser->parse_datetime( $class->check_common_shortcuts( $start, $date ) || $date );
         next if !$dt_parser->success;
 
         if ( !defined($final) ) {
@@ -53,8 +53,29 @@ sub parse_date {
             }
         }
     }
-    
+
     return defined($final) ? $final->ymd : undef;
+}
+
+sub check_common_shortcuts {
+    my ( $class, $start, $date ) = @_;
+
+    my @end = ( 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 );
+
+    if ( $date =~ /^ (\d{4}) [-\/]? (\d{1,2}) $/xsm ) {
+        my $year    = $1;
+        my $month   = $2 eq '00' ? ( $start ? '01' : '12' ) : $2;
+        my $string = "$year-$month-" . ($start ? '01' : $end[ int($month) - 1 ]);
+        return $string;
+    }
+    elsif ( $date =~ /^ (\d{1,2}) [-\/]? (\d{4}) $/xsm ) {
+        my $year    = $2;
+        my $month   = $1 eq '00' ? ( $start ? '01' : '12' ) : $1;
+        my $string = "$year-$month-" . ($start ? '01' : $end[ int($month) - 1 ]);
+        return $string;
+    }
+
+    return undef;
 }
 
 sub parse_start_date {

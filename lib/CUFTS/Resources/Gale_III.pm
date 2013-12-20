@@ -50,9 +50,11 @@ sub title_list_fields {
 
 sub title_list_field_map {
     return {
-        'Journal Name'   => 'title',
-        'ISSN'           => 'issn',
-        'Embargo (Days)' => 'embargo_days',
+        'Journal Name'      => 'title',
+        'Publication Name'  => 'title',
+        'ISSN'              => 'issn',
+        'Embargo (Days)'    => 'embargo_days',
+        'Publisher'         => 'publisher',
     };
 }
 
@@ -103,11 +105,11 @@ sub skip_record {
 sub clean_data {
     my ( $class, $record ) = @_;
 
-    $record->{cit_start_date} = $class->parse_start_date( $record->{'___Index Start'} );
-    $record->{cit_end_date}   = $class->parse_end_date( $record->{'___Index End'} );
+    $record->{cit_start_date} = $class->parse_start_date( map { $record->{$_} } ( '___Index Start', '___Index Start Date' ) );
+    $record->{cit_end_date}   = $class->parse_end_date(   map { $record->{$_} } ( '___Index End',   '___Index End Date' ) );
 
-    $record->{ft_start_date}  = $class->parse_start_date( map { $record->{$_} } ( '___Full-text Start', '___Full-Text Start', '___Image Start' ) );
-    $record->{ft_end_date}    = $class->parse_start_date( map { $record->{$_} } ( '___Full-text End', '___Full-Text End', '___Image End' ) );
+    $record->{ft_start_date}  = $class->parse_start_date( map { $record->{$_} } ( '___Full-text Start', '___Full-Text Start', '___Full-text Start Date', '___Image Start', '___Image Start Date' ) );
+    $record->{ft_end_date}    = $class->parse_end_date(   map { $record->{$_} } ( '___Full-text End',   '___Full-Text End',   '___Full-text End Date',   '___Image End',   '___Image End Date' ) );
 
 
     # Gale can't seem to keep their columns consistent, so try an alternative
@@ -132,7 +134,7 @@ sub build_linkJournal {
 
     my @results;
     foreach my $record (@$records) {
-        
+
         my $url = $resource->url_base;
         $url =~ s/rc11/rc18/;  # Makes link go to journal page rather than results list
 
@@ -231,7 +233,7 @@ sub build_linkFulltext {
 
         my $url = $resource->url_base;
         next if is_empty_string( $url );
-        
+
         if ( is_empty_string($record->issn) ) {
             my $title = $record->title;
             $title =~ tr/ /+/;
@@ -247,7 +249,7 @@ sub build_linkFulltext {
         if ( not_empty_string($request->volume) ) {
             $url .= '+AND+vo+' . $request->volume;
         }
-    
+
         if ( not_empty_string($request->issue) ) {
             $url .= '+AND+iu+' . $request->issue;
         }
@@ -256,12 +258,12 @@ sub build_linkFulltext {
             $url .= '+AND+sp+' . $request->spage;
         }
 
-#        if ( not_empty_string($request->atitle) ) { 
+#        if ( not_empty_string($request->atitle) ) {
 #            $url .= '+AND+ti+' . $request->atitle;
 #        }
 
         $url .= __add_proxy_suffix($url, $resource->proxy_suffix);
-        
+
         my $result = new CUFTS::Result($url);
         $result->record($record);
         push @results, $result;
@@ -272,11 +274,11 @@ sub build_linkFulltext {
 
 sub __add_proxy_suffix {
     my ( $url, $suffix ) = @_;
-    
+
     if ( not_empty_string( $suffix ) ) {
         # if the URL has a "?" in it already, then convert a leading ? from the suffix into a &
 
-        if ( $url =~ /\?/ ) {  
+        if ( $url =~ /\?/ ) {
             $suffix =~ s/^\?/&/;
         }
         return $suffix;
