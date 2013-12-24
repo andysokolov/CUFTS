@@ -34,7 +34,6 @@ use CUFTS::ResolverResource;
 
 use CUFTS::Exceptions;
 use CUFTS::Config;
-use CUFTS::Debug;
 use CUFTS::Util::Simple;
 
 use Data::Dumper;

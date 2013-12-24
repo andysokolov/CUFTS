@@ -18,8 +18,6 @@ sub base : Chained('/site') PathPart('resolve') CaptureArgs(0) {
 
     $c->stash->{sites}    = $sites;
     $c->stash->{resolver} = $resolver;
-
-    return 1;  # Continue processing
 }
 
 sub openurl : Chained('base') PathPart('openurl') Args() {

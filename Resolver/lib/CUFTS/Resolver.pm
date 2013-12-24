@@ -1,8 +1,23 @@
 package CUFTS::Resolver;
+use Moose;
+use namespace::autoclean;
 
-use strict;
+use lib '../lib';
+use CUFTS::Config;
 
-use Catalyst::Runtime '5.80';
+use Catalyst::Runtime 5.80;
+
+# Set flags and add plugins for the application.
+#
+# Note that ORDERING IS IMPORTANT here as plugins are initialized in order,
+# therefore you almost certainly want to keep ConfigLoader at the head of the
+# list if you're using it.
+#
+#         -Debug: activates the debug mode for very useful log messages
+#   ConfigLoader: will load the configuration from a Config::General file in the
+#                 application's home directory
+# Static::Simple: will serve static files from the application's root
+#                 directory
 
 use Catalyst qw/
     -Debug
@@ -11,20 +26,43 @@ use Catalyst qw/
     I18N
     Unicode::Encoding
 /;
+extends 'Catalyst';
 
-use lib '../lib';
-use CUFTS::Config;
-
-our $VERSION = '2.00.00';
-
-__PACKAGE__->config(
-    name       => 'CUFTS::Resolver',
-    encoding => 'UTF-8',
+has 'site' => (
+	is => 'rw',
+	isa => 'Object',
 );
 
-__PACKAGE__->setup;
+our $VERSION = '0.01';
 
-__PACKAGE__->mk_accessors( qw( site ) );
+# Configure the application.
+#
+# Note that settings in cufts_resolver.conf (or other external
+# configuration file that you set up manually) take precedence
+# over this when using ConfigLoader. Thus configuration
+# details given here can function as a default configuration,
+# with an external configuration file acting as an override for
+# local deployment.
+
+__PACKAGE__->config(
+    name => 'CUFTS::Resolver',
+	encoding => 'UTF-8',
+    # Disable deprecated behavior needed by old applications
+    disable_component_resolution_regex_fallback => 1,
+    enable_catalyst_header => 1, # Send X-Catalyst header
+    # Default database connection from Config
+    'Model::CUFTS' => {
+        connect_info => {
+            dsn      => $CUFTS::Config::CUFTS_DB_STRING,
+            user     => $CUFTS::Config::CUFTS_USER,
+            password => $CUFTS::Config::CUFTS_PASSWORD,
+            auto_savepoint => 1
+        }
+    },
+);
+
+# Start the application
+__PACKAGE__->setup();
 
 
 sub redirect {
@@ -81,9 +119,6 @@ sub uri_for_static {
 
 
 
-
-=back
-
 =head1 NAME
 
 CUFTS::Resolver - Catalyst based application
@@ -94,16 +129,20 @@ CUFTS::Resolver - Catalyst based application
 
 =head1 DESCRIPTION
 
-Catalyst based application.
+[enter your description here]
+
+=head1 SEE ALSO
+
+L<CUFTS::Resolver::Controller::Root>, L<Catalyst>
 
 =head1 AUTHOR
 
-Catalyst developer
+Todd Holbrook
 
 =head1 LICENSE
 
-This library is free software . You can redistribute it and/or modify
-it under the same terms as perl itself.
+This library is free software. You can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =cut
 

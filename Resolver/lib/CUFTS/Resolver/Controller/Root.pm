@@ -34,27 +34,17 @@ sub default : Private {
 sub base : Chained('/') PathPart('') CaptureArgs(0) {
     my ($self, $c) = @_;
 
-    # Set up basic template vars
-    my $url_base = $c->config->{url_base} || (q{} . $c->req->base);
-    $url_base =~ s{/$}{};    # Remove trailing slash
-    $c->stash->{url_base}  = $url_base;
-    $c->stash->{image_dir} = '/static/images/';
-    $c->stash->{css_dir}   = '/static/css/';
-    $c->stash->{js_dir}    = '/static/js/';
     $c->stash->{extra_js}  = [];
 }
 
 sub site : Chained('base') PathPart('site') CaptureArgs(1) {
     my ($self, $c, $site_key) = @_;
-    
-    my $site = CUFTS::DB::Sites->search( { key => $site_key } )->first;
+
+    my $site = $c->model('CUFTS::Sites')->find({ key => $site_key });
     if ( !defined($site) ) {
         die("Unrecognized site key: $site_key");
     }
     $c->site( $site );
-    
-    
-    return 1;
 }
 
 sub end : ActionClass('RenderView') {
@@ -81,11 +71,6 @@ sub end : ActionClass('RenderView') {
 
 sub _end_error_handling {
     my ( $self, $c ) = @_;
-
-    warn("Rolling back database changes due to error flag.");
-    warn( join("\n",  @{ $c->error }) );
-
-    CUFTS::DB::DBI->dbi_rollback();
 
     $c->stash(
         template      => 'fatal_error.tt',

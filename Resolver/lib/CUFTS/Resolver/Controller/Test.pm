@@ -15,7 +15,7 @@ sub base : Chained('/base') PathPart('test') CaptureArgs(0) {}
 sub test : Chained('base') PathPart('') Args(0) {
     my ( $self, $c ) = @_;
 
-    my @sites = CUFTS::DB::Sites->retrieve_all();
+    my @sites = $c->model('CUFTS::Sites')->search({}, { order_by => 'name' })->all();
     $c->stash->{sites}    = \@sites;
     $c->stash->{template} = 'test.tt';
 
@@ -29,21 +29,19 @@ sub do : Chained('base') PathPart('do') Args(0) {
     my ( $self, $c ) = @_;
 
     my $params = $c->req->params;
-    
+
     my $psite     = delete $params->{_site};
     my $ptemplate = delete $params->{_template};
     delete $params->{_submit};
-    
+
     my $uri;
     if ( not_empty_string($psite) ) {
-        my $site = CUFTS::DB::Sites->search( { key => $psite } )->first;
+        my $site = $c->model('CUFTS::Sites')->find({ key => $psite });
         $uri = $c->uri_for_given_site( $c->controller('Resolve')->action_for('openurl'), $site, $ptemplate, $params );
     }
     else {
         $uri = $c->uri_for_site( $c->controller('Resolve')->action_for('openurl'), $ptemplate, $params );
     }
-
-    warn($uri);
 
     return $c->redirect($uri);
 }

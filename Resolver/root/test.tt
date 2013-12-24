@@ -15,7 +15,7 @@
 	<form name="testform" action="[% url_base %]/test/do" method="post">
 		<label for="_site">[% c.loc( 'site' ) %]</label>
 		<select name="_site" id="_site">
-			[% FOREACH site IN sites.sort('name') %]
+			[% FOREACH site IN sites %]
 				<option value="[% site.key %]" [% 'SELECTED' IF site.key == current_site_key %]>[% site.name %] ([% site.key %])</option>
 			[% END %]
 		</select><br />
