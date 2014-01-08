@@ -261,7 +261,7 @@ sub clone {
     my $clone = CUFTS::DB::ERMMain->insert(\%hash);
     my $clone_id = $clone->id;
 
-    warn( 'Created: ' . $clone_id );
+    # warn( 'Created: ' . $clone_id );
 
     foreach my $name ( $self->names ) {
         CUFTS::DB::ERMNames->insert({
