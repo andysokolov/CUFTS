@@ -798,15 +798,11 @@ __PACKAGE__->belongs_to(
     undef, { join_type => 'left outer' }
 );
 
-__PACKAGE__->has_many( 'names' => 'CUFTS::Schema::ERMNames', 'erm_main' );
-__PACKAGE__->has_many( 'keywords' => 'CUFTS::Schema::ERMKeywords', 'erm_main' );
-__PACKAGE__->has_many( 'uses' => 'CUFTS::Schema::ERMUses', 'erm_main' );
-
-__PACKAGE__->has_many(
-    'subjects_main' => 'CUFTS::Schema::ERMSubjectsMain',
-    'erm_main'
-);
-__PACKAGE__->has_many( content_types_main => 'CUFTS::Schema::ERMContentTypesMain', 'erm_main' );
+__PACKAGE__->has_many( names                => 'CUFTS::Schema::ERMNames', 'erm_main' );
+__PACKAGE__->has_many( keywords             => 'CUFTS::Schema::ERMKeywords', 'erm_main' );
+__PACKAGE__->has_many( uses                 => 'CUFTS::Schema::ERMUses', 'erm_main' );
+__PACKAGE__->has_many( subjects_main        => 'CUFTS::Schema::ERMSubjectsMain', 'erm_main' );
+__PACKAGE__->has_many( content_types_main   => 'CUFTS::Schema::ERMContentTypesMain', 'erm_main' );
 
 __PACKAGE__->many_to_many( content_types => 'content_types_main', 'content_type' );
 __PACKAGE__->many_to_many( subjects      => 'subjects_main',      'subject' );
