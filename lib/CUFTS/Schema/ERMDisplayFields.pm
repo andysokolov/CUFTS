@@ -8,7 +8,7 @@
 ## the terms of the GNU General Public License as published by the Free
 ## Software Foundation; either version 2 of the License, or (at your option)
 ## any later version.
-## 
+##
 ## CUFTS is distributed in the hope that it will be useful, but WITHOUT ANY
 ## WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 ## FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -21,9 +21,9 @@
 package CUFTS::Schema::ERMDisplayFields;
 
 use strict;
-use base qw/DBIx::Class/;
+use base qw/DBIx::Class::Core/;
 
-__PACKAGE__->load_components(qw/PK::Auto Core/);
+__PACKAGE__->load_components(qw//);
 
 __PACKAGE__->table('erm_display_fields');
 __PACKAGE__->add_columns(
@@ -52,7 +52,7 @@ __PACKAGE__->add_columns(
     },
     display_order => {
         data_type => 'integer',
-        size => 8,        
+        size => 8,
     },
 );
 
@@ -68,9 +68,9 @@ sub field_type {
     my $erm_main     = $schema->resultset('ERMMain')->result_source;
     my $erm_license  = $schema->resultset('ERMLicense')->result_source;
     my $erm_provider = $schema->resultset('ERMProviders')->result_source;
-    
+
     my $field = $self->field;
-    
+
     my $type;
     if ( $erm_main->has_column($field) ) {
         $type = $erm_main->column_info($field)->{data_type};
@@ -81,14 +81,14 @@ sub field_type {
     elsif ( $erm_provider->has_column($field) ) {
         $type = $erm_provider->column_info($field)->{data_type};
     }
-    
+
     if ( $type =~ /^varc/i || $type =~ /^char/ ) {
         $type = 'text';
     }
     if ( !defined($type) ) {
         $type = 'text';
     }
-    
+
     return lc($type);
 }
 

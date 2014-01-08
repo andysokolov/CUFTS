@@ -1,32 +1,12 @@
-## CUFTS::Schema::ERMMain
-##
-## Copyright Todd Holbrook, Simon Fraser University (2003)
-##
-## This file is part of CUFTS.
-##
-## CUFTS is free software; you can redistribute it and/or modify it under
-## the terms of the GNU General Public License as published by the Free
-## Software Foundation; either version 2 of the License, or (at your option)
-## any later version.
-##
-## CUFTS is distributed in the hope that it will be useful, but WITHOUT ANY
-## WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-## FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-## details.
-##
-## You should have received a copy of the GNU General Public License along
-## with CUFTS; if not, write to the Free Software Foundation, Inc., 59
-## Temple Place, Suite 330, Boston, MA 02111-1307 USA
-
 package CUFTS::Schema::ERMMain;
 
 use CUFTS::Resources;    # For prepend_proxy()
 use CUFTS::Util::Simple;
 
 use strict;
-use base qw/DBIx::Class/;
+use base qw/DBIx::Class::Core/;
 
-__PACKAGE__->load_components(qw/Core/);
+__PACKAGE__->load_components(qw//);
 
 __PACKAGE__->table('erm_main');
 __PACKAGE__->add_columns(
@@ -798,11 +778,15 @@ __PACKAGE__->belongs_to(
     undef, { join_type => 'left outer' }
 );
 
-__PACKAGE__->has_many( names                => 'CUFTS::Schema::ERMNames', 'erm_main' );
-__PACKAGE__->has_many( keywords             => 'CUFTS::Schema::ERMKeywords', 'erm_main' );
-__PACKAGE__->has_many( uses                 => 'CUFTS::Schema::ERMUses', 'erm_main' );
-__PACKAGE__->has_many( subjects_main        => 'CUFTS::Schema::ERMSubjectsMain', 'erm_main' );
-__PACKAGE__->has_many( content_types_main   => 'CUFTS::Schema::ERMContentTypesMain', 'erm_main' );
+__PACKAGE__->has_many( 'names' => 'CUFTS::Schema::ERMNames', 'erm_main' );
+__PACKAGE__->has_many( 'keywords' => 'CUFTS::Schema::ERMKeywords', 'erm_main' );
+__PACKAGE__->has_many( 'uses' => 'CUFTS::Schema::ERMUses', 'erm_main' );
+
+__PACKAGE__->has_many(
+    'subjects_main' => 'CUFTS::Schema::ERMSubjectsMain',
+    'erm_main'
+);
+__PACKAGE__->has_many( content_types_main => 'CUFTS::Schema::ERMContentTypesMain', 'erm_main' );
 
 __PACKAGE__->many_to_many( content_types => 'content_types_main', 'content_type' );
 __PACKAGE__->many_to_many( subjects      => 'subjects_main',      'subject' );

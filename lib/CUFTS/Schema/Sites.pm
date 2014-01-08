@@ -1,28 +1,10 @@
-## CUFTS::Schema::Sites
-##
-## Copyright Todd Holbrook, Simon Fraser University (2003)
-##
-## This file is part of CUFTS.
-##
-## CUFTS is free software; you can redistribute it and/or modify it under
-## the terms of the GNU General Public License as published by the Free
-## Software Foundation; either version 2 of the License, or (at your option)
-## any later version.
-##
-## CUFTS is distributed in the hope that it will be useful, but WITHOUT ANY
-## WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-## FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-## details.
-##
-## You should have received a copy of the GNU General Public License along
-## with CUFTS; if not, write to the Free Software Foundation, Inc., 59
-## Temple Place, Suite 330, Boston, MA 02111-1307 USA
-
 package CUFTS::Schema::Sites;
 
 use strict;
-use base qw/DBIx::Class/;
-__PACKAGE__->load_components(qw/PK::Auto Core/);
+
+use base qw/DBIx::Class::Core/;
+
+__PACKAGE__->load_components(qw//);
 
 __PACKAGE__->table('sites');
 __PACKAGE__->add_columns(
@@ -315,12 +297,12 @@ __PACKAGE__->add_columns(
 );
 __PACKAGE__->set_primary_key( 'id' );
 
-#__PACKAGE__->has_many( 'accounts', [ 'CUFTS::DB::Accounts_Sites' => 'account' ], 'site' );
-#__PACKAGE__->has_many( 'ips'     => 'CUFTS::DB::SiteIPs' );
-#__PACKAGE__->has_many( domains => 'CUFTS::DB::SiteDomains' );
+# __PACKAGE__->has_many( 'accounts', [ 'CUFTS::DB::Accounts_Sites' => 'account' ], 'site' );
 
+__PACKAGE__->has_many( ips             => 'CUFTS::Schema::SiteIPs',        'site' );
+__PACKAGE__->has_many( domains         => 'CUFTS::Schema::SiteDomains',    'site' );
 __PACKAGE__->has_many( local_resources => 'CUFTS::Schema::LocalResources', 'site' );
-__PACKAGE__->has_many( cjdb_accounts   => 'CUFTS::Schema::CJDBAccounts', 'site' );
+__PACKAGE__->has_many( cjdb_accounts   => 'CUFTS::Schema::CJDBAccounts',   'site' );
 
 
 sub inflate_packed_field_lists {

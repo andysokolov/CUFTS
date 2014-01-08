@@ -23,7 +23,7 @@ __PACKAGE__->add_columns(
     },
 );
 
-__PACKAGE__->set_primary_key( qw/id/ );
+__PACKAGE__->set_primary_key('id');
 
 __PACKAGE__->belongs_to( role =>    'CUFTS::Schema::CJDBRoles',    {'foreign.id' => 'self.role'} );
 __PACKAGE__->belongs_to( account => 'CUFTS::Schema::CJDBAccounts', {'foreign.id' => 'self.account'} );

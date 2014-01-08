@@ -21,9 +21,9 @@
 package CUFTS::Schema::ERMSubjectsMain;
 
 use strict;
-use base qw/DBIx::Class/;
+use base qw/DBIx::Class::Core/;
 
-__PACKAGE__->load_components(qw/PK::Auto Core/);
+__PACKAGE__->load_components(qw//);
 
 __PACKAGE__->table('erm_subjects_main');
 __PACKAGE__->add_columns( qw(
@@ -32,12 +32,12 @@ __PACKAGE__->add_columns( qw(
     subject
     rank
     description
-));                                                                                                        
+));
 
 __PACKAGE__->set_primary_key( 'id' );
 
-__PACKAGE__->belongs_to( 'erm_main' => 'CUFTS::Schema::ERMMain' );
-__PACKAGE__->belongs_to( 'subject'  => 'CUFTS::Schema::ERMSubjects' );
+__PACKAGE__->belongs_to( erm_main => 'CUFTS::Schema::ERMMain' );
+__PACKAGE__->belongs_to( subject  => 'CUFTS::Schema::ERMSubjects' );
 
 
 1;

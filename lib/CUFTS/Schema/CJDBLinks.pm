@@ -4,6 +4,7 @@ use strict;
 use base qw/DBIx::Class::Core/;
 
 __PACKAGE__->load_components(qw//);
+
 __PACKAGE__->table('cjdb_links');
 __PACKAGE__->add_columns(
     id => {

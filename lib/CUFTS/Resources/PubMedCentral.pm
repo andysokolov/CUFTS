@@ -25,6 +25,7 @@ use base qw(CUFTS::Resources::GenericJournalDOI CUFTS::Resources::Base::Journals
 use CUFTS::Exceptions;
 use CUFTS::Util::Simple;
 use HTML::Entities;
+use URI::Escape qw(uri_escape);
 
 use strict;
 
@@ -87,6 +88,15 @@ sub clean_data {
     $record->{'___Earliest volume'} = HTML::Entities::decode_entities( $record->{'___Earliest volume'} );
     $record->{'___Latest issue'}    = HTML::Entities::decode_entities( $record->{'___Latest issue'} );
 
+    if ( defined( $record->{embargo_months} ) ) {
+        if ( $record->{embargo_months} =~ / (\d+) \s* months /xsmi ) {
+            $record->{embargo_months} = $1;
+        }
+        else {
+            delete $record->{embargo_months};
+        }
+    }
+
     if ( defined( $record->{'___Earliest volume'} ) ) {
 
         my ( $vol, $date ) = split /\s*;\s*/, $record->{'___Earliest volume'};
@@ -103,7 +113,7 @@ sub clean_data {
 
     }
 
-    if ( defined( $record->{'___Latest issue'} ) ) {
+    if ( defined( $record->{'___Latest issue'} ) && !defined( $record->{embargo_months} ) ) {
 
         my $current_year = (localtime())[5] + 1900;
 
@@ -134,15 +144,6 @@ sub clean_data {
         }
     }
 
-    if ( defined( $record->{embargo_months} ) ) {
-        if ( $record->{embargo_months} =~ / (\d+) \s* months /xsmi ) {
-            $record->{embargo_months} = $1;
-        }
-        else {
-            delete $record->{embargo_months};
-        }
-    }
-    
     return $class->SUPER::clean_data($record);
 
     sub get_month {
