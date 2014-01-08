@@ -53,7 +53,7 @@ SITE:
     foreach my $site (@$sites) {
         my %provider_dedupe;
 
-        my $resources = defined($site) 
+        my $resources = defined($site)
                         ? $self->get_active_resources($site)
                         : [];
 
@@ -73,7 +73,7 @@ RESOURCE:
 
             my $module = __module_name( $resource->module );
 
-            # Get records to work with.  This can also be used to modify the 
+            # Get records to work with.  This can also be used to modify the
             # request object for things like adding extra metadata, in which
             # case no records will be returned
 
@@ -86,7 +86,7 @@ RESOURCE:
             my $services = $self->get_services( $local_resource, $module, $site, $request );
             my $compiled_results;
 SERVICE:
-            foreach my $service (@$services) { 
+            foreach my $service (@$services) {
                 my $service_name = $service->name;
 
                 # Dedupe providers that have already provided a link at this service level
@@ -224,12 +224,12 @@ sub log_request {
                 'request_time' =>
                     sprintf( "%02i:%02i:%02i", $hour, $min, $sec ),
                 'site' => $site->id,
-                'issn' => ( defined( $request->issn ) 
+                'issn' => ( defined( $request->issn )
                             ? $request->issn
                             : $request->eissn
                 ),
                 'isbn'  => $request->isbn,
-                'title' => ( defined( $request->title ) 
+                'title' => ( defined( $request->title )
                              ? $request->title
                              : $request->stitle
                 ),
@@ -264,7 +264,7 @@ sub get_sites {
             push @site_keys, split(',', $request->pid->{CUFTSSite});
         }
     }
-    
+
     foreach my $site_key (@site_keys) {
         my @db_sites = CUFTS::DB::Sites->search( 'key' => $site_key );
         if ( scalar(@db_sites) == 1 ) {
@@ -304,7 +304,7 @@ sub get_site_from_domain {
 
 sub get_site_from_ip {
     my ( $self, $ip ) = @_;
-    
+
     my @IPs = CUFTS::DB::SiteIPs->search_network($ip);
     return $IPs[0]->site if scalar(@IPs);
 
@@ -390,12 +390,12 @@ sub overlay_global_resource_data {
 
     foreach my $column ( $resource->columns ) {
         next if $column eq 'resource';
-        
-        $resource->$column( 
-            $is_local || not_empty_string( $local->$column ) 
+
+        $resource->$column(
+            $is_local || not_empty_string( $local->$column )
             ? $local->$column
-            : $global->can($column) 
-            ? $global->$column 
+            : $global->can($column)
+            ? $global->$column
             : undef );
     }
 
