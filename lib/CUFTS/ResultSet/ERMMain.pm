@@ -199,7 +199,7 @@ sub _facet_search_name_exact_keyword {
     my ( $class, $field, $data, $config ) = @_;
 
     $config->{joins}->{keywords} = undef;
-    $config->{search}->{'-nest'} = [
+    $config->{search}->{'-or'} = [
     	'names.search_name'    => { '~'  => '[[:<:]]' . CUFTS::Schema::ERMNames->strip_name( $data ) },
     	'keywords.keyword'     => { '~'  => CUFTS::Schema::ERMKeywords->strip_keyword( $data ) },
 	];
@@ -219,7 +219,7 @@ sub _facet_search_keyword {
     $escaped = quotemeta($escaped);
     $escaped = '[[:<:]]' . $escaped . '[[:>:]]';   # Match only whole words
 
-    $config->{search}->{'-nest'} = [
+    $config->{search}->{'-or'} = [
             'subject.subject'      => { '~*' => $escaped },
             'me.description_brief' => { '~*' => $escaped },
             'me.description_full'  => { '~*' => $escaped },
