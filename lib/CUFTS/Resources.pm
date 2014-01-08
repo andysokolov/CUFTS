@@ -151,6 +151,7 @@ sub load_title_list {
     defined($resource) or
         CUFTS::Exception::App->throw("No resource passed into load_title_list");
         
+#    open(IN, "<:utf8", $title_list) or
     open(IN, $title_list) or
         CUFTS::Exception::App->throw("Unable to open title list for reading: $!");
 
@@ -339,7 +340,7 @@ sub title_list_get_field_headings {
     my $headings_array = $class->title_list_parse_row($IN);
     defined($headings_array) && ref($headings_array) eq 'ARRAY' or
         return undef;
-    
+
     my @real_headings;
     foreach my $heading (@$headings_array) {
         
