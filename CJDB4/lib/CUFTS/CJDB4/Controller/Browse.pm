@@ -423,6 +423,20 @@ sub lcc :Chained('base') :PathPart('lcc') Args(0) {
     $c->stash->{subject_info} = \%subject_info;
 }
 
+sub show :Chained('base') :PathPart('show') Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $q = $c->request->params->{search_terms};
+    my $field = $c->request->params->{browse_field};
+
+    if ( $field eq 'issn' ) {
+        return $c->redirect( $c->uri_for_site( $c->controller->action_for('issns'), { q => $q } ) );
+    }
+
+
+}
+
+
 
 sub _stash_issns {
     my ( $c, $ids ) = @_;
