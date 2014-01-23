@@ -2,6 +2,10 @@
 [% PROCESS browse_form.tt %]
 <div id="browse">
 
+[% IF pager.total_entries == 0 %]
+ [% c.loc('No results found.') | html %]
+[% END %]
+
 [% PROCESS pager.tt %]
 
 [% WHILE ( subject = subjects_rs.next ) %]
