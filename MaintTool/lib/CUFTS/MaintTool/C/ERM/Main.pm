@@ -148,7 +148,7 @@ my $form_validate = {
             breaches
             alert
             alert_expiry
-            
+
             provider_name
             local_provider_name
             provider_contact
@@ -157,7 +157,7 @@ my $form_validate = {
             support_phone
             knowledgebase
             customer_number
-            
+
             erm-edit-input-content_types
         )
     ],
@@ -208,7 +208,7 @@ sub auto : Private {
         [ 'consortias',       'consortia',       'CUFTS::DB::ERMConsortia' ],
         [ 'pricing_models',   'pricing_model',   'CUFTS::DB::ERMPricingModels' ],
     );
-    
+
     foreach my $load_option ( @load_options ) {
 
         my ( $type, $field, $model ) = @$load_option;
@@ -239,7 +239,7 @@ sub default : Private {
 
 sub selected_json : Local {
     my ( $self, $c ) = @_;
-    
+
     my @json_resources;
     my $current_site_id = $c->stash->{current_site}->id;
 
@@ -254,7 +254,7 @@ sub selected_json : Local {
                 order_by => 'result_name'
             }
         );
-        
+
         foreach my $resource ( @resources ) {
             if ( defined($resource) ) {
                 push @json_resources, {
@@ -266,10 +266,10 @@ sub selected_json : Local {
             }
         }
     }
-    
+
     $c->stash->{json}->{rowcount} = scalar(@json_resources);
     $c->stash->{json}->{results}  = \@json_resources;
-    
+
     $c->forward('V::JSON');
 }
 
@@ -290,7 +290,7 @@ sub selected_add : Local {
 
 sub selected_add_all : Local {
     my ( $self, $c ) = @_;
-    
+
     $self->_find($c);
     $c->session->{selected_erm_main} = [ List::MoreUtils::uniq( ( @{$c->session->{selected_erm_main}}, map { $_->{id} } @{$c->stash->{json}->{results}} ) ) ];
 
@@ -309,7 +309,7 @@ sub selected_remove : Local {
     }
     my %to_delete = map { $_ => 1 } @$delete;
     @{$c->session->{selected_erm_main}} = grep { not exists( $to_delete{$_} ) } @{$c->session->{selected_erm_main}};
-    
+
     $c->forward('selected_json');
 }
 
@@ -321,15 +321,15 @@ sub selected_clear : Local {
 
 sub selected_marc : Local {
     my ( $self, $c ) = @_;
-    
+
     if ( !$c->session->{selected_erm_main} ) {
         $c->session->{selected_erm_main} = [];
     }
-    
+
     my $MARC_dump;
-    
+
     my @erm_records = CUFTS::DB::ERMMain->search( { site => $c->stash->{current_site}->id, id => { '-in' => $c->session->{selected_erm_main} } } );
-    
+
     my $url_base = $CUFTS::Config::CRDB_URL . $c->stash->{current_site}->key . '/resource/';
     foreach my $erm_record ( @erm_records ) {
         if ( $c->req->params->{file} ) {
@@ -369,15 +369,15 @@ sub selected_marc : Local {
 
 sub selected_export : Local {
     my ( $self, $c, $format ) = @_;
-    
+
     if ( !$c->session->{selected_erm_main} ) {
         $c->session->{selected_erm_main} = [];
     }
-    
+
     my @erm_records = CUFTS::DB::ERMMain->search( { site => $c->stash->{current_site}->id, id => { '-in' => $c->session->{selected_erm_main} } }, { order_by => 'id' } );
     my @flattened_records = map { $_->to_hash } @erm_records;
     my @columns = sort ( CUFTS::DB::ERMMain->columns, qw( subjects content_types names ) );
-    
+
     if ( $format eq 'json' ) {
         $c->stash->{json} = \@flattened_records;
         $c->forward('V::JSON');
@@ -408,7 +408,7 @@ sub find_json : Local {
             delete $query->{$key};
         }
     }
-    
+
     $query->{site} = $c->stash->{current_site}->id;
 
     my $URI = URI->new();
@@ -422,7 +422,7 @@ sub find_json : Local {
 
 sub _find {
     my ( $self, $c )  = @_;
-    
+
     my @valid_params = ( qw(
         consortia
         content_type
@@ -458,7 +458,7 @@ sub _find {
         $offset = $params->{start} || 0;
         $rows   = $params->{limit} || 25;
     }
-    
+
     my $search = {};
     foreach my $param ( keys %$params ) {
         next if !grep { $param eq $_ } @valid_params;
@@ -471,13 +471,13 @@ sub _find {
             $search->{$param} = $value;
         }
     }
-    
+
     my $count   = CUFTS::DB::ERMMain->facet_count(  $c->stash->{current_site}->id, $search );
     my $results = CUFTS::DB::ERMMain->facet_search( $c->stash->{current_site}->id, $search, 1, $offset, $rows );
 
     $c->stash->{json}->{rowcount} = $count;
     $c->stash->{json}->{results}  = $results;
-    
+
     return;
 }
 
@@ -529,7 +529,7 @@ sub create : Local {
     my ( $self, $c ) = @_;
 
     return $c->redirect('/erm/main/') if $c->req->params->{cancel};
-        
+
     if ( $c->req->params->{save} ) {
 
         $c->form( $form_validate_new );
@@ -542,7 +542,7 @@ sub create : Local {
                     site => $c->stash->{current_site}->id,
                     key  => $c->form->{valid}->{key},
                 });
-                
+
                 $erm->main_name( $c->form->{valid}->{name} );
 
             };
@@ -585,9 +585,9 @@ sub edit : Local {
         die("Unable to find ERMMain record: $erm_id for site " . $c->stash->{current_site}->id);
     }
     my %active_content_types = ( map { $_->id, 1 } $erm->content_types() );
-    
+
     # Get ERM License records for linking
-    
+
     my @erm_licenses = CUFTS::DB::ERMLicense->search( { site => $c->stash->{current_site}->id }, { order_by => 'LOWER(key)' } );
     $c->stash->{erm_licenses} = \@erm_licenses;
 
@@ -595,7 +595,7 @@ sub edit : Local {
 
     my @erm_providers = CUFTS::DB::ERMProviders->search( { site => $c->stash->{current_site}->id }, { order_by => 'LOWER(key)' } );
     $c->stash->{erm_providers} = \@erm_providers;
-    
+
     if ( $c->req->params->{submit} ) {
 
         $c->form( $form_validate );
@@ -629,7 +629,7 @@ sub edit : Local {
                 }
 
                 # Handle subject changes
-                
+
                 foreach my $param ( keys %{ $c->form->{valid} } ) {
 
                     # Edit an existing subject
@@ -642,7 +642,7 @@ sub edit : Local {
                             erm_main => $erm_id,   # include for security - don't grab other sites' subjects
                             id => $erm_main_subject_id,
                         })->first();
-                    
+
                         if ( $erm_main_subject_value eq 'delete' ) {
                             $erm_subjects_main->delete();
                         }
@@ -655,9 +655,9 @@ sub edit : Local {
 
                     }
                     elsif ( $param =~ /^erm-edit-input-subject-add-subject-(\d+)$/ ) {
-                        
+
                         # Add a new subject
-                        
+
                         my $erm_add_id = $1;
                         my $subject_value = $c->form->{valid}->{$param};
 
@@ -679,12 +679,12 @@ sub edit : Local {
 
                         my $erm_names_id    = $1;
                         my $erm_names_value = $c->form->{valid}->{$param};
-                        
+
                         my $erm_name = CUFTS::DB::ERMNames->search({
                             erm_main => $erm_id,
                             id       => $erm_names_id,
                         })->first();
-                        
+
                         if ( not_empty_string( $erm_names_value ) ) {
                             $erm_name->name( $erm_names_value );
                             $erm_name->update();
@@ -692,12 +692,12 @@ sub edit : Local {
                         else {
                             $erm_name->delete();
                         }
-                        
+
                     }
                     elsif ( $param =~ /^erm-edit-input-names-add-name-\d+$/ ) {
 
                         # Add a new alternate name
-                        
+
                         my $name_value = $c->form->{valid}->{$param};
                         if ( not_empty_string($name_value) ) {
 
@@ -715,12 +715,12 @@ sub edit : Local {
 
                         my $erm_keywords_id    = $1;
                         my $erm_keywords_value = $c->form->{valid}->{$param};
-                        
+
                         my $erm_keyword = CUFTS::DB::ERMKeywords->search({
                             erm_main => $erm_id,
                             id       => $erm_keywords_id,
                         })->first();
-                        
+
                         if ( not_empty_string( $erm_keywords_value ) ) {
                             $erm_keyword->keyword( $erm_keywords_value );
                             $erm_keyword->update();
@@ -728,12 +728,12 @@ sub edit : Local {
                         else {
                             $erm_keyword->delete();
                         }
-                        
+
                     }
                     elsif ( $param =~ /^erm-edit-input-keywords-add-keyword-\d+$/ ) {
 
                         # Add a new alternate name
-                        
+
                         my $keyword_value = $c->form->{valid}->{$param};
                         if ( not_empty_string($keyword_value) ) {
 
@@ -744,10 +744,10 @@ sub edit : Local {
 
                         }
 
-                    }                
+                    }
 				}
             };
-            
+
             if ($@) {
                 my $err = $@;
                 CUFTS::DB::DBI->dbi_rollback;
@@ -760,11 +760,11 @@ sub edit : Local {
         }
     }
     elsif ( $c->req->params->{upload} ) {
-        
+
         $c->form( $form_validate_new_file );
 
         unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
-        
+
             my $upload = $c->req->upload('file');
             if ( $upload->filename !~ /\.([A-Za-z0-9]+)$/ ) {
                 die("Could not determine file name extension.  Please upload files with a proper extension such as .jpg, .pdf, etc.");
@@ -786,7 +786,7 @@ sub edit : Local {
             }
 
             CUFTS::DB::DBI->commit();
-            
+
         }
     }
 
@@ -806,29 +806,29 @@ sub edit : Local {
 
 sub delete : Local {
     my ( $self, $c ) = @_;
-    
+
     $c->form({
         required => [ qw( erm_main_id ) ],
         optional => [ qw( confirm cancel delete ) ],
     });
-    
+
     unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
-    
+
         if ( $c->form->{valid}->{cancel} ) {
             return $c->redirect('/erm/main/edit/' . $c->form->{valid}->{erm_main_id} );
         }
-    
+
         my $erm_main = CUFTS::DB::ERMMain->search({
             site => $c->stash->{current_site}->id,
             id   => $c->form->{valid}->{erm_main_id},
         })->first;
-        
+
         my @erm_links = CUFTS::DB::ERMMainLink->search({
             erm_main => $erm_main->id,
         });
 
         my ( @erm_links_resources, @erm_links_journals );
-        
+
         foreach my $link ( @erm_links ) {
             if ( $link->link_type eq 'r' ) {
                 push @erm_links_resources, $link;
@@ -853,7 +853,7 @@ sub delete : Local {
                     }
                     $erm_main->delete();
                 };
-                
+
                 # TODO: Delete linked files
 
                 if ($@) {
@@ -861,7 +861,7 @@ sub delete : Local {
                     CUFTS::DB::DBI->dbi_rollback;
                     die($err);
                 }
-            
+
                 CUFTS::DB::ERMMain->dbi_commit();
                 $c->stash->{result} = "ERM Main record deleted.";
             }
@@ -878,18 +878,18 @@ sub delete : Local {
 
 sub clone : Local {
     my ( $self, $c ) = @_;
-    
+
     $c->form({
         required => [ qw( erm_main_id ) ],
         optional => [ qw( confirm cancel delete ) ],
     });
-    
+
     unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
-    
+
         if ( $c->form->{valid}->{cancel} ) {
             return $c->redirect('/erm/main/edit/' . $c->form->{valid}->{erm_main_id} );
         }
-    
+
         my $erm_main = CUFTS::DB::ERMMain->search({
             site => $c->stash->{current_site}->id,
             id   => $c->form->{valid}->{erm_main_id},
@@ -904,13 +904,13 @@ sub clone : Local {
                 eval {
                     $clone = $erm_main->clone();
                 };
-                
+
                 if ($@) {
                     my $err = $@;
                     CUFTS::DB::DBI->dbi_rollback;
                     die($err);
                 }
-            
+
                 CUFTS::DB::ERMMain->dbi_commit();
                 return $c->redirect('/erm/main/edit/' . $clone->id );
             }
@@ -927,13 +927,13 @@ sub clone : Local {
 
 sub link : Local {
     my ( $self, $c, $erm_main_id ) = @_;
-    
+
     my $erm_main = CUFTS::DB::ERMMain->search( { id => $erm_main_id, site => $c->stash->{current_site}->id } )->first;
-    
+
     if ( !defined($erm_main) ) {
         die("Could not find ERM Main record for this site: $erm_main_id");
     }
-    
+
     $c->stash->{erm_main} = $erm_main;
     $c->stash->{template} = 'erm/main/link.tt';
 }
@@ -975,7 +975,7 @@ sub link_ajax : Local {
 #               $record->update();
             }
         }
-        
+
     }
     else {
         my @records;
@@ -994,10 +994,10 @@ sub link_ajax : Local {
             $record->update();
         }
     }
-    
+
 
     CUFTS::DB::DBI->dbi_commit();
-    
+
     delete($c->req->params->{ids});
     $c->req->params->{erm_main} = $erm_main_id;
     if ( $link_type eq 'resource' ) {
@@ -1024,15 +1024,15 @@ sub link_clear_ajax : Local {
         };
         return $c->forward('V::JSON');
     }
-    
+
     my $ids = $c->req->params->{ids};
     if ( ref($ids) ne 'ARRAY' ) {
         $ids = [$ids];
     }
-    
-    
+
+
     if ( $link_type eq 'resource' ) {
-        
+
         foreach my $id ( @$ids ) {
             my $resource = CUFTS::DB::LocalResources->search( { id => $id, site => $current_site_id } )->first;
             if ( !defined($resource) ) {
@@ -1048,7 +1048,7 @@ sub link_clear_ajax : Local {
     }
 
     CUFTS::DB::DBI->dbi_commit();
-    
+
     delete($c->req->params->{ids});
     $c->req->params->{erm_main} = $erm_main_id;
     $c->forward( '/local/find_json' );
@@ -1057,21 +1057,21 @@ sub link_clear_ajax : Local {
 
 sub show_links_json : Local {
     my ( $self, $c ) = @_;
-    
+
     my $erm_main_id = $c->req->params->{erm_main};
     my $link_type   = $c->req->params->{link_type};
-    
+
     if ( $link_type eq 'resource') {
         my $resources = CUFTS::DB::LocalResources->search( { erm_main => $erm_main_id, site => $c->stash->{current_site}->id } );
         $c->stash->{json}->{rowcount} = scalar(@$resources);
         $c->stash->{json}->{results}  = $resources;
     }
-    
+
 }
 
 sub unlink_json : Local {
     my ( $self, $c ) = @_;
-    
+
     $c->form({
         required => [ qw( link_id link_type ) ],
     });
@@ -1090,11 +1090,11 @@ sub unlink_json : Local {
 
         CUFTS::DB::ERMMainLink->search( { link_id => $link_id, link_type => $link_type } )->delete_all;
         CUFTS::DB::ERMMainLink->dbi_commit;
-        
+
         $c->stash->{json} = { result => 'unlinked' };
 
     }
-    
+
     $c->forward('V::JSON');
 }
 
@@ -1120,11 +1120,11 @@ sub link_json : Local {
         CUFTS::DB::ERMMainLink->search( { link_id => $link_id, link_type => $link_type } )->delete_all;
         my $new_link = CUFTS::DB::ERMMainLink->create( { link_id => $link_id, link_type => $link_type, erm_main => $erm_main_id } );
         CUFTS::DB::ERMMainLink->dbi_commit;
-        
+
         $c->stash->{json} = { result => 'linked', erm_main => $new_link->erm_main, link_type => $new_link->link_type, link_id => $new_link->link_id };
 
     }
-    
+
     $c->forward('V::JSON');
 }
 
@@ -1181,14 +1181,14 @@ sub delete_file : Local {
     if ( !defined($file) ) {
         die("Unable to find ERMFile record: $file_id for site " . $c->stash->{current_site}->id);
     }
-    
+
     my $filename = $c->path_to( 'root', 'static', 'erm_files', 'm', $file->UUID . '.' . $file->ext );
     unlink($filename) or
         die("Error removing file: $!");
-    
+
     $file->delete();
     CUFTS::DB::ERMMain->dbi_commit();
-    
+
     $c->redirect("/erm/main/edit/$erm_id");
 }
 

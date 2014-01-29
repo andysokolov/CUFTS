@@ -16,7 +16,7 @@ my $form_validate = {
     ],
     optional => [
         qw(
-            submit 
+            submit
             cancel
 
             full_on_campus_access
@@ -50,7 +50,7 @@ my $form_validate = {
             termination_requirements
             perpetual_access
             perpetual_access_notes
-       
+
             contact_name
             contact_role
             contact_address
@@ -76,7 +76,7 @@ my $form_validate_new_file = {
     filters => ['trim'],
     missing_optional_valid => 1,
 };
-    
+
 
 
 my $form_validate_new = {
@@ -91,7 +91,7 @@ sub default : Private {
 
     if ( $c->req->params->{submit} ) {
         my $id = $c->req->params->{license};
-        
+
         if ( $id eq 'new' ) {
             $c->redirect('/erm/license/create');
         }
@@ -121,7 +121,7 @@ sub find_json : Local {
             delete $query->{$key};
         }
     }
-    
+
     $query->{site} = $c->stash->{current_site}->id;
 
     my $URI = URI->new();
@@ -136,7 +136,7 @@ sub find_json : Local {
 
 sub _find : Local {
     my ( $self, $c ) = @_;
-    
+
     my @valid_bool_params = qw(
         allows_remote_access
         allows_proxy_access
@@ -158,13 +158,13 @@ sub _find : Local {
         order_by => 'LOWER(key)',
     };
     my ( $offset, $rows );
-    
+
 
     if ( defined($params->{start}) || defined($params->{limit}) ) {
         $options->{offset} = $params->{start} || 0;
         $options->{rows}   = $params->{limit} || 25;
     }
-    
+
     my $search = { site => $c->stash->{current_site}->id };
 
     if ( my $key = $c->req->params->{key} ) {
@@ -175,7 +175,7 @@ sub _find : Local {
         $key_start =~ s/(%_\?)/\\$1/gsx;
         $search->{key} = { ilike => "$key_start\%" };
     }
-    
+
     if ( my $filter = $c->req->params->{filter} ) {
         $filter =~ s/(%_\?)/\\$1/gsx;
         $search->{'-or'} = {
@@ -187,7 +187,7 @@ sub _find : Local {
             'perpetual_access_notes' => { ilike => "\%$filter\%" },
         }
     }
-    
+
     foreach my $param ( keys %$params ) {
         next if !grep { $param eq $_ } @valid_bool_params;
         my $value = $params->{$param};
@@ -261,9 +261,9 @@ sub edit : Local {
     if ( !defined($erm) ) {
         die("Unable to find ERMLicense record: $erm_id for site " . $c->stash->{current_site}->id);
     }
-    
+
     if ( $c->req->params->{submit} ) {
-        
+
         $c->form( $form_validate );
 
         unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
@@ -271,7 +271,7 @@ sub edit : Local {
             eval {
                 $erm->update_from_form( $c->form );
             };
-        
+
             if ($@) {
                 my $err = $@;
                 CUFTS::DB::DBI->dbi_rollback;
@@ -283,11 +283,11 @@ sub edit : Local {
         }
     }
     elsif ( $c->req->params->{upload} ) {
-        
+
         $c->form( $form_validate_new_file );
 
         unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
-        
+
             my $upload = $c->req->upload('file');
             if ( $upload->filename !~ /\.([A-Za-z0-9]+)$/ ) {
                 die("Could not determine file name extension.  Please upload files with a proper extension such as .jpg, .pdf, etc.");
@@ -309,7 +309,7 @@ sub edit : Local {
             }
 
             CUFTS::DB::DBI->commit();
-            
+
         }
     }
 
@@ -327,18 +327,18 @@ sub edit : Local {
 
 sub clone : Local {
     my ( $self, $c ) = @_;
-    
+
     $c->form({
         required => [ qw( erm_license_id ) ],
         optional => [ qw( confirm cancel delete clone ) ],
     });
-    
+
     unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
-    
+
         if ( $c->form->{valid}->{cancel} ) {
             return $c->redirect('/erm/license/edit/' . $c->form->{valid}->{erm_license_id} );
         }
-    
+
         my $erm_license = CUFTS::DB::ERMLicense->search({
             site => $c->stash->{current_site}->id,
             id   => $c->form->{valid}->{erm_license_id},
@@ -353,13 +353,13 @@ sub clone : Local {
                 eval {
                     $clone = $erm_license->clone();
                 };
-                
+
                 if ($@) {
                     my $err = $@;
                     CUFTS::DB::DBI->dbi_rollback;
                     die($err);
                 }
-            
+
                 CUFTS::DB::ERMLicense->dbi_commit();
                 return $c->redirect('/erm/license/edit/' . $clone->id );
             }
@@ -375,7 +375,7 @@ sub clone : Local {
 
 sub delete : Local {
     my ( $self, $c ) = @_;
-    
+
     $c->form({
         required => [ qw( erm_license_id ) ],
         optional => [ qw( confirm cancel delete ) ],
@@ -386,7 +386,7 @@ sub delete : Local {
         if ( $c->form->{valid}->{cancel} ) {
             return $c->forward('/erm/license/edit/' . $c->form->{valid}->{erm_license_id} );
         }
-    
+
         my $erm_license = CUFTS::DB::ERMLicense->search({
             site => $c->stash->{current_site}->id,
             id => $c->form->{valid}->{erm_license_id},
@@ -402,14 +402,14 @@ sub delete : Local {
             if ( $c->form->{valid}->{confirm} ) {
 
                 eval {
-                
+
                     foreach my $erm_main ( @erm_mains ) {
                         $erm_main->license( undef );
                         $erm_main->update();
                     }
-                    
+
                     # TODO: Delete attached files!
-                    
+
                     $erm_license->delete();
                 };
 
@@ -418,7 +418,7 @@ sub delete : Local {
                     CUFTS::DB::DBI->dbi_rollback;
                     die($err);
                 }
-            
+
                 CUFTS::DB::ERMMain->dbi_commit();
                 $c->stash->{result} = "ERM License record deleted.";
             }
@@ -454,14 +454,14 @@ sub delete_file : Local {
     if ( !defined($file) ) {
         die("Unable to find ERMFile record: $file_id for site " . $c->stash->{current_site}->id);
     }
-    
+
     my $filename = $c->path_to( 'root', 'static', 'erm_files', 'l', $file->UUID . '.' . $file->ext );
     unlink($filename) or
         die("Error removing file: $!");
-    
+
     $file->delete();
     CUFTS::DB::ERMMain->dbi_commit();
-    
+
     $c->redirect("/erm/license/edit/$erm_id");
 }
 
@@ -469,7 +469,7 @@ sub delete_file : Local {
 
 sub selected_json : Local {
     my ( $self, $c ) = @_;
-    
+
     my @json_resources;
     my $current_site_id = $c->stash->{current_site}->id;
 
@@ -483,7 +483,7 @@ sub selected_json : Local {
                 order_by => 'LOWER(key)'
             }
         );
-        
+
         foreach my $resource ( @resources ) {
             if ( defined($resource) ) {
                 push @json_resources, {
@@ -493,10 +493,10 @@ sub selected_json : Local {
             }
         }
     }
-    
+
     $c->stash->{json}->{rowcount} = scalar(@json_resources);
     $c->stash->{json}->{results}  = \@json_resources;
-    
+
     $c->forward('V::JSON');
 }
 
@@ -518,7 +518,7 @@ sub selected_add : Local {
 
 sub selected_add_all : Local {
     my ( $self, $c ) = @_;
-    
+
     $self->_find($c);
     $c->session->{selected_erm_licence} = [ List::MoreUtils::uniq( ( @{$c->session->{selected_erm_licence}}, map { $_->{id} } @{$c->stash->{json}->{results}} ) ) ];
 
@@ -537,7 +537,7 @@ sub selected_remove : Local {
     }
     my %to_delete = map { $_ => 1 } @$delete;
     @{$c->session->{selected_erm_licence}} = grep { not exists( $to_delete{$_} ) } @{$c->session->{selected_erm_licence}};
-    
+
     $c->forward('selected_json');
 }
 
@@ -561,7 +561,7 @@ sub selected_export : Local {
     if ( !$c->session->{selected_erm_licence} ) {
         $c->session->{selected_erm_licence} = [];
     }
-    
+
     my $format = $c->stash->{format} = $c->request->params->{format};
 
     my @erm_records = CUFTS::DB::ERMLicense->search( { site => $c->stash->{current_site}->id, id => { '-in' => $c->session->{selected_erm_licence} } }, { order_by => 'LOWER(key)' } );
