@@ -23,6 +23,8 @@ package CUFTS::Resources::DOAJ;
 use base qw(CUFTS::Resources::Base::Journals);
 use Unicode::String qw(utf8);
 
+use String::Util qw( trim hascontent );
+
 use CUFTS::Exceptions;
 use CUFTS::Util::Simple;
 
@@ -86,9 +88,9 @@ sub clean_data {
     }
 
     $record->{title} =~ s{ \s* \( .+? \) \s* $}{}xsm;
-    $record->{title} = utf8( $record->{title} )->latin1;
+    $record->{title} = trim(utf8( $record->{title} )->latin1);
 
-    if ( is_empty_string($record->{title}) ) {
+    if ( !hascontent($record->{title}) ) {
         return [ 'UTF8 conversion removed all latin-1 characters from title, skipping record.'];
     }
 
