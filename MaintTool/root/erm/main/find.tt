@@ -231,6 +231,13 @@ Ext.onReady( function() {
                                 listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
                                 value: hash_state.params['subject'],
                                 anchor: '95%'
+                            },
+                            {
+                                fieldLabel: 'Contract End Before',
+                                xtype: 'datefield',
+                                hiddenName: 'contract_end',
+                                value: hash_state.params['contract_end'],
+                                anchor: '95%'
                             }
                         ]
                     },
@@ -370,7 +377,6 @@ Ext.onReady( function() {
                                 listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
                                 value: hash_state.params['resource_type'],
                                 anchor: '95%'
-                                
                             },
                             {
                                 fieldLabel: 'Resource Medium',
@@ -449,7 +455,6 @@ Ext.onReady( function() {
                                 listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
                                 value: hash_state.params['license.allows_ereserves'],
                                 anchor: '95%'
-                                
                             },
                             {
                                 fieldLabel: 'Allows Coursepacks?',
@@ -498,7 +503,6 @@ Ext.onReady( function() {
                 handler: reset_action
             }
         ]
-        
     });
 
     find_form.addListener( 'render', 
