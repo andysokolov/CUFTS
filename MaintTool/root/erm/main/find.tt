@@ -233,10 +233,11 @@ Ext.onReady( function() {
                                 anchor: '95%'
                             },
                             {
-                                fieldLabel: 'Contract End Before',
+                                fieldLabel: 'Contract End After',
                                 xtype: 'datefield',
-                                hiddenName: 'contract_end',
-                                value: hash_state.params['contract_end'],
+                                format: 'Y-m-d',
+                                name: 'contract_end_after',
+                                value: hash_state.params['contract_end_after'],
                                 anchor: '95%'
                             }
                         ]
@@ -323,6 +324,14 @@ Ext.onReady( function() {
                                 editable: false,
                                 listeners: { 'select': Ext.ux.utils.handleEmptyCombo },
                                 value: hash_state.params['print_included'],
+                                anchor: '95%'
+                            },
+                            {
+                                fieldLabel: 'Contract End Before',
+                                xtype: 'datefield',
+                                format: 'Y-m-d',
+                                name: 'contract_end_before',
+                                value: hash_state.params['contract_end_before'],
                                 anchor: '95%'
                             }
                         ]
