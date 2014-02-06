@@ -2,6 +2,7 @@ package CUFTS::Schema::ERMMain;
 
 use CUFTS::Resources;    # For prepend_proxy()
 use CUFTS::Util::Simple;
+use MARC::Record;
 
 use strict;
 use base qw/DBIx::Class::Core/;
@@ -703,7 +704,7 @@ __PACKAGE__->add_columns(
         is_nullable        => 1,
         size               => 0,
     },
-    
+
     'provider_name' => {
         data_type     => 'varchar',
         default_value => undef,
@@ -798,10 +799,24 @@ __PACKAGE__->belongs_to( resource_type   => 'CUFTS::Schema::ERMResourceTypes' );
 __PACKAGE__->belongs_to( provider        => 'CUFTS::Schema::ERMProviders' );
 
 
+sub alternate_names {
+    my ( $self ) = @_;
+
+    return $self->names(
+        {
+            main => 0,
+        },
+        {
+            order_by => 'search_name',
+        }
+    );
+}
+
+
 # Flatten to a hash, concatenating strings, etc. Will take an array of ERMDisplayFields to limit to, otherwise it does everything.
 sub to_hash {
     my ( $self, $fields ) = @_;
-    
+
     my @fields;
     if ( defined($fields) ) {
         @fields = map { $_->field } @$fields;
@@ -946,6 +961,133 @@ sub get_group_records {
     return \@records;
 }
 
+
+sub as_marc {
+    my ( $self, $url_base ) = @_;
+
+    my $default_subfield_join = '; ';
+
+    my $configuration = [
+        '001' => [ { indicators => [] }, undef, [ 'key' ] ],
+        '020' => [ {}, 'a', [ 'isbn' ] ],
+        '022' => [ {}, 'a', [ 'issn' ] ],
+        '035' => [ {}, 'a', [ 'local_bib' ] ],
+        '035' => [ {}, 'a', [ 'local_acquisitions' ] ],
+        '035' => [ {}, 's', [ 'journal_auth', { prepend => 'CJDB' } ] ],
+        '930' => [ {}, 'a', [ 'id', { prepend => 'e' } ] ],
+        '245' => [ {}, 'a', [ 'main_name' ] ],
+        '246' => [ { repeats => 1, repeat_field => 'alternate_names' }, 'a', [ 'name' ] ],
+        '246' => [ {}, 'a', [ 'internal_name' ] ],
+        '260' => [ {}, 'a', [ 'publisher' ] ],
+        '500' => [ {}, 'a', [ 'description_brief' ] ],
+        '856' => [ { indicators => [4,0] }, 'u', [ 'id', { prepend_url => 1 } ] ],
+        '960' => [ {}, 'a', [ '', { timestamp => 1, label => 'Date of file creation: ' } ],
+                       'b', [ 'cost', { label => 'Cost: ' } ],
+                       'c', [ 'local_fund', { label => 'Local fund number: ' } ],
+                       'd', [ 'vendor', { label => 'Vendor name: ' } ],
+                       'e', [ 'local_vendor_code', { label => 'Local vendor code: ' } ],
+        ],
+        '961' => [ {}, 'a', [ 'subscription_type',              { label => 'Subscription type: ' },
+                              'subscription_notes',             { label => 'Notes: ' }
+                            ],
+                       'b', [ 'subscription_ownership',         { label => 'Subscription ownership: ' },
+                              'subscription_ownership_notes',   { label => 'Notes: ' },
+                            ],
+                       'c', [ 'consortia',                      { label => 'Consortia: ', call_method => 'consortia' },
+                              'consortia_notes',                { label => 'Notes: ' }
+                            ],
+                       'd', [ 'pricing_model',                  { label => 'Pricing model: ', call_method => 'pricing_model' },
+                              'pricing_model_notes',            { label => 'Notes: ' }
+                            ],
+                       'e', [ 'review_notes',                   { label => 'Review notes: '} ],
+                       'f', [ 'date_cost_notes',                { label => 'Date cost notes: '} ],
+                       'g', [ 'misc_notes',                     { label => 'Miscellaneous notes: '} ],
+                       'h', [ 'coverage',                       { label => 'Coverage: '} ],
+                       'i', [ 'resource_type',                  { label => 'Resource type: ', call_method => 'resource_type' } ],
+                       'j', [ 'contract_start',                 { label => 'Contract start: ' } ],
+                       'k', [ 'contract_end',                   { label => 'Contract end: ' } ],
+                       'l', [ 'print_included',                 { label => 'Print included: ', boolean => 1 } ],
+                       'm', [ 'local_vendor',                   { label => 'Local vendor number: ' } ],
+                       'n', [ 'local_customer',                 { label => 'Local customer number: ' } ],
+                       'o', [ 'simultaneous_users',             { label => 'Simultaneous users: ' } ],
+                       'z', [ 'currency',                       { label => 'Currency: ' } ],
+        ]
+    ];
+
+    my @subfields;
+
+    my $MARC = MARC::Record->new();
+
+    while ( my ( $field_num, $field_conf ) = splice( @$configuration, 0, 2 ) ) {
+
+
+        my $extra_conf = shift(@$field_conf);
+
+        my @values = (undef);
+        if ( $extra_conf->{repeats} ) {
+            my $repeat_field = $extra_conf->{repeat_field};
+            @values = $self->$repeat_field()->all;
+        }
+
+        foreach my $current_value ( @values ) {
+
+            my @subfields;
+            my @field_conf = @$field_conf;  # Clone so we can splice off items but still use it for repeating fields
+            while ( my ( $subfield_num, $subfield_conf ) = splice( @field_conf, 0, 2 ) ) {
+
+                my @contents;
+                my $keep_contents = 0;
+                my @subfield_conf = @$subfield_conf;  # Clone so we can splice off items but still use it for repeating fields
+                while ( my ( $erm_field, $content_conf ) = splice( @subfield_conf, 0, 2 ) ) {
+
+                    my $label      = $content_conf->{label}   || '';
+                    my $prepend    = $content_conf->{prepend} || ( $content_conf->{prepend_url} ? $url_base : '' );
+                    my $append     = $content_conf->{append}  || '';
+
+                    my $value = $extra_conf->{repeats}     ? ( $erm_field ? $current_value->$erm_field() : $current_value )
+                              : $content_conf->{timestamp} ? DateTime->now()->ymd
+                              : $self->$erm_field();
+
+                    if ( $content_conf->{call_method} && defined($value) ) {
+                        my $method = $content_conf->{call_method};
+                        $value = $value->$method();
+                    }
+
+                    if ( is_empty_string($value) ) {
+                        $value = '';
+                    }
+                    else {
+                        $keep_contents = 1;
+                    }
+
+                    if ( $content_conf->{boolean} ) {
+                        $value = $value ? 'yes' : 'no';
+                    }
+
+                    $value =~ s/[\r\n]+/: /g;
+
+                    push @contents, "${label}${prepend}${value}${append}";
+
+                }
+                if ( $keep_contents && scalar(@contents) ) {
+                    push @subfields, (defined($subfield_num) ? $subfield_num : () ), join($default_subfield_join, @contents);
+                }
+            }
+
+            if ( scalar(@subfields) ) {
+                my @indicators = defined( $extra_conf->{indicators} ) ?  @{$extra_conf->{indicators}} : ( '', '' );
+                $MARC->append_fields( MARC::Field->new( $field_num, @indicators, @subfields ) );
+            }
+
+        }
+
+    }
+
+    return $MARC;
+}
+
+
+
 # sub clone {
 #     my $self   = shift;
 #     my $schema = $self->result_source->schema;
@@ -953,8 +1095,6 @@ sub get_group_records {
 #     $schema->txn_do( sub {
 #         my $clone = $self->result_source->resultset->new_result( $self );
 #     });
-
-
 # }
 
 

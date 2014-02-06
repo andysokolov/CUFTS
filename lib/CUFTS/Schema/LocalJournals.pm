@@ -175,6 +175,10 @@ __PACKAGE__->add_columns(
         set_on_update => 1,
         is_nullable => 1,
     },
+    active => {
+        data_type => 'boolean',
+        default => 'false',
+    },
 );
 
 __PACKAGE__->set_primary_key( 'id' );

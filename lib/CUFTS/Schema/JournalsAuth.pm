@@ -42,15 +42,14 @@ __PACKAGE__->add_columns(
     },
 );
 
-
 __PACKAGE__->set_primary_key('id');
 
 # Check the ResultSet for more predefined complex searches
 
-# __PACKAGE__->resultset_class('CUFTS::ResultSet::JournalsAuth');
+__PACKAGE__->resultset_class('CUFTS::ResultSet::JournalsAuth');
 
-__PACKAGE__->has_many( issns   => 'CUFTS::Schema::JournalsAuthISSNs', 'journal_auth' );
-# __PACKAGE__->has_many( titles  => 'CUFTS::Schema::JournalsAuthTitles', 'journal_auth' );
+__PACKAGE__->has_many( issns   => 'CUFTS::Schema::JournalsAuthISSNs',  'journal_auth' );
+__PACKAGE__->has_many( titles  => 'CUFTS::Schema::JournalsAuthTitles', 'journal_auth' );
 
 sub issns_display {
     my $self = shift;
