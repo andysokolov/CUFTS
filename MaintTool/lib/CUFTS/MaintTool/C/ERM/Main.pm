@@ -467,18 +467,15 @@ sub _find {
         my $value = $params->{$param};
         next if is_empty_string($value);
         if ( $param eq 'contract_end_after' ) {
-            $search->{contract_end} = { '>=' => $value };
+            $search->{contract_end}->{'>='} = $value;
         }
         elsif ( $param eq 'contract_end_before' ) {
-            $search->{contract_end} = { '<=' => $value };
+            $search->{contract_end}->{'<='} = $value;
         }
         else {
             $search->{$param} = $value;
         }
     }
-
-    use Data::Dumper;
-    warn(Dumper($search));
 
     my $count   = CUFTS::DB::ERMMain->facet_count(  $c->stash->{current_site}->id, $search );
     my $results = CUFTS::DB::ERMMain->facet_search( $c->stash->{current_site}->id, $search, 1, $offset, $rows );
