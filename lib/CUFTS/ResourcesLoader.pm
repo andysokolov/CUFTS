@@ -56,6 +56,7 @@ BEGIN {
         Emerald
         Erudit
         Extenza
+        Factiva
         Gale_CWI
         Gale_II
         Gale_III
