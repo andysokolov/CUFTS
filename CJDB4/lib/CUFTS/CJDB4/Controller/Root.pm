@@ -346,7 +346,7 @@ sub site_index :Chained('site') :PathPart('') Args(0) {
     $c->redirect( $c->uri_for_site( $c->controller('Browse')->action_for('browse') ) );
 }
 
-sub site_files :Chained('site') :PathPart('sites') :Args(3) {
+sub site_files :Chained('site') :PathPart('sites') :Args() {
     my ( $self, $c, @args ) = @_;
 
     my $path = $c->config->{root} . '/sites/' . join('/', @args);
