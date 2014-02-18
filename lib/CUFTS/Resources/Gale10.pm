@@ -53,9 +53,10 @@ sub title_list_fields {
 
 sub title_list_field_map {
     return {
-        'Journal Name'   => 'title',
-        'ISSN'           => 'issn',
-        'Embargo (Days)' => 'embargo_days',
+        'Journal Name'     => 'title',
+        'Publication Name' => 'title',
+        'ISSN'             => 'issn',
+        'Embargo (Days)'   => 'embargo_days',
     };
 }
 
