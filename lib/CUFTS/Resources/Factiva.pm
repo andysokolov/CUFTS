@@ -83,10 +83,8 @@ sub clean_data {
         $record->{ft_end_date} = "$1-$2-$3";
     }
 
-    $record->{cjdb_note} = 'Links to database search only.';
-
     if ( $record->{'___source_level'} eq 'Selected Coverage' ) {
-        $record->{cjdb_note} = 'Selected coverage. ' . $record->{cjdb_note};
+        $record->{cjdb_note} = 'Selected coverage.';
     }
 
     $record->{title} = utf8($record->{title})->latin1;
