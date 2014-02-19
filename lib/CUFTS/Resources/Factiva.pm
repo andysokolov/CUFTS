@@ -54,6 +54,7 @@ sub title_list_fields {
 
 sub title_list_field_map {
     return {
+        'Source Code (sc)'                       => 'db_identifier',
         'Directory Name (dn)'                    => 'title',
         'ISSN (isn)'                             => 'issn',
         'First Issue Online (fio)'               => 'ft_start_date',
@@ -143,19 +144,19 @@ sub build_linkFulltext {
         }
         if ( hascontent($request->volume) ) {
             $url .= '&volume=' . $request->volume;
-        }        
+        }
         if ( hascontent($request->issue) ) {
             $url .= '&issue=' . $request->issue;
-        }        
+        }
         if ( hascontent($request->spage) ) {
             $url .= '&spage=' . $request->spage;
-        }        
+        }
         if ( hascontent($request->date) && $request->date =~ /^\d{4}-\d{2}-\d{2}$/ ) {
             $url .= '&date=' . $request->date;
-        }        
+        }
         if ( hascontent($request->atitle) ) {
             $url .= '&atitle=' . uri_escape($request->atitle);
-        }        
+        }
         $url .= '&title=' . uri_escape($record->title);
 
         my $result = new CUFTS::Result($url);
@@ -182,7 +183,8 @@ sub build_linkJournal {
     my @results;
 
     foreach my $record (@$records) {
-        my $result = new CUFTS::Result( 'https://global.factiva.com/en/sess/login.asp?cookie=on&XSID=' . uri_escape($resource->auth_name) );
+        my $url = 'https://global.factiva.com/en/du/headlines.asp?cookie=on&searchText=rst%3D' . uri_escape($record->db_identifier) . '&XSID=' . uri_escape($resource->auth_name);
+        my $result = new CUFTS::Result($url);
         $result->record($record);
 
         push @results, $result;
