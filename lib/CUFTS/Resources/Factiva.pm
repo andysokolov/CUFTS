@@ -25,6 +25,8 @@ use base qw(CUFTS::Resources::Base::Journals);
 use CUFTS::Exceptions;
 use CUFTS::Util::Simple;
 use String::Util qw(hascontent trim);
+use Unicode::String qw(utf8);
+use URI::Escape qw(uri_escape);
 
 use strict;
 
@@ -61,6 +63,15 @@ sub title_list_field_map {
 }
 
 
+sub local_resource_details {
+    my ($class) = @_;
+    return [
+        @{ $class->SUPER::local_resource_details },
+        qw( auth_name )
+    ];
+}
+
+
 sub clean_data {
     my ( $class, $record ) = @_;
 
@@ -77,6 +88,10 @@ sub clean_data {
         $record->{cjdb_note} = 'Selected coverage. ' . $record->{cjdb_note};
     }
 
+    $record->{title} = utf8($record->{title})->latin1;
+    $record->{title} = trim_string($record->{title}, '"');
+
+    delete $record->{issn} if $record->{issn} !~ /^\d{4}-\d{3}[\dxX]$/;
 }
 
 ## -------------------------------------------------------------------------------------------
@@ -88,7 +103,7 @@ sub clean_data {
 sub can_getFulltext {
     my ( $class, $request ) = @_;
 
-    return 0 if is_empty_string( $request->spage );
+    return 0 if !hascontent( $request->spage ) && !hascontent( $request->atitle );
 
     return $class->SUPER::can_getFulltext($request);
 }
@@ -121,18 +136,27 @@ sub build_linkFulltext {
 
     foreach my $record (@$records) {
 
-        next if is_empty_string( $record->issn   )
-             && is_empty_string( $record->e_issn );
+        my $url = 'http://global.factiva.com/redir/default.aspx?p=ou&cookie=on&XSID=' . uri_escape($resource->auth_name);
 
-        my $url = 'http://global.factiva.com/redir/default.aspx?p=ou&';
-
-        if ( $record->issn ) {
-            $url .= 'issn=' . dashed_issn( $record->issn );
+        if ( hascontent($record->issn) ) {
+            $url .= '&issn=' . dashed_issn( $record->issn );
         }
-
-        $url .= '&volume=' . $request->volume
-              . '&issue='  . $request->issue
-              . '&spage='  . $request->spage;
+        if ( hascontent($request->volume) ) {
+            $url .= '&volume=' . $request->volume;
+        }        
+        if ( hascontent($request->issue) ) {
+            $url .= '&issue=' . $request->issue;
+        }        
+        if ( hascontent($request->spage) ) {
+            $url .= '&spage=' . $request->spage;
+        }        
+        if ( hascontent($request->date) && $request->date =~ /^\d{4}-\d{2}-\d{2}$/ ) {
+            $url .= '&date=' . $request->date;
+        }        
+        if ( hascontent($request->atitle) ) {
+            $url .= '&atitle=' . uri_escape($request->atitle);
+        }        
+        $url .= '&title=' . uri_escape($record->title);
 
         my $result = new CUFTS::Result($url);
         $result->record($record);
@@ -158,7 +182,7 @@ sub build_linkJournal {
     my @results;
 
     foreach my $record (@$records) {
-        my $result = new CUFTS::Result('http://global.factiva.com/');
+        my $result = new CUFTS::Result( 'https://global.factiva.com/en/sess/login.asp?cookie=on&XSID=' . uri_escape($resource->auth_name) );
         $result->record($record);
 
         push @results, $result;
