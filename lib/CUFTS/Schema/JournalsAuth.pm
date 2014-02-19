@@ -51,6 +51,16 @@ __PACKAGE__->resultset_class('CUFTS::ResultSet::JournalsAuth');
 __PACKAGE__->has_many( issns   => 'CUFTS::Schema::JournalsAuthISSNs',  'journal_auth' );
 __PACKAGE__->has_many( titles  => 'CUFTS::Schema::JournalsAuthTitles', 'journal_auth' );
 
+__PACKAGE__->has_many( global_journals  => 'CUFTS::Schema::GlobalJournals', 'journal_auth' );
+__PACKAGE__->has_many( local_journals   => 'CUFTS::Schema::LocalJournals',  'journal_auth' );
+
+__PACKAGE__->has_many( cjdb_journals    => 'CUFTS::Schema::CJDBJournals',   'journals_auth' );
+__PACKAGE__->has_many( cjdb_tags        => 'CUFTS::Schema::CJDBTags',       'journals_auth' );
+
+__PACKAGE__->has_many( erm_mains            => 'CUFTS::Schema::ERMMain',        'journal_auth' );
+__PACKAGE__->has_many( erm_counter_titles   => 'CUFTS::Schema::ERMCounterTitles',  'journal_auth' );
+
+
 sub issns_display {
     my $self = shift;
 

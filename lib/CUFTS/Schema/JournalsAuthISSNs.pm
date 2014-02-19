@@ -38,5 +38,8 @@ __PACKAGE__->set_primary_key('id');
 
 __PACKAGE__->belongs_to( journal_auth => 'CUFTS::Schema::JournalsAuth', 'journal_auth' );
 
+# This left join is used for orphan cleanup. Ideally this wouldn't be necessary and we'd use DB level constraints
+__PACKAGE__->belongs_to( journal_auth_left => 'CUFTS::Schema::JournalsAuth', 'journal_auth', { join_type => 'left' } );
+
 
 1;
