@@ -44,6 +44,7 @@ sub title_list_fields {
             cit_start_date
             cit_end_date
             embargo_days
+            cjdb_note
         )
     ];
 }
