@@ -20,10 +20,11 @@
 
 package CUFTS::Resources::Gale10;
 
-use base qw(CUFTS::Resources::Base::Journals);
+use base qw(CUFTS::Resources::Base::Journals CUFTS::Resources::Base::DateTimeNatural);
 
 use CUFTS::Exceptions;
 use CUFTS::Util::Simple;
+use String::Util qw(hascontent trim);
 use URI::Escape;
 
 use strict;
@@ -53,10 +54,11 @@ sub title_list_fields {
 
 sub title_list_field_map {
     return {
-        'Journal Name'     => 'title',
-        'Publication Name' => 'title',
-        'ISSN'             => 'issn',
-        'Embargo (Days)'   => 'embargo_days',
+        'Journal Name'          => 'title',
+        'Publication Name'      => 'title',
+        'ISSN'                  => 'issn',
+        'Embargo (Days)'        => 'embargo_days',
+        'Full-text Exceptions'  => 'cjdb_note',
     };
 }
 
@@ -95,144 +97,24 @@ sub clean_data {
     my ( $class, $record ) = @_;
 
     # Skip " --- Formerly ... "
-    
+
     if ( $record->{title} =~ / ^ \s* --- /xsm ) {
         return undef;
     }
 
-    my ( $ft_start_date, $ft_end_date ) = ( '0', '0' );
+    $record->{cit_start_date} = $class->parse_start_date( map { $record->{$_} } ( '___Index Start', '___Index Start Date' ) );
+    $record->{cit_end_date}   = $class->parse_end_date(   map { $record->{$_} } ( '___Index End',   '___Index End Date' ) );
 
-    if ( defined( $record->{'___Index Start'} )
-        && $record->{'___Index Start'} =~ /(\w{3})-(\d{2})/ )
-    {
-        my $temp_date = get_date( $1, $2 );
-        $record->{cit_start_date} = substr( $temp_date, 0, 4 ) . '-' . substr( $temp_date, 4, 2 );
-    }
-    elsif ( defined( $record->{'___Index Start'} )
-        && $record->{'___Index Start'} =~ /(\d{1,2})\/(\d{4})/ )
-    {
-        $record->{cit_start_date} = sprintf( "%04i-%02i", $2, $1);
-    }
-
-    if ( defined( $record->{'___Index End'} )
-        && $record->{'___Index End'} =~ /(\w{3})-(\d{2})/ )
-    {
-        my $temp_date = get_date( $1, $2 );
-        $record->{cit_end_date} = substr( $temp_date, 0, 4 ) . '-' . substr( $temp_date, 4, 2 );
-    }
-    elsif ( defined( $record->{'___Index End'} )
-        && $record->{'___Index End'} =~ /(\d{1,2})\/(\d{4})/ )
-    {   
-        $record->{cit_end_date} = sprintf( "%04i-%02i", $2, $1);
-    }
-
-    # Gale can't seem to keep their columns consistent, so try an alternative
-
-    if ( !exists($record->{'___Full-text Start'}) ) {
-       $record->{'___Full-text Start'} = $record->{'___Full-Text Start'}
-    }
-    if ( !exists($record->{'___Full-text End'}) ) {
-       $record->{'___Full-text End'} = $record->{'___Full-Text End'}
-    }
-
-    if ( defined( $record->{'___Full-text Start'} )
-        && $record->{'___Full-text Start'} =~ /(\w{3})-(\d{2})/ )
-    {
-        $ft_start_date = get_date( $1, $2 );
-    }
-    elsif ( defined( $record->{'___Full-text Start'} )
-        && $record->{'___Full-text Start'} =~ /(\d{1,2})\/(\d{4})/ )
-    {
-        $ft_start_date = sprintf( "%04i%02i", $2, $1);
-    }
-
-    if ( defined( $record->{'___Full-text End'} )
-        && $record->{'___Full-text End'} =~ /(\w{3})-(\d{2})/ )
-    {
-        $ft_end_date = get_date( $1, $2 );
-    }
-    elsif ( defined( $record->{'___Full-text End'} )
-        && $record->{'___Full-text End'} =~ /(\d{1,2})\/(\d{4})/ )
-    {
-        $ft_end_date = sprintf( "%04i%02i", $2, $1);
-    }
-
-    # Check the Image dates to see if they are better than the fulltext ones
-
-    if ( defined( $record->{'___Image Start'} )
-        && $record->{'___Image Start'} =~ /(\w{3})-(\d{2})/ )
-    {
-        my $temp_date = get_date( $1, $2 );
-        if ( int($temp_date) < int($ft_start_date) ) {
-            $ft_start_date = $temp_date;
-        }
-    }
-    elsif ( defined( $record->{'___Image Start'} )
-        && $record->{'___Image Start'} =~ /(\d{1,2})\/(\d{4})/ )
-    {
-	my $temp_date = sprintf( "%04i%02i", $2, $1);
-	if ( int($temp_date) < int($ft_start_date) ) {
-            $ft_start_date = $temp_date;
-        }
-    }
-
-    if ( defined( $record->{'___Image End'} )
-        && $record->{'___Image Start'} =~ /(\w{3})-(\d{2})/ )
-    {
-        my $temp_date = get_date( $1, $2 );
-        if ( int($temp_date) > int($ft_end_date) ) {
-            $ft_end_date = $temp_date;
-        }
-    }
-    elsif ( defined( $record->{'___Image End'} )
-        && $record->{'___Image End'} =~ /(\d{1,2})\/(\d{4})/ )
-    {
-        my $temp_date = sprintf( "%04i%02i", $2, $1);
-        if ( int($temp_date) < int($ft_end_date) ) {
-            $ft_end_date = $temp_date;
-        }
-    }
-
-    if ( defined($ft_start_date) && $ft_start_date ne '0' ) {
-        $record->{ft_start_date} = substr( $ft_start_date, 0, 4 ) . '-' . substr( $ft_start_date, 4, 2 );
-    }
-    if ( defined($ft_end_date) && $ft_end_date ne '0' ) {
-        $record->{ft_end_date} = substr( $ft_end_date, 0, 4 ) . '-' . substr( $ft_end_date, 4, 2 );
-    }
+    $record->{ft_start_date}  = $class->parse_start_date( map { $record->{$_} } ( '___Full-text Start', '___Full-Text Start', '___Full-text Start Date', '___Image Start', '___Image Start Date' ) );
+    $record->{ft_end_date}    = $class->parse_end_date(   map { $record->{$_} } ( '___Full-text End',   '___Full-Text End',   '___Full-text End Date',   '___Image End',   '___Image End Date' ) );
 
     $record->{title} =~ s/\s*\(.+?\)\s*$//g;
 
-    return $class->SUPER::clean_data($record);
-
-    sub get_date {
-        my ( $month, $year ) = @_;
-
-        if    ( $month =~ /^Jan/i ) { $month = 1 }
-        elsif ( $month =~ /^Feb/i ) { $month = 2 }
-        elsif ( $month =~ /^Mar/i ) { $month = 3 }
-        elsif ( $month =~ /^Apr/i ) { $month = 4 }
-        elsif ( $month =~ /^May/i ) { $month = 5 }
-        elsif ( $month =~ /^Jun/i ) { $month = 6 }
-        elsif ( $month =~ /^Jul/i ) { $month = 7 }
-        elsif ( $month =~ /^Aug/i ) { $month = 8 }
-        elsif ( $month =~ /^Sep/i ) { $month = 9 }
-        elsif ( $month =~ /^Oct/i ) { $month = 10 }
-        elsif ( $month =~ /^Nov/i ) { $month = 11 }
-        elsif ( $month =~ /^Dec/i ) { $month = 12 }
-        else {
-            CUFTS::Exception::App->throw(
-                "Unable to find month match in fulltext date: $month");
-        }
-
-        if ( int($year) > 20 ) {
-            $year = "19$year";
-        }
-        else {
-            $year = "20$year";
-        }
-
-        return sprintf( "%04i%02i", $year, $month );
+    if ( hascontent($record->{cjdb_note}) ) {
+        $record->{cjdb_note} = 'Full-text exceptions: ' . trim_string($record->{cjdb_note}, '"');
     }
+
+    return $class->SUPER::clean_data($record);
 }
 
 

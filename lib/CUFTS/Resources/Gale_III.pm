@@ -50,11 +50,12 @@ sub title_list_fields {
 
 sub title_list_field_map {
     return {
-        'Journal Name'      => 'title',
-        'Publication Name'  => 'title',
-        'ISSN'              => 'issn',
-        'Embargo (Days)'    => 'embargo_days',
-        'Publisher'         => 'publisher',
+        'Journal Name'          => 'title',
+        'Publication Name'      => 'title',
+        'ISSN'                  => 'issn',
+        'Embargo (Days)'        => 'embargo_days',
+        'Publisher'             => 'publisher',
+        'Full-text Exceptions'  => 'cjdb_note',
     };
 }
 
@@ -111,6 +112,9 @@ sub clean_data {
     $record->{ft_start_date}  = $class->parse_start_date( map { $record->{$_} } ( '___Full-text Start', '___Full-Text Start', '___Full-text Start Date', '___Image Start', '___Image Start Date' ) );
     $record->{ft_end_date}    = $class->parse_end_date(   map { $record->{$_} } ( '___Full-text End',   '___Full-Text End',   '___Full-text End Date',   '___Image End',   '___Image End Date' ) );
 
+    if ( hascontent($record->{cjdb_note}) ) {
+        $record->{cjdb_note} = 'Full-text exceptions: ' . trim_string($record->{cjdb_note}, '"');
+    }
 
     # Gale can't seem to keep their columns consistent, so try an alternative
     # NOTE: do not enable this.  Gale_III does exact title searching and Gale's interface chokes if you don't include the end parts like "(US)"
