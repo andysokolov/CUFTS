@@ -1,0 +1,22 @@
+[%- SET no_wrap = 1 -%]
+Database cost per use from JR1 reports
+
+COUNTER Sources Used
+[% FOREACH resource_id IN resources_sorted %]
+[%- SET resource = resources_map.$resource_id -%]
+[% resource.name %]: [% sources_used.$resource_id.join(', ') %]
+[% END %]
+
+Start Date	[% start_date %]
+End Date	[% end_date %]
+
+
+[% FOREACH date IN dates %]	[% date.display %]	[% date.display %]	[% date.display %][% END %]
+[% FOREACH resource_id IN resources_sorted -%]
+   [%- SET resource = resources_map.$resource_id -%]
+[% resource.name | html %][% FOREACH date IN dates; SET lookup_date = date.date; count = counts_by_resource.$resource_id.$lookup_date || 0; cost  = costs.$resource_id.$lookup_date || 0 %]	[% FILTER format('$ %02.2f') %][% cost %][% END %]	[% count %]	[% IF count > 0 %][% FILTER format('$ %02.2f') %][% cost / count %][% END %][% ELSE %]?[% END %][% END %]
+[% END %]
+
+
+
+
