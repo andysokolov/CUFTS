@@ -24,6 +24,7 @@ use base qw( CUFTS::Resources::Base::Journals CUFTS::Resources::Base::DateTimeNa
 
 use CUFTS::Exceptions;
 use CUFTS::Util::Simple;
+use String::Util qw(hascontent trim);
 
 use URI::Escape qw(uri_escape);
 
@@ -40,6 +41,7 @@ sub title_list_fields {
             cit_start_date
             cit_end_date
             embargo_days
+            cjdb_note
         )
     ];
 }
