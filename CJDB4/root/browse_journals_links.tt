@@ -15,8 +15,8 @@
    <li>
     <a href="[% link.url | html %]">
     [%- IF coverage_strings.fulltext %][% coverage_strings.fulltext.replace('to',c.loc('to')).replace('current',c.loc('current')) | html %][% END -%]
-    [%- IF coverage_strings.print %]in print [% coverage_strings.print %][% END -%]
-    [%- IF coverage_strings.citation %]citations [% coverage_strings.citation %][% END -%]
+    [%- IF coverage_strings.print %][% c.loc('In print') | html %]: [% coverage_strings.print %][% END -%]
+    [%- IF coverage_strings.citation %][% c.loc('Citations only') | html %]: [% coverage_strings.citation %][% END -%]
     </a>
     [% c.loc('from') | html %] <br class="visible-phone" />
     [%- PROCESS journals_link_name.tt -%]
