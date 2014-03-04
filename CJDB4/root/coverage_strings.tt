@@ -28,6 +28,6 @@
  [% SET coverage_strings.fulltext = fulltext_string %]
 [% END %]
 
-[%- IF link.citation_coverage AND current_site.cjdb_show_citations AND !(link.embargo OR link.fulltext_coverage OR link.current) %]
+[%- IF link.citation_coverage AND c.site.cjdb_show_citations AND !fulltext_string %]
   [% SET coverage_strings.citation = link.citation_coverage %]
 [% END -%]
