@@ -67,6 +67,8 @@ sub load_site {
         }
     );
 
+    print $OUT join "\t", ( 'source', 'title', 'issn1', 'issn2', 'start', 'end', 'embargo_days', 'embargo_months' );
+    print $OUT "\n";
 
     while ( my $local_resource = $local_resources_rs->next ) {
         print " - Loading: ", $local_resource->name_display, ": ";
@@ -78,11 +80,8 @@ sub load_site {
             }
         );
 
-        print $OUT join "\t", ( 'source', 'title', 'issn1', 'issn2', 'start', 'end', 'embargo_days', 'embargo_months' );
-        print $OUT "\n";
-
         my $count = 0;
-            while ( my $local_journal = $local_journals_rs->next ) {
+        while ( my $local_journal = $local_journals_rs->next ) {
 
             my $journal_auth = $local_journal->journal_auth_merged;
             next if !defined($journal_auth);
