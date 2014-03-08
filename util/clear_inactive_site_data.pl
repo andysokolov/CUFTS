@@ -6,7 +6,7 @@ use CUFTS::Schema;
 use Term::ReadLine;
 use Getopt::Long;
 
-my $schema = CUFTS::Schema->connect( $CUFTS::Config::CUFTS_DB_STRING, $CUFTS::Config::CUFTS_USER, $CUFTS::Config::CUFTS_PASSWORD );
+my $schema = CUFTS::Config->get_schema();
 my $term = new Term::ReadLine 'CUFTS Site Cleanup';
 
 my @tables = qw(
@@ -17,6 +17,8 @@ my @tables = qw(
 	CJDBISSNs
 	CJDBLinks
 	CJDBJournals
+	CJDBTags
+	CJDBLCCSubjects
 	Stats
 );
 
@@ -42,14 +44,14 @@ foreach my $table ( @tables ) {
 my $cjdb_accounts = $schema->resultset('CJDBAccounts')->search({site => $site->id});
 print "Deleting from table CJDBAccounts and Roles: ", $cjdb_accounts->count, "\n";
 while ( my $account = $cjdb_accounts->next ) {
-	$schema->resultset('CJDBAccountsRoles')->search({account => $account->id})->delete;
+	$account->accounts_roles->delete;
 	$account->delete;
 }
 
 my $local_resources = $schema->resultset('LocalResources')->search({ site => $site->id });
 print "Deleting from table LocalResources and attached journals: ", $local_resources->count, "\n";
 while ( my $local_resource = $local_resources->next ) {
-	$schema->resultset('LocalJournals')->search({ resource => $local_resource->id })->delete;
+	$local_resource->local_journals->delete;
 	$local_resource->delete;
 }
 
