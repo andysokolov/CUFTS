@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 24;
+use Test::More tests => 25;
 
 use CUFTS::JournalsAuth;
 
@@ -113,7 +113,8 @@ is( $schema->resultset('LocalJournals')->count,  3, 'local journals count sanity
 # Create journal_auth records from global journal records
 
 my $stats1 = CUFTS::JournalsAuth::load_journals( $schema, 'global', $timestamp );
-
+warn(ref $stats1);
+ok( ref $stats1 eq 'HASH', 'global load: load returned a stats hashref');
 is( $schema->resultset('JournalsAuth')->count, 2, 'global load: journal auth count correct' );
 
 my $ja1 = $schema->resultset('JournalsAuth')->find({ title => [ 'Journal Title Second', 'Journal Title Second Alternate' ] });
