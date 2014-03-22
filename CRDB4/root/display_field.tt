@@ -51,7 +51,7 @@
  [% END %]
 
  [% IF display_field.staff_view %]
-  [% RETURN UNLESS $.account.has_role('staff') %]
+  [% RETURN UNLESS c.account.has_role('staff') %]
  [% END %]
 
  [% IF !field_label.defined %]
