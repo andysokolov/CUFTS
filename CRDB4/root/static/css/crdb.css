@@ -368,6 +368,11 @@ dl#resource-fields {
     display: inline;
 }
 
+.field-editing select[multiple] {
+    height: 15em;    
+}
+
+
 /* Icon overrides */
 
 .icon-ok {
