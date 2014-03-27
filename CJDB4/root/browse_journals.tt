@@ -1,4 +1,4 @@
-[% PROCESS page_title.tt %]
+[%# PROCESS page_title.tt %]
 [% PROCESS browse_form.tt %]
 <div id="browse">
 
