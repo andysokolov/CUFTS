@@ -1,0 +1,4 @@
+[%# You must have a Syndetics account to use the following image link.%]
+[%# Replace the "SYNDETICS_KEY" string below with your site's license key, then remove the RETURN command below. %]
+[% RETURN %]
+<img class="media-object" src="http://syndetics.com/index.php?client=SYNDETICS_KEY&issn=[% issn %]/sc.jpg">

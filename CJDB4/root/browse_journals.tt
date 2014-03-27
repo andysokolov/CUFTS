@@ -16,7 +16,7 @@
 
   <div class="covers pull-left hidden-phone"><a class="" href="#">
    [%- FOREACH issn IN issns.$journal_id -%]
-    <div><img class="media-object" src="http://syndetics.com/index.php?client=simonfu&issn=[% issn.issn %]/sc.jpg"></div>
+    <div>[% PROCESS journal_cover.tt issn=issn.issn %]</div>
    [%- END -%]
   </a></div>
 

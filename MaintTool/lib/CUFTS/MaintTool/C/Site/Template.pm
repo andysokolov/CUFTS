@@ -152,6 +152,7 @@ sub menu_cjdb4 : Local {
         journal_account_tags.tt
         journal_associations.tt
         journal_coverages.tt
+        journal_cover.tt
         journal_issns.tt
         journal_license.tt
         journal_links.tt
