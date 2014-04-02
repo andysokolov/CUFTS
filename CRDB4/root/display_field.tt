@@ -3,6 +3,8 @@
 [% SET display_field_name = display_field.field %]
 
 [% SWITCH display_field_name %]
+ [% CASE vendor %]
+  [% RETURN %]
  [% CASE 'description_full' %]
   [% INCLUDE render_field field_name="description_full", hide_label = 1 %]
  [% CASE 'group_records' %]

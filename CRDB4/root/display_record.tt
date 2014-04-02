@@ -3,7 +3,7 @@
   [% IF sorting_enabled %]<i class="sortable-icon icon-resize-vertical hidden-phone"></i>[% END %]
 
   <div class="browse-field-name [% record.open_access == 'yes' ? ' open-access' : '' %]">
-    <a href="[% c.uri_for_site( c.controller('Resource').action_for('resource'), [ record_id ] ) %]">[% record.result_name | html %][% IF record.vendor.length %] - [% record.vendor | html %][% END %]</a>
+    <a href="[% c.uri_for_site( c.controller('Resource').action_for('resource'), [ record_id ] ) %]">[% record.name | html %][% IF record.vendor.length %]<!-- - [% record.vendor | html %]-->[% END %]</a>
   </div>
 
   <div class="browse-field-description">[% record.description_brief %]</div>
