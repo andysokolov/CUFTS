@@ -14,6 +14,7 @@ sub base : Chained('/site') PathPart('resolve') CaptureArgs(0) {
 
     # FUTURE: Consider adding load of site specific resolver?
     my $resolver = new CUFTS::Resolve();
+    $resolver->schema( $c->model('CUFTS')->schema );
     my $sites = $resolver->get_sites( undef, [ $c->site->key, defined($c->stash->{other_sites}) ? @{$c->stash->{other_sites}} : () ] );
 
     $c->stash->{sites}    = $sites;
