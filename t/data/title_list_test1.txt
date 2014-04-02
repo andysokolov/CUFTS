@@ -1,0 +1,10 @@
+title	issn	e_issn	ft_start_date	ft_end_date	embargo_months	embargo_days	current_months	current_years	coverage	vol_ft_start	vol_ft_end	iss_ft_start	iss_ft_end	cit_start_date	cit_end_date	vol_cit_start	vol_cit_end	iss_cit_start	iss_cit_end	db_identifier	toc_url	journal_url	urlbase	publisher	abbreviation
+Aging cell	14749718	14749726	2002-10-01	2010-10-02						1		1										http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1474-9726
+Annals of Clinical and Translational Neurology		23289503	2012-12-01							1												http://onlinelibrary.wiley.com/journal/10.1002/(ISSN)2328-9503			
+CA: A Cancer Journal for Clinicians	79235	15424863	1950-11-01							1		1										http://onlinelibrary.wiley.com/journal/10.3322/(ISSN)1542-4863
+Cancer Medicine		20457634	2012-04-01							1												http://onlinelibrary.wiley.com/journal/10.1002/(ISSN)2045-7634
+Cancer science		13497006	1988-01-01							79		1										http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1349-7006
+Cardiovascular Therapeutics		17555922	1983-03-01							1		1										http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1755-5922
+Cell Biology International Reports		20415346	2010-01-01							17		1										http://onlinelibrary.wiley.com/journal/10.1002/(ISSN)2041-5346
+Clinical Case Reports		20500904	2013-10-01							1		1										http://onlinelibrary.wiley.com/journal/10.1002/(ISSN)2050-0904
+Comprehensive Reviews in Food Science and Food Safety		15414337	2002-04-01							1		1										http://onlinelibrary.wiley.com/journal/10.1111/(ISSN)1541-4337

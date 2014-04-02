@@ -1,0 +1,67 @@
+Journal Report 1 (R4)	Number of Successful Full-Text Article Requests by Month and Journal																				
+SIMON FRASER UNIV																					
+SFU																					
+Period covered by Report:																					
+2013-01-01 to 2013-12-31																					
+Date run:																					
+2014-02-24																					
+Journal	Publisher	Platform	Journal DOI	Proprietary Identifier	Print ISSN	Online ISSN	Reporting Period Total	Reporting Period HTML	Reporting Period PDF	Jan-2013	Feb-2013	Mar-2013	Apr-2013	May-2013	Jun-2013	Jul-2013	Aug-2013	Sep-2013	Oct-2013	Nov-2013	Dec-2013
+Total for all journals		ACS Publications					52407	3581	48826	5000	4755	5444	5133	3274	4989	3689	4382	3635	4772	4670	2664
+Accounts of Chemical Research	American Chemical Society	ACS Publications	10.1021/achre4	achre4	0001-4842	1520-4898	658	54	604	54	140	60	43	23	36	37	60	52	54	76	23
+ACS Applied Materials & Interfaces	American Chemical Society	ACS Publications	10.1021/aamick	aamick	1944-8244	1944-8252	484	41	443	30	48	42	31	46	52	45	43	33	59	25	30
+ACS Catalysis	American Chemical Society	ACS Publications	10.1021/accacs	accacs	2155-5435	2155-5435	2	0	2	0	0	0	0	1	0	0	0	0	1	0	0
+ACS Chemical Biology	American Chemical Society	ACS Publications	10.1021/acbcct	acbcct	1554-8929	1554-8937	227	13	214	22	22	22	23	17	8	12	14	18	23	18	28
+ACS Chemical Neuroscience	American Chemical Society	ACS Publications	10.1021/acncdm	acncdm		1948-7193	81	14	67	6	4	22	8	2	1	0	2	10	10	11	5
+ACS Combinatorial Science	American Chemical Society	ACS Publications	10.1021/acsccc	acsccc	2156-8952	2156-8944	44	7	37	4	4	8	7	3	2	1	4	1	7	1	2
+ACS Macro Letters	American Chemical Society	ACS Publications	10.1021/amlccd	amlccd		2161-1653	15	1	14	0	2	0	3	0	0	0	0	4	3	3	0
+ACS Medicinal Chemistry Letters	American Chemical Society	ACS Publications	10.1021/amclct	amclct		1948-5875	38	0	38	1	3	16	4	2	2	1	3	1	5	0	0
+ACS Nano	American Chemical Society	ACS Publications	10.1021/ancac3	ancac3	1936-0851	1936-086X	797	97	700	69	64	81	80	59	67	58	47	48	82	100	42
+ACS Sustainable Chemistry & Engineering	American Chemical Society	ACS Publications	10.1021/ascecg	ascecg		2168-0485	4	0	4	0	0	0	0	1	0	0	3	0	0	0	0
+ACS Synthetic Biology	American Chemical Society	ACS Publications	10.1021/asbcd6	asbcd6		2161-5063	2	1	1	0	0	0	0	0	0	0	1	0	1	0	0
+Analytical Chemistry	American Chemical Society	ACS Publications	10.1021/ancham	ancham	0003-2700	1520-6882	1549	115	1434	133	154	166	112	98	104	129	105	115	170	149	114
+Biochemistry	American Chemical Society	ACS Publications	10.1021/bichaw	bichaw	0006-2960	1520-4995	1589	237	1352	103	118	177	158	157	136	127	104	91	160	164	94
+Bioconjugate Chemistry	American Chemical Society	ACS Publications	10.1021/bcches	bcches	1043-1802	1520-4812	250	13	237	13	12	25	26	30	15	36	20	12	20	32	9
+Biomacromolecules	American Chemical Society	ACS Publications	10.1021/bomaf6	bomaf6	1525-7797	1526-4602	138	16	122	9	12	16	15	11	9	9	17	13	11	13	3
+Biotechnology Progress	American Chemical Society	ACS Publications	10.1021/bipret	bipret	8756-7938	1520-6033	5	0	5	0	0	1	0	0	0	0	2	1	0	0	1
+Chemical & Engineering News Archive	American Chemical Society	ACS Publications	10.1021/cenear	cenear	0009-2347	2157-4936	11	0	11	0	0	1	0	0	1	3	0	1	2	3	0
+Chemical Research in Toxicology	American Chemical Society	ACS Publications	10.1021/crtoec	crtoec	0893-228X	1520-5010	122	10	112	5	6	16	10	28	15	8	9	6	9	8	2
+Chemical Reviews	American Chemical Society	ACS Publications	10.1021/chreay	chreay	0009-2665	1520-6890	1387	135	1252	114	86	163	114	72	55	84	85	111	185	214	104
+Chemistry of Materials	American Chemical Society	ACS Publications	10.1021/cmatex	cmatex	0897-4756	1520-5002	774	105	669	61	85	85	61	73	74	82	58	54	61	48	32
+Crystal Growth & Design	American Chemical Society	ACS Publications	10.1021/cgdefu	cgdefu	1528-7483	1528-7505	170	19	151	10	52	12	12	9	16	11	10	8	17	7	6
+Energy & Fuels	American Chemical Society	ACS Publications	10.1021/enfuem	enfuem	0887-0624	1520-5029	145	3	142	9	54	12	7	6	6	17	7	7	7	10	3
+Environmental Science & Technology	American Chemical Society	ACS Publications	10.1021/esthag	esthag	0013-936X	1520-5851	2060	282	1778	147	230	283	237	101	82	183	75	86	219	292	125
+Environmental Science & Technology Letters	American Chemical Society	ACS Publications	10.1021/estlcu	estlcu		2328-8930	3	0	3	0	0	0	0	0	0	0	1	0	1	1	0
+Industrial & Engineering Chemistry	American Chemical Society	ACS Publications	10.1021/iechad	iechad	0019-7866	1541-5724	93	0	93	11	18	8	2	2	5	11	9	5	12	6	4
+Industrial & Engineering Chemistry Fundamentals	American Chemical Society	ACS Publications	10.1021/iecfa7	iecfa7	0196-4313	1541-4833	14	0	14	1	3	2	1	0	0	1	0	0	1	1	4
+Industrial & Engineering Chemistry Process Design and Development	American Chemical Society	ACS Publications	10.1021/iepdaw	iepdaw	0196-4305	1541-5716	21	0	21	1	2	3	1	4	3	1	1	2	2	0	1
+Industrial & Engineering Chemistry Product Research and Development	American Chemical Society	ACS Publications	10.1021/iepra6	iepra6	0196-4321	1541-4841	12	0	12	1	0	2	2	0	0	1	1	0	4	1	0
+Industrial & Engineering Chemistry Research	American Chemical Society	ACS Publications	10.1021/iecred	iecred	0888-5885	1520-5045	210	11	199	21	30	10	17	22	17	24	16	17	13	13	10
+Inorganic Chemistry	American Chemical Society	ACS Publications	10.1021/inocaj	inocaj	0020-1669	1520-510X	2095	169	1926	140	148	191	203	178	176	172	125	138	277	272	75
+Journal of the American Chemical Society	American Chemical Society	ACS Publications	10.1021/jacsat	jacsat	0002-7863	1520-5126	10239	831	9408	949	938	1011	792	663	793	699	581	932	1204	1118	559
+Journal of Agricultural and Food Chemistry	American Chemical Society	ACS Publications	10.1021/jafcau	jafcau	0021-8561	1520-5118	557	75	482	61	44	78	56	35	43	40	54	32	30	59	25
+Journal of Chemical & Engineering Data	American Chemical Society	ACS Publications	10.1021/jceaax	jceaax	0021-9568	1520-5134	103	7	96	5	15	5	13	12	11	7	5	3	15	7	5
+Journal of Chemical Education	American Chemical Society	ACS Publications	10.1021/jceda8	jceda8	0021-9584	1938-1328	1813	23	1790	130	280	381	143	136	124	90	38	97	175	135	84
+Journal of Chemical Information and Modeling	American Chemical Society	ACS Publications	10.1021/jcisd8	jcisd8	1549-9596	1549-960X	97	16	81	9	19	5	18	9	7	2	6	4	7	4	7
+Journal of Chemical Theory and Computation	American Chemical Society	ACS Publications	10.1021/jctcce	jctcce	1549-9618	1549-9626	92	17	75	5	6	9	21	5	4	3	5	12	9	8	5
+Journal of Medicinal Chemistry	American Chemical Society	ACS Publications	10.1021/jmcmar	jmcmar	0022-2623	1520-4804	3628	64	3564	140	149	244	160	139	103	312	1589	442	129	110	111
+Journal of Natural Products	American Chemical Society	ACS Publications	10.1021/jnprdf	jnprdf	0163-3864	1520-6025	354	38	316	129	24	50	23	17	12	18	8	10	34	19	10
+The Journal of Organic Chemistry	American Chemical Society	ACS Publications	10.1021/joceah	joceah	0022-3263	1520-6904	10226	113	10113	1567	929	1191	1635	399	1985	407	369	470	453	485	336
+The Journal of Physical Chemistry	American Chemical Society	ACS Publications	10.1021/jpchax	jpchax	0022-3654	1541-5740	514	7	507	31	38	33	62	75	41	42	37	28	39	70	18
+The Journal of Physical Chemistry A	American Chemical Society	ACS Publications	10.1021/jpcafh	jpcafh	1089-5639	1520-5215	586	75	511	73	74	45	49	37	54	30	28	49	40	68	39
+The Journal of Physical Chemistry B	American Chemical Society	ACS Publications	10.1021/jpcbfk	jpcbfk	1520-6106	1520-5207	1194	132	1062	86	90	105	71	80	116	105	67	80	143	154	97
+The Journal of Physical Chemistry C	American Chemical Society	ACS Publications	10.1021/jpccck	jpccck	1932-7447	1932-7455	942	104	838	113	65	83	93	43	91	69	74	76	84	80	71
+The Journal of Physical Chemistry Letters	American Chemical Society	ACS Publications	10.1021/jpclcd	jpclcd	1948-7185		204	12	192	32	23	14	14	16	13	11	32	7	16	19	7
+Journal of Proteome Research	American Chemical Society	ACS Publications	10.1021/jprobs	jprobs	1535-3893	1535-3907	231	33	198	17	14	26	29	22	21	17	21	12	17	11	24
+Langmuir	American Chemical Society	ACS Publications	10.1021/langd5	langd5	0743-7463	1520-5827	1594	183	1411	131	108	179	163	93	150	163	129	89	162	123	104
+Macromolecules	American Chemical Society	ACS Publications	10.1021/mamobx	mamobx	0024-9297	1520-5835	1002	112	890	89	107	80	88	99	62	89	61	68	76	99	84
+Molecular Pharmaceutics	American Chemical Society	ACS Publications	10.1021/mpohbp	mpohbp	1543-8384	1543-8392	90	4	86	6	4	15	6	13	4	16	5	8	2	7	4
+Nano Letters	American Chemical Society	ACS Publications	10.1021/nalefd	nalefd	1530-6984	1530-6992	1253	138	1115	133	85	101	145	80	111	145	103	64	128	80	78
+Organic Letters	American Chemical Society	ACS Publications	10.1021/orlef7	orlef7	1523-7060	1523-7052	3374	106	3268	221	332	298	321	262	306	297	260	246	306	296	229
+Organic Process Research & Development	American Chemical Society	ACS Publications	10.1021/oprdfk	oprdfk	1083-6160	1520-586X	282	5	277	16	55	32	13	15	14	37	23	10	14	24	29
+Organometallics	American Chemical Society	ACS Publications	10.1021/orgnd7	orgnd7	0276-7333	1520-6041	1032	143	889	92	59	35	41	79	42	37	65	62	273	226	21
+The Pharmacogenomics Journal    	Nature Publishing Group	nature.com	10.1038/tpj	TPJ	1470-269X	1473-1150	88	67	21	9	21	0	4	16	6	11	2	1	7	6	5
+Vital    	Nature Publishing Group	nature.com	10.1038/vital	VITAL	1741-7503	1471-7511	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Academic Pediatrics	Elsevier Inc.	EBSCOhost		458420	1876-2859	1876-2867	248	0	248	14	18	28	12	19	14	19	9	17	40	54	4
+Academic Questions	Springer Science & Business Media B.V.	EBSCOhost		607	0895-4852	1936-4709	380	116	264	17	25	40	32	9	28	16	2	33	52	112	14
+Academicus	Academicus	EBSCOhost		1249548	2079-3715		93	0	93	10	4	13	8	0	4	6	2	5	34	6	1
+Academy of Accounting and Financial Studies Journal	"Jordan Whitney Enterprises, Inc."	EBSCOhost		374125	1096-3685	1528-2635	61	0	61	3	4	11	0	0	0	4	2	5	2	25	5

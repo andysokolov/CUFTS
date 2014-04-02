@@ -1,0 +1,93 @@
+Journal Report 1 (R4)	Number of Successful Full-text Article Requests by Month and Journal																				
+SIMON FRASER UNIVERSITY - 2062																					
+																					
+Period covered by Report:																					
+2013-01-01 to 2013-12-31																					
+Date run:																					
+2014-01-27																					
+Journal	Publisher	Platform	Journal DOI	Proprietary Identifier	Print ISSN	Online ISSN	Reporting Period Total	Reporting Period HTML	Reporting Period PDF	Jan-2013	Feb-2013	Mar-2013	Apr-2013	May-2013	Jun-2013	Jul-2013	Aug-2013	Sep-2013	Oct-2013	Nov-2013	Dec-2013
+Total for all Journals	Nature Publishing Group	nature.com					926014	900336	25678	184499	166718	181566	186690	152363	7007	5361	6748	8625	7745	11897	6795
+Bone Marrow Transplantation    	Nature Publishing Group	nature.com	10.1038/bmt	BMT	0268-3369	1476-5365	90	64	26	10	12	12	12	4	11	5	1	2	9	6	6
+British Dental Journal    	Nature Publishing Group	nature.com	10.1038/bdj	BDJ	0007-0610	1476-5373	497	345	152	21	25	162	46	18	21	32	13	16	32	104	7
+British Journal of Cancer    	Nature Publishing Group	nature.com	10.1038/bjc	BJC	0007-0920	1532-1827	804	691	113	62	44	22	51	27	29	28	140	128	121	102	50
+Cancer Gene Therapy    	Nature Publishing Group	nature.com	10.1038/cgt	CGT	0929-1903	1476-5500	74	63	11	9	2	1	8	3	7	5	3	4	1	17	14
+Cell Death and Differentiation    	Nature Publishing Group	nature.com	10.1038/cdd	CDD	1350-9047	1476-5403	304	218	86	25	30	25	31	28	13	12	14	21	37	43	25
+Cell Research    	Nature Publishing Group	nature.com	10.1038/cr	CR	1001-0602	1748-7838	311	213	98	32	27	31	30	43	18	23	8	13	18	56	12
+Clinical Pharmacology & Therapeutics    	Nature Publishing Group	nature.com	10.1038/clpt	CLPT	0009-9236	1532-6535	431	343	88	69	35	35	52	37	40	21	32	35	15	40	20
+EMBO reports    	Nature Publishing Group	nature.com	10.1038/embor	EMBOR	1469-221X	1469-3178	621	444	177	44	52	60	57	37	36	44	44	46	59	91	51
+European Journal of Clinical Nutrition    	Nature Publishing Group	nature.com	10.1038/ejcn	EJCN	0954-3007	1476-5640	530	381	149	29	59	67	26	41	74	64	15	24	42	70	19
+European Journal of Human Genetics    	Nature Publishing Group	nature.com	10.1038/ejhg	EJHG	1018-4813	1476-5438	356	237	119	63	91	26	46	25	9	21	4	11	12	46	2
+Evidence-Based Dentistry    	Nature Publishing Group	nature.com	10.1038/ebd	EBD	1462-0049	1476-5446	41	30	11	1	8	2	3	2	5	2	0	1	8	7	2
+Eye    	Nature Publishing Group	nature.com	10.1038/eye	EYE	0950-222X	1476-5454	52	29	23	1	11	10	2	2	3	5	2	4	1	9	2
+Gene Therapy    	Nature Publishing Group	nature.com	10.1038/gt	GT	0969-7128	1476-5462	209	170	39	25	10	14	62	17	28	9	9	11	6	11	7
+Genes and Immunity    	Nature Publishing Group	nature.com	10.1038/gene	GENE	1466-4879	1476-5470	67	47	20	16	1	5	12	12	0	6	0	1	4	4	6
+Heredity    	Nature Publishing Group	nature.com	10.1038/hdy	HDY	0018-067X	1365-2540	562	371	191	48	76	52	41	79	37	18	21	66	49	39	36
+Hypertension Research    	Nature Publishing Group	nature.com	10.1038/hr	HR	0916-9636	1348-4214	15	9	6	3	5	0	0	0	2	4	0	0	0	1	0
+Immunology and Cell Biology    	Nature Publishing Group	nature.com	10.1038/icb	ICB	0818-9641	1440-1711	85	60	25	2	4	2	11	22	9	15	1	2	10	4	3
+International Journal of Impotence Research    	Nature Publishing Group	nature.com	10.1038/ijir	IJIR	0955-9930	1476-5489	47	31	16	2	0	18	0	7	0	5	1	2	7	5	0
+International Journal of Obesity    	Nature Publishing Group	nature.com	10.1038/ijo	IJO	0307-0565	1476-5497	1285	974	311	66	85	107	125	52	80	151	32	28	91	442	26
+International Journal of Obesity Supplements    	Nature Publishing Group	nature.com	10.1038/ijosup	IJOSUP	2046-2166	2046-2174	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Journal of Cerebral Blood Flow & Metabolism    	Nature Publishing Group	nature.com	10.1038/jcbfm	JCBFM	0271-678X	1559-7016	285	244	41	36	28	23	41	46	16	7	21	20	6	23	18
+Journal of Exposure Science and Environmental Epidemiology    	Nature Publishing Group	nature.com	10.1038/jes	JES	1559-0631	1559-064X	278	195	83	5	91	38	29	13	19	10	3	6	43	9	12
+Journal of Human Genetics    	Nature Publishing Group	nature.com	10.1038/jhg	JHG	1434-5161	1435-232X	118	78	40	9	18	12	15	5	4	5	4	4	6	33	3
+Journal of Human Hypertension    	Nature Publishing Group	nature.com	10.1038/jhh	JHH	0950-9240	1476-5527	265	208	57	3	32	37	45	10	23	29	16	4	13	37	16
+Journal of Investigative Dermatology    	Nature Publishing Group	nature.com	10.1038/jid	JID	0022-202X	1523-1747	272	172	100	51	22	22	27	26	23	24	15	8	17	28	9
+Journal of Perinatology    	Nature Publishing Group	nature.com	10.1038/jp	JP	0743-8346	1476-5543	57	35	22	8	0	6	6	7	6	11	1	3	2	7	0
+Kidney International    	Nature Publishing Group	nature.com	10.1038/ki	KI	0085-2538	1523-1755	225	152	73	36	14	22	27	23	7	36	6	11	15	21	7
+Kidney International Supplements    	Nature Publishing Group	nature.com	10.1038/kisup	KISUP	2157-1724	2157-1716	3	2	1	0	0	0	0	0	0	0	0	0	1	2	0
+Lab Animal    	Nature Publishing Group	nature.com	10.1038/laban	LABAN	0093-7355	1548-4475	30	27	3	0	4	0	1	2	10	0	0	0	6	5	2
+Laboratory Investigation    	Nature Publishing Group	nature.com	10.1038/labinvest	LABINVEST	0023-6837	1530-0307	100	71	29	17	9	14	9	13	3	8	2	4	6	12	3
+Leukemia    	Nature Publishing Group	nature.com	10.1038/leu	LEU	0887-6924	1476-5551	370	319	51	16	13	8	60	29	15	13	41	45	38	50	42
+Leukemia Supplements    	Nature Publishing Group	nature.com	10.1038/leusup	LEUSUP	2044-5210	2044-5229	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+Modern Pathology    	Nature Publishing Group	nature.com	10.1038/modpathol	MODPATHOL	0893-3952	1530-0285	56	44	12	9	8	6	2	3	7	1	7	4	1	6	2
+Molecular Psychiatry    	Nature Publishing Group	nature.com	10.1038/mp	MP	1359-4184	1476-5578	672	499	173	92	99	69	71	46	46	35	36	50	40	48	40
+Molecular Therapy    	Nature Publishing Group	nature.com	10.1038/mt	MT	1525-0016		250	180	70	34	11	29	33	32	18	8	16	15	22	19	13
+Mucosal Immunology    	Nature Publishing Group	nature.com	10.1038/mi	MI	1933-0219	1935-3456	30	17	13	2	0	11	0	6	3	0	1	0	0	7	0
+Nature    	Nature Publishing Group	nature.com	10.1038/nature	NATURE	0028-0836	1476-4687	186104	181550	4554	37958	34829	38213	34764	27417	1453	1263	1425	2102	1914	3265	1501
+Nature Biotechnology    	Nature Publishing Group	nature.com	10.1038/nbt	NBT	1087-0156	1546-1696	138770	138161	609	27411	27712	27447	31397	22666	262	230	303	352	333	370	287
+Nature Cell Biology    	Nature Publishing Group	nature.com	10.1038/ncb	NCB	1465-7392	1476-4679	1671	1192	479	173	124	94	192	131	103	87	110	140	138	255	124
+Nature Chemical Biology    	Nature Publishing Group	nature.com	10.1038/nchembio	NCHEMBIO	1552-4450	1552-4469	1236	876	360	145	121	132	148	108	75	39	84	101	70	119	94
+Nature Chemistry    	Nature Publishing Group	nature.com	10.1038/nchem	NCHEM	1755-4330	1755-4349	1031	603	428	78	59	77	52	78	80	40	66	115	186	114	86
+Nature Climate Change    	Nature Publishing Group	nature.com	10.1038/nclimate	NCLIMATE	1758-678X	1758-6798	1156	877	279	125	78	79	113	80	111	75	119	139	90	54	93
+Nature Clinical Practice Neurology    	Nature Publishing Group	nature.com	10.1038/ncpneuro	NCPNEURO	1745-834X	1745-8358	25	17	8	1	7	4	3	3	0	5	0	0	0	2	0
+Nature Clinical Practice Rheumatology    	Nature Publishing Group	nature.com	10.1038/ncprheum	NCPRHEUM	1745-8382	1745-8390	2	2	0	0	0	1	0	0	0	1	0	0	0	0	0
+Nature Communications    	Nature Publishing Group	nature.com	10.1038/ncomms	NCOMMS	2041-1733		237708	237267	441	42041	44795	48638	55124	46339	125	90	101	123	104	144	84
+Nature Genetics    	Nature Publishing Group	nature.com	10.1038/ng	NG	1061-4036	1546-1718	96379	95564	815	21027	17242	20021	18819	17058	350	222	299	375	328	368	270
+Nature Geoscience    	Nature Publishing Group	nature.com	10.1038/ngeo	NGEO	1752-0894	1752-0908	3000	2024	976	385	238	224	223	841	221	93	187	191	94	186	117
+Nature Immunology    	Nature Publishing Group	nature.com	10.1038/ni	NI	1529-2908	1529-2916	1282	979	303	153	116	229	106	63	52	47	67	137	86	129	97
+Nature Materials    	Nature Publishing Group	nature.com	10.1038/nmat	NMAT	1476-1122	1476-4660	1846	1320	526	277	143	135	182	121	123	182	122	161	101	175	124
+Nature Medicine    	Nature Publishing Group	nature.com	10.1038/nm	NM	1078-8956	1546-170X	3119	2515	604	523	338	255	289	238	246	106	182	230	179	297	236
+Nature Methods    	Nature Publishing Group	nature.com	10.1038/nmeth	NMETH	1548-7091	1548-7105	126124	125529	595	31684	21525	25248	24607	20981	306	163	422	311	261	357	259
+Nature Nanotechnology    	Nature Publishing Group	nature.com	10.1038/nnano	NNANO	1748-3387	1748-3395	1470	1080	390	145	110	74	126	143	150	113	130	110	146	126	97
+Nature Nanotechnology Research Highlights Newsletter    	Nature Publishing Group	nature.com	10.1038/nnanorh	NNANORH			5	5	0	0	0	0	0	0	0	1	2	2	0	0	0
+Nature Neuroscience    	Nature Publishing Group	nature.com	10.1038/neuro	NEURO	1097-6256	1546-1726	2834	1899	935	301	235	207	198	690	195	138	195	194	125	190	166
+Nature Photonics    	Nature Publishing Group	nature.com	10.1038/nphoton	NPHOTON	1749-4885	1749-4893	734	499	235	61	38	59	76	51	31	61	37	58	105	81	76
+Nature Physics    	Nature Publishing Group	nature.com	10.1038/nphys	NPHYS	1745-2473	1745-2481	1482	1150	332	195	134	126	158	113	84	89	135	105	94	134	115
+Nature Protocols    	Nature Publishing Group	nature.com	10.1038/nprot	NPROT	1754-2189	1750-2799	4714	4505	209	880	458	132	466	435	389	99	459	437	133	398	428
+Nature Reviews Cancer    	Nature Publishing Group	nature.com	10.1038/nrc	NRC	1474-175x	1474-1768	1302	949	353	162	87	66	158	85	145	80	121	104	96	106	92
+Nature Reviews Drug Discovery    	Nature Publishing Group	nature.com	10.1038/nrd	NRD	1474-1776	1474-1784	1179	925	254	162	103	107	138	110	67	59	70	71	93	109	90
+Nature Reviews Genetics    	Nature Publishing Group	nature.com	10.1038/nrg	NRG	1471-0056	1471-0064	77049	76471	578	16610	14830	16877	15597	12022	129	109	125	190	175	255	130
+Nature Reviews Immunology    	Nature Publishing Group	nature.com	10.1038/nri	NRI	1474-1733	1474-1741	773	478	295	116	37	66	76	38	47	56	45	53	108	82	49
+Nature Reviews Microbiology    	Nature Publishing Group	nature.com	10.1038/nrmicro	NRMICRO	1740-1526	1740-1534	1187	810	377	107	98	114	136	36	72	28	33	73	101	206	183
+Nature Reviews Molecular Cell Biology    	Nature Publishing Group	nature.com	10.1038/nrm	NRM	1471-0072	1471-0080	1949	1447	502	218	211	144	216	135	92	73	104	147	129	320	160
+Nature Reviews Neurology    	Nature Publishing Group	nature.com	10.1038/nrneurol	NRNEUROL	1759-4758	1759-4766	164	95	69	26	25	19	27	6	3	7	4	3	23	11	10
+Nature Reviews Neuroscience    	Nature Publishing Group	nature.com	10.1038/nrn	NRN	1471-003x	1471-0048	1474	993	481	184	146	145	161	120	92	89	65	110	143	149	70
+Nature Reviews Rheumatology    	Nature Publishing Group	nature.com	10.1038/nrrheum	NRRHEUM	1759-4790	1759-4804	87	48	39	3	2	17	10	2	5	1	19	5	9	14	0
+Nature Structural & Molecular Biology    	Nature Publishing Group	nature.com	10.1038/nsmb	NSMB	1545-9993	1545-9985	1619	1301	318	225	104	100	169	117	135	101	98	224	76	151	119
+Nature archive: 1869-1949    	Nature Publishing Group	nature.com	10.1038/ja03	JA03	0028-0836	1476-4687	879	0	879	41	70	64	54	27	36	50	27	134	201	105	70
+Nature archive: 1950-1986    	Nature Publishing Group	nature.com	10.1038/ja02	JA02	0028-0836	1476-4687	1418	165	1253	93	157	153	99	80	127	89	52	149	203	163	53
+Nature archive: 1987-1996    	Nature Publishing Group	nature.com	10.1038/ja01	JA01	0000-0000	1476-4687	1377	17	1360	79	140	182	160	84	62	102	46	92	149	227	54
+Nature archive: 1997-2006    	Nature Publishing Group	nature.com	10.1038/ja04	JA04	0028-0836	1476-4687	11321	8988	2333	1559	1109	818	1169	888	711	467	698	977	769	1414	742
+Nature-newbio    	Nature Publishing Group	nature.com	10.1038/newbio	NATURE-NEWBIO	0090-0028		12	0	12	0	0	0	0	0	0	3	1	8	0	0	0
+Nature-physci    	Nature Publishing Group	nature.com	10.1038/physci	NATURE-PHYSCI	0300-8746		1	0	1	0	0	0	0	0	0	1	0	0	0	0	0
+Neuropsychopharmacology    	Nature Publishing Group	nature.com	10.1038/npp	NPP	0893-133X	1740-634X	520	365	155	50	41	57	49	42	42	27	43	44	40	61	24
+Oncogene    	Nature Publishing Group	nature.com	10.1038/onc	ONC	0950-9232	1476-5594	1061	763	298	97	123	87	173	101	95	84	62	69	53	62	55
+Prostate Cancer and Prostatic Diseases    	Nature Publishing Group	nature.com	10.1038/pcan	PCAN	1365-7852	1476-5608	68	59	9	10	8	0	5	7	6	2	12	5	4	2	7
+Spinal Cord    	Nature Publishing Group	nature.com	10.1038/sc	SC	1362-4393	1476-5624	228	116	112	17	19	25	18	16	11	20	19	11	2	54	16
+The American Journal of Gastroenterology    	Nature Publishing Group	nature.com	10.1038/ajg	AJG	0002-9270	1572-0241	127	79	48	7	7	9	14	6	14	12	11	12	20	11	4
+The American Journal of Gastroenterology Supplements    	Nature Publishing Group	nature.com	10.1038/ajgsup	AJGSUP	1948-9498	1948-9501	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+The EMBO Journal    	Nature Publishing Group	nature.com	10.1038/emboj	EMBOJ	0261-4189	1460-2075	1875	1494	381	294	140	156	214	140	122	74	125	151	111	206	142
+The ISME Journal    	Nature Publishing Group	nature.com	10.1038/ismej	ISMEJ	1751-7362	1751-7370	152	116	36	20	11	15	18	11	8	11	12	17	4	15	10
+The Journal of Antibiotics    	Nature Publishing Group	nature.com	10.1038/ja	JA	0021-8820	1881-1469	20	13	7	1	1	2	1	1	2	4	0	3	4	0	1
+The Pharmacogenomics Journal    	Nature Publishing Group	nature.com	10.1038/tpj	TPJ	1470-269X	1473-1150	88	67	21	9	21	0	4	16	6	11	2	1	7	6	5
+Vital    	Nature Publishing Group	nature.com	10.1038/vital	VITAL	1741-7503	1471-7511	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0

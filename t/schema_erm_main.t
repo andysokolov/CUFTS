@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 22;
+use Test::More tests => 25;
 
 use Test::DBIx::Class {
     schema_class => 'CUFTS::Schema',
@@ -73,6 +73,8 @@ is( $erm3->main_name, 'Clone of ' . $erm1->main_name, 'cloned name has prefix ad
 is( $erm3->subjects->count, 1, 'cloned subject_main' );
 is( $erm3->content_types->count, 1, 'cloned content_types_main' );
 is( $erm3->names->count, 1, 'cloned single name record' );
+$erm3->add_to_names({ name => 'New Clone Name', main => 0 });
+
 
 # Check cascade_copy
 
@@ -85,5 +87,13 @@ is( $schema->resultset('ERMSubjectsMain')->count, 3, 'clone created single addit
 
 is( $schema->resultset('ERMUses')->count, 1, 'clone created single additional subject link');
 is( $erm3->uses->count, 0, 'cloned single name record' );
+
+# Test some advanced searches
+
+my $fs_rs = $schema->resultset('ERMMain')->facet_search( $site->id, { name => 'n' });
+is( $fs_rs->count, 1, 'facet_search: returned correct number from facet_search.' );
+my $fs_erm1 = $fs_rs->first;
+is( $fs_erm1->result_name, 'New Clone Name', 'facet_search: correct name from result_name' );
+is( $fs_erm1->name, 'New Clone Name', 'facet_search: correct name from name' );
 
 1;
