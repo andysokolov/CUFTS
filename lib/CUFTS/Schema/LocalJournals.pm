@@ -17,7 +17,7 @@ __PACKAGE__->add_columns(
     },
     title => {
       data_type => 'varchar',
-      is_nullable => 0,
+      is_nullable => 1,
       size => 1024,
     },
     issn => {
@@ -176,8 +176,8 @@ __PACKAGE__->add_columns(
         is_nullable => 1,
     },
     active => {
-        data_type => 'boolean',
-        default => 'false',
+        data_type     => 'boolean',
+        default_value => 'false',
     },
 );
 
@@ -205,12 +205,22 @@ sub iss_ft_end_merged      { $_[0]->_field_merged('iss_ft_end') }
 sub embargo_days_merged    { $_[0]->_field_merged('embargo_days') }
 sub embargo_months_merged  { $_[0]->_field_merged('embargo_months') }
 
+
+
 sub _field_merged {
     my ( $self, $field ) = @_;
 
-    return   defined($self->journal_auth)   ? $self->$field()
+    return   defined($self->$field)         ? $self->$field()
            : defined($self->global_journal) ? $self->global_journal->$field()
                                             : undef;
+}
+
+sub journal_auth_id_merged {
+    my ( $self, $field ) = @_;
+
+    return   defined($self->get_column('journal_auth'))  ? $self->get_column('journal_auth')
+           : defined($self->global_journal)              ? $self->global_journal->get_column('journal_auth')
+                                                         : undef;
 }
 
 

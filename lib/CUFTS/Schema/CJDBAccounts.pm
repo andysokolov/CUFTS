@@ -5,7 +5,7 @@ use base qw/DBIx::Class::Core/;
 
 use Set::Object;
 
-__PACKAGE__->load_components(qw/ EncodedColumn /);
+__PACKAGE__->load_components(qw/ EncodedColumn TimeStamp /);
 
 __PACKAGE__->table('cjdb_accounts');
 __PACKAGE__->add_columns(

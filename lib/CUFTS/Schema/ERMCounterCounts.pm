@@ -52,19 +52,22 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->set_primary_key( 'id' );
 
-__PACKAGE__->belongs_to( 'counter_source' => 'CUFTS::Schema::ERMCounterSources' );
+__PACKAGE__->belongs_to( 'source' => 'CUFTS::Schema::ERMCounterSources', 'counter_source' );
+__PACKAGE__->belongs_to( 'title'  => 'CUFTS::Schema::ERMCounterTitles',  'counter_title' );
 
-# sub new {
-#     my ($self, $attrs) = @_;
-#
-#     # Set the end date if it isn't already set.
-#
-#     if ( !exists($attrs->{end_date}) && defined($attrs->{start_date}) && $attrs->{start_date} =~ /(\d{4})-(\d{2})-\d{2}/ ) {
-#         $attrs->{end_date} = "$1-$2-" . Days_in_Month($1,$2);
-#     }
-#
-#     return 1;   # ???
-# }
+sub new {
+    my ($class, $attrs) = @_;
+
+    # Set the end date if it isn't already set.
+
+    if ( !exists($attrs->{end_date}) && defined($attrs->{start_date}) && $attrs->{start_date} =~ /(\d{4})-(\d{2})-\d{2}/ ) {
+        $attrs->{end_date} = "$1-$2-" . Days_in_Month($1,$2);
+    }
+
+    my $new = $class->next::method($attrs);
+
+    return $new;
+}
 
 
 1;

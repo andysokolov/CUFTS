@@ -19,11 +19,12 @@ __PACKAGE__->add_columns(
     title => {
         data_type => 'varchar',
         is_nullable => 0,
-        size => 8,
+        size => 1024,
     },
     title_count => {
         data_type => 'integer',
         is_nullable => 0,
+        default_value => 0,
     },
 
 );

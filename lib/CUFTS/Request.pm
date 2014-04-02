@@ -1,80 +1,234 @@
-## CUFTS::Request
-##
-## Copyright Todd Holbrook - Simon Fraser University (2003)
-##
-## This file is part of CUFTS.
-##
-## CUFTS is free software; you can redistribute it and/or modify it under
-## the terms of the GNU General Public License as published by the Free
-## Software Foundation; either version 2 of the License, or (at your option)
-## any later version.
-##
-## CUFTS is distributed in the hope that it will be useful, but WITHOUT ANY
-## WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-## FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-## details.
-##
-## You should have received a copy of the GNU General Public License along
-## with CUFTS; if not, write to the Free Software Foundation, Inc., 59
-## Temple Place, Suite 330, Boston, MA 02111-1307 USA
-
 package CUFTS::Request;
 
 use strict;
+
 use URI::OpenURL;
 use URI::Escape;
 use CUFTS::Exceptions;
 
-use CUFTS::Util::Simple;
+use String::Util qw( trim hascontent );
 
-use base qw(Class::Accessor);
+use Moose;
+use Moose::Util::TypeConstraints;
 
-# Accessors for OpenURL fields
+# use Data::Dumper;
 
-__PACKAGE__->mk_accessors( qw(
-        id
-        sid
+subtype 'CUFTS::Types::ISSN'
+    => as 'Str'
+    => where { $_ =~ /^\d{7}[\dX]$/ };
 
-        genre
+subtype 'CUFTS::Types::ArrayOfISSNs'
+    => where { scalar( grep { $_ =~ /^\d{7}[\dX]$/ } @$_ ) == scalar @$_; }
+    => as 'ArrayRef';
 
-        aulast
-        aufirst
-        auinit
-        auinit1
-        auinitm
+coerce 'CUFTS::Types::ISSN'
+    => from 'Str'
+        => via { _clean_issn($_) };
 
-        issn
-        eissn
-        coden
-        isbn
-        sici
-        bici
-        title
-        stitle
-        atitle
-        jtitle
+coerce 'CUFTS::Types::ArrayOfISSNs'
+    => from 'ArrayRef'
+        => via { [ map { _clean_issn($_) } @$_ ] };
 
-        volume
-        part
-        issue
-        spage
-        epage
-        pages
-        artnum
-        date
-        ssn
-        quarter
+sub _clean_issn {
+    my $issn = uc($_);
+    $issn =~ s/[^\dX]//g;
+    return $issn;
+}
 
-        doi
-        oai
-        pmid
-        bibcode
+has 'id' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
 
-        pid
-        
-        other_issns
-        journal_auths
-));
+has 'sid' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'genre' => (
+	isa        => 'Str',
+	is         => 'rw',
+    default    => 'article',
+);
+
+has 'aulast' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'aufirst' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'auinit' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'auinit1' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'auinitm' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'au' => (
+    isa        => 'Str',
+    is         => 'rw',
+);
+
+has 'issn' => (
+	isa        => 'CUFTS::Types::ISSN',
+	is         => 'rw',
+    coerce     => 1,
+);
+
+has 'eissn' => (
+	isa        => 'CUFTS::Types::ISSN',
+	is         => 'rw',
+    coerce     => 1,
+);
+
+has 'coden' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'isbn' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'sici' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'bici' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'title' => (
+	isa        => 'Str',
+	is         => 'rw',
+    default    => sub { my $self = shift; return hascontent($self->jtitle) ? $self->jtitle : undef; },
+    lazy       => 1,
+);
+
+has 'stitle' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'atitle' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'jtitle' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'volume' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'part' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'issue' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'spage' => (
+	isa        => 'Maybe[Str]',
+	is         => 'rw',
+    default    => sub { my $self = shift; return ( hascontent( $self->pages ) && $self->pages =~ /^(\d+)/ ) ? $1 : undef },
+    lazy       => 1,
+);
+
+has 'epage' => (
+	isa        => 'Maybe[Str]',
+	is         => 'rw',
+    default    => sub { my $self = shift; return ( hascontent( $self->pages ) && $self->pages =~ /(\d+)$/ ) ? $1 : undef },
+    lazy       => 1,
+);
+
+has 'pages' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'artnum' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'date' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'ssn' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'quarter' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'doi' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'oai' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'pmid' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'bibcode' => (
+	isa        => 'Str',
+	is         => 'rw',
+);
+
+has 'pub' => (
+    isa        => 'Str',
+    is         => 'rw',
+);
+
+has 'pid' => (
+	isa        => 'Any',  # May be a HashRef
+	is         => 'rw',
+);
+
+has 'other_issns' => (
+	isa        => 'CUFTS::Types::ArrayOfISSNs',
+	is         => 'rw',
+    coerce     => 1,
+);
+
+has 'journal_auths' => (
+	isa        => 'ArrayRef',
+	is         => 'rw',
+);
 
 sub year {
     my ( $self, $value ) = @_;
@@ -82,7 +236,7 @@ sub year {
         CUFTS::Exception::App->throw('Cannot set year in Request object - year is derived from date.');
     }
 
-    return undef if !defined( $self->date );
+    return undef if !hascontent( $self->date );
 
     if ( $self->date =~ /^(\d{4})/ ) {
         return $1;
@@ -97,7 +251,7 @@ sub month {
         CUFTS::Exception::App->throw('Cannot set month in Request object - month is derived from date.');
     }
 
-    return undef if !defined( $self->date );
+    return undef if !hascontent( $self->date );
 
     if ( $self->date =~ /^\d{4}-(\d{2})/ ) {
         return $1;
@@ -115,7 +269,7 @@ sub day {
         CUFTS::Exception::App->throw('Cannot set day in Request object - day is derived from date.');
     }
 
-    return undef if !defined( $self->date );
+    return undef if !hascontent( $self->date );
 
     if ( $self->date =~ /^\d{4}-\d{2}-(\d{2})/ ) {
         return $1;
@@ -144,25 +298,30 @@ sub parse_openurl_0 {
 
     my $request = $class->new();
     foreach my $field ( keys %$fields ) {
-        $fields->{$field} =~ s/\n/ /g;
+        my $value = $fields->{$field};
+        $value =~ s/\n/ /g;
+        $value = trim($value);
+        next if !hascontent($value);
 
         if ($field eq 'id') {
             # Move id fields into seperate fields
-            
-            my ($subfield, $value) = split ':', $fields->{$field};
-            if ( grep {$_ eq $subfield} qw(doi oai pmid bibcode ) ) {
+
+            my ($subfield, $value) = split ':', $value;
+            if ( grep {$_ eq $subfield} qw( doi oai pmid bibcode ) ) {
                 $request->$subfield($value);
             }
-            
-        } else {
-            $request->can($field)
-                or warn("Unrecognized OpenURL parameter: $field");
-            $request->$field( $fields->{$field} );
+
+        }
+        else {
+            if ( $request->can($field) ) {
+                $request->$field($value);
+            }
+            else {
+                warn("Unrecognized OpenURL parameter: $field");
+            }
         }
 
     }
-
-    
 
     ##
     ## Deal with "pid" fields
@@ -180,8 +339,6 @@ sub parse_openurl_0 {
         }
         $request->pid( \%pid_hash );
     }
-
-    $request->_cleanup();
 
     return $request;
 }
@@ -213,11 +370,17 @@ sub parse_openurl_1 {
     my %md      = $openurl->referent->metadata();
     my $request = $class->new();
     foreach my $field ( keys %md ) {
-        $md{$field} =~ s/\n/ /g;
+        my $value = $md{$field};
+        $value =~ s/\n/ /g;
+        $value = trim($value);
+        next if !hascontent($value);
 
-        $request->can($field)
-            or warn("Unrecognized OpenURL parameter: $field");
-        $request->$field( $md{$field} );
+        if ( $request->can($field) ) {
+            $request->$field($value);
+        }
+        else {
+            warn("Unrecognized OpenURL parameter: $field");
+        }
     }
 
     # Grab "id" fields if we support them (oai,doi)
@@ -230,8 +393,6 @@ sub parse_openurl_1 {
         }
     }
 
-    $request->_cleanup();
-
     return $request;
 }
 
@@ -239,43 +400,13 @@ sub _cleanup {
     my ($self) = @_;
 
     # Remove dashes from ISSN/ISBNs, uppercase [xX]
-    foreach my $method ( 'issn', 'eissn', 'isbn' ) {
+    foreach my $method ( 'isbn' ) {
         my $value = $self->$method;
         if ( defined($value) ) {
             $value = uc($value);
-            $value =~ s/[^\dxX]//g;
+            $value =~ s/[^\dX]//g;
             $self->$method($value);
         }
-    }
-
-    # Fill in start page if it is not set and there is pages data
-    if (     is_empty_string( $self->spage )
-         && not_empty_string( $self->pages )
-         && $self->pages =~ /^(\d+)/ ) {
-
-        $self->spage($1);
-    }
-
-
-    # Fill in end page if it is not set and there is pages data
-    if (     is_empty_string( $self->epage )
-         && not_empty_string( $self->pages )
-         && $self->pages =~ /(\d+)$/ ) {
-
-        $self->epage($1);
-    }
-
-    # promote j-title to the title field since most searching/display is keyed off of that.
-    if (     is_empty_string( $self->title ) 
-         && not_empty_string( $self->jtitle ) ) {
-
-        $self->title( $self->jtitle );
-    }
-
-    # Default to article genre
-
-    if ( is_empty_string( $self->genre ) ) {
-        $self->genre('article');
     }
 
     return $self;
@@ -283,19 +414,21 @@ sub _cleanup {
 
 sub issns {
     my ( $self ) = @_;
-    
+
     my @issns;
-    if ( not_empty_string( $self->issn ) ) {
-        push @issns, $self->issn;
-    };
-    if ( not_empty_string( $self->eissn ) ) {
-        push @issns, $self->eissn;
-    };
+
+    push(@issns, $self->issn)  if hascontent($self->issn);
+    push(@issns, $self->eissn) if hascontent($self->eissn);
+
     if ( ref($self->other_issns) eq 'ARRAY' && scalar( @{$self->other_issns} ) ) {
         push @issns, @{$self->other_issns};
     }
-    
+
     return @issns;
 }
+
+no Moose::Util::TypeConstraints;
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;

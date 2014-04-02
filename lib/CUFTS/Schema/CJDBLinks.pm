@@ -35,6 +35,7 @@ __PACKAGE__->add_columns(
     rank => {
         data_type => 'integer',
         is_nullable => 0,
+        default_value => 0,
     },
     print_coverage => {
         data_type => 'varchar',

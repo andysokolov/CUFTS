@@ -6,18 +6,62 @@ use base 'DBIx::Class::ResultSet';
 sub search_by_issns {
     my ($self, @issns) = @_;
 
-    return 0 if scalar @issns;
+    my @final = grep { /^\d{7}[\dX]$/ } map { my $a = uc($_); $a =~ tr/0-9X//cd; $a } @issns;
 
-    my @final = grep { /^\d{7}[\dX]$/ } map { uc($_); $_ =~ tr/0-9X//cd; $_ } @issns;
-
-    return $self->resultset('JournalsAuth')->search(
+    return $self->search(
         {
-            issn => { '-in' => \@final },
+            'issns.issn' => { '-in' => \@final },
         },
         {
-            join => [ 'journals_auth_issns' ],
+            distinct => 1,
+            join => [ 'issns' ],
         }
     );
 }
+
+sub search_by_title {
+    my ($self, $title) = @_;
+
+    return $self->search(
+        {
+            'titles.title'  => { 'ilike' => $title },
+        },
+        {
+            distinct => 1,
+            join => [ 'titles' ],
+        }
+    );
+}
+
+sub search_by_exact_title_with_no_issns {
+    my ($self, $title) = @_;
+
+    return $self->search(
+        {
+            title         => { 'ilike' => $title },
+            'issns.issn'  => undef,
+        },
+        {
+            join => [ 'issns' ],
+        }
+    );
+}
+
+
+sub search_by_title_with_no_issns {
+    my ($self, $title) = @_;
+
+    return $self->search(
+        {
+            'titles.title'  => { 'ilike' => $title },
+            'issns.issn'    => undef,
+        },
+        {
+            distinct => 1,
+            join => [ 'issns', 'titles' ],
+        }
+    );
+}
+
 
 1;

@@ -1,771 +1,774 @@
 package CUFTS::Schema::ERMMain;
 
 use CUFTS::Resources;    # For prepend_proxy()
-use CUFTS::Util::Simple;
+use String::Util qw(trim hascontent);
 use MARC::Record;
 
+use Moose;
+
 use strict;
-use base qw/DBIx::Class::Core/;
+extends 'DBIx::Class::Core';
 
 __PACKAGE__->load_components(qw//);
 
 __PACKAGE__->table('erm_main');
 __PACKAGE__->add_columns(
-    'id' => {
+    id => {
         data_type           => 'integer',
         is_auto_increment   => 1,
         default_value       => undef,
         is_nullable         => 0,
         size                => 8,
     },
-    'key' => {
+    key => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'site' => {
+    site => {
         data_type     => 'integer',
         default_value => undef,
         is_nullable   => 0,
         size          => 10,
     },
-    'license' => {
+    license => {
         data_type     => 'integer',
         default_value => undef,
         is_nullable   => 1,
         size          => 10,
     },
-    'provider' => {
+    provider => {
         data_type     => 'integer',
         default_value => undef,
         is_nullable   => 1,
         size          => 10,
     },
-    'vendor' => {
+    vendor => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'internal_name' => {
+    internal_name => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'publisher' => {
+    publisher => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'url' => {
+    url => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'access' => {
+    access => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'resource_type' => {
+    resource_type => {
         data_type     => 'integer',
         default_value => undef,
         is_nullable   => 1,
         size          => 10,
     },
-    'resource_medium' => {
+    resource_medium => {
         data_type     => 'integer',
         default_value => undef,
         is_nullable   => 1,
         size          => 10,
     },
-    'file_type' => {
+    file_type => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => '255',
     },
-    'description_brief' => {
+    description_brief => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000,
     },
-    'description_full' => {
+    description_full => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000,
     },
-    'update_frequency' => {
+    update_frequency => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'coverage' => {
+    coverage => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'embargo_period' => {
+    embargo_period => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'simultaneous_users' => {
+    simultaneous_users => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'public_list' => {
+    public_list => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0,
     },
-    'public' => {
+    public => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0
     },
-    'public_message' => {
+    public_message => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'proxy' => {
+    proxy => {
         data_type   => 'boolean',
         is_nullable => 1,
     },
-    'group_records' => {
+    group_records => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'active_alert' => {
+    active_alert => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'print_equivalents' => {
+    print_equivalents => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'pick_and_choose' => {
+    pick_and_choose => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0
     },
-    'marc_available' => {
+    marc_available => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0
     },
-    'marc_history' => {
+    marc_history => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'marc_alert' => {
+    marc_alert => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'marc_notes' => {
+    marc_notes => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'marc_schedule' => {
+    marc_schedule => {
         data_type     => 'date',
         default_value => undef,
         is_nullable   => 1,
     },
-    'marc_schedule_interval' => {
+    marc_schedule_interval => {
         data_type     => 'integer',
         default_value => 0,
         is_nullable   => 1,
     },
-    'requirements' => {
+    requirements => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'maintenance' => {
+    maintenance => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'issn' => {
+    issn => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'isbn' => {
+    isbn => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'title_list_url' => {
+    title_list_url => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'help_url' => {
+    help_url => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'status_url' => {
+    status_url => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'resolver_enabled' => {
+    resolver_enabled => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0,
     },
-    'refworks_compatible' => {
+    refworks_compatible => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0,
     },
-    'refworks_info_url' => {
+    refworks_info_url => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'user_documentation' => {
+    user_documentation => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000,
     },
-    'subscription_type' => {
+    subscription_type => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'subscription_status' => {
+    subscription_status => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'print_included' => {
+    print_included => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0,
     },
-    'subscription_notes' => {
+    subscription_notes => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'subscription_ownership' => {
+    subscription_ownership => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'subscription_ownership_notes' => {
+    subscription_ownership_notes => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'misc_notes' => {
+    misc_notes => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'cost' => {
+    cost => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'invoice_amount' => {
+    invoice_amount => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'currency' => {
+    currency => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => '3',
     },
-    'pricing_model' => {
+    pricing_model => {
         data_type     => 'integer',
         default_value => undef,
         is_nullable   => 1,
         size          => 10,
     },
-    'pricing_model_notes' => {
+    pricing_model_notes => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000,
     },
-    'gst' => {
+    gst => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0
     },
-    'pst' => {
+    pst => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0
     },
-    'pst_amount' => {
+    pst_amount => {
         data_type     => 'varchar',
         size          => 1024,
         default_value => undef,
         is_nullable   => 1,
     },
-    'gst_amount' => {
+    gst_amount => {
         data_type     => 'varchar',
         size          => 1024,
         default_value => undef,
         is_nullable   => 1,
     },
-    'payment_status' => {
+    payment_status => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'contract_start' => {
+    contract_start => {
         data_type     => 'date',
         default_value => undef,
         is_nullable   => 1,
         size          => 0
     },
-    'contract_end' => {
+    contract_end => {
         data_type          => 'date',
         default_value      => undef,
         is_nullable        => 1,
         size               => 0,
     },
-    'order_date' => {
+    order_date => {
         data_type          => 'date',
         default_value      => undef,
         is_nullable        => 1,
         size               => 0,
     },
-    'original_term' => {
+    original_term => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'auto_renew' => {
+    auto_renew => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0
     },
-    'renewal_notification' => {
+    renewal_notification => {
         data_type     => 'integer',
         default_value => undef,
         is_nullable   => 1,
         size          => 10
     },
-    'notification_email' => {
+    notification_email => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'notice_to_cancel' => {
+    notice_to_cancel => {
         data_type     => 'integer',
         default_value => undef,
         is_nullable   => 1,
         size          => 10
     },
-    'requires_review' => {
+    requires_review => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0
     },
-    'review_by' => {
+    review_by => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'review_notes' => {
+    review_notes => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'local_bib' => {
+    local_bib => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'local_customer' => {
+    local_customer => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'local_vendor' => {
+    local_vendor => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'local_vendor_code' => {
+    local_vendor_code => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'local_acquisitions' => {
+    local_acquisitions => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'local_fund' => {
+    local_fund => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'journal_auth' => {
+    journal_auth => {
         data_type     => 'integer',
         default_value => undef,
         is_nullable   => 1,
         size          => 10,
     },
-    'consortia' => {
+    consortia => {
         data_type     => 'integer',
         default_value => undef,
         is_nullable   => 1,
         size          => 10,
     },
-    'consortia_notes' => {
+    consortia_notes => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'date_cost_notes' => {
+    date_cost_notes => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'subscription' => {
+    subscription => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'price_cap' => {
+    price_cap => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'license_start_date' => {
+    license_start_date => {
         data_type     => 'date',
         default_value => undef,
         is_nullable   => 1,
         size          => 0
     },
-    'stats_available' => {
+    stats_available => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0
     },
-    'stats_url' => {
+    stats_url => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'stats_frequency' => {
+    stats_frequency => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'stats_delivery' => {
+    stats_delivery => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'stats_counter' => {
+    stats_counter => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0
     },
-    'stats_user' => {
+    stats_user => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'stats_password' => {
+    stats_password => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'stats_notes' => {
+    stats_notes => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'counter_stats' => {
+    counter_stats => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0
     },
-    'open_access' => {
+    open_access => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024,
     },
-    'admin_subscription_no' => {
+    admin_subscription_no => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'admin_user' => {
+    admin_user => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'admin_password' => {
+    admin_password => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'admin_url' => {
+    admin_url => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'support_url' => {
+    support_url => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'access_url' => {
+    access_url => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'public_account_needed' => {
+    public_account_needed => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0
     },
-    'public_user' => {
+    public_user => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'public_password' => {
+    public_password => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'training_user' => {
+    training_user => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'training_password' => {
+    training_password => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'marc_url' => {
+    marc_url => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'ip_authentication' => {
+    ip_authentication => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0
     },
-    'referrer_authentication' => {
+    referrer_authentication => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0
     },
-    'referrer_url' => {
+    referrer_url => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'openurl_compliant' => {
+    openurl_compliant => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0
     },
-    'access_notes' => {
+    access_notes => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'breaches' => {
+    breaches => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'admin_notes' => {
+    admin_notes => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'alert' => {
+    alert => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'alert_expiry' => {
+    alert_expiry => {
         data_type          => 'date',
         default_value      => undef,
         is_nullable        => 1,
         size               => 0,
     },
 
-    'provider_name' => {
+    provider_name => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'local_provider_name' => {
+    local_provider_name => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'provider_contact' => {
+    provider_contact => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'provider_notes' => {
+    provider_notes => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
-    'support_email' => {
+    support_email => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'support_phone' => {
+    support_phone => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'knowledgebase' => {
+    knowledgebase => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'customer_number' => {
+    customer_number => {
         data_type     => 'varchar',
         default_value => undef,
         is_nullable   => 1,
         size          => 1024
     },
-    'cancellation_cap' => {
+    cancellation_cap => {
         data_type     => 'boolean',
         default_value => undef,
         is_nullable   => 1,
         size          => 0
     },
-    'cancellation_cap_notes' => {
+    cancellation_cap_notes => {
         data_type     => 'text',
         default_value => undef,
         is_nullable   => 1,
         size          => 64000
     },
 );
+
 __PACKAGE__->mk_group_accessors( column => qw/ result_name sort_name rank / );
 
 __PACKAGE__->set_primary_key('id');
@@ -774,20 +777,13 @@ __PACKAGE__->set_primary_key('id');
 
 __PACKAGE__->resultset_class('CUFTS::ResultSet::ERMMain');
 
-__PACKAGE__->belongs_to(
-    'license' => 'CUFTS::Schema::ERMLicense',
-    undef, { join_type => 'left outer' }
-);
+__PACKAGE__->belongs_to( 'license' => 'CUFTS::Schema::ERMLicense', undef, { join_type => 'left' } );
 
-__PACKAGE__->has_many( 'names' => 'CUFTS::Schema::ERMNames', 'erm_main' );
-__PACKAGE__->has_many( 'keywords' => 'CUFTS::Schema::ERMKeywords', 'erm_main' );
-__PACKAGE__->has_many( 'uses' => 'CUFTS::Schema::ERMUses', 'erm_main' );
-
-__PACKAGE__->has_many(
-    'subjects_main' => 'CUFTS::Schema::ERMSubjectsMain',
-    'erm_main'
-);
-__PACKAGE__->has_many( content_types_main => 'CUFTS::Schema::ERMContentTypesMain', 'erm_main' );
+__PACKAGE__->has_many( names                => 'CUFTS::Schema::ERMNames',               'erm_main', { cascade_copy => 1 } );
+__PACKAGE__->has_many( keywords             => 'CUFTS::Schema::ERMKeywords',            'erm_main', { cascade_copy => 1 } );
+__PACKAGE__->has_many( uses                 => 'CUFTS::Schema::ERMUses',                'erm_main', { cascade_copy => 0 } );
+__PACKAGE__->has_many( subjects_main        => 'CUFTS::Schema::ERMSubjectsMain',        'erm_main', { cascade_copy => 1 } );
+__PACKAGE__->has_many( content_types_main   => 'CUFTS::Schema::ERMContentTypesMain',    'erm_main', { cascade_copy => 1 } );
 
 __PACKAGE__->many_to_many( content_types => 'content_types_main', 'content_type' );
 __PACKAGE__->many_to_many( subjects      => 'subjects_main',      'subject' );
@@ -797,6 +793,7 @@ __PACKAGE__->belongs_to( pricing_model   => 'CUFTS::Schema::ERMPricingModels' );
 __PACKAGE__->belongs_to( resource_medium => 'CUFTS::Schema::ERMResourceMediums' );
 __PACKAGE__->belongs_to( resource_type   => 'CUFTS::Schema::ERMResourceTypes' );
 __PACKAGE__->belongs_to( provider        => 'CUFTS::Schema::ERMProviders' );
+__PACKAGE__->belongs_to( site            => 'CUFTS::Schema::Sites' );
 
 
 sub alternate_names {
@@ -855,7 +852,7 @@ sub to_hash {
         elsif ( $field eq 'provider' ) {
             $hash->{provider} = defined($self->provider) ? $self->provider->provider : undef;
         }
-        elsif ( $field eq 'group_records' && not_empty_string($self->group_records) ) {
+        elsif ( $field eq 'group_records' && hascontent($self->group_records) ) {
             my $group_records = $self->get_group_records;
             if ( ref($group_records) eq 'ARRAY' && scalar(@$group_records) ) {
                 $hash->{group_records} = [];
@@ -887,7 +884,7 @@ sub to_hash {
 sub main_name {
     my ( $self, $new_name ) = @_;
 
-    my $name_record = $self->names( { main => 1 } )->first;
+    my $name_record = $self->names->find({ main => 1 });
 
     if ( defined($new_name) ) {
 
@@ -898,10 +895,8 @@ sub main_name {
             }
         }
         else {
-            my $schema = $self->result_source->schema;
-            $name_record = $schema->resultset('ERMNames')->create(
+            $name_record = $self->add_to_names(
                 {   name     => $new_name,
-                    erm_main => $self->id,
                     main     => 1,
                 }
             );
@@ -914,40 +909,41 @@ sub main_name {
 sub name {
     my ($self) = @_;
 
-    if ( defined( $self->result_name ) ) {
-        return $self->result_name;
-    }
-
-    return $self->main_name;
+    my $name;
+    eval { $name = $self->result_name };
+    return defined($name) ? $name : $self->main_name;
 }
 
 sub proxied_url {
     my ( $self, $site ) = @_;
 
-    return undef if is_empty_string( $self->url );
+    return undef if !hascontent( $self->url );
+    return $self->url if $self->proxy ne 't';
 
-    if ( !$self->proxy ) {
-        return $self->url;
-    }
+    $site = $self->site if !defined $site;
 
-    if ( not_empty_string( $site->proxy_prefix ) ) {
+    if ( hascontent( $site->proxy_prefix ) ) {
         return $site->proxy_prefix . $self->url;
     }
-    elsif ( not_empty_string( $site->proxy_WAM ) ) {
+    elsif ( hascontent( $site->proxy_wam ) ) {
         my $url = $self->url;
-        my $wam = $site->proxy_WAM;
+        my $wam = $site->proxy_wam;
         $url =~ s{ http:// ([^/]+) /? }{http://0-$1.$wam/}xsm;
         return $url;
+    }
+    else {
+        return $self->url;
     }
 }
 
 sub get_group_records {
     my $self = shift;
-    return [] if is_empty_string( $self->group_records );
+    return [] if !hascontent( $self->group_records );
 
     my @record_ids = split( /[,\s]+/, $self->group_records );
     my $recordset = $self->result_source->resultset->search(
-        {   site => $self->site,
+        {
+            site => $self->site,
             id   => { '-in' => \@record_ids }
         }
     );
@@ -1053,7 +1049,7 @@ sub as_marc {
                         $value = $value->$method();
                     }
 
-                    if ( is_empty_string($value) ) {
+                    if ( !hascontent($value) ) {
                         $value = '';
                     }
                     else {
@@ -1069,12 +1065,12 @@ sub as_marc {
                     push @contents, "${label}${prepend}${value}${append}";
 
                 }
-                if ( $keep_contents && scalar(@contents) ) {
+                if ( $keep_contents && scalar @contents ) {
                     push @subfields, (defined($subfield_num) ? $subfield_num : () ), join($default_subfield_join, @contents);
                 }
             }
 
-            if ( scalar(@subfields) ) {
+            if ( scalar @subfields ) {
                 my @indicators = defined( $extra_conf->{indicators} ) ?  @{$extra_conf->{indicators}} : ( '', '' );
                 $MARC->append_fields( MARC::Field->new( $field_num, @indicators, @subfields ) );
             }
@@ -1086,17 +1082,18 @@ sub as_marc {
     return $MARC;
 }
 
+sub clone {
+    my $self = shift;
+    my $schema = $self->result_source->schema;
 
+    my $clone;
+    $schema->txn_do( sub {
+        $clone = $self->copy({ key => 'Clone of ' . $self->key });
+        $clone->main_name('Clone of ' . $self->main_name);
+    });
 
-# sub clone {
-#     my $self   = shift;
-#     my $schema = $self->result_source->schema;
-
-#     $schema->txn_do( sub {
-#         my $clone = $self->result_source->resultset->new_result( $self );
-#     });
-# }
+    return $clone;
+}
 
 
 1;
-

@@ -1,6 +1,10 @@
 package CUFTS::Schema::JournalsAuth;
 
+use MARC::Record;
+use MARC::File::USMARC;
+
 use strict;
+
 use base qw/DBIx::Class::Core/;
 
 __PACKAGE__->load_components(qw/ TimeStamp /);
@@ -48,7 +52,7 @@ __PACKAGE__->set_primary_key('id');
 
 __PACKAGE__->resultset_class('CUFTS::ResultSet::JournalsAuth');
 
-__PACKAGE__->has_many( issns   => 'CUFTS::Schema::JournalsAuthISSNs',  'journal_auth' );
+__PACKAGE__->has_many( issns   => 'CUFTS::Schema::JournalsAuthISSNs',  'journal_auth', { join_type => 'left' } );
 __PACKAGE__->has_many( titles  => 'CUFTS::Schema::JournalsAuthTitles', 'journal_auth' );
 
 __PACKAGE__->has_many( global_journals  => 'CUFTS::Schema::GlobalJournals', 'journal_auth' );
@@ -66,8 +70,16 @@ sub issns_display {
 
     my @issns = map { substr($_->issn,0,4) . '-' . substr($_->issn,4,4) } $self->issns;
 
-    return \@issns;
+    return @issns;
 }
 
+sub marc_object {
+    my ($self) = @_;
+
+    return undef if !defined $self->marc;
+
+    my $obj = MARC::File::USMARC->decode($self->marc);
+    return $obj;
+}
 
 1;

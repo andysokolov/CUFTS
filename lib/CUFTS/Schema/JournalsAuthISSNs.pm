@@ -29,12 +29,23 @@ __PACKAGE__->add_columns(
 
 );
 
-
 __PACKAGE__->set_primary_key('id');
+
+sub store_column {
+    my ( $self, $name, $value ) = @_;
+
+    if ($name eq 'issn') {
+      $value = uc($value);
+      $value =~ tr/0-9X//cd;
+    }
+
+    $self->next::method($name, $value);
+}
+
 
 # Check the ResultSet for more predefined complex searches
 
-# __PACKAGE__->resultset_class('CUFTS::ResultSet::JournalsAuthISSNs');
+__PACKAGE__->resultset_class('CUFTS::ResultSet::JournalsAuthISSNs');
 
 __PACKAGE__->belongs_to( journal_auth => 'CUFTS::Schema::JournalsAuth', 'journal_auth' );
 

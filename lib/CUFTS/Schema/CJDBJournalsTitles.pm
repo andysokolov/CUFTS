@@ -25,9 +25,10 @@ __PACKAGE__->add_columns(
         is_nullable => 0,
     },
     main => {
-        data_type => 'boolean',
+        data_type => 'integer',
         is_nullable => 0,
-        default => 0,
+        size => 1,
+        default_value => 0,
     },
 );
 

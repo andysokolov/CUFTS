@@ -8,11 +8,24 @@ use CUFTS::Util::Simple;
 __PACKAGE__->load_components(qw//);
 
 __PACKAGE__->table('erm_keywords');
-__PACKAGE__->add_columns( qw(
-    id
-    erm_main
-    keyword
-));
+__PACKAGE__->add_columns(
+    id => {
+        data_type           => 'integer',
+        is_auto_increment   => 1,
+        is_nullable         => 0,
+        size                => 8,
+    },
+    erm_main => {
+        data_type           => 'integer',
+        is_nullable         => 0,
+        size                => 8,
+    },
+    keyword => {
+        data_type           => 'varchar',
+        is_nullable         => 0,
+        size                => 1024,
+    },
+);
 
 __PACKAGE__->set_primary_key( 'id' );
 

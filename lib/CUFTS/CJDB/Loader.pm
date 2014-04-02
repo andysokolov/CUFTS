@@ -1,31 +1,31 @@
 package CUFTS::CJDB::Loader;
 
-use base ('Class::Accessor');
-CUFTS::CJDB::Loader->mk_accessors('site_id');
-
-use CUFTS::DB::Resources;
-use CUFTS::DB::JournalsAuth;
-use CJDB::DB::Journals;
-use CJDB::DB::LCCSubjects;
-
 use CUFTS::CJDB::Util;
 use CUFTS::Util::Simple;
 
 use List::MoreUtils qw(uniq);
+use String::Util qw(hascontent trim);
 
 use Data::Dumper;
 use strict;
 
-my $__CJDB_LOADER_DEBUG = 0;
+use Moose;
 
-sub new {
-    my ( $class ) = @_;
-    return bless {}, $class;
-}
+has 'site_id' => (
+    is => 'rw',
+    isa => 'Int',
+);
+
+has 'schema' => (
+    is => 'rw',
+    isa => 'Object',
+);
+
+
+my $__CJDB_LOADER_DEBUG = 0;
 
 sub skip_record {
     my ( $self, $record ) = @_;
-
     return 0;
 }
 
@@ -91,35 +91,34 @@ sub load_journal {
     # Consider modifying simple titles like "Journal" and "Review" by adding
     # an association.  This might need to be a site option later on.
 
-    $self->fix_bad_titles( $record, \$title, \$sort_title, \$stripped_sort_title ); 
+    $self->fix_bad_titles( $record, \$title, \$sort_title, \$stripped_sort_title );
 
     # Find or create a journals_auth record to associate with
 
-    
+
     my $journals_auth_id;
 
-    if ( ref($journals_auth) ) {
+    if ( ref $journals_auth ) {
         # Already have a passed in journals_auth object
         $journals_auth_id = $journals_auth->id;
     }
-    elsif ( defined($journals_auth) ) {
+    elsif ( defined $journals_auth ) {
         # Passed in journals_auth_id, get it from the database
         $journals_auth_id = $journals_auth;
-        $journals_auth = CUFTS::DB::JournalsAuth->retrieve( $journals_auth_id );
+        $journals_auth = $self->schema->resultset('JournalsAuth')->find({ id => $journals_auth_id });
     }
     else {
         # Try to find a journals_auth record based on ISSNs and title
         $journals_auth_id = $self->get_journals_auth( \@issns, $title, $record )
             or return undef;
-        $journals_auth = CUFTS::DB::JournalsAuth->retrieve( $journals_auth_id );
+        $journals_auth = $self->schema->resultset('JournalsAuth')->find({ id => $journals_auth_id });
     }
 
     $__CJDB_LOADER_DEBUG and print "ja found\n";
 
     if ( $self->merge_by_issns ) {
-        my @journals = CJDB::DB::Journals->search( journals_auth => $journals_auth_id, site => $site_id );
-
-        return $journals[0] if scalar(@journals);
+        my @journals = $self->schema->resultset('CJDBJournals')->search({ journals_auth => $journals_auth_id, site => $site_id })->all;
+        return $journals[0] if scalar @journals;
     }
 
     # Add on the first call number if we have it
@@ -141,14 +140,12 @@ sub load_journal {
         $new_journal_record->{rss} = $journals_auth->rss;
     }
 
-    my $journal = CJDB::DB::Journals->create( $new_journal_record );
+    my $journal = $self->schema->resultset('CJDBJournals')->create( $new_journal_record );
 
-    CJDB::Exception::App->throw('Unable to create new journal record.') 
-        if !defined($journal);
+    CJDB::Exception::App->throw('Unable to create new journal record.') if !defined $journal;
 
     foreach my $issn ( uniq(@issns) ) {
-        CJDB::DB::ISSNs->find_or_create({
-               journal => $journal->id,
+        $journal->add_to_issns({
                site    => $site_id,
                issn    => $issn,
         });
@@ -165,7 +162,7 @@ sub match_journals_auth {
         or die("No site id set for loader.");
 
     $no_save = 1 if !defined($no_save);
-    
+
     my $title = $self->get_title($record);
     if ( is_empty_string($title) || $title eq '0' ) {
         print "Empty title, skipping record.\n";
@@ -188,7 +185,7 @@ sub match_journals_auth {
     # Consider modifying simple titles like "Journal" and "Review" by adding
     # an association.  This might need to be a site option later on.
 
-    $self->fix_bad_titles( $record, \$title, \$sort_title, \$stripped_sort_title ); 
+    $self->fix_bad_titles( $record, \$title, \$sort_title, \$stripped_sort_title );
 
     # Find a journals_auth record to associate with
 
@@ -197,7 +194,7 @@ sub match_journals_auth {
 
 sub fix_bad_titles {
     my ( $self, $record, $title_ref, $sort_title_ref, $stripped_sort_title_ref ) = @_;
-    
+
     foreach my $bad_title (@CUFTS::CJDB::Util::generic_titles) {
         if ( $$stripped_sort_title_ref eq $bad_title ) {
             my @associations = $self->get_associations($record);
@@ -221,7 +218,7 @@ sub fix_bad_titles {
             }
         }
     }
-    
+
     return 1;
 }
 
@@ -259,24 +256,20 @@ sub load_titles {
     foreach my $title (@search_titles) {
         next if   is_empty_string($title->[0])
                || is_empty_string($title->[1]);
-               
+
         next if length($title) > 1024;
 
-        my $title_id = CJDB::DB::Titles->find_or_create(
-            {
+        my $title = $self->schema->resultset('CJDBTitles')->find_or_create({
                 title        => $title->[1],
                 search_title => $title->[0],
-            }
-        )->id;
-        
-        CJDB::DB::JournalsTitles->find_or_create(
-            {
+        })->id;
+
+        $self->schema->resultset('CJDBJournalsTitles')->find_or_create({
                 journal => $journal->id,
-                title   => $title_id,
+                title   => $title->id,
                 main    => $title->[2] ? 1 : 0,
                 site    => $site_id,
-            }
-        );
+        });
 
         $count++;
     }
@@ -294,26 +287,24 @@ sub load_MARC_subjects {
 
     my $count = 0;
     foreach my $subject (@subjects) {
-    
-        my $cjdb_subject = CJDB::DB::Subjects->find_or_create(
-            {
+
+        my $cjdb_subject = $self->schema->resultset('CJDBSubjects')->find_or_create({
                 subject        => $subject,
                 search_subject => $self->strip_title($subject),
-            }
-        );
-    
+        });
+
         my $new_subject = {
             journal  => $journal->id,
             site     => $site_id,
             subject  => $cjdb_subject->id,
         };
 
-        my @subjects = CJDB::DB::JournalsSubjects->search($new_subject);
-        next if scalar(@subjects);
+        my @subjects = $self->schema->resultset('CJDBJournalsSubjects')->search($new_subject)->all;
+        next if scalar @subjects;
 
         $new_subject->{origin} = 'MARC';
 
-        CJDB::DB::JournalsSubjects->create($new_subject);
+        $self->schema->resultset('CJDBJournalsSubjects')->create($new_subject);
 
         $count++;
     }
@@ -342,26 +333,24 @@ sub load_LCC_subjects {
 
     my $count = 0;
     foreach my $subject (@total_subjects) {
-    
-        my $cjdb_subject = CJDB::DB::Subjects->find_or_create(
-            {
+
+        my $cjdb_subject = $self->schema->resultset('CJDBSubjects')->find_or_create({
                 subject        => $subject,
                 search_subject => $self->strip_title($subject),
-            }
-        );
-    
+        });
+
         my $new_subject = {
             journal  => $journal->id,
             site     => $site_id,
             subject  => $cjdb_subject->id,
         };
 
-        my @subjects = CJDB::DB::JournalsSubjects->search($new_subject);
-        next if scalar(@subjects);
+        my @subjects = $self->schema->resultset('CJDBJournalsSubjects')->search($new_subject);
+        next if scalar @subjects;
 
         $new_subject->{origin} = 'LCC';
 
-        CJDB::DB::JournalsSubjects->create($new_subject);
+        $self->schema->resultset('CJDBJournalsSubjects')->create($new_subject);
 
         $count++;
     }
@@ -376,7 +365,7 @@ sub get_LCC_subjects {
 
     my $call_numbers = $self->get_call_numbers($record);
     foreach my $call_number (@$call_numbers) {
-    
+
         if ( defined($call_number) && $call_number =~ /([A-Z]{1,3}) \s* ([\d]+)/xsm ) {
             my ( $class, $number ) = ( $1, $2 );
             my $subject_search = {
@@ -386,11 +375,11 @@ sub get_LCC_subjects {
                 class_low   => { '<=', $class }
             };
 
-            if ( CJDB::DB::LCCSubjects->count_search( { site => $site_id } ) > 0 ) {
+            if ( $self->schema->resultset('CJDBLCCSubjects')->search({ site => $site_id })->count > 0 ) {
                 $subject_search->{site} = $site_id;
             }
 
-            push @subjects, CJDB::DB::LCCSubjects->search_where($subject_search);
+            push @subjects, $self->schema->resultset('CJDBLCCSubjects')->search($subject_search)->all;
         }
 
     }
@@ -415,22 +404,18 @@ sub load_associations {
     my $count = 0;
 
     foreach my $association (@associations) {
-    
-        my $cjdb_association = CJDB::DB::Associations->find_or_create(
-            {
+
+        my $cjdb_association = $self->schema->resultset('CJDBAssociations')->find_or_create({
                 association        => $association,
                 search_association => $self->strip_title($association),
-            }
-        );
+        });
 
-        CJDB::DB::JournalsAssociations->find_or_create(
-            {
+        $self->schema->resultset('CJDBJournalsAssociations')->find_or_create({
                 association  => $cjdb_association->id,
                 journal      => $journal->id,
                 site         => $site_id,
-            }
-        );
-        
+        });
+
         $count++;
     }
 
@@ -450,15 +435,13 @@ sub load_relations {
     foreach my $relation (@relations) {
         next if !defined( $relation->{title} );
 
-        CJDB::DB::Relations->find_or_create( 
-            {
-                journal  => $journal->id,
-                site     => $site_id,
-                relation => $relation->{relation},
-                title    => $relation->{title},
-                issn     => $relation->{issn},
-            }
-        );
+        $self->schema->resultset('CJDBRelations')->find_or_create({
+            journal  => $journal->id,
+            site     => $site_id,
+            relation => $relation->{relation},
+            title    => $relation->{title},
+            issn     => $relation->{issn},
+        });
 
         $count++;
     }
@@ -468,7 +451,7 @@ sub load_relations {
 
 sub load_extras {
     my ( $self, $record, $journal, $site_id ) = @_;
-    
+
     my $image = $self->get_image($record);
     if ( defined($image) ) {
         $journal->image($image);
@@ -490,7 +473,7 @@ sub load_extras {
     }
 
     $journal->update;
-    
+
     return 0;
 }
 
@@ -509,15 +492,14 @@ sub load_link {
     defined($coverage) && defined($link)
         or return 0;
 
-    CJDB::DB::Links->find_or_create(
-        {   journal        => $journal->id,
-            link_type      => 0,
-            url            => $link,
-            print_coverage => $coverage || 'unknown',
-            site           => $site_id,
-            rank           => $rank,
-        }
-    );
+    $self->schema->resultset('CJDBLinks')->find_or_create({
+        journal        => $journal->id,
+        link_type      => 0,
+        url            => $link,
+        print_coverage => $coverage || 'unknown',
+        site           => $site_id,
+        rank           => $rank,
+    });
 
     return 1;
 }
@@ -550,19 +532,19 @@ sub get_journals_auth {
     my ( $self, $issns, $title, $record, $no_save ) = @_;
 
     # Remove backslashes that make Pg think the next character is quoted... may need to do other chars later, too.
-    # Might as well totally strip it from the title, backslashes probably aren't relevant in titles and are 
+    # Might as well totally strip it from the title, backslashes probably aren't relevant in titles and are
     # part of weird MARC coding.
     my $title_no_bs = $title;
     $title_no_bs =~ s/\s*\\\s*//g;
 
     my @journals_auths;
 
-    if ( scalar(@$issns) ) {
-        @journals_auths = CUFTS::DB::JournalsAuth->search_by_issns(@$issns);
+    if ( scalar @$issns ) {
+        @journals_auths = $self->schema->resultset('JournalsAuth')->search_by_issns(@$issns)->all;
 
-        if ( scalar(@journals_auths) == 1 ) {
+        if ( scalar @journals_auths == 1 ) {
             return $journals_auths[0]->id;
-        } elsif ( scalar(@journals_auths) > 1 ) {
+        } elsif ( scalar @journals_auths > 1 ) {
 
             # Try title ranking
 
@@ -594,15 +576,15 @@ sub get_journals_auth {
 
         # Try for strictly title matching
 
-        @journals_auths = CUFTS::DB::JournalsAuth->search_by_exact_title_with_no_issns($title_no_bs);
-        if ( !scalar(@journals_auths) ){ 
-            @journals_auths = CUFTS::DB::JournalsAuth->search_by_title_with_no_issns($title_no_bs);
+        @journals_auths = $self->schema->resultset('JournalsAuth')->search_by_exact_title_with_no_issns($title_no_bs)->all;
+        if ( !scalar @journals_auths ){
+            @journals_auths = $self->schema->resultset('JournalsAuth')->search_by_title_with_no_issns($title_no_bs)->all;
         }
-        if ( !scalar(@journals_auths) ){ 
-            @journals_auths = CUFTS::DB::JournalsAuth->search_by_title($title_no_bs);
+        if ( !scalar @journals_auths ){
+            @journals_auths = $self->schema->resultset('JournalsAuth')->search_by_title($title_no_bs)->all;
         }
 
-        if ( scalar(@journals_auths) > 1 ) {
+        if ( scalar @journals_auths > 1 ) {
             print(
                 "Could not find unambiguous main title match for $title_no_bs ($title) -- ",
                 join( ',', @$issns ),
@@ -610,7 +592,7 @@ sub get_journals_auth {
             );
             return undef;
         }
-        elsif ( scalar(@journals_auths) == 1 ) {
+        elsif ( scalar @journals_auths == 1 ) {
             return $journals_auths[0]->id;
         }
         else {
@@ -622,17 +604,16 @@ sub get_journals_auth {
                 [   $self->strip_title( $self->get_sort_title($record) ),
                     $self->get_sort_title($record)
                 ],
-                )
-            {
+            ) {
                 my $alt_title = $title_arr->[1];
                 $alt_title =~ s/\\//g;  # Strip backslashes which break Pg searches
-                my @temp_journals_auth = CUFTS::DB::JournalsAuth->search_by_title($alt_title);
+                my @temp_journals_auth = $self->schema->resultset('JournalsAuth')->search_by_title($alt_title)->all;
                 foreach my $temp_journal (@temp_journals_auth) {
                     grep { $_->id == $temp_journal->id } @journals_auths
                         or push @journals_auths, $temp_journal;
                 }
             }
-            if ( scalar(@journals_auths) > 1 ) {
+            if ( scalar @journals_auths > 1 ) {
                 print(
                     "Could not find unambiguous alternate title match for $title -- ",
                     join( ',', @$issns ),
@@ -640,17 +621,17 @@ sub get_journals_auth {
                 );
                 return undef;
             }
-            elsif ( scalar(@journals_auths) == 1 ) {
+            elsif ( scalar @journals_auths == 1 ) {
                 return $journals_auths[0]->id;
             }
         }
     }
-    
+
     return undef if $no_save;
-    
+
     # Build basic record
 
-    my $journals_auth = CUFTS::DB::JournalsAuth->create( { title => $title_no_bs } );
+    my $journals_auth = $self->schema->resultset('JournalsAuth')->create({ title => $title_no_bs });
     $journals_auth->add_to_titles( { title => $title_no_bs, title_count => 1 } );
 
     foreach my $issn ( uniq(@$issns) ) {
@@ -663,8 +644,7 @@ sub get_journals_auth {
 sub rank_titles {
     my ( $self, $record, $print_title, $journals_auths ) = @_;
 
-    my $stripped_print_title = CUFTS::CJDB::Util::strip_title_for_matching(
-        CUFTS::CJDB::Util::strip_title($print_title) );
+    my $stripped_print_title = CUFTS::CJDB::Util::strip_title_for_matching( CUFTS::CJDB::Util::strip_title($print_title) );
     $stripped_print_title =~ tr/a-z0-9 //cd;
 
     my @alt_titles = $self->get_alt_titles($record);
@@ -689,10 +669,8 @@ sub rank_titles {
 sub compare_titles {
     my ( $self, $title1, $title2 ) = ( shift, lc(shift), lc(shift) );
 
-    my $stripped_title1 = CUFTS::CJDB::Util::strip_title_for_matching(
-        CUFTS::CJDB::Util::strip_title($title1) );
-    my $stripped_title2 = CUFTS::CJDB::Util::strip_title_for_matching(
-        CUFTS::CJDB::Util::strip_title($title2) );
+    my $stripped_title1 = CUFTS::CJDB::Util::strip_title_for_matching( CUFTS::CJDB::Util::strip_title($title1) );
+    my $stripped_title2 = CUFTS::CJDB::Util::strip_title_for_matching( CUFTS::CJDB::Util::strip_title($title2) );
 
     $stripped_title1 =~ tr/a-z0-9 //cd;
     $stripped_title2 =~ tr/a-z0-9 //cd;
@@ -745,5 +723,8 @@ sub compare_title_words {
     }
 
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;

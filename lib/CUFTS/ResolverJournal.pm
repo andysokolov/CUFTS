@@ -1,4 +1,4 @@
-## CUFTS::ResolverResource
+## CUFTS::ResolverJournal
 ##
 ## Copyright Todd Holbrook, Simon Fraser University (2003)
 ##
@@ -18,27 +18,38 @@
 ## with CUFTS; if not, write to the Free Software Foundation, Inc., 59
 ## Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-package CUFTS::ResolverResource;
+package CUFTS::ResolverJournal;
 
 use strict;
 use Moose;
 
 my @columns = qw(
-    id
-    name
-    provider
-    resource_type
-    module
-    proxy
-    dedupe
-    auto_activate
-    rank
-    resource_identifier
-    database_url
-    auth_name
-    auth_passwd
-    url_base
-    proxy_suffix
+    title
+    issn
+    e_issn
+    vol_cit_start
+    vol_cit_end
+    iss_cit_start
+    iss_cit_end
+    vol_ft_start
+    vol_ft_end
+    iss_ft_start
+    iss_ft_end
+    cit_start_date
+    cit_end_date
+    ft_start_date
+    ft_end_date
+    embargo_months
+    embargo_days
+    urlbase
+    db_identifier
+    journal_url
+    toc_url
+    publisher
+    abbreviation
+    current_years
+    current_months
+    coverage
 );
 
 sub columns {
@@ -47,13 +58,23 @@ sub columns {
 
 foreach my $col (@columns) {
     has $col => (
-        isa => 'Maybe[Str]',
+        isa => 'Maybe[Str|Object]',
         is  => 'rw',
     );
 }
 
-has 'resource' => (
+has 'id' => (
+    isa => 'Int',
+    is  => 'rw',
+);
+
+has 'journal_auth' => (
     isa => 'Maybe[Object]',
+    is  => 'rw',
+);
+
+has 'journal_auth_id' => (
+    isa => 'Maybe[Int]',
     is  => 'rw',
 );
 

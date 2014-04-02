@@ -22,26 +22,23 @@ package CUFTS::Resolve;
 
 use strict;
 
-use CUFTS::DB::Sites;
-use CUFTS::DB::Resources;
-use CUFTS::DB::ResourceTypes;
-use CUFTS::DB::LocalResources;
-use CUFTS::DB::Stats;
-
 use CUFTS::Request;
 use CUFTS::ResourcesLoader;
 use CUFTS::ResolverResource;
 
 use CUFTS::Exceptions;
 use CUFTS::Config;
-use CUFTS::Util::Simple;
 
-use Data::Dumper;
+use String::Util qw(trim hascontent);
 
-sub new {
-    my ($class) = @_;
-    return bless {}, $class;
-}
+use Moose;
+
+has 'schema' => (
+    isa => 'Object',
+    is  => 'rw',
+    default => sub { CUFTS::Config::get_schema(); },
+);
+
 
 sub resolve {
     my ( $self, $sites, $request ) = @_;
@@ -53,19 +50,17 @@ SITE:
     foreach my $site (@$sites) {
         my %provider_dedupe;
 
-        my $resources = defined($site)
-                        ? $self->get_active_resources($site)
-                        : [];
+        next SITE if !defined $site;
 
 RESOURCE:
-        foreach my $local_resource (@$resources) {
+        foreach my $local_resource ( $self->get_active_resources($site) ) {
 
             my $global_resource = $local_resource->resource;
             my $resource = $self->overlay_global_resource_data($local_resource);
             my $provider = $resource->provider;
 
             # Skip resource if there's no handling module
-            next RESOURCE if !defined( $resource->module );
+            next RESOURCE if !defined $resource->module;
 
             # Skip resource if we've already got results from another site
             next RESOURCE if defined($global_resource)
@@ -78,8 +73,8 @@ RESOURCE:
             # case no records will be returned
 
             next RESOURCE if !$module->can('get_records');
-            my $records = $module->get_records( $resource, $site, $request );
-            next RESOURCE if !defined($records) || scalar(@$records) == 0;
+            my $records = $module->get_records( $self->schema, $resource, $site, $request );
+            next RESOURCE if !defined $records || scalar @$records == 0;
 
             # Loop through the active services to get results.
 
@@ -92,8 +87,8 @@ SERVICE:
                 # Dedupe providers that have already provided a link at this service level
 
                 next SERVICE if $local_resource->dedupe
-                                && not_empty_string( $provider )
-                                && $provider_dedupe{ $provider }->{ $service_name };
+                                && hascontent($provider)
+                                && $provider_dedupe{$provider}->{$service_name};
 
                 # Search for and build results
 
@@ -185,17 +180,16 @@ sub log_request {
         sid
     );
 
+    my ( $sec, $min, $hour, $mday, $mon, $year ) = localtime;
+    $mon++;
+    $year += 1900;
+
     unless ( open LOG, ">>$CUFTS::Config::CUFTS_REQUEST_LOG" ) {
         warn("Unable to open request log: $!");
         return 0;
     }
 
-    my ( $sec, $min, $hour, $mday, $mon, $year ) = localtime;
-    $mon++;
-    $year += 1900;
-
-    printf LOG "%04i%02i%02i %02i:%02i:%02i\t",
-        ( $year, $mon, $mday, $hour, $min, $sec );
+    printf LOG "%04i%02i%02i %02i:%02i:%02i\t", ( $year, $mon, $mday, $hour, $min, $sec );
     if ( scalar(@$sites) > 0 ) {
         print LOG ( join ',', map { $_->key } @$sites ), "\t";
     }
@@ -204,8 +198,7 @@ sub log_request {
     }
 
     print LOG join "\t",
-        map { defined( $request->$_() ) ? $request->$_() : '' }
-        @request_fields;
+        map { defined( $request->$_() ) ? $request->$_() : '' } @request_fields;
 
     foreach my $result (@$results) {
         print LOG "\t", $result->{resource}->id, "\t";
@@ -219,29 +212,20 @@ sub log_request {
     if ( scalar(@$sites) > 0 ) {
         foreach my $site (@$sites) {
             my $db_log = {
-                'request_date' =>
-                    sprintf( "%04i%02i%02i", $year, $mon, $mday ),
-                'request_time' =>
-                    sprintf( "%02i:%02i:%02i", $hour, $min, $sec ),
-                'site' => $site->id,
-                'issn' => ( defined( $request->issn )
-                            ? $request->issn
-                            : $request->eissn
-                ),
-                'isbn'  => $request->isbn,
-                'title' => ( defined( $request->title )
-                             ? $request->title
-                             : $request->stitle
-                ),
-                'volume'  => $request->volume,
-                'issue'   => $request->issue,
-                'date'    => $request->date,
-                'doi'     => $request->doi,
-                'results' => ( scalar(@$results) > 0 ? 't' : 'f' ),
+                request_date => sprintf( "%04i%02i%02i", $year, $mon, $mday ),
+                request_time => sprintf( "%02i:%02i:%02i", $hour, $min, $sec ),
+                site         => $site->id,
+                issn         => defined($request->issn) ? $request->issn : $request->eissn,
+                isbn         => $request->isbn,
+                title        => defined($request->title) ? $request->title : $request->stitle,
+                volume       => $request->volume,
+                issue        => $request->issue,
+                date         => $request->date,
+                doi          => $request->doi,
+                results      => scalar(@$results) > 0 ? 't' : 'f',
             };
 
-            CUFTS::DB::Stats->create($db_log);
-            CUFTS::DB::Stats->dbi_commit;
+            $self->schema->resultset('Stats')->create($db_log);
         }
     }
 
@@ -266,7 +250,7 @@ sub get_sites {
     }
 
     foreach my $site_key (@site_keys) {
-        my @db_sites = CUFTS::DB::Sites->search( 'key' => $site_key );
+        my @db_sites = $self->schema->resultset('Sites')->search({ key => $site_key });
         if ( scalar(@db_sites) == 1 ) {
             push @sites, $db_sites[0];
         }
@@ -295,8 +279,8 @@ sub get_site_from_domain {
     return undef if !defined($domain);
 
     while ( $domain =~ s/^.+?\././ ) {
-        my @domains = CUFTS::DB::SiteDomains->search( 'domain' => $domain );
-        return $domains[0]->site if scalar(@domains);
+        my $site = $self->schema->resultset('Sites')->search_by_domain($domain)->first;
+        return $site if defined($site);
     }
 
     return undef;
@@ -305,32 +289,26 @@ sub get_site_from_domain {
 sub get_site_from_ip {
     my ( $self, $ip ) = @_;
 
-    my @IPs = CUFTS::DB::SiteIPs->search_network($ip);
-    return $IPs[0]->site if scalar(@IPs);
-
-    return undef;
+    return $self->schema->resultset('Sites')->search_by_ip($ip)->first;
 }
 
 sub get_active_resources {
     my ( $self, $site ) = @_;
 
-    my @resources = CUFTS::DB::LocalResources->search(
-        active => 'true',
-        site   => $site->id,
-        { order_by => 'rank desc nulls last' }
+    my $resources_rs = $site->local_resources(
+        { active => 'true', },
+        { order_by => 'rank DESC NULLS LAST', }
     );
 
-    # Filter out resources that are not active at the global level
+    # Filter out resources that are not active at the global level. This could maybe be done in DBIC now.
 
     my @active_resources;
-    foreach my $resource (@resources) {
-        if ( defined( $resource->resource ) ) {
-	            next if !$resource->resource->active;
-        }
+    while ( my $resource = $resources_rs->next ) {
+        next if defined($resource->resource) && !$resource->resource->active;  # Skip deactivated global resources
         push @active_resources, $resource;
     }
 
-    return \@active_resources;
+    return @active_resources;
 }
 
 
@@ -348,8 +326,7 @@ sub get_services {
         my @new_services;
         foreach my $service (@services) {
             foreach my $global_service (@global_services) {
-                $global_service->id == $service->id
-                    and push @new_services, $service;
+                push(@new_services, $service) if $global_service->id == $service->id;
             }
         }
         @services = @new_services;
@@ -383,23 +360,31 @@ sub overlay_global_resource_data {
     my $resource = CUFTS::ResolverResource->new();
 
     my $global = $local->resource;
-    my $is_local = !defined( $global );
-    if (!$is_local) {
+    my $is_local = !defined $global;
+    if ($is_local) {
+        $resource->resource($local);
+    }
+    else {
         $resource->resource($global);
     }
 
     foreach my $column ( $resource->columns ) {
         next if $column eq 'resource';
 
-        $resource->$column(
-            $is_local || not_empty_string( $local->$column )
-            ? $local->$column
-            : $global->can($column)
-            ? $global->$column
-            : undef );
+        my $value =   $is_local || hascontent($local->$column) ? $local->$column
+                    : $global->can($column)                    ? $global->$column
+                    : undef;
+
+        # Flatten simple objetcs
+        $value = $value->type if $column eq 'resource_type';
+
+        $resource->$column($value);
     }
 
     return $resource;
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;

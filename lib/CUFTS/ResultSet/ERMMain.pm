@@ -116,7 +116,7 @@ sub facet_search {
         'join'     => \@joins,
         '+as'      => \@extra_as_columns,
         '+select'  => \@extra_select_columns,
-        'order_by' => 'names.erm_main, names.main DESC',
+        'order_by' => [ 'names.erm_main', { '-desc' => 'names.main' } ],
     );
 
     return $self->search(

@@ -14,7 +14,6 @@ __PACKAGE__->add_columns(
       is_nullable => 0,
       size => 8,
     },
-
     erm_main => {
       data_type => 'integer',
       is_nullable => 0,
@@ -23,7 +22,7 @@ __PACKAGE__->add_columns(
     date => {
         data_type => 'datetime',
         is_nullable => 0,
-        default => \'NOW()',
+        default_value => \'NOW()',
     },
 );
 

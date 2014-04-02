@@ -57,12 +57,12 @@ __PACKAGE__->add_columns(
         size => 4,
         is_nullable => 1,
     },
-);                                                                                               
+);
 
 __PACKAGE__->set_primary_key( 'id' );
 
 __PACKAGE__->has_many(   'counts'       => 'CUFTS::Schema::ERMCounterCounts', 'counter_source' );
-__PACKAGE__->has_many(   'links'        => 'CUFTS::Schema::ERMCounterLinks', 'counter_source' );
+__PACKAGE__->has_many(   'links'        => 'CUFTS::Schema::ERMCounterLinks',  'counter_source' );
 __PACKAGE__->belongs_to( 'site'         => 'CUFTS::Schema::Sites', 'site' );
 __PACKAGE__->belongs_to( 'erm_sushi'    => 'CUFTS::Schema::ERMSushi', 'erm_sushi' );
 
