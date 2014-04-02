@@ -10,7 +10,7 @@ my $form_validate_titles = {
     optional_regexp => qr/^(new|orig|hide)_.+/,
     filters => ['trim'],
     defaults => { 'filter' => '', 'page' => 1 },
-};  
+};
 
 my $form_validate_hidden_fields = {
     optional => ['page', 'hidden_fields', 'cancel', 'apply'],
@@ -87,7 +87,7 @@ sub apply_view : Local {
 sub apply {
     my ($self, $c) = @_;
 
-    $c->form($form_validate_titles);    
+    $c->form($form_validate_titles);
 
     my $global_resource = $c->stash->{global_resource};
     my $local_resource = $c->stash->{local_resource};
@@ -115,7 +115,7 @@ sub apply {
                 my $old_val = $valid->{"orig_${id}_${col}"};
 
                 $col eq 'active' && !defined($new_val) and
-                    $new_val = 'false';     
+                    $new_val = 'false';
 
                 next unless ( (defined($new_val) && !defined($old_val)) ||
                               (!defined($new_val) && defined($old_val)) ||
@@ -145,18 +145,18 @@ sub apply {
         CUFTS::DB::DBI->dbi_rollback;
         die($err);
     }
-    
+
     CUFTS::DB::DBI->dbi_commit;
 }
 
 sub manage_global : Private {
     my ($self, $c, $resource_id) = @_;
 
-    $c->form($form_validate_titles);    
+    $c->form($form_validate_titles);
 
     my $global_resource = $c->stash->{global_resource};
     my $local_resource = $c->stash->{local_resource};
-    
+
     defined($global_resource) or
         die('No resource loaded for title list');
 
@@ -175,7 +175,7 @@ sub manage_global : Private {
     my $active = defined($c->session->{local_titles_show}) && $c->session->{local_titles_show} eq 'show active' ? 1 : 0;
 
     my $search = { resource => $global_resource->id };
-    
+
     ##
     ## Set up filter for finding specific titles
     ##
@@ -216,7 +216,7 @@ sub manage_global : Private {
                                            page => $page}
                                         );
     } else {
-        ($pager, $iterator) = $global_titles_module->pager($search, 
+        ($pager, $iterator) = $global_titles_module->pager($search,
                                          { order_by => $order_by,
                                            rows => $display_per_page,
                                            page => $page}
@@ -251,7 +251,7 @@ sub manage_global : Private {
     ## Grab fields to hide if we have a local resource
     ##
 
-    $c->stash->{hidden_fields} = defined($local_resource) ? [$local_resource->hidden_fields] : [];          
+    $c->stash->{hidden_fields} = defined($local_resource) ? [$local_resource->hidden_fields] : [];
 
     ##
     ## Fill in stash for templates
@@ -271,10 +271,10 @@ sub manage_global : Private {
 sub manage_local : Private {
     my ($self, $c, $resource_id) = @_;
 
-    $c->form($form_validate_titles);    
+    $c->form($form_validate_titles);
 
     my $local_resource = $c->stash->{local_resource};
-    
+
     $local_resource->do_module('has_title_list') or
         die("This resource does not support title lists.");
 
@@ -287,19 +287,19 @@ sub manage_local : Private {
     my $active = defined($c->session->{local_titles_show}) && $c->session->{local_titles_show} eq 'show active' ? 1 : 0;
 
     my $search = { resource => $local_resource->id };
-    
+
     ##
     ## Set up filter for finding specific titles
     ##
 
     my $filter = $c->form->{valid}->{filter};
-    if (    $c->form->{valid}->{apply_filter} 
+    if (    $c->form->{valid}->{apply_filter}
          && $filter ne ($c->session->{local_titles_filter} || '')
        ) {
-           
+
         $c->form->{valid}->{page} = 1;
         $c->session->{local_titles_filter} = $filter;
-        
+
     } else {
         $filter = $c->session->{local_titles_filter};
     }
@@ -318,12 +318,12 @@ sub manage_local : Private {
     my $order_by = 'title';  # Hardcode for now, allow for other sorts later?
     my $display_per_page = $c->form->{valid}->{display_per_page} || $c->config->{default_display_per_page};
 
-    my ($pager, $iterator) = $local_titles_module->pager($search, 
+    my ($pager, $iterator) = $local_titles_module->pager($search,
                                                          { order_by => $order_by,
                                                            rows => $display_per_page,
                                                            page => $page, }
                                                         );
-        
+
     my @titles;
     while (my $title = $iterator->next) {
         push @titles, $title;
@@ -350,13 +350,13 @@ sub hidden_fields : Local {
     my $local_resource = $c->stash->{local_resource};
 
     $c->form($form_validate_hidden_fields);
-    
+
     if ($c->form->valid->{apply}) {
 
         eval {
             defined($local_resource) or
                 $local_resource = $c->stash->{local_resource} = CUFTS::DB::LocalResources->create({resource => $global_resource->id, site => $c->stash->{current_site}->id});
-                
+
             CUFTS::DB::HiddenFields->search(resource => $local_resource->id)->delete_all;
 
             foreach my $field (keys %{$c->form->{valid}}) {
@@ -401,7 +401,7 @@ sub hidden_fields : Local {
 
 sub single : Local {
     my ($self, $c, $resource_id) = @_;
-    
+
     my $global_resource = $c->stash->{global_resource};
     my $local_resource = $c->stash->{local_resource};
     my $override_fields = $c->stash->{override_fields} = $global_resource->do_module('overridable_title_list_fields');
@@ -418,7 +418,7 @@ sub single : Local {
     if ($c->form->valid->{apply}) {
         defined($local_resource) or
             $local_resource = $c->stash->{local_resource} = CUFTS::DB::LocalResources->create({resource => $global_resource->id, site => $c->stash->{current_site}->id});
-        
+
         eval {
             if (defined($local_title)) {
                 $local_title->update_from_form($c->form);
@@ -441,14 +441,14 @@ sub single : Local {
 
     $c->stash->{paging_page} = $c->form->valid->{paging_page};
     $c->stash->{template} = 'local/titles/single.tt';
-}   
+}
 
 
 # Edit a single local resource
 
 sub edit_local : Local {
     my ($self, $c, $resource_id) = @_;
-    
+
     my $local_resource = $c->stash->{local_resource};
     my %validate = %$form_validate_edit_local;
     my $override_fields = $c->stash->{override_fields} = $local_resource->do_module('title_list_fields');
@@ -489,7 +489,7 @@ sub edit_local : Local {
 
 sub delete_local : Local {
     my ($self, $c, $resource_id) = @_;
-    
+
     my $local_resource = $c->stash->{local_resource};
 
     $c->form({required => ['local_id']});
@@ -529,9 +529,9 @@ sub bulk_global_upload : Local {
         die("No global resource loaded for bulk update");
 
     $c->form($form_validate_bulk_global_upload);
-        
+
     unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
-            
+
         if (my $upload = $c->req->upload('file')) {
 
             eval {
@@ -545,11 +545,18 @@ sub bulk_global_upload : Local {
             }
 
             CUFTS::DB::DBI->dbi_commit;
-                
+
             my $method = $c->form->valid->{type} . '_title_list';
-            
-            $c->stash->{bulk_results} = $global_resource->do_module($method, $local_resource, $upload->tempname, $c->form->valid->{match}, $c->form->valid->{deactivate});
-                
+
+            $local_resource  = $c->model('CUFTS::LocalResources')->find({ id => $local_resource->id });
+            $global_resource = $c->model('CUFTS::GlobalResources')->find({ id => $global_resource->id });
+
+            my $schema = $c->model('CUFTS')->schema;
+
+            $schema->txn_do( sub {
+                $c->stash->{bulk_results} = $global_resource->do_module($method, $schema, $local_resource, $upload->tempname, $c->form->valid->{match}, $c->form->valid->{deactivate});
+            });
+
             $c->stash->{template} = 'local/titles/bulk_global_results.tt';
         }
     } else {
@@ -560,13 +567,13 @@ sub bulk_global_upload : Local {
 sub bulk_global_export : Local {
     my ($self, $c, $resource_id) = @_;
 
-    $c->form($form_validate_bulk_global_export);    
+    $c->form($form_validate_bulk_global_export);
 
     my $global_resource = $c->stash->{global_resource};
     my $local_resource = $c->stash->{local_resource};
 
     my @global_titles;
-    unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {  
+    unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
         if ($c->form->valid->{records} eq 'active') {
             defined($local_resource) and
                 @global_titles = $global_resource->do_module('active_global_db_module')->search({local_resource => $local_resource->id, resource => $global_resource->id}, {order_by => 'title'});
@@ -603,25 +610,29 @@ sub bulk_local : Local {
 
     my $local_resource = $c->stash->{local_resource};
 
+    $local_resource = $c->model('CUFTS::LocalResources')->find({ id => $local_resource->id });
+
     defined($local_resource) or
         die("No local resource loaded for bulk update");
 
     if ($c->req->params->{upload}) {
 
         $c->form($form_validate_bulk_local_upload);
-        
+
         unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
-            
+
             if (my $upload = $c->req->upload('file')) {
 
-                my $tmp; 
+                my $tmp;
 
                 eval {
-                     $tmp = $local_resource->do_module('load_title_list', $local_resource, $upload->tempname, 1);
+                    my $schema = $c->model('CUFTS')->schema;
+                    $schema->txn_do( sub {
+                        $tmp = $local_resource->do_module('load_title_list', $schema, $local_resource, $upload->tempname, 1);
+                    });
                 };
                 if ($@) {
                     $c->stash->{errors} = [ $@ ];
-                    CUFTS::DB::DBI->dbi_rollback;
                 } else {
                     $c->stash->{bulk_results} = $tmp;
                     $c->stash->{template} = 'local/titles/bulk_local_results.tt';
@@ -638,12 +649,12 @@ sub bulk_local : Local {
 sub bulk_local_export : Local {
     my ($self, $c, $resource_id) = @_;
 
-    $c->form($form_validate_bulk_local_export);    
+    $c->form($form_validate_bulk_local_export);
 
     my $local_resource = $c->stash->{local_resource};
 
     my @local_titles;
-    unless ($c->form->has_missing || $c->form->has_invalid) {  
+    unless ($c->form->has_missing || $c->form->has_invalid) {
         @local_titles = $local_resource->do_module('local_db_module')->search({resource => $local_resource->id}, {order_by => 'title'});
 
         $c->stash->{local_titles} = \@local_titles;
@@ -660,26 +671,26 @@ sub bulk_local_export : Local {
 sub find_json : Local {
     my ( $self, $c ) = @_;
     use Data::Dumper;
-    
+
     my $params = $c->req->params;
-    
+
     my %search = ( site => $c->stash->{current_site}->id );
     if (my $term = $params->{title}) {
         $term =~ s/([%_])/\\$1/g;
         $term =~ s#\\#\\\\\\\\#;
         $search{title} = { 'ilike' => "$term\%" };
-    }  
+    }
     if (my $term = uc($params->{issn}) ) {
         $term =~ tr/[0-9X]//cd;
         $search{'-or'} = { issn => $term, e_issn => $term };
-    }  
+    }
     if (my $term = $params->{local_resource}) {
         $search{local_resource} = $term;
-    }  
+    }
     if (my $term = $params->{erm_main}) {
         $search{erm_main} = $term;
-    }  
-    
+    }
+
     my $options = { order_by => 'LOWER(title)' };
     $options->{rows} = $params->{limit} || 1000;  # Hard limit, too many means something is probably wrong
     $options->{page} = ( $params->{start} / $options->{rows} ) + 1;
@@ -695,7 +706,7 @@ sub find_json : Local {
         rowcount => $pager->total_entries,
         results  => [ map { {id => $_->id, title => $_->title, resource_name => $_->resource_name, erm_main => $_->erm_main_key, issn => $_->issn, e_issn => $_->e_issn } } @resources ],
     };
-    
+
     $c->forward('V::JSON');
 }
 

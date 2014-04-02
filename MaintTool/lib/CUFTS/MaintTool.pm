@@ -4,6 +4,8 @@ use strict;
 use Catalyst qw/Static::Simple Session Session::Store::FastMmap Session::State::Cookie FormValidator CUFTS::MaintTool::FillInForm I18N Unicode::Encoding -Debug/;
 use lib '../lib';
 
+use CUFTS::DB::Resources;
+use CUFTS::DB::LocalResources;
 use CUFTS::ResourcesLoader;
 
 use CUFTS::Config;
@@ -24,6 +26,13 @@ CUFTS::MaintTool->config->{session} = {
 
 ### CUFTS::MaintTool->config->{'V::JSON'}->{encoding} = 'iso-8859-1';
 CUFTS::MaintTool->config->{'V::JSON'}->{encoding} = 'utf8';
+
+CUFTS::MaintTool->config->{'M::CUFTS'}->{connect_info} = {
+    dsn            => 'dbi:Pg:dbname=CUFTS34',
+    user           => 'tholbroo',
+    password       => "",
+    auto_savepoint => 1
+};
 
 CUFTS::MaintTool->setup;
 
@@ -63,7 +72,7 @@ sub begin : Private {
         $c->req->action(undef);
         return $c->redirect('/login');
     }
-    
+
     return 1;
 }
 
@@ -79,7 +88,7 @@ sub end : Private {
         warn("Rolling back database changes due to error flag.");
 
         CUFTS::DB::DBI->dbi_rollback();
-        
+
         $c->stash(
             template      => 'fatal_error.tt',
             fatal_errors  => $c->error,
@@ -109,7 +118,7 @@ sub end : Private {
 
 
 ##
-## login - Show the login screen and 
+## login - Show the login screen and
 ##
 
 sub login : Global {
@@ -208,7 +217,7 @@ sub redirect {
     }
 
     $c->response->headers->header( 'Cache-Control' => 'no-cache' );
-    
+
     return $c->res->redirect($location);
 }
 
@@ -234,14 +243,14 @@ sub form {
 
 sub convert_form_validate {
     my ( $c, $form, $validate, $prefix ) = @_;
-    
+
     my $js_validate = { name => $form, field_prefix => $prefix };
-    
+
     foreach my $field ( @{ $validate->{required} } ) {
         next if $field eq 'submit';  # Skip submit as a required field for javascript checking
         $js_validate->{fields}->{$field}->{required} = 'true';
     }
-    
+
     if ( defined($validate->{js_constraints}) ) {
         foreach my $field ( keys %{ $validate->{js_constraints} } ) {
             my $constraints = $validate->{js_constraints}->{$field};
@@ -251,7 +260,7 @@ sub convert_form_validate {
             @{ $js_validate->{fields}->{$field} }{ keys %{ $constraints } } = values %{ $constraints };
         }
     }
-    
+
     return $js_validate;
 }
 
@@ -275,10 +284,9 @@ Todd Holbrook - tholbroo@sfu.ca
 
 =head1 LICENSE
 
-This library is free software . You can redistribute it and/or modify 
+This library is free software . You can redistribute it and/or modify
 it under the same terms as perl itself.
 
 =cut
 
 1;
-
