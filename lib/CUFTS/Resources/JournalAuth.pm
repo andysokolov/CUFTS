@@ -24,7 +24,9 @@ use base qw(CUFTS::Resources::Base::Journals);
 
 use CUFTS::Exceptions;
 use CUFTS::Util::Simple;
-use CUFTS::DB::JournalsAuth;
+use CUFTS::Config;
+use String::Util qw(trim hascontent);
+
 
 use strict;
 
@@ -35,22 +37,24 @@ sub help_template                { return undef }
 sub has_title_list               { return 0     }
 
 sub get_records {
-    my ( $class, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $resource, $site, $request, $schema ) = @_;
 
-    my $issn = not_empty_string( $request->issn ) ? $request->issn : $request->eissn;
+    $schema ||= CUFTS::Config::get_schema();
 
-    if ( not_empty_string($issn) ) {
+    my $issn = hascontent( $request->issn ) ? $request->issn : $request->eissn;
 
-        my @ja_match = CUFTS::DB::JournalsAuthISSNs->search( issn => $issn );
-        if ( scalar(@ja_match) != 1 ) {
+    if ( hascontent($issn) ) {
+
+        my @ja_match = $schema->resultset('JournalsAuthISSNs')->search({ issn => $issn })->all;
+        if ( scalar @ja_match != 1 ) {
             # No matches, or multiple matches that we can't disambiguate yet.
             return undef;
         }
 
-        my @ja_issns = CUFTS::DB::JournalsAuthISSNs->search( journal_auth => $ja_match[0]->journal_auth, issn => { '!=' => $issn } );
-        if ( scalar(@ja_issns) ) {
+        my @ja_issns = $ja_match[0]->journal_auth->issns({ issn => { '!=' => $issn } })->all;
+        if ( scalar @ja_issns ) {
             my $existing_issns = $request->other_issns;
-            if ( !defined($existing_issns) ) {
+            if ( !defined $existing_issns ) {
                 $existing_issns = [];
             }
             push @$existing_issns, map { $_->issn } @ja_issns;
@@ -58,21 +62,21 @@ sub get_records {
         }
 
         # Add the title to the original request if it's missing
-        if ( is_empty_string($request->title) ) {
+        if ( !hascontent($request->title) ) {
             my $ja = $ja_match[0]->journal_auth;
-            if ( defined($ja) && not_empty_string($ja->title) ) {
+            if ( defined($ja) && hascontent($ja->title) ) {
                 $request->title( $ja->title );
             }
         }
 
         # Include that first match as journal_auths match, it will likely come up from the augmentations above, but there are a few rare cases where this works better.
-        $request->journal_auths( [ $ja_match[0]->journal_auth ] );
+        $request->journal_auths( [ $ja_match[0]->get_column('journal_auth') ] );
 
     }
-    elsif ( not_empty_string($request->title) ) {
+    elsif ( hascontent($request->title) ) {
         # No ISSN found, try a title lookup to grab some JA records and attach their ids to the request
 
-        my @ja_ids = map { $_->id } CUFTS::DB::JournalsAuth->search_by_title($request->title);
+        my @ja_ids = map { $_->id } $schema->resultset('JournalsAuth')->search_by_title($request->title);
 
         if ( scalar(@ja_ids) && scalar(@ja_ids) < 10 ) {
             $request->journal_auths( \@ja_ids );
@@ -86,9 +90,9 @@ sub get_records {
 sub can_getMetadata {
     my ( $class, $request ) = @_;
 
-    if (    not_empty_string( $request->issn )
-         || not_empty_string( $request->eissn )
-         || not_empty_string( $request->title )
+    if (    hascontent( $request->issn )
+         || hascontent( $request->eissn )
+         || hascontent( $request->title )
     ) {
         return 1;
     }
