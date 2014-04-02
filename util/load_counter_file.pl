@@ -6,8 +6,6 @@ use strict;
 use CUFTS::Exceptions;
 use CUFTS::Config;
 
-use CUFTS::DB::Resources;
-use CUFTS::DB::ERMCounterSources;
 use CUFTS::COUNTER;
 
 use CUFTS::Util::Simple;
@@ -17,13 +15,11 @@ my %options;
 GetOptions( \%options, 'source_id=i' );
 my @files = @ARGV;
 
-##
-## Load the site
-##
+my $schema = CUFTS::Config::get_schema();
 
 my $source;
 if ( $options{source_id} ) {
-    $source = CUFTS::DB::ERMCounterSources->search({ id => int($options{source_id}) })->first();
+    $source = $schema->resultset('ERMCounterSources')->find({ id => int($options{source_id}) });
 }
 if ( !$source ) {
     die("Unable to load ERM COUNTER source or key/id was not passed in.\n");

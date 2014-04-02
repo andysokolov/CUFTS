@@ -4,8 +4,8 @@ use lib qw (lib);
 
 use strict;
 
-use CJDB::DB::LCCSubjects;
-use CUFTS::DB::Sites;
+
+use CUFTS::Config;
 use CUFTS::Exceptions;
 use Getopt::Long;
 
@@ -15,72 +15,79 @@ my %options;
 GetOptions(\%options, 'site_key=s', 'site_id=i');
 my @files = @ARGV;
 
-# Get CUFTS site id
+my $schema = CUFTS::Config::get_schema();
 
-my $site_id = get_site_id();   
+##
+## Load the site
+##
+
+my $site;
+if ( $options{site_id} ) {
+	$site = $schema->resultset('Sites')->find({ id => int($options{site_id}) });
+}
+elsif ( $options{site_key} ) {
+	$site = $schema->resultset('Sites')->find({ key => $options{site_key} });
+}
+else {
+	usage();
+	exit;
+}
+if ( !$site ) {
+	die("Unable to load site or site key/id was not passed in.");
+}
+my $site_id = $site->id;
 
 # Delete existing entries
 
-CJDB::DB::LCCSubjects->search('site' => $site_id)->delete_all;
 
-foreach my $file (@files) {
+sub load_subjects {
+	my ( $site ) = @_;
 
-	open INPUT, $file or 
-		die "Unable to open input file: $!";
-	
-	while (<INPUT>) {
-	
-		chomp;
-	
-		my $record = {};
-		($record->{'class_low'},
-		 $record->{'number_low'},
-		 $record->{'class_high'},
-		 $record->{'number_high'},
-		 $record->{'subject1'},
-		 $record->{'subject2'},
-		 $record->{'subject3'}) = split /\t/, $_;
+	$site->cjdb_lcc_subjects->delete_all;
 
-		# Clean up quotes from Excel
+	foreach my $file (@files) {
 
-		$record->{'subject1'} =~ s/^"//;
-		$record->{'subject1'} =~ s/"$//;
-		$record->{'subject2'} =~ s/^"//;
-		$record->{'subject2'} =~ s/"$//;
-		$record->{'subject3'} =~ s/^"//;
-		$record->{'subject3'} =~ s/"$//;
+		open INPUT, $file or
+			die "Unable to open input file: $!";
 
-		$record->{'site'} = $site_id;
-		
-		CJDB::DB::LCCSubjects->create($record);
+		while (<INPUT>) {
 
+			chomp;
+
+			my $record = {};
+			($record->{class_low},
+			 $record->{number_low},
+			 $record->{class_high},
+			 $record->{number_high},
+			 $record->{subject1},
+			 $record->{subject2},
+			 $record->{subject3}) = split /\t/, $_;
+
+			# Clean up quotes from Excel
+
+			$record->{subject1} =~ s/^"//;
+			$record->{subject1} =~ s/"$//;
+			$record->{subject2} =~ s/^"//;
+			$record->{subject2} =~ s/"$//;
+			$record->{subject3} =~ s/^"//;
+			$record->{subject3} =~ s/"$//;
+
+			$site->add_to_cjdb_lcc_subjects($record);
+
+		}
+
+		close INPUT;
 	}
-
-	close INPUT;
-}
-
-CJDB::DB::LCCSubjects->dbi_commit;
-
-sub get_site_id {
-	defined($options{'site_id'}) and
-		return $options{'site_id'};
-
-	my @sites = CUFTS::DB::Sites->search('key' => $options{'site_key'});
-	
-	scalar(@sites) == 1 and
-		return $sites[0]->id;
-		
-	return undef;
 }
 
 
 sub usage {
 	print <<EOF;
-	
+
 load_lcc_subjects - Loads a tab delimited file of call number ranges and subjects
 
  site_key=XXX - CUFTS site key (example: BVAS)
  site_id=111  - CUFTS site id (example: 23)
- 
+
 EOF
 }

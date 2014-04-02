@@ -4,16 +4,6 @@ use strict;
 use lib qw(lib);
 
 use CUFTS::Config;
-use CUFTS::DB::LocalJournals;
-use CUFTS::DB::Journals;
-use CUFTS::DB::LocalResources;
-use CUFTS::DB::JournalsAuth;
-use CUFTS::DB::Sites;
-
-use CJDB::DB::Journals;
-
-use CJDB::DB::DBI;
-use CUFTS::DB::DBI;
 
 use CUFTS::CJDB::Loader::MARC::JournalsAuth;
 use CUFTS::CJDB::Util;
@@ -31,9 +21,13 @@ Log::Log4perl->easy_init($INFO);
 # Global variables used to avoid recomputing, probably could be done with the new "state" feature in 5.10
 my $global_current_date;
 
-load();
+my $schema = CUFTS::Config::get_schema();
+
+load($schema);
 
 sub load {
+    my ( $schema ) = @_;
+
     my $logger = Log::Log4perl->get_logger();
 
     my %options;
@@ -41,55 +35,48 @@ sub load {
 
     $logger->info('Starting CJDB rebuild script.');
 
-    my @sites;
+    my $sites_rs;
     if ( defined($options{site_id}) && scalar(@{$options{site_id}}) ) {
-        @sites = CUFTS::DB::Sites->search( { id =>  { '-in' => [ grep { $_ } map { int($_) } @{$options{site_id}} ] } } );
+        $sites_rs = $schema->resultset('Sites')->search( { id =>  { '-in' => [ grep { $_ } map { int($_) } @{$options{site_id}} ] } } );
     }
     elsif ( defined($options{site_key}) && scalar(@{$options{site_key}}) ) {
-        @sites = CUFTS::DB::Sites->search( { key => { '-in' => $options{site_key} } } );
+        $sites_rs = $schema->resultset('Sites')->search( { key => { '-in' => $options{site_key} } } );
     }
     else {
-        @sites = CUFTS::DB::Sites->search({ '-or' => { rebuild_cjdb => { '!=' => undef }, rebuild_ejournals_only => '1' } });
+        $sites_rs = $schema->resultset('Sites')->search({ '-or' => { rebuild_cjdb => { '!=' => undef }, rebuild_ejournals_only => '1' } });
     }
 
 SITE:
-    foreach my $site (@sites) {
+    while ( my $site = $sites_rs->next ) {
         next if !hascontent( $site->rebuild_cjdb )
-             && $site->rebuild_ejournals_only ne '1'
-             && !$options{force};
+              && $site->rebuild_ejournals_only ne '1'
+              && !$options{force};
 
         $logger->info('Rebuild started for site: ', $site->name, ' (', $site->key, ')');
         my $start_time = time;
 
-        build_local_journal_auths($logger, $site);
-
-        # TODO: Rebuild print records goes here.
+        build_local_journal_auths($logger, $site, $schema);
 
         my $MARC_cache = {};
         my $count;
         eval {
-            $count = load_cufts_data( $logger, $site, \%options, $MARC_cache );
+            $schema->txn_do( sub {
+                $count = load_cufts_data( $logger, $site, \%options, $MARC_cache, $schema );
+                $site->rebuild_cjdb(undef);
+                $site->rebuild_ejournals_only(undef);
+                $site->update;
+            } );
         };
         if ($@) {
             $logger->error('Error loading CUFTS data: ', $@);
             $logger->info('Skipping site due to error, no data was saved.');
-            CUFTS::DB::DBI->dbi_rollback;
-            CJDB::DB::DBI->dbi_rollback;
             eval {
                 email_site( $logger, $site, 'CJDB update failed for ' . $site->name . '.  Have your CUFTS administrator check the logs for errors.' );
             };
             next SITE;
         }
 
-
-        $site->rebuild_cjdb(undef);
-        $site->rebuild_ejournals_only(undef);
-        $site->update;
-
-        CUFTS::DB::DBI->dbi_commit;
-        CJDB::DB::DBI->dbi_commit;
-
-        build_dump( $logger, $site, $MARC_cache );
+        build_dump( $logger, $site, $MARC_cache, $schema );
 
         $logger->info('Rebuild complete for site: ', $site->name, ' (', $site->key, '): ', format_duration(time-$start_time));
 
@@ -107,21 +94,22 @@ SITE:
 ##
 
 sub load_print_data {
-    my ( $logger, $site, $links, $journal_auths, $options, $MARC_cache ) = @_;
+    my ( $logger, $site, $links, $journal_auths, $options, $MARC_cache, $schema ) = @_;
 
     my $site_id = $site->id;
 
     return if !hascontent($site->rebuild_cjdb) && !hascontent($options->{print_file});
 
-    my @files =   $options->{print_file} ? ( $options->{print_file} )
-                : map { $CUFTS::Config::CJDB_SITE_DATA_DIR . '/' . $site->id . '/' . $_ }
-                    split /\|/, $site->rebuild_cjdb;
+    my @files = $options->{print_file} ? ( $options->{print_file} )
+                : map { $CUFTS::Config::CJDB_SITE_DATA_DIR . '/' . $site->id . '/' . $_ } split /\|/, $site->rebuild_cjdb;
 
     my $start_time = time;
     $logger->info('Starting to process print data.');
 
     my $loader = load_print_module( $logger, $site );
-    $loader->site_id( $site->id );
+    $loader->site_id($site->id);
+    $loader->schema($schema);
+
     @files = $loader->pre_process(@files);
 
     my $batch = $loader->get_batch(@files);
@@ -135,7 +123,7 @@ sub load_print_data {
 
         my $journal_auth_id = $loader->match_journals_auth($record, 0);
 
-        if ( !defined($journal_auth_id) ) {
+        if ( !defined $journal_auth_id ) {
             $logger->warn('Unable to find or create a journal auth record for print title: ' . $loader->get_title($record) );
             next;
         }
@@ -154,7 +142,7 @@ sub load_print_data {
             };
 
             # Add titles and ISSNs from journal auth record. These both get deduped later, so add them blindly
-            my $journal_auth = CUFTS::DB::JournalsAuth->retrieve( $journal_auth_id );
+            my $journal_auth = $schema->resultset('JournalsAuth')->find({ id => $journal_auth_id });
             push @{ $journal_auths->{$journal_auth_id}->{titles} }, map { $_->title } $journal_auth->titles;
             push @{ $journal_auths->{$journal_auth_id}->{issns}  }, map { $_->issn }  $journal_auth->issns;
         }
@@ -168,12 +156,9 @@ sub load_print_data {
 
         ja_augment_with_marc( $loader, $logger, $journal_auths->{$journal_auth_id}, $record, $site_id );
 
-
     }
 
-
     # Transaction commit here to save any new journal auth records that were created from print data
-    CUFTS::DB::DBI->dbi_commit;
 
     $logger->info('Finished processing print data: ', format_duration(time-$start_time));
 }
@@ -181,7 +166,7 @@ sub load_print_data {
 # Gets the print module for a site, requires it, and creates a loader object
 
 sub load_print_module {
-    my ( $logger, $site ) = @_;
+    my ( $logger, $site, $schema ) = @_;
     my $site_key = $site->key;
 
     my $module_name = 'CUFTS::CJDB::Loader::MARC::' . $site_key;
@@ -193,7 +178,7 @@ sub load_print_module {
     }
 
     my $module = $module_name->new();
-    defined($module)
+    defined $module
         or die("Failed to create new loading object from module: $module_name");
 
     return $module;
@@ -210,7 +195,7 @@ sub load_print_link {
         rank            => $loader->get_rank(),
     };
 
-    return if !hascontent($new_link->{print_coverage}) || !defined($new_link->{urls});
+    return if !hascontent($new_link->{print_coverage}) || !defined $new_link->{urls};
 
     $links->{$journal_auth_id} = [] if !exists $links->{$journal_auth_id};
     push @{ $links->{$journal_auth_id} }, $new_link;
@@ -222,19 +207,18 @@ sub load_print_link {
 ## No transaction is started during this part
 ##
 
-
 sub load_cufts_data {
-    my ( $logger, $site, $options, $MARC_cache ) = @_;
+    my ( $logger, $site, $options, $MARC_cache, $schema ) = @_;
 
     $logger->info('Starting to process CUFTS data.');
 
     my ( %links, %journal_auths, %resource_names );
 
-    load_cufts_links(   $logger, $site, \%links, \%resource_names );
-    load_print_data(    $logger, $site, \%links, \%journal_auths, $options, $MARC_cache );
-    load_journal_auths( $logger, $site, \%links, \%journal_auths );
+    load_cufts_links(   $logger, $site, \%links, \%resource_names, $schema );
+    load_print_data(    $logger, $site, \%links, \%journal_auths, $options, $MARC_cache, $schema );
+    load_journal_auths( $logger, $site, \%links, \%journal_auths, $schema );
 
-    my $count = update_records( $logger, $site, \%journal_auths, \%links, \%resource_names );
+    my $count = update_records( $logger, $site, \%journal_auths, \%links, \%resource_names, $schema );
 
     $logger->info('Completed CUFTS data processing.');
 
@@ -243,30 +227,30 @@ sub load_cufts_data {
 
 # Loop through active local resources, gathering holdings information and URLs.
 sub load_cufts_links {
-    my ( $logger, $site, $links, $resource_names ) = @_;
+    my ( $logger, $site, $links, $resource_names, $schema ) = @_;
 
     my $start_time = time;
     my $site_id = $site->id;
     my $show_citations = $site->cjdb_show_citations;
 
-    my @local_resources = CUFTS::DB::LocalResources->search({ site => $site_id, active => 't' });
     my $resource_count = 0;
-
     my $total_journals_count = 0;
 
-    foreach my $local_resource (@local_resources) {
+    my $local_resources_rs = $site->active_local_resources;
+    my $local_resources_count = $local_resources_rs->count;
+    while ( my $local_resource = $local_resources_rs->next ) {
         $resource_count++;
 
         # Skip deactivated global resources
-        if ( defined($local_resource->resource) && !$local_resource->resource->active ) {
-            $logger->info("Skipping resource: $resource_count/", scalar(@local_resources), ': ', $local_resource->resource->name);
+        if ( defined $local_resource->resource && !$local_resource->resource->active ) {
+            $logger->info("Skipping resource: $resource_count/$local_resources_count: ", $local_resource->resource->name);
             next;
         }
-        
-        my $resource = CUFTS::Resolve->overlay_global_resource_data($local_resource);
-        $logger->info("Processing resource: $resource_count/", scalar(@local_resources), ': ', $resource->name);
 
-        if ( !defined( $resource->module ) ) {
+        my $resource = CUFTS::Resolve->overlay_global_resource_data($local_resource);
+        $logger->info("Processing resource: $resource_count/$local_resources_count: ", $resource->name);
+
+        if ( !defined $resource->module ) {
             $logger->info('Skipping resource with no defined module');
             next;
         }
@@ -276,34 +260,33 @@ sub load_cufts_links {
         my $module = CUFTS::Resolve::__module_name( $resource->module );
         $resource_names->{$resource_id} = $resource->name;
 
-        my $journals_iter = CUFTS::DB::LocalJournals->search({
-               resource => $local_resource->id,
-               active   => 'true',
-        });
+        my $journals_rs = $local_resource->local_journals(
+            { active   => 'true' },
+            { prefetch => 'global_journal' }
+        );
 
         my $resource_journals_count = 0;
 
 JOURNAL:
-        while ( my $local_journal = $journals_iter->next ) {
+        while ( my $local_journal = $journals_rs->next ) {
 
             $total_journals_count++;
             $resource_journals_count++;
             $logger->trace($resource_journals_count) if $resource_journals_count % 100 == 0;
+            my $resolver_journal = $module->fast_overlay_global_title_data($local_journal);
+            my $journal_auth_id = $resolver_journal->journal_auth_id;
 
-            $local_journal = $module->fast_overlay_global_title_data($local_journal);
-            my $journal_auth = $local_journal->journal_auth;
-
-            if ( !defined($journal_auth) ) {
-                $logger->trace("Skipping journal '", $local_journal->title, "' due to missing journal_auth record.");  # hmm.. trace or info?
+            if ( !$journal_auth_id ) {
+                $logger->trace("Skipping journal '", $resolver_journal->title, "' due to missing journal_auth record.");
                 next JOURNAL;
             }
-            my $journal_auth_id = $journal_auth->id;
 
-            my $link = get_coverage( $local_journal, $resource_id, $resource_rank, $site_id, $show_citations );
+            my $link = get_coverage( $resolver_journal, $resource_id, $resource_rank, $site_id, $show_citations );
 
-            if ( defined($link) ) {
-                my $urls = get_ft_urls( $local_journal, $resource, $site, $module );
-                next JOURNAL if !defined($urls) || !scalar(@$urls);
+            if ( defined $link ) {
+
+                my $urls = get_ft_urls( $resolver_journal, $resource, $site, $module );
+                next JOURNAL if !defined $urls || !scalar @$urls;
 
                 $link->{urls} = $urls;
 
@@ -323,21 +306,21 @@ JOURNAL:
 
 
 sub load_journal_auths {
-    my ( $logger, $site, $links, $journal_auths ) = @_;
+    my ( $logger, $site, $links, $journal_auths, $schema ) = @_;
+
+    my $site_id = $site->id;
 
     my $start_time = time;
     $logger->info('Loading journal authority records for ', scalar(keys(%$links)), ' journals with links.');
-    my $loader = CUFTS::CJDB::Loader::MARC::JournalsAuth->new()
+    my $loader = CUFTS::CJDB::Loader::MARC::JournalsAuth->new({ site_id => $site_id, schema => $schema })
         or die("Unable to create JournalsAuth loader");
-        my $site_id = $site->id;
-    $loader->site_id( $site_id );
 
     foreach my $ja_id ( keys %$links ) {
         next if exists $journal_auths->{$ja_id};  # We may already have a record from print
 
-        my $journal_auth = CUFTS::DB::JournalsAuth->retrieve($ja_id);
-        if ( !defined($journal_auth) ) {
-            $logger->debug( 'Failed to load journal_auth ID: ', $ja_id, '. Skipping record.' );
+        my $journal_auth = $schema->resultset('JournalsAuth')->find({ id => $ja_id });
+        if ( !defined $journal_auth ) {
+            $logger->debug( "Failed to load journal_auth ID: ${ja_id}. Skipping record." );
             delete $links->{$ja_id};  # Delete this so we don't try to load it later using a record that doesn't exist.
             next;
         }
@@ -381,42 +364,42 @@ sub ja_augment_with_marc {
 ##
 
 sub update_records {
-    my ( $logger, $site, $journal_auths, $links, $resource_names ) = @_;
+    my ( $logger, $site, $journal_auths, $links, $resource_names, $schema ) = @_;
 
     my $site_id = $site->id;
 
     $logger->info('Starting database updates.');
 
-    clear_site($logger, $site_id);     # Transaction starts here
+    clear_site($logger, $site_id, $schema);     # Transaction starts here
 
     my $start_time = time;
     $logger->info('Creating CJDB journal records.');
     my $count = 0;
     foreach my $journal_auth_id ( keys(%$journal_auths) ) {
-        store_journal_record( $logger, $journal_auth_id, $journal_auths->{$journal_auth_id}, $site_id );
+        store_journal_record( $logger, $journal_auth_id, $journal_auths->{$journal_auth_id}, $site );
         $count++;
     }
     $logger->info('Done creating CJDB journal records: ', format_duration(time-$start_time));
 
-    store_titles(           $logger, $journal_auths, $site_id );
-    store_issns(            $logger, $journal_auths, $site_id );
-    store_resource_names(   $logger, $journal_auths, $links, $resource_names, $site_id );
-    store_links(            $logger, $journal_auths, $links, $resource_names, $site_id );
-    store_associations(     $logger, $journal_auths, $site_id );
-    store_subjects(         $logger, $journal_auths, $site_id );
-    store_relations(        $logger, $journal_auths, $site_id );
+    store_titles(           $logger, $journal_auths, $site_id, $schema );
+    store_issns(            $logger, $journal_auths, $site_id, $schema );
+    store_resource_names(   $logger, $journal_auths, $links, $resource_names, $site_id, $schema );
+    store_links(            $logger, $journal_auths, $links, $resource_names, $site_id, $schema );
+    store_associations(     $logger, $journal_auths, $site_id, $schema );
+    store_subjects(         $logger, $journal_auths, $site_id, $schema );
+    store_relations(        $logger, $journal_auths, $site_id, $schema );
 
     # We should be done with the journal_auth hash now, so delete it.
     $journal_auths = undef;
 
-    $logger->info( 'Database updates completed.  Loaded ', $count, ' CJDB journal records.' );
+    $logger->info( 'Database updates completed. Loaded ', $count, ' CJDB journal records.' );
 
     return $count;
 }
 
 # Creates a CJDB record and adds the cjdb_id to the journal_auth hash.
 sub store_journal_record {
-    my ( $logger, $journal_auth_id, $journal_auth, $site_id ) = @_;
+    my ( $logger, $journal_auth_id, $journal_auth, $site ) = @_;
 
     my $title               = $journal_auth->{title};
     my $sort_title          = CUFTS::CJDB::Util::strip_articles($title);
@@ -426,12 +409,12 @@ sub store_journal_record {
         title               => $title,
         sort_title          => $sort_title,
         stripped_sort_title => $stripped_sort_title,
-        site                => $site_id,
         journals_auth       => $journal_auth_id,
     };
 
-    my $journal = CJDB::DB::Journals->create($record);
+    my $journal = $site->add_to_cjdb_journals($record);
     my $journal_id = $journal->id;
+
     $journal_auth->{cjdb_id} = $journal_id;
     $journal_auth->{processed_titles} = { $stripped_sort_title => $sort_title };
     $journal_auth->{main_title} = $stripped_sort_title;
@@ -441,7 +424,7 @@ sub store_journal_record {
 
 # Stores deduped titles
 sub store_titles {
-    my ( $logger, $journal_auths, $site_id ) = @_;
+    my ( $logger, $journal_auths, $site_id, $schema ) = @_;
 
     my $start_time = time;
     $logger->info('Attaching titles.');
@@ -459,12 +442,12 @@ sub store_titles {
         }
 
         while ( my ( $stripped, $sort ) = each %$titles ) {
-            my $title_id = CJDB::DB::Titles->find_or_create({
+            my $title_id = $schema->resultset('CJDBTitles')->find_or_create({
                 search_title => substr( $stripped, 0, 1024 ),
                 title        => substr( $sort, 0, 1024),
             })->id;
 
-            CJDB::DB::JournalsTitles->create({
+            $schema->resultset('CJDBJournalsTitles')->create({
                 title   => $title_id,
                 journal => $journal_auth->{cjdb_id},
                 site    => $site_id,
@@ -481,14 +464,14 @@ sub store_titles {
 
 # Dedupe ISSNs and store. These should probably be changed to an ISSN and link table.
 sub store_issns {
-    my ( $logger, $journal_auths, $site_id ) = @_;
+    my ( $logger, $journal_auths, $site_id, $schema ) = @_;
 
     my $start_time = time;
     $logger->info('Attaching ISSNs.');
 
     foreach my $journal_auth ( values %$journal_auths ) {
         foreach my $issn ( uniq @{ $journal_auth->{issns} } ) {
-            CJDB::DB::ISSNs->create({
+            $schema->resultset('CJDBISSNs')->create({
                 journal => $journal_auth->{cjdb_id},
                 issn    => $issn,
                 site    => $site_id,
@@ -502,7 +485,7 @@ sub store_issns {
 
 # Dedupe associations and store.
 sub store_associations {
-    my ( $logger, $journal_auths, $site_id ) = @_;
+    my ( $logger, $journal_auths, $site_id, $schema ) = @_;
 
     my $start_time = time;
     $logger->info('Attaching associations.');
@@ -510,12 +493,12 @@ sub store_associations {
     foreach my $journal_auth ( values %$journal_auths ) {
         next if !defined($journal_auth->{associations});
         foreach my $association ( @{ $journal_auth->{associations} } ) {
-            my $association_id = CJDB::DB::Associations->find_or_create({
+            my $association_id = $schema->resultset('CJDBAssociations')->find_or_create({
                association        => $association,
                search_association => CUFTS::CJDB::Util::strip_title($association),
             })->id;
 
-            CJDB::DB::JournalsAssociations->create({
+            $schema->resultset('CJDBJournalsAssociations')->create({
                 journal     => $journal_auth->{cjdb_id},
                 association => $association_id,
                 site        => $site_id,
@@ -529,20 +512,20 @@ sub store_associations {
 
 # Dedupe subjects and store.
 sub store_subjects {
-    my ( $logger, $journal_auths, $site_id ) = @_;
+    my ( $logger, $journal_auths, $site_id, $schema ) = @_;
 
     my $start_time = time;
     $logger->info('Attaching subjects.');
 
     foreach my $journal_auth ( values %$journal_auths ) {
-        next if !defined($journal_auth->{subjects});
+        next if !defined $journal_auth->{subjects};
         foreach my $subject ( uniq @{ $journal_auth->{subjects} } ) {
-            my $subject_id = CJDB::DB::Subjects->find_or_create({
+            my $subject_id = $schema->resultset('CJDBSubjects')->find_or_create({
                subject        => $subject,
                search_subject => CUFTS::CJDB::Util::strip_title($subject),
             })->id;
 
-            CJDB::DB::JournalsSubjects->create({
+            $schema->resultset('CJDBJournalsSubjects')->create({
                 journal => $journal_auth->{cjdb_id},
                 subject => $subject_id,
                 site    => $site_id,
@@ -555,7 +538,7 @@ sub store_subjects {
 
 # Store relations.
 sub store_relations {
-    my ( $logger, $journal_auths, $site_id ) = @_;
+    my ( $logger, $journal_auths, $site_id, $schema ) = @_;
 
     my $start_time = time;
     $logger->info('Attaching relations.');
@@ -566,7 +549,7 @@ sub store_relations {
         RELATION:
         foreach my $relation ( @{ $journal_auth->{relations} } ) {
             next RELATION if !hascontent($relation->{title});
-            CJDB::DB::Relations->find_or_create({
+            $schema->resultset('CJDBRelations')->find_or_create({
                 journal  => $journal_auth->{cjdb_id},
                 site     => $site_id,
                 relation => $relation->{relation},
@@ -582,14 +565,14 @@ sub store_relations {
 
 
 sub store_resource_names {
-    my ( $logger, $journal_auths, $links, $resource_names, $site_id ) = @_;
+    my ( $logger, $journal_auths, $links, $resource_names, $site_id, $schema ) = @_;
 
     my $start_time = time;
     $logger->info('Attaching resource names.');
 
     my %resource_map;
     while ( my ($resource_id, $resource_name) = each %$resource_names ) {
-        $resource_map{$resource_id} = CJDB::DB::Associations->find_or_create({
+        $resource_map{$resource_id} = $schema->resultset('CJDBAssociations')->find_or_create({
            association        => $resource_name,
            search_association => CUFTS::CJDB::Util::strip_title($resource_name),
         })->id;
@@ -601,7 +584,7 @@ sub store_resource_names {
 
         foreach my $resource_id (uniq @resource_ids) {
             next if !$resource_id;
-            CJDB::DB::JournalsAssociations->find_or_create({
+            $schema->resultset('CJDBJournalsAssociations')->find_or_create({
                 association  => $resource_id,
                 site         => $site_id,
                 journal      => $cjdb_id,
@@ -613,7 +596,7 @@ sub store_resource_names {
 }
 
 sub store_links {
-    my ( $logger, $journal_auths, $links, $resource_names, $site_id ) = @_;
+    my ( $logger, $journal_auths, $links, $resource_names, $site_id, $schema ) = @_;
 
     my $start_time = time;
     $logger->info('Attaching links.');
@@ -630,7 +613,7 @@ sub store_links {
                     resource            => $link->{resource_id},
                     journal             => $cjdb_id,
                     link_type           => $url->[0],
-                    URL                 => $url->[1],
+                    url                 => $url->[1],
                     site                => $site_id,
                     rank                => $link->{rank},
                     local_journal       => $link->{local_journal_id},
@@ -640,7 +623,7 @@ sub store_links {
                     embargo             => $link->{embargo},
                     current             => $link->{current},
                 };
-                CJDB::DB::Links->create($new_link);
+                $schema->resultset('CJDBLinks')->create($new_link);
             }
         }
     }
@@ -719,7 +702,7 @@ sub get_cufts_ft_coverage {
         }
         else {
             $ft_coverage .= 'current';
-		}
+        }
     }
 
     return $ft_coverage;
@@ -742,7 +725,7 @@ sub get_cufts_cit_coverage {
         }
         else {
             $cit_coverage .= 'current';
-		}
+        }
     }
 
     return $cit_coverage;
@@ -764,6 +747,7 @@ sub get_ft_urls {
 
     if ( $module->can_getJournal($request) ) {
         my $results = $module->build_linkJournal( [$local_journal], $resource, $site, $request );
+
         foreach my $result (@$results) {
             $module->prepend_proxy( $result, $resource, $site, $request );
             push @urls, [ 1, $result->url ];
@@ -800,7 +784,7 @@ sub get_current_date {
 sub format_date_vol_iss {
     my ( $date, $vol, $iss ) = @_;
 
-    my $string = $date;
+    my $string = ref $date ? $date->ymd : $date;
 
     if ( hascontent($vol) || hascontent($iss) ) {
         $string .= ' (';
@@ -817,22 +801,16 @@ sub format_date_vol_iss {
 # Clears all the CJDB tables in anticipation of reloading them.  Should be done in a transaction so it can be
 # rolled back if necessary.
 sub clear_site {
-    my ($logger, $site_id) = @_;
+    my ($logger, $site_id, $schema) = @_;
 
-    defined($site_id) && $site_id ne '' && int($site_id) > 0
+    defined $site_id && $site_id ne '' && int($site_id) > 0
         or die("Site id not properly defined in clear_site: $site_id");
-
     $site_id = int($site_id);
 
-    # Make raw database calls to speed up this process.  Since we're deleting
-    # everything for a site from all tables, we don't need Class::DBI triggers
-    # being called.
-
     $logger->info('Deleting existing CJDB data for site.');
-    my $dbh = CJDB::DB::DBI->db_Main;
-    foreach my $table ( qw(cjdb_journals_associations cjdb_journals cjdb_links cjdb_journals_subjects cjdb_journals_titles cjdb_issns cjdb_relations) ) {
-        $logger->trace("Deleting from table $table");
-        $dbh->do("DELETE FROM $table WHERE site=$site_id");
+    foreach my $table ( qw( CJDBJournalsAssociations CJDBLinks CJDBJournalsSubjects CJDBJournalsTitles CJDBISSNs CJDBRelations CJDBJournals) ) {
+        $logger->info("Clearing table: $table");
+        $schema->resultset($table)->search({ site => $site_id })->delete;
     }
     $logger->info('Existing CJDB data deleted.');
 
@@ -841,25 +819,25 @@ sub clear_site {
 
 # Calls an external script to link/build journal auth records for site's local resources
 sub build_local_journal_auths {
-    my $logger = shift;
-    my $site = shift;
+    my ( $logger, $site, $schema ) = @_;
+
     my $site_id = $site->id;
 
-    my %options = (
-        local => 1
-    );
-    
+    my %options = ( local => 1 );
+
     $logger->info('Starting local journal_auth building.');
     eval {
-        my $timestamp = CUFTS::DB::DBI->get_now();
-        my $stats = CUFTS::JournalsAuth::load_journals( 'local', $timestamp, $site_id, \%options );
-        CUFTS::DB::DBI->dbi_commit();
-        # display_stats($stats);
+        $schema->txn_do( sub {
+            my $timestamp = $schema->get_now();
+            my $stats = CUFTS::JournalsAuth::load_journals( $schema, 'local', $timestamp, $site_id, \%options );
+            # display_stats($stats);
+        } );
     };
     if ($@) {
-        $logger->warn('Error building local journal_auth links: ' . $@);
+        $logger->error('Error building local journal_auth links: ' . $@);
     }
-        $logger->info('Finished local journal_auth building.');
+
+    $logger->info('Finished local journal_auth building.');
 }
 
 
@@ -872,14 +850,14 @@ sub get_processed_titles {
 
     # Remove trailing (...)  eg. (Toronto, ON) and [...] eg. [electronic resource]
 
-    $title =~ s/ \( .+? \)  \s* \.? \s* $//xsm;
-    $title =~ s/ \[ .+? \]  \s* \.? \s* $//xsm;
+    $title =~ s/ \( .+? \)  \s* \.? \s* $//xsm; #/
+    $title =~ s/ \[ .+? \]  \s* \.? \s* $//xsm; #/
 
     my $stripped_title = CUFTS::CJDB::Util::strip_title($title);
 
     # Exit if we have an empty title, or the title is too long
 
-    return undef if    !hascontent($title)
+    return undef if   !hascontent($title)
                     || !hascontent($stripped_title)
                     || length($title) > 1024;
 
@@ -912,7 +890,7 @@ sub load_print_module {
     my $site_key = $site->key;
 
     my $module_name = 'CUFTS::CJDB::Loader::MARC::';
-    if ( defined($site_key) ) {
+    if ( defined $site_key ) {
         $module_name .= $site_key;
     }
     else {
@@ -925,7 +903,7 @@ sub load_print_module {
     }
 
     my $module = $module_name->new;
-    defined($module)
+    defined $module
         or die("Failed to create new loading object from module: $module_name");
 
     return $module;
@@ -937,7 +915,7 @@ sub load_print_module {
 ##
 
 sub build_dump {
-    my ( $logger, $site, $MARC_cache ) = @_;
+    my ( $logger, $site, $MARC_cache, $schema ) = @_;
 
     $logger->info('Starting MARC dump.');
     my $start_time = time;
@@ -945,7 +923,8 @@ sub build_dump {
     my $site_id = $site->id;
 
     my $loader = load_print_module( $logger, $site );
-    $loader->site_id( $site_id );
+    $loader->site_id($site_id);
+    $loader->schema($schema);
 
     # Set up site variables so we don't have to (expensively) retrieve them from the site object in a tight loop
 
@@ -984,9 +963,9 @@ sub build_dump {
     # Cache resource information
 
     my %resources_display;
-    my $resources_iter = CUFTS::DB::LocalResources->search({ site => $site_id });
 
-    while ( my $resource = $resources_iter->next ) {
+    my $resources_rs = $site->active_local_resources;
+    while ( my $resource = $resources_rs->next ) {
         my $resource_id     = $resource->id;
         my $global_resource = $resource->resource;
 
@@ -998,7 +977,7 @@ sub build_dump {
             my $provider =   hascontent($resource->provider) ? $resource->provider
                            : defined($global_resource)       ? $global_resource->provider
                            : '';
-            $resources_display{$resource_id}->{name} .= " - $provider";
+            $resources_display{$resource_id}->{name} .= " - $provider" if hascontent($provider);
         }
     }
 
@@ -1013,15 +992,14 @@ sub build_dump {
         die("Unable to open MARC dump file for text: $!");
 
 
-    my $cjdb_record_iter = CJDB::DB::Journals->search( site => $site_id );
+    my $cjdb_record_rs = $site->cjdb_journals;
 
 CJDB_RECORD:
-    while ( my $cjdb_record = $cjdb_record_iter->next ) {
+    while ( my $cjdb_record = $cjdb_record_rs->next ) {
         my $journals_auth_id = $cjdb_record->journals_auth->id;
 
-
         my $MARC_record;
-        if ( defined( $MARC_cache->{$journals_auth_id}->{MARC} ) ) {
+        if ( defined $MARC_cache->{$journals_auth_id}->{MARC} ) {
             if ( !$loader->preserve_print_MARC ) {
                 $MARC_record = strip_print_MARC( $logger, $site, $MARC_cache->{$journals_auth_id}->{MARC} );
             }
@@ -1029,7 +1007,7 @@ CJDB_RECORD:
                 $MARC_record = $MARC_cache->{$journals_auth_id}->{MARC};
             }
         }
-        elsif ( defined($cjdb_record->journals_auth->MARC) ) {
+        elsif ( defined $cjdb_record->journals_auth->marc ) {
             $MARC_record = $cjdb_record->journals_auth->marc_object;
             $MARC_record->leader('00000nai  22001577a 4500');
         }
@@ -1037,10 +1015,10 @@ CJDB_RECORD:
             $MARC_record = create_brief_MARC( $logger, $site, $cjdb_record->journals_auth );
         }
 
-        next if !defined($MARC_record);
+        next if !defined $MARC_record;
 
         # Make sure ISSNs are 1234-4321 format
-        
+
        my @issn_fields = $MARC_record->field( '022' );
        my @new_issn_fields;
        foreach my $orig_field ( @issn_fields ) {
@@ -1056,7 +1034,7 @@ CJDB_RECORD:
            $MARC_record->delete_field($orig_field);
        }
        $MARC_record->insert_fields_ordered( @new_issn_fields );
-        
+
 
 
         # Add holdings statements, skip if no electronic so we don't duplicate print only journals uselessly
@@ -1092,8 +1070,8 @@ CJDB_RECORD:
 
             my $holdings_field = MARC::Field->new(
                 $site_marc_dump_holdings_field,
-                $site_marc_dump_holdings_indicator1,
-                $site_marc_dump_holdings_indicator2,
+                $site_marc_dump_holdings_indicator1 || ' ',
+                $site_marc_dump_holdings_indicator2 || ' ',
                 $site_marc_dump_holdings_subfield => latin1_to_marc8($logger, $holdings)
             );
             $MARC_record->append_fields( $holdings_field );
@@ -1107,7 +1085,7 @@ CJDB_RECORD:
             next CJDB_RECORD;
         }
 
-        if ( !defined($MARC_record) ) {
+        if ( !defined $MARC_record ) {
             $logger->debug("Unable to create MARC record.");
             next CJDB_RECORD;
         }
@@ -1115,7 +1093,7 @@ CJDB_RECORD:
         # Add 005 field
 
         my $existing_005 = $MARC_record->field('005');
-        if ( defined($existing_005) ) {
+        if ( defined $existing_005 ) {
                 $MARC_record->delete_field( $existing_005 );
         }
         $MARC_record->append_fields(
@@ -1134,7 +1112,7 @@ CJDB_RECORD:
 
                 my $resource_name = $resources_display{$link->resource}->{name} || 'Unknown resource';
 
-                my $field_856 = MARC::Field->new( '856', '4', '0', 'u' => $link->URL, 'z' => latin1_to_marc8($logger, $resource_name) );
+                my $field_856 = MARC::Field->new( '856', '4', '0', 'u' => $link->url, 'z' => latin1_to_marc8($logger, $resource_name) );
                 $MARC_record->append_fields( $field_856 );
 
             }
@@ -1173,7 +1151,7 @@ CJDB_RECORD:
                 }
             }
         }
-        
+
         # If there's a 210 field but no 222 field, then copy 245 to 222
         if ( $MARC_record->field('210') && !$MARC_record->field('222') ) {
             my $title_field = ($MARC_record->field('245'))[0];
@@ -1187,8 +1165,8 @@ CJDB_RECORD:
         if ( hascontent($site_marc_dump_cjdb_id_field) && hascontent($site_marc_dump_cjdb_id_subfield) ) {
             my $identifier_field = MARC::Field->new(
                 $site_marc_dump_cjdb_id_field,
-                $site_marc_dump_cjdb_id_indicator1,
-                $site_marc_dump_cjdb_id_indicator2,
+                $site_marc_dump_cjdb_id_indicator1 || ' ',
+                $site_marc_dump_cjdb_id_indicator2 || ' ',
                 $site_marc_dump_cjdb_id_subfield => 'CJDB' . $journals_auth_id
             );
             $MARC_record->insert_fields_ordered( $identifier_field );
@@ -1255,7 +1233,7 @@ sub create_brief_MARC {
 
     # ISSNs
 
-    foreach my $issn ( map {$_->issn_dash} $journals_auth->issns ) {
+    foreach my $issn ( $journals_auth->issns_display ) {
         $MARC_record->append_fields( MARC::Field->new( '022', '#', '#', 'a' => $issn ) );
     }
 
@@ -1348,4 +1326,8 @@ sub email_site {
             $logger->info('Unable to create Net::SMTP object.');
         }
     }
+    else {
+        $logger->info('Update email was not sent due to missing site email address.');
+    }
+
 }

@@ -3,12 +3,10 @@
 use lib qw(lib);
 
 use CUFTS::Exceptions;
-use CUFTS::DB::Sites;
-use CJDB::DB::LCCSubjects;
 use CUFTS::Config;
-use URI::Escape ('uri_escape');
+use URI::Escape qw(uri_escape);
 use File::Path;
-
+use String::Util qw(trim hascontent);
 use Getopt::Long;
 
 use strict;
@@ -20,20 +18,22 @@ GetOptions(\%options, 'site_key=s', 'site_id=i', 'global');
 
 # Check for necessary arguments
 
-if ( !(defined($options{'site_key'}) || defined($options{'site_id'})) && !defined($options{'global'}) ) {
+if ( !(defined($options{site_key}) || defined($options{site_id})) && !defined($options{global}) ) {
     usage();
     exit;
 }
+
+my $schema = CUFTS::Config::get_schema();
 
 # Get CUFTS site id
 
 my ( $outfile, $path, $site );
 
-if (defined($options{'global'})) {
+if ( defined $options{global} ) {
     print "Creating global subject browse page\n";
     $path = "${CUFTS::Config::CJDB_TEMPLATE_DIR}/";
 } else {
-    $site = get_site();
+    $site = get_site($schema);
     my $site_id = $site->id;
     $path = "${CUFTS::Config::CJDB_SITE_TEMPLATE_DIR}/${site_id}/active/";
     print "Creating subject browse page for site: ", $site->key, "\n";
@@ -54,16 +54,16 @@ print "Writing LCC subject guide browse file: $outfile\n";
 
 my $search = {};
 if (defined($site)) {
-    $search->{'site'} = $site->id;
+    $search->{site} = $site->id;
 } else {
-    $search->{'site'} = undef;
+    $search->{site} = undef;
 }
 
-my $subjects = CJDB::DB::LCCSubjects->search($search);
+my $subjects_rs = $schema->resultset('CJDBLCCSubjects')->search($search);
 my %subject_hierarchy;
 
 my $found_subjects_count = 0;
-while (my $subject = $subjects->next) {
+while (my $subject = $subjects_rs->next) {
     $found_subjects_count++;
     if (defined($subject->subject3) && $subject->subject3 ne '') {
         $subject_hierarchy{$subject->subject1}->{$subject->subject2}->{$subject->subject3} = {};
@@ -112,9 +112,9 @@ foreach my $subject1 (sort keys %subject_hierarchy) {
 
         my $subclasses2 = scalar(keys %{$subject_hierarchy{$subject1}->{$subject2}});
         my $subject2_uri = uri_escape($subject2);
-    
+
         print OUTFILE "<div class=\"lcc-browse2\"><a href=\"[% url(\"\$url_base/browse/journals?search_terms=${subject2_uri}&browse_field=subject\") %]\">${subject2}</a></div>\n";
-    
+
         foreach my $subject3 (sort keys %{$subject_hierarchy{$subject1}->{$subject2}}) {
 
             my $subject3_uri = uri_escape($subject3);
@@ -138,17 +138,15 @@ print "Finished load, file closed\n";
 exit;
 
 sub get_site {
+    my ( $schema ) = @_;
+
     my $site;
 
-    if (defined($options{'site_id'})) {
-        $site = CUFTS::DB::Sites->retrieve($options{'site_id'});
-    } else {
-        my @sites = CUFTS::DB::Sites->search('key' => $options{'site_key'});
-    
-        scalar(@sites) == 1 or
-            CUFTS::Exceptions::App->throw('Could not get CUFTS site for key: ' . $options{'site_key'});
-
-        $site = $sites[0];
+    if ( hascontent($options{site_id}) ) {
+        $site = $schema->resultset('Sites')->find({ id => $options{site_id} });
+    }
+    elsif ( hascontent($options{site_key}) )   {
+        $site = $schema->resultset('Sites')->find({ key => $options{site_key} });
     }
 
     defined($site) or
@@ -160,7 +158,7 @@ sub get_site {
 
 sub usage {
     print <<EOF;
-    
+
 create_subject_browse - creates the LC call number browse for CJDB
 
  site_key=XXX - CUFTS site key (example: BVAS)

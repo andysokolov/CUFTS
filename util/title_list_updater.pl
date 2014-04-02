@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/local/bin/perl
 
 ##
 ## NOTE: This must be run from the base CUFTS directory using a relative
@@ -47,6 +47,8 @@ use strict;
 
 my $title_list_dir = $CUFTS::Config::CUFTS_TITLE_LIST_UPLOAD_DIR;
 
+my $schema = CUFTS::Config->get_schema;
+
 opendir LIST_DIR, $title_list_dir or
 	_error("Unable to open directory '$title_list_dir' for reading");
 
@@ -82,7 +84,7 @@ foreach my $dat_file_name (@dat_files) {
 	my $account = CUFTS::DB::Accounts->retrieve($account_id) or
 		CUFTS::Exception::App->throw("Unable to retrieve account '$account_id' for title list updating");
 
-	my $results = $resource->do_module('load_global_title_list', $resource, "$title_list_dir/$title_list_file_name");
+	my $results = $resource->do_module('load_global_title_list', $schema, $resource, "$title_list_dir/$title_list_file_name");
 	
 	##
 	## Email the person who submitted the job request.

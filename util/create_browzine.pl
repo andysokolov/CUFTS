@@ -17,7 +17,7 @@ use CUFTS::Config;
 use CUFTS::Schema;
 use CUFTS::Util::Simple;
 
-my $schema = CUFTS::Schema->connect( $CUFTS::Config::CUFTS_DB_STRING, $CUFTS::Config::CUFTS_USER, $CUFTS::Config::CUFTS_PASSWORD );
+my $schema = CUFTS::Config->get_schema();
 my $term = new Term::ReadLine 'CUFTS Browzine Dump';
 
 $| = 1;
@@ -86,8 +86,8 @@ sub load_site {
             my $journal_auth = $local_journal->journal_auth_merged;
             next if !defined($journal_auth);
 
-            my $issns = $journal_auth->issns_display;
-            next if !scalar(@$issns);
+            my @issns = $journal_auth->issns_display;
+            next if !scalar @issns;
 
             my $start = $local_journal->ft_start_date_merged;
             my $end   = $local_journal->ft_end_date_merged;
@@ -95,10 +95,10 @@ sub load_site {
             next if !hascontent($start) && !hascontent($end);
 
             $count++;
-            my @row = ( $local_resource->name_display, 
-                        $journal_auth->title, 
-                        $issns->[0], 
-                        exists($issns->[1]) ? $issns->[1] : undef,
+            my @row = ( $local_resource->name_display,
+                        $journal_auth->title,
+                        $issns->[0],
+                        exists($issns[1]) ? $issns[1] : undef,
                         defined($start) ? $start->ymd : undef,
                         defined($end)   ? $end->ymd   : undef,
                         $local_journal->embargo_days_merged,

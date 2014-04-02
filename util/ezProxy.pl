@@ -13,29 +13,29 @@ use Data::Dumper;
 use CUFTS::Config;
 use CUFTS::Util::Simple;
 
-use CUFTS::DB::Resources;
-use CJDB::DB::Journals;
-use CJDB::DB::Links;
-
 use URI;
 
-my $journals = CJDB::DB::Journals->search( site => 1);
+my $schema = CUFTS::Config::get_schema();
+
+my $journals_rs = $schema->resultset('CJDBJournals')->search({ site => 1 });
 
 my %hosts;
 my $count = 0;
 
-while ( my $journal = $journals->next ) {
+while ( my $journal = $journals_rs->next ) {
 #    last if $count++ == 1000;
 
-    foreach my $link ( $journal->links ) {
-        my $url = $link->URL;
-        
+    foreach my $link ( $journal->links->all ) {
+        my $url = $link->url;
+
+        # Skip already proxied
         next if $url !~ s{^http://proxy\.lib\.sfu\.ca/login\?url=}{};
 
+        # Add "http://" if it's not there
         if ($url !~ /^https?:/) {
             $url = "http://${url}";
         }
-        
+
         my $uri  = URI->new($url);
         my $host = $uri->host;
 
@@ -49,7 +49,7 @@ foreach my $host ( keys %hosts ) {
     print "U http://${host}/\n";
     print "U https://${host}/\n";
     print "HJ ${host}\n";
-    
+
     if ( $host =~ / ( [^\.]+ \. [^\.]+ ) $/xsm ) {
         print "DJ $1\n\n";
     } else {

@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/local/bin/perl
 
 use lib qw(lib);
 
@@ -14,10 +14,6 @@ use Data::Dumper;
 use CUFTS::Config;
 use CUFTS::Util::Simple;
 
-use CUFTS::DB::LocalJournals;
-use CUFTS::DB::Journals;
-use CUFTS::DB::JournalsAuthTitles;
-use CUFTS::DB::JournalsAuth;
 use CUFTS::JournalsAuth;
 
 use Getopt::Long;
@@ -29,98 +25,79 @@ use Term::ReadLine;
 main();
 
 sub main {
-    my $timestamp = CUFTS::DB::DBI->get_now();
+    my $schema = CUFTS::Config::get_schema();
+
+    my $timestamp = $schema->get_now;
 
     # Read command line arguments
     my %options;
     GetOptions( \%options, 'report', 'local', 'interactive', 'site_key=s', 'site_id=i' );
 
-    $options{progress}   = 1;
-    $options{checkpoint} = 1;
+    $options{progress}   = $PROGRESS;
+    $options{checkpoint} = $CHECKPOINT;
 
     if ($options{interactive}) {
        $options{term} = new Term::ReadLine 'CUFTS Installation';
     }
 
+    $schema->txn_begin();
+
     my $stats;
     if ( $options{local} ) {
-        my $site_id = get_site_id(\%options);
-        $stats = CUFTS::JournalsAuth::load_journals( 'local', $timestamp, $site_id, \%options );
+        my $site_id = get_site_id($schema, \%options);
+        $stats = CUFTS::JournalsAuth::load_journals( $schema, 'local', $timestamp, $site_id, \%options );
     }
     else {
-        $stats = CUFTS::JournalsAuth::load_journals( 'global', $timestamp, \%options );
+        $stats = CUFTS::JournalsAuth::load_journals( $schema, 'global', $timestamp, \%options );
     }
 
-    CUFTS::DB::DBI->dbi_commit();
-    
+    $schema->txn_commit();
+
     display_stats($stats);
-
-    return 1;
-}
-
-sub show_report {
-    # slow, but easy
-    
-    my $journal_auths = CUFTS::DB::JournalsAuth->retrieve_all;
-    while (my $journal_auth = $journal_auths->next) {
-        my @titles = $journal_auth->titles;
-        next if scalar(@titles) == 1;
-        
-        my @issns = $journal_auth->issns;
-        my $issn_string = join ',', map {substr($_->issn,0,4) . '-' . substr($_->issn,4)} @issns;
-
-        print $issn_string, "\n";
-        foreach my $title (@titles) {
-            print $title->title, "\n";
-        }
-        print "\n";
-    }
 }
 
 sub get_site_id {
-    my ( $options ) = @_;
-    
-    return $options->{site_id} if defined($options->{site_id});
-    return undef if !defined($options->{site_key});
+    my ( $schema, $options ) = @_;
 
-    my @sites = CUFTS::DB::Sites->search( key => $options->{site_key} );
-    
-    scalar(@sites) == 1 or
-        die('Could not get CUFTS site for key: ' . $options->{site_key} );
-        
-    return $sites[0]->id;
+    return $options->{site_id} if defined $options->{site_id};
+    return undef if !defined $options->{site_key};
+
+    my $site = CUFTS::DB::Sites->search({ key => $options->{site_key} })->first;
+
+    return $site->id if defined $site;
+
+    die('Unable to find site id.');
 }
 
 sub display_stats {
     my ($stats) = @_;
-    
+
     print "\nJournal records checked: ", $stats->{count}, "\n";
     print "journal_auth records created: ", $stats->{new_record}, "\n";
     print "journal_auth records matched: ", $stats->{match}, "\n";
-    
+
     print "Records skipped due to existing ISSNs\n------------------------------------\n";
     foreach my $journal ( @{$stats->{issn_dupe}} ) {
-        print $journal->title, "\t";
-        print $journal->issn, "\t";
-        print $journal->e_issn, "\t";
-        print $journal->resource->name, "\n";
+        display_journal_stats($journal);
     }
-    
+
     print "Records skipped due to multiple matches\n------------------------------------\n";
     foreach my $journal ( @{$stats->{multiple_matches}} ) {
-        print $journal->title, "\t";
-        print $journal->issn, "\t";
-        print $journal->e_issn, "\t";
-        print $journal->resource->name, "\n";
+        display_journal_stats($journal);
     }
 
     print "Records skipped due to merge creating too many ISSNs\n------------------------------------\n";
     foreach my $journal ( @{$stats->{too_many_issns}} ) {
-        print $journal->title, "\t";
-        print $journal->issn, "\t";
-        print $journal->e_issn, "\t";
-        print $journal->resource->name, "\n";
+        display_journal_stats($journal);
     }
 
     return 1;
+}
+
+sub display_journal_stats {
+    my $journal = shift;
+    print $journal->{title}, "\t";
+    print $journal->{issn}, "\t";
+    print $journal->{e_issn}, "\t";
+    print $journal->{resource}, "\n";
 }

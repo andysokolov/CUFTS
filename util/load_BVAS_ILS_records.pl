@@ -104,7 +104,7 @@ my %currency_map = (
 
 my $load_timestamp = time();
 
-my $schema = CUFTS::Schema->connect( 'dbi:Pg:dbname=CUFTS3', 'tholbroo', '' );
+my $schema = CUFTS::Config::get_schema();
 
 my %records;
 
@@ -167,9 +167,9 @@ foreach my $record ( values %records ) {
     print "Processing: ", $record->{title}, "\n";
     # print Dumper($record), "\n";
     # next;
-    
+
     # Find or create ERM Main record
-    
+
     my $erm;
     if ( int($record->{erm_main_id}) ) {
         $erm = $schema->resultset('ERMMain')->find( { site => $site_id, id => $record->{erm_main_id} } );
@@ -177,7 +177,7 @@ foreach my $record ( values %records ) {
             print "**** ERROR: Record contains an ERM main id, however the ERM record could not be found. Skipping record.\n";
             next;
         }
-    } 
+    }
 
     if ( !defined($erm) ) {
         print "* Unable to find matching ERM number, skipping record.\n";
@@ -189,7 +189,7 @@ foreach my $record ( values %records ) {
     # elsif ( not_empty_string($record->{bib_num}) ) {
     #     $erm = $schema->resultset('ERMMain')->find( { site => $site_id, local_bib => $record->{bib_num} } );
     # }
-    
+
 
     # Otherwise, find/create a new record
 
@@ -241,12 +241,12 @@ foreach my $record ( values %records ) {
         print "\n";
 
         my $cost = $schema->resultset('ERMCosts')->search( { erm_main => $erm->id, number => $payment->{voucher}, order_number => $payment->{acq_num} } )->first();
-        
+
         if ( defined($cost) && $OVERWRITE_COSTS ) {
             $cost->delete;
             undef $cost;
         }
-        
+
         if ( !defined($cost) ) {
             $cost = $schema->resultset('ERMCosts')->create( {
                 erm_main         => $erm->id,
@@ -269,7 +269,7 @@ foreach my $record ( values %records ) {
 
 
     }
-    
+
 }
 
 
@@ -278,10 +278,10 @@ foreach my $record ( values %records ) {
 sub parse_row {
     my ($row, $schema) = @_;
     # print $row;
-    
+
     my %record;
     my @debug;
-    
+
     # $record{other_num}  = get_comma_field( \$row, 'other_num' );
     $record{bib_num} = get_comma_field( \$row, 'bib_num' );
     $record{erm_main_id}   = get_comma_field( \$row, 'erm_main_id' );
@@ -307,7 +307,7 @@ sub parse_row {
             my %payment_record;
 
             # print($payment);
-            
+
             $payment_record{paid_date}     = get_comma_field( \$payment, 'paid_date' );
             $payment_record{invoice_date}  = get_comma_field( \$payment, 'invoice_date' );
             $payment_record{invoice_num}   = get_comma_field( \$payment, 'invoice_num' );
@@ -316,7 +316,7 @@ sub parse_row {
             $payment_record{copies}        = get_comma_field( \$payment, 'copies' );
             $payment_record{sub_from}      = get_comma_field( \$payment, 'sub_from' );
             $payment_record{sub_to}        = get_comma_field( \$payment, 'sub_to' );
-            
+
             $payment =~ s/^[",]\s*//;
             $payment =~ s/\s*[",]$//;
             $payment_record{note} = $payment;
@@ -324,7 +324,7 @@ sub parse_row {
             $payment_record{acq_num}       = $record{acq_num};
 
             # Cleanup the invoice date
-            
+
             my $inv_date_year = int( substr( $payment_record{invoice_date}, 0, 2 ) );
             substr( $payment_record{invoice_date}, 0, 2 ) = $inv_date_year + ( $inv_date_year > 60 ? 1900 : 2000 );
 
@@ -336,7 +336,7 @@ sub parse_row {
             }
 
             # Try to parse a date out
-            
+
             # V. 19, JULY 95 - JUNE 96
 
             # if ( $payment =~ m# ($month_names_for_regex) \s* (\d{2}) \s* - \s* ($month_names_for_regex) \s* (\d{2}) #ixsm ) {
@@ -345,11 +345,11 @@ sub parse_row {
             #     my $end_month   = format_month( $3 );
             #     my $end_year    = int($4) + ( int($4) > 60 ? 1900 : 2000 );
             #     my $end_day     = get_end_day( $end_month );
-            #     
+            #
             #     $payment_record{start_date} = sprintf( "%04i-%02i-01",   $start_year, $start_month );
             #     $payment_record{end_date}   = sprintf( "%04i-%02i-%02i", $end_year,   $end_month, $end_day );
-            # } 
-            # 
+            # }
+            #
             # # 74(01/99)-75(12/99)
             # # NOTE: This throws away the end month/year and uses 1 year from the start date.
             # elsif ( $payment =~ m# \( (\d{2}) / (\d{2}) \) .* - .*  \( (\d{2}) / (\d{2}) \) #xsmi ) {
@@ -360,7 +360,7 @@ sub parse_row {
             #     $payment_record{start_date} = sprintf( "%04i-%02i-01", $start_year,   $start_month );
             #     $payment_record{end_date}   = sprintf( "%04i-%02i-01", $end_year + 1, $end_month );
             # }
-            # 
+            #
             # # sept 1/98 - oct 31/99
             # # Oct1/08-Sep30/09
             # elsif ( $payment =~ m# (\w{3,4}?) \s* (\d{1,2}) \s* / \s* (\d{2}) [-&] (\w{3,4}?) \s* (\d{1,2}) \s* / \s* (\d{2}) #xsm ) {
@@ -370,17 +370,17 @@ sub parse_row {
             #     my $end_month   = format_month( $4 );
             #     my $end_day     = $5;
             #     my $end_year    = int($6) + ( int($6) > 60 ? 1900 : 2000 );
-            #     
+            #
             #     $payment_record{start_date} = sprintf( "%04i-%02i-%02i", $start_year, $start_month, $start_day );
             #     $payment_record{end_date}   = sprintf( "%04i-%02i-%02i", $end_year,   $end_month, $end_day );
-            # } 
+            # }
             # # sep/09 - sep/00
             # elsif ( $payment =~ m# (\w{3,4}) / (\d{2}) [-&] (\w{3,4}) / (\d{2}) #xsm ) {
             #     my $start_month = format_month( $1 );
             #     my $start_year  = int($2) + ( int($2) > 60 ? 1900 : 2000 );
             #     my $end_month   = format_month( $3 );
             #     my $end_year    = int($4) + ( int($4) > 60 ? 1900 : 2000 );
-            #     
+            #
             #     $payment_record{start_date} = sprintf( "%04i-%02i-01", $start_year, $start_month );
             #     $payment_record{end_date}   = sprintf( "%04i-%02i-01", $end_year,   $end_month );
             # }
@@ -390,17 +390,17 @@ sub parse_row {
             #     my $start_year  = int($2) + ( int($2) > 60 ? 1900 : 2000 );
             #     my $end_month   = $3;
             #     my $end_year    = int($4) + ( int($4) > 60 ? 1900 : 2000 );
-            #     
+            #
             #     $payment_record{start_date} = sprintf( "%04i-%02i-01", $start_year, $start_month );
             #     $payment_record{end_date}   = sprintf( "%04i-%02i-01", $end_year,   $end_month );
             # }
             # # re:23423
             # elsif ( $payment =~ / re: \s* (o?\d+) /ixsm ) {   # Try for a reference number
             #     $payment_record{references} = $1;
-            #     
+            #
             #     if ( exists $references{ $payment_record{references} } ) {
             #         $payment_record{start_date} = $references{ $payment_record{references} }->{start_date};
-            #         $payment_record{end_date}   = $references{ $payment_record{references} }->{end_date};                 
+            #         $payment_record{end_date}   = $references{ $payment_record{references} }->{end_date};
             #         push @debug, "Found a 're:' reference to: " . $payment_record{references};
             #     }
             #     else {
@@ -420,20 +420,20 @@ sub parse_row {
             #         else {
             #             push @debug, "Found a 're:' reference but no erm_main_id: " . $payment_record{references};
             #         }
-            #         
+            #
             #         # if ( scalar(@{ $record{payments} }) ) {
             #         #     $payment_record{start_date} = $record{payments}->[ $#{ $record{payments} } ]->{start_date};
             #         #     $payment_record{end_date}   = $record{payments}->[ $#{ $record{payments} } ]->{end_date};
             #         #     push @debug, "Found a 're:' reference but no match, defaulting to previous record";
             #         # }
             #     }
-            #     
+            #
             # }
-            # 
+            #
             # #
             # # Fall back to grabbing a single date and assuming a one year purchase period
             # #
-            # 
+            #
             # # 1YR 010196 FRM 01-96
             # elsif ( $payment =~ m# 1YR \s* \d* \s* FRM \s* (\d{2})-(\d{2}) #xsmi ) {
             #     my $month = $1;
@@ -441,7 +441,7 @@ sub parse_row {
             #     $payment_record{start_date} = sprintf( "%04i-%02i-01", $year,     $month );
             #     $payment_record{end_date}   = sprintf( "%04i-%02i-01", $year + 1, $month );
             # }
-            # 
+            #
             # # 74(01/99)-   ... (truncated due to bad EBSCO data)
             # elsif ( $payment =~ m# \( (\d{2}) / (\d{2}) \) .* - .* #xsmi ) {
             #     my $start_month = $1;
@@ -449,7 +449,7 @@ sub parse_row {
             #     $payment_record{start_date} = sprintf( "%04i-%02i-01", $start_year,     $start_month );
             #     $payment_record{end_date}   = sprintf( "%04i-%02i-01", $start_year + 1, $start_month );
             # }
-            # 
+            #
             # # 1998
             # elsif ( $payment =~ / ((?:19|20)\d{2}) (?!\.) /xsm ) {  # Last ditch for a single year
             #     $payment_record{start_date} = sprintf( "%04i-01-01", $1 );
@@ -458,9 +458,9 @@ sub parse_row {
             # else {
             #     push @debug, "* Can't parse: $payment. Attempting to use formatted date fields.";
             # }
-            
+
             # Fallback to trying the pre-parsed sub_from/to fields
-            
+
             if ( !defined($payment_record{start_date}) || (defined($payment_record{start_date}) && !ParseDate($payment_record{start_date})) ) {
                 push @debug, "* Formatted start date: " . $payment_record{sub_from};
                 my $prev_start_date = $payment_record{start_date};
@@ -497,24 +497,24 @@ sub parse_row {
                 $date_err++;
                 push @debug, "* Could not parse invoice date: $payment_record{invoice_date}";
             }
-            
+
             if ( $date_err ) {
                 push @debug, "* Date error in payment line: $payment_orig";
             }
             else {
                 push @{ $record{payments} }, \%payment_record;
-                push @debug, "* Found usable cost data: " 
-                             . $payment_record{invoice_num} 
-                             . ' - ' . $payment_record{start_date} . ' - ' . $payment_record{end_date} 
-                             . ' - ' . $payment_record{amount_paid} 
+                push @debug, "* Found usable cost data: "
+                             . $payment_record{invoice_num}
+                             . ' - ' . $payment_record{start_date} . ' - ' . $payment_record{end_date}
+                             . ' - ' . $payment_record{amount_paid}
                              . ' ; ' . $payment_record{currency_billed} . ' ' . $payment_record{amount_billed};
 
                 $references{ $payment_record{invoice_num} } = \%payment_record;
             }
-            
+
         }
     }
-    
+
     push @debug, "Found " . scalar(@{$record{payments}}) . " usable payment fields";
 
     return [ \%record, \@debug ];
@@ -565,7 +565,7 @@ sub format_month {
 
 sub clean_record {
     my ( $record ) = @_;
-    
+
     # Remove [electronic resource] and other bits of trailing junk from titles
     # Order is important for these that match on the end of line
 
@@ -581,9 +581,9 @@ sub clean_record {
 
     # Remove trailing comma from 260b (publisher)
     $record->{publisher} =~ s/ , \s* $//xsm;
- 
+
     $record->{erm_main_id} =~ s/^e//;
-    
+
 }
 
 sub get_end_day {
@@ -628,7 +628,7 @@ sub map_resolver {
 
 sub map_currency {
     my ( $currency ) = @_;
-    
+
     my $new_currency = $currency_map{ $currency };
     if ( !defined($new_currency) ) {
         print("Missing currency, defaulting to CAD.\n");

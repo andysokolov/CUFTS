@@ -60,6 +60,8 @@ my $field_headings = $module->title_list_get_field_headings(*DAT_FILE);
 defined($field_headings) && (ref($field_headings) eq 'ARRAY') && (scalar(@$field_headings) > 0) or
     die("title_list_get_field_headings did not return an array ref or did not contain any fields");
 
+print "Field headings\n";
+print(Dumper($field_headings));
 #print "Field headings: ", join( "\t", @$field_headings ), "\n\n";
 
 my $count = 0;

@@ -8,22 +8,14 @@ use lib qw(lib);
 
 use HTML::Entities;
 use Date::Calc qw();
+use String::Util qw(trim hascontent);
+use Getopt::Long;
 
 use CUFTS::Exceptions;
 use CUFTS::Config;
 use CUFTS::Util::Simple;
 
-use CUFTS::DB::DBI;
-
-use CUFTS::DB::Sites;
-use CUFTS::DB::Resources;
-use CUFTS::DB::Journals;
-use CUFTS::DB::JournalsActive;
-use CUFTS::DB::Stats;
-
 use CUFTS::ResourcesLoader;
-
-use Getopt::Long;
 
 use strict;
 
@@ -40,9 +32,9 @@ my $exact_timestamp  = $options{exact};
 
 # Try to find a business week day at least $prev_days in the past
 
-if ( defined($prev_days) ) {
+if ( defined $prev_days ) {
 
-    my @dc = Date::Calc::Today(); 
+    my @dc = Date::Calc::Today();
     while ( $prev_days > 0 || Date::Calc::Day_of_Week(@dc) > 5 ) {
         @dc = Date::Calc::Add_Delta_Days( @dc, -1 );
         $prev_days--;
@@ -50,7 +42,7 @@ if ( defined($prev_days) ) {
     $exact_timestamp = sprintf( "%4i%02i%02i", @dc );
 
 }
-elsif ( defined($after_timestamp) ) {
+elsif ( defined $after_timestamp ) {
 
     if ( $after_timestamp =~ / (\d{4}) - (\d{2}) - (\d{2}) /xsm ) {
         $after_timestamp = "$1$2$3";
@@ -59,9 +51,9 @@ elsif ( defined($after_timestamp) ) {
     else {
         die("Timestamp does not match YYYY-MM-DD format: $after_timestamp");
     }
-    
+
 }
-elsif ( defined($exact_timestamp) ) {
+elsif ( defined $exact_timestamp ) {
     if ( $exact_timestamp =~ / (\d{4}) - (\d{2}) - (\d{2}) /xsm ) {
         $exact_timestamp = "$1$2$3";
         print "Checking for title updates on: $exact_timestamp\n";
@@ -72,7 +64,7 @@ elsif ( defined($exact_timestamp) ) {
 }
 
 my @resource_keys;
-if ( defined($resource_keys) ) {
+if ( defined $resource_keys ) {
     @resource_keys = split /,/, $resource_keys;
 }
 
@@ -80,13 +72,15 @@ export();
 
 sub export {
 
+    my $schema = CUFTS::Config::get_schema();
+
     my $site;
     if ( $options{site_id} ) {
-        $site = CUFTS::DB::Sites->search( id => int($options{site_id}) )->first or
+        $site = $schema->resultset('Sites')->find({ id => int($options{site_id}) }) or
             die("Could not find site: " . $options{site_id});
     }
     elsif ( $options{site_key} ) {
-        $site = CUFTS::DB::Sites->search( key => $options{site_key} )->first or
+        $site = $schema->resultset('Sites')->find({ key => $options{site_key} }) or
             die("Could not find site: " . $options{site_key});
     }
     else {
@@ -97,7 +91,7 @@ sub export {
     my $site_id = $site->id;
 
     my $timestamp = get_timestamp();
-    if ( defined($force_output_dir) ) {
+    if ( defined $force_output_dir ) {
         $output_dir = $force_output_dir;
     }
     else {
@@ -107,18 +101,17 @@ sub export {
     mkdir ${output_dir} or
         die("Unable to create output dir: $!");
 
-    my $local_resources_iter = CUFTS::DB::LocalResources->search( 
-        site => $site_id, 
-        active => 't', 
+    my $local_resources_rs = $site->local_resources({
+        active   => 't',
         resource => { '!=' => undef }
-    );
-    
+    });
+
     my $resource_xml;
 
 RESOURCE:
 
-    while ( my $local_resource = $local_resources_iter->next ) {
-        my $resource = $local_resource->resource;
+    while ( my $local_resource = $local_resources_rs->next ) {
+        my $resource = $local_resource->global_resource;
 
         print "Checking: ", $resource->name, "\n";
 
@@ -127,7 +120,7 @@ RESOURCE:
             next RESOURCE;
         }
 
-        if ( defined($after_timestamp) || defined($exact_timestamp) ) {
+        if ( defined $after_timestamp || defined $exact_timestamp ) {
             my $scanned = $resource->title_list_scanned;
             if ( $scanned =~ /^ (\d{4}) - (\d{2}) - (\d{2}) /xsm ) {
                 $scanned = "$1$2$3";
@@ -157,7 +150,7 @@ RESOURCE:
 
 
         my $key = $resource->key;
-        if ( !defined($key) ) {
+        if ( !defined $key ) {
             print "No key defined, skipping resource.\n";
             next RESOURCE;
         }
@@ -165,12 +158,12 @@ RESOURCE:
             print "Invalid characters detected in key ($key), skipping resource.\n";
             next RESOURCE;
         }
-    
+
         ##
         ## Skip if this record does not match a supplied resource key
         ##
 
-        if ( scalar(@resource_keys) && !grep { $key eq $_ } @resource_keys ) {
+        if ( scalar @resource_keys && !grep { $key eq $_ } @resource_keys ) {
             print "Key does not match requested resource keys.\n";
             next RESOURCE;
         }
@@ -179,61 +172,54 @@ RESOURCE:
         ## Create titles export file
         ##
 
-    
         my $columns = $resource->do_module( 'title_list_fields' );
         next RESOURCE if !defined($columns);
-        
+
         open OUTPUT, ">$output_dir/$key" or
             die "Unable to create output file: $!";
 
         my %ignore_columns = (
-            id => 1,
+            id           => 1,
             journal_auth => 1,
-            cjdb_note => 1,
-            local_note => 1,
+            cjdb_note    => 1,
+            local_note   => 1,
         );
         @$columns = grep { !$ignore_columns{$_} } @$columns;
 
         print OUTPUT join "\t", @$columns;
         print OUTPUT "\n";
-        
-        my $db_module = $resource->do_module( 'global_db_module' );
-        if ( is_empty_string($db_module) ) {
-            print "Missing DB module, skipping resource.\n";
-            next RESOURCE;
-        }
-        
-        my $titles_iter = $db_module->search( resource => $resource->id );
-        while ( my $title = $titles_iter->next ) {
+
+        my $titles_rs = $resource->do_module('global_rs', $schema)->search({ resource => $resource->id });
+        while ( my $title = $titles_rs->next ) {
             print OUTPUT join "\t", map { $title->$_ } @$columns;
             print OUTPUT "\n";
         }
-        
+
         close OUTPUT;
-        
+
         $resource_xml .= create_resource_xml( $local_resource, $resource );
 
     }
-    
+
     open OUTPUT, ">$output_dir/update.xml" or
         die "Unable to create XML output file: $!";
-        
+
     print OUTPUT "<xml>\n" . $resource_xml . "</xml>\n";
-    
+
     close OUTPUT;
-    
+
     `cd $output_dir; tar --create --gzip  --file ${output_dir}/update.tgz .`;
- 
+
     print "Your update file is done:\n${output_dir}/update.tgz\n";
-    
+
 }
 
 
 sub create_resource_xml {
     my ( $local_resource, $resource ) = @_;
-  
+
     my $output = "<resource>\n";
-    
+
     my @skip_fields = qw(
         id
         resource_type
@@ -244,40 +230,40 @@ sub create_resource_xml {
         resource_identifier
         title_count
     );
-    
+
     foreach my $column ( $resource->columns ) {
         next if grep { $_ eq $column } @skip_fields;
-        
+
         my $value;
-        if ( $local_resource->can($column) && not_empty_string($local_resource->$column) ) {
+        if ( $local_resource->can($column) && hascontent($local_resource->$column) ) {
             $value = $local_resource->$column;
         }
         else {
             $value = $resource->$column;
         }
 
-        next if is_empty_string( $value );
+        next if !hascontent( $value );
 
         $value = encode_entities( $value );
-        
+
         $output .= "<$column>$value</$column>\n";
-        
+
     }
-        
+
     ##
     ## Resource type - linked table
     ##
-        
-    my $value = defined( $local_resource->resource_type )
+
+    my $value = defined($local_resource->resource_type) 
                 ? $local_resource->resource_type->type
                 : $resource->resource_type->type;
 
-    $output .= "<resource_type>" . encode_entities( $value ) . "</resource_type>\n";
-    
+    $output .= "<resource_type>" . encode_entities($value) . "</resource_type>\n";
+
     ##
     ## Services - linked table
     ##
-    
+
     $output .= "<services>\n";
 
     my @services = $local_resource->services;
@@ -286,13 +272,13 @@ sub create_resource_xml {
     }
 
     foreach my $service ( @services ) {
-        $output .= "<service>" . encode_entities( $service->name) . "</service>\n";
+        $output .= "<service>" . encode_entities($service->name) . "</service>\n";
     }
-    
+
     $output .= "</services>\n";
-    
+
     $output .= "</resource>\n";
-    
+
     return $output;
 }
 
@@ -306,7 +292,20 @@ sub get_timestamp {
     return sprintf( "%04i%02i%02i%02i%02i%02i", $year, $mon, $mday, $hour, $min, $sec );
 }
 
+sub usage {
+    print <<EOF;
 
+export_global_sync - creates a set of export XML and title lists, then compresses them.
 
+ site_key=XXX          - CUFTS site key (example: BVAS)
+ site_id=111           - CUFTS site id (example: 23)
+ timestamp=2013-03-01  - export only resources updated on or after this date (YYYY-MM-DD)
+ exact=2013-03-23      - export only resources updated on this date (YYYY-MM-DD)
+ resource_keys=abc     - comma separated list of resources to export (example: ebsco_edh,proquest_ap)
+ prev_days=5           - export only resources updated in the last X days
+ output_dir=/tmp/123   - directory to write export files to
+
+EOF
+}
 
 1;

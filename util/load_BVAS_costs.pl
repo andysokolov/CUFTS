@@ -33,7 +33,7 @@ while ($row = <>) {
     chomp($row);
     my $record = parse_row($row);
     
-    # print Dumper($record);
+    print Dumper($record);
     
     # Pretty print record
     
@@ -64,9 +64,6 @@ sub parse_row {
     # $record{other_num}  = get_comma_field( \$row, 'other_num' );
     $record{record_num} = get_comma_field( \$row, 'record_num' );
     $record{order_num}  = get_comma_field( \$row, 'order_num' );
-
-    my $issns = get_comma_field( \$row, 'issns' );
-    $record{issns} = [ split /";"/, $issns ];
 
     $record{title}   = get_comma_field( \$row, 'title' );
     $record{imprint} = get_comma_field( \$row, 'imprint' );

@@ -1,22 +1,18 @@
 #!/usr/local/bin/perl
 
 ##
-## This script checks all CUFTS sites for files that are
-## marked for reloading.
+## Sends out notification messages from various ERM record fields.
 ##
 
 use lib qw(lib);
 
 use CUFTS::Exceptions;
 use CUFTS::Config;
-use CUFTS::DB::Resources;
-use CUFTS::DB::Sites;
-use CUFTS::DB::ERMMain;
 use Net::SMTP;
 use DateTime;
 use DateTime::Format::Pg;
 use Getopt::Long;
-use String::Util qw(hascontent);
+use String::Util qw(hascontent trim);
 
 use strict;
 
@@ -26,19 +22,17 @@ my $now_ymd = $now->ymd;
 my %options;
 GetOptions( \%options, 'site_key=s', 'site_id=i' );
 
-my $site_iter;
+my $schema = CUFTS::Config::get_schema();
+
+my $site_rs = $schema->resultset('Sites');
 if ( $options{site_id} ) {
-    $site_iter = CUFTS::DB::Sites->search( id => int($options{site_id}) );
+    $site_rs = $site_rs->search({ id => int($options{site_id}) });
 }
 elsif ( $options{site_key} ) {
-    $site_iter = CUFTS::DB::Sites->search( key => $options{site_key} );
-}
-else {
-    $site_iter = CUFTS::DB::Sites->retrieve_all;
+    $site_rs = $site_rs->search({ key => $options{site_key} });
 }
 
-
-while (my $site = $site_iter->next) {
+while (my $site = $site_rs->next) {
     print "Checking " . $site->name . "\n";
     my $site_notice = undef;
 
@@ -48,9 +42,9 @@ while (my $site = $site_iter->next) {
       next;
     }
 
-    my @resources = CUFTS::DB::ERMMain->search( 'site' => $site->id );
+    my $resources_rs = $site->erm_mains;
     my %emails;
-    foreach my $resource (@resources) {
+    while ( my $resource = $resources_rs->next ) {
 
         # Check alert expiries
         if ( $resource->alert_expiry ) {
@@ -63,7 +57,7 @@ while (my $site = $site_iter->next) {
                 $emails{$site_email} .= 'Expired alert notice for: ' . $resource->key . ":\n$alert\n";
             }
         }
-        
+
         if ( $resource->renewal_notification && $resource->contract_end ) {
             my $rn_days = int($resource->renewal_notification);
             my $end     = DateTime::Format::Pg->parse_date( $resource->contract_end );
@@ -78,7 +72,7 @@ while (my $site = $site_iter->next) {
         if ( hascontent($resource->marc_schedule) && $resource->marc_schedule eq $now->ymd ) {
             my $erm_email = $resource->marc_alert || $site_email;
             $emails{$erm_email} .= 'Check for downloadable MARC records for: ' . $resource->key . "\n";
-            
+
             if ( my $interval = int($resource->marc_schedule_interval) ) {
                 my $new_date = $now->clone->add( months => $interval );
                 $resource->marc_schedule($new_date->ymd);
@@ -88,7 +82,7 @@ while (my $site = $site_iter->next) {
 
     }
 
-    next if ( !scalar(%emails) );
+    next if !scalar %emails;
 
 
     foreach my $email_address ( keys(%emails) ) {
@@ -99,7 +93,7 @@ while (my $site = $site_iter->next) {
 
         my $host = defined($CUFTS::Config::CUFTS_SMTP_HOST) ? $CUFTS::Config::CUFTS_SMTP_HOST : 'localhost';
         my $smtp = Net::SMTP->new($host);
-        
+
         if ( !defined($smtp) ) {
             warn(' * Unable to create SMTP object for mailing');
             next;
@@ -122,12 +116,5 @@ while (my $site = $site_iter->next) {
 
     }
 
-
-    CUFTS::DB::DBI->dbi_commit();
-
     print "Finished ", $site->name,  "\n";
-}   
-
-    
-
-
+}
