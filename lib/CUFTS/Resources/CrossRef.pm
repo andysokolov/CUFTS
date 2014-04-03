@@ -33,8 +33,6 @@ use URI::Escape qw(uri_escape_utf8);
 use String::Util qw(hascontent);
 use XML::LibXML;
 
-use Data::Dumper;
-
 
 use strict;
 
@@ -147,7 +145,7 @@ sub get_records {
     my $volume = get_text_if_defined( $xpc, '//cr:query[1]/cr:volume');
     my $issue  = get_text_if_defined( $xpc, '//cr:query[1]/cr:issue');
     my $spage  = get_text_if_defined( $xpc, '//cr:query[1]/cr:first_page');
-    my $year   = get_text_if_defined( $xpc, '//cr:query[1]/cr:year');
+       $year   = get_text_if_defined( $xpc, '//cr:query[1]/cr:year');
 
     my $doi    = get_text_if_defined( $xpc, '//cr:query[1]/cr:doi[@type=\'journal_article\']');
     my $issn   = get_text_if_defined( $xpc, '//cr:query[1]/cr:doi[@type=\'print\']');

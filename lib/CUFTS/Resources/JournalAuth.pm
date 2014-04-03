@@ -37,7 +37,7 @@ sub help_template                { return undef }
 sub has_title_list               { return 0     }
 
 sub get_records {
-    my ( $class, $schema, $resource, $site, $request, $schema ) = @_;
+    my ( $class, $schema, $resource, $site, $request ) = @_;
 
     $schema ||= CUFTS::Config::get_schema();
 
