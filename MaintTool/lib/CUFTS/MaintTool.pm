@@ -28,9 +28,9 @@ CUFTS::MaintTool->config->{session} = {
 CUFTS::MaintTool->config->{'V::JSON'}->{encoding} = 'utf8';
 
 CUFTS::MaintTool->config->{'M::CUFTS'}->{connect_info} = {
-    dsn            => 'dbi:Pg:dbname=CUFTS34',
-    user           => 'tholbroo',
-    password       => "",
+    dsn      => $CUFTS::Config::CUFTS_DB_STRING,
+    user     => $CUFTS::Config::CUFTS_USER,
+    password => $CUFTS::Config::CUFTS_PASSWORD,
     auto_savepoint => 1
 };
 

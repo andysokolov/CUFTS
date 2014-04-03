@@ -918,7 +918,7 @@ sub proxied_url {
     my ( $self, $site ) = @_;
 
     return undef if !hascontent( $self->url );
-    return $self->url if $self->proxy ne 't';
+    return $self->url if !$self->proxy;
 
     $site = $self->site if !defined $site;
 
