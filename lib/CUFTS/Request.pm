@@ -14,7 +14,7 @@ use Moose::Util::TypeConstraints;
 # use Data::Dumper;
 
 subtype 'CUFTS::Types::ISSN'
-    => as 'Str'
+    => as 'Maybe[Str]'
     => where { $_ =~ /^\d{7}[\dX]$/ };
 
 subtype 'CUFTS::Types::ArrayOfISSNs'
@@ -22,7 +22,7 @@ subtype 'CUFTS::Types::ArrayOfISSNs'
     => as 'ArrayRef';
 
 coerce 'CUFTS::Types::ISSN'
-    => from 'Str'
+    => from 'Maybe[Str]'
         => via { _clean_issn($_) };
 
 coerce 'CUFTS::Types::ArrayOfISSNs'
@@ -36,48 +36,48 @@ sub _clean_issn {
 }
 
 has 'id' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'sid' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'genre' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
     default    => 'article',
 );
 
 has 'aulast' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'aufirst' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'auinit' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'auinit1' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'auinitm' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'au' => (
-    isa        => 'Str',
+    isa        => 'Maybe[Str]',
     is         => 'rw',
 );
 
@@ -94,59 +94,59 @@ has 'eissn' => (
 );
 
 has 'coden' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'isbn' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'sici' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'bici' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'title' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
     default    => sub { my $self = shift; return hascontent($self->jtitle) ? $self->jtitle : undef; },
     lazy       => 1,
 );
 
 has 'stitle' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'atitle' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'jtitle' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'volume' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'part' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'issue' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
@@ -165,52 +165,52 @@ has 'epage' => (
 );
 
 has 'pages' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'artnum' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'date' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'ssn' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'quarter' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'doi' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'oai' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'pmid' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'bibcode' => (
-	isa        => 'Str',
+	isa        => 'Maybe[Str]',
 	is         => 'rw',
 );
 
 has 'pub' => (
-    isa        => 'Str',
+    isa        => 'Maybe[Str]',
     is         => 'rw',
 );
 
