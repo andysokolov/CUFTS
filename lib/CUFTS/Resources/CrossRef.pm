@@ -54,7 +54,7 @@ sub resource_details_help {
 }
 
 sub get_records {
-    my ( $class, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $resource, $site, $request ) = @_;
 
     if ( !hascontent( $resource->auth_name ) ) {
         CUFTS::Exception::App->throw('No auth_name defined for CrossRef lookups.');
@@ -152,7 +152,7 @@ sub get_records {
     my $doi    = get_text_if_defined( $xpc, '//cr:query[1]/cr:doi[@type=\'journal_article\']');
     my $issn   = get_text_if_defined( $xpc, '//cr:query[1]/cr:doi[@type=\'print\']');
     my $eissn  = get_text_if_defined( $xpc, '//cr:query[1]/cr:doi[@type=\'electronic\']');
-    
+
     !hascontent( $request->doi ) && hascontent($doi)
         and $request->doi($doi);
 

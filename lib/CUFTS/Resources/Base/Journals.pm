@@ -210,6 +210,32 @@ sub local_to_global_field {
     return 'journal';
 }
 
+# Field validation. FormValidtor style validation usable by UIs to validate before saving to database
+
+sub validate_hash {
+    return {
+        issn            => qr/^\d{4}-?\d{3}[\dxX]$/,
+        e_issn          => qr/^\d{4}-?\d{3}[\dxX]$/,
+        cit_start_date  => qr/^\d{4}(?: -\d{2} (?:-\d{2})?  )?$/xsm,
+        cit_end_date    => qr/^\d{4}(?: -\d{2} (?:-\d{2})?  )?$/xsm,
+        ft_start_date   => qr/^\d{4}(?: -\d{2} (?:-\d{2})?  )?$/xsm,
+        ft_end_date     => qr/^\d{4}(?: -\d{2} (?:-\d{2})?  )?$/xsm,
+    };
+}
+
+sub validate_english_hash {
+    return {
+        issn            => 'Format: 1234-567X',
+        e_issn          => 'Format: 1234-567X',
+        cit_start_date  => 'Format: YYYY, YYYY-MM, or YYYY-MM-DD',
+        cit_end_date    => 'Format: YYYY, YYYY-MM, or YYYY-MM-DD',
+        ft_start_date   => 'Format: YYYY, YYYY-MM, or YYYY-MM-DD',
+        ft_end_date     => 'Format: YYYY, YYYY-MM, or YYYY-MM-DD',
+    }
+}
+
+
+
 # Returns an array ref for plugging into DBIC for filtering
 # records for display. Done here so we can optimize ISSN search,
 # remove ISSNs from search if they'll never match, etc.

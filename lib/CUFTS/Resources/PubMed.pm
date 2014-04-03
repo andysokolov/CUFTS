@@ -8,7 +8,7 @@
 ## the terms of the GNU General Public License as published by the Free
 ## Software Foundation; either version 2 of the License, or (at your option)
 ## any later version.
-## 
+##
 ## CUFTS is distributed in the hope that it will be useful, but WITHOUT ANY
 ## WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 ## FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -56,18 +56,18 @@ sub has_title_list { return 0; }
 sub help_template { return undef }
 
 sub get_records {
-	my ($class, $resource, $site, $request) = @_;
+	my ($class, $schema, $resource, $site, $request) = @_;
 
     my $pmid = $request->pmid;
     return undef if is_empty_string($pmid);
-	
+
 	my $data;
 
     # Check the cache
-    
-    my $cache_data = CUFTS::DB::SearchCache->search(type => 'pubmed', 'query' => $pmid)->first;
 
-    if ( defined($cache_data) ) {
+    my $cache_data = $schema->resultset('SearchCache')->search({ type => 'pubmed', query => $pmid })->first;
+
+    if ( defined $cache_data ) {
         no strict;  # Dumper's $VAR1 will cause errors without this
         $data = eval($cache_data->result);
 	}
@@ -78,27 +78,26 @@ sub get_records {
 
     	my $ua = LWP::UserAgent->new('timeout' => 10);
     	my $response = $ua->request(POST 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi', [
-    		'db'   => 'pubmed',
-    		'id'   => $pmid,
-    		'mode' => 'xml',
-    		'tool' => 'CUFTS',
+    		db   => 'pubmed',
+    		id   => $pmid,
+    		mode => 'xml',
+    		tool => 'CUFTS',
     	]);
 
-    	$response->is_success or return undef;
-	
+    	return undef if !$response->is_success;
+
     	my $returned_data = trim_string($response->content);
 
     	print STDERR "PubMed lookup returned in " . (time-$start_time) . " seconds\n";
 #        print STDERR $returned_data;
-    	
+
     	$data = parse_pubmed_data($returned_data);
-    	
-    	$cache_data = CUFTS::DB::SearchCache->create({
+
+    	$cache_data = $schema->resultset('SearchCache')->create({
     	    type   => 'pubmed',
     	    query  => $pmid,
     	    result => Data::Dumper->Dump([$data]),
     	});
-    	CUFTS::DB::SearchCache->dbi_commit;
     }
 
     foreach my $field ( qw( title atitle issn eissn volume issue pages spage epage date ) ) {
@@ -107,16 +106,16 @@ sub get_records {
     	}
     }
 
-	
+
 	return undef;
 }
 
 sub can_getMetadata {
 	my ($class, $request) = @_;
-	
+
 	not_empty_string($request->pmid) and
 		return 1;
-		
+
 	return 0;
 }
 
@@ -152,7 +151,7 @@ sub parse_pubmed_data {
         if ( $data->{date_month} !~ /^\d+$/ ) {
             $data->{date_month} = $month_lookup->{ lc($data->{date_month}) };
         }
-        
+
         if ( $data->{date_year} =~ /^\d{4}$/ ) {
             $data->{date} = $data->{date_year};
             if ( $data->{date_month} =~ /^\d\d?$/ ) {
@@ -179,12 +178,12 @@ sub parse_pubmed_data {
                 $data->{epage} = $2;
 
                 # Change page ranges 1123-33 into 1123 and 1133
-                
+
                 my $length = length($data->{spage}) - length($data->{epage});
                 if ($length > 0) {
                     $data->{epage} = substr($data->{spage}, 0, $length) . $data->{epage};
                 }
-            }   
+            }
         }
 
         my $issn_nodes = $article->getElementsByTagName('ISSN');
@@ -196,7 +195,7 @@ sub parse_pubmed_data {
             my $issn_string = trim_string( ($issn->getChildNodes)[0]->getNodeValue() );
             if ($issn_string =~ /^ (\d{4}) -? (\d{3}[\dxX]) $/xsm ) {
                 $issn_string = "$1$2";
-            
+
                 if ( $attr eq 'Electronic' ) {
                     $data->{eissn} ||= $issn_string;
                 } else {
@@ -208,7 +207,7 @@ sub parse_pubmed_data {
     }
 
     return $data;
-    
+
 }
 
 1;
