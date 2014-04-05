@@ -62,9 +62,7 @@ SITE:
         eval {
             $schema->txn_do( sub {
                 $count = load_cufts_data( $logger, $site, \%options, $MARC_cache, $schema );
-                $site->rebuild_cjdb(undef);
-                $site->rebuild_ejournals_only(undef);
-                $site->update;
+                $site->update({ rebuild_cjdb => undef, rebuild_ejournals_only => undef });
             } );
         };
         if ($@) {
@@ -216,7 +214,7 @@ sub load_cufts_data {
 
     load_cufts_links(   $logger, $site, \%links, \%resource_names, $schema );
     load_print_data(    $logger, $site, \%links, \%journal_auths, $options, $MARC_cache, $schema );
-    load_journal_auths( $logger, $site, \%links, \%journal_auths, $schema );
+    load_journal_auths( $logger, $site, \%links, \%journal_auths, $MARC_cache, $schema );
 
     my $count = update_records( $logger, $site, \%journal_auths, \%links, \%resource_names, $schema );
 
@@ -306,7 +304,7 @@ JOURNAL:
 
 
 sub load_journal_auths {
-    my ( $logger, $site, $links, $journal_auths, $schema ) = @_;
+    my ( $logger, $site, $links, $journal_auths, $MARC_cache, $schema ) = @_;
 
     my $site_id = $site->id;
 
@@ -326,12 +324,15 @@ sub load_journal_auths {
         }
 
         $journal_auths->{$ja_id} = {
-            title  => $journal_auth->title,
-            issns  => [ map { $_->issn }  $journal_auth->issns ],
-            titles => [ map { $_->title } $journal_auth->titles ],
+            title      => $journal_auth->title,
+            issns      => [ map { $_->issn }  $journal_auth->issns->all ],
+            titles     => [ map { $_->title } $journal_auth->titles->all ],
         };
 
-        ja_augment_with_marc( $loader, $logger, $journal_auths->{$ja_id}, $journal_auth->marc_object, $site_id );
+        if ( my $marc = $journal_auth->marc_object ) {
+            ja_augment_with_marc( $loader, $logger, $journal_auths->{$ja_id}, $marc, $site_id );
+            $MARC_cache->{ja}->{$ja_id} = $marc;
+        }
 
     }
 
@@ -976,7 +977,7 @@ sub build_dump {
         if ( !$site_cjdb_display_db_name_only ) {
             my $provider =   hascontent($resource->provider) ? $resource->provider
                            : defined($global_resource)       ? $global_resource->provider
-                           : '';
+                                                             : '';
             $resources_display{$resource_id}->{name} .= " - $provider" if hascontent($provider);
         }
     }
@@ -996,7 +997,7 @@ sub build_dump {
 
 CJDB_RECORD:
     while ( my $cjdb_record = $cjdb_record_rs->next ) {
-        my $journals_auth_id = $cjdb_record->journals_auth->id;
+        my $journals_auth_id = $cjdb_record->get_column('journals_auth');
 
         my $MARC_record;
         if ( defined $MARC_cache->{$journals_auth_id}->{MARC} ) {
@@ -1007,8 +1008,8 @@ CJDB_RECORD:
                 $MARC_record = $MARC_cache->{$journals_auth_id}->{MARC};
             }
         }
-        elsif ( defined $cjdb_record->journals_auth->marc ) {
-            $MARC_record = $cjdb_record->journals_auth->marc_object;
+        elsif ( exists $MARC_cache->{ja}->{$journals_auth_id} ) {
+            $MARC_record = $MARC_cache->{ja}->{$journals_auth_id};
             $MARC_record->leader('00000nai  22001577a 4500');
         }
         else {
