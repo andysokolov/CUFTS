@@ -116,7 +116,7 @@ sub clean_data {
 
 
     # Some EBSCO lists now have MM/DD/YY format for dates
-    
+
     foreach my $field ( qw( ft_start_date ft_end_date cit_start_date cit_end_date ) ) {
         if ( not_empty_string($record->{$field}) && $record->{$field} =~ m{^ (\d{1,2}) / (\d{2}) / (\d{2}) $}xsm ) {
             my ( $month, $day, $year ) = ( $1, $2, $3 );
@@ -124,7 +124,7 @@ sub clean_data {
             $record->{$field} = sprintf( '%04i-%02i-%02i', $year, $month, $day );
         }
     }
-    
+
     # Clear embargo months/days if there's no fulltext start/end dates
 
     if ( is_empty_string($record->{ft_start_date}) && is_empty_string($record->{ft_end_date}) ) {
@@ -194,7 +194,7 @@ sub build_linkJournal {
         my $db         = $resource->resource_identifier;
         my $journal_id = $record->db_identifier;
         next if is_empty_string($db) || is_empty_string($journal_id);
-        
+
         $db = lc($db);
 
         my $result = new CUFTS::Result("http://search.ebscohost.com/direct.asp?db=${db}&jid=${journal_id}&scope=site");
@@ -264,11 +264,11 @@ sub produce_ebsco_xml {
     my ( $class, $record, $resource, $site, $request ) = @_;
 
     if ( is_empty_string( $resource->resource_identifier ) ) {
-        warn('No resource_identifier defined for EBSCO linking.');
+        warn('No resource_identifier defined for EBSCO linking: ' . $resource->name);
         return undef;
 #        CUFTS::Exception::App->throw('No resource_identifier defined for EBSCO linking.');
     }
-        
+
     if ( is_empty_string( $resource->auth_name ) ) {
         warn('No auth_name defined for EBSCO linking for site: ' . $site->key);
         return undef;
