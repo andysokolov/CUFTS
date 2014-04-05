@@ -664,7 +664,7 @@ sub _search_active {
         my @issn_search;
         push @issn_search, { issn   => { '-in' => \@issns } };
         push @issn_search, { e_issn => { '-in' => \@issns } };
-        if ( scalar @{$request->journal_auths} ) {
+        if ( defined $request->journal_auths && scalar @{$request->journal_auths} ) {
             push @issn_search, { journal_auth => { '-in' => $request->journal_auths } };
         }
         $search_terms{'-or'} = \@issn_search;
