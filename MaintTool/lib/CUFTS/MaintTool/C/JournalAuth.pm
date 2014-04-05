@@ -8,12 +8,12 @@ use CUFTS::JournalsAuth;
 use CUFTS::CJDB::Util;
 
 my $marc_fields = {
-    '022' => { 
+    '022' => {
                subfields => [ qw(a) ],
                size      => [ 10 ],
                repeats   => 1,
              },
-    '050' => { 
+    '050' => {
                subfields => [ qw(a) ],
                size      => [ 10 ],
                repeats   => 1,
@@ -135,15 +135,15 @@ sub auto : Private {
 
 sub create : Local {
     my ( $self, $c ) = @_;
-    
+
     if ( $c->req->params->{create} ) {
         $c->form($form_validate_create);
-        
+
         $c->stash->{title} = $c->form->valid->{title};
         $c->stash->{issn1} = $c->form->valid->{issn1};
         $c->stash->{issn2} = $c->form->valid->{issn2};
-        
-        unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {      
+
+        unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
 
             my @records;
             if ( !$c->form->valid->{confirm} ) {
@@ -156,7 +156,7 @@ sub create : Local {
                 if ( $c->form->valid->{issn2} ) {
                     push @records, CUFTS::DB::JournalsAuth->search_by_issns($c->form->valid->{issn2});
                 }
-            
+
                 if ( scalar(@records) > 0 ) {
                     $c->stash->{records} = \@records;
                 }
@@ -167,7 +167,7 @@ sub create : Local {
 
                 my $ja = CUFTS::DB::JournalsAuth->create({title => $c->form->valid->{title}});
                 $ja->add_to_titles({title => $c->form->valid->{title}});
-            
+
                 foreach my $field ( 'issn1', 'issn2' ) {
 
                     if ( not_empty_string($c->form->valid->{$field}) ) {
@@ -196,7 +196,7 @@ sub create : Local {
         }
 
     }
-    
+
     $c->stash->{template} = 'journalauth/create.tt';
 }
 
@@ -220,7 +220,7 @@ sub search : Local {
             }
             $c->stash->{journal_auths} = \@records;
 
-            # Stash search field/string for display on search box and into the session for 
+            # Stash search field/string for display on search box and into the session for
 
             $c->session->{journal_auth_search_field} = $c->stash->{field} = $c->form->valid->{field};
             $c->session->{journal_auth_search_string} = $c->stash->{string} = $c->form->valid->{string};
@@ -234,7 +234,7 @@ sub search : Local {
 
 sub edit : Local {
     my ($self, $c, $journal_auth_id) = @_;
-    
+
     my $form_validate_edit = {
         optional => [
             'save', 'cancel', 'title', 'rss'
@@ -242,7 +242,7 @@ sub edit : Local {
         optional_regexp => qr/_(issn|info|title|count)$/,
         filters => ['trim'],
     };
-    
+
     my $journal_auth = CUFTS::DB::JournalsAuth->retrieve($journal_auth_id);
 
     $c->form($form_validate_edit);
@@ -251,12 +251,12 @@ sub edit : Local {
         return $c->forward('/journalauth/done_edits');
     }
     if ( $c->form->valid->{save} ) {
-        unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {      
+        unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
         eval {
                 $journal_auth->title($c->form->valid->{'title'});
                 $journal_auth->rss($c->form->valid->{'rss'});
                 $journal_auth->update();
-            
+
                 $journal_auth->issns->delete_all;
                 foreach my $param ( keys %{$c->form->valid} ) {
                     next if $param !~ / ^(.+)_issn $/xsm;
@@ -274,7 +274,7 @@ sub edit : Local {
                         push @{$c->stash->{errors}}, "Invalid ISSN: $value";
                     }
                 }
-            
+
                 $journal_auth->titles->delete_all;
                 foreach my $param ( keys %{$c->form->valid} ) {
                     next if $param !~ / ^(.+)_title $/xsm;
@@ -289,16 +289,16 @@ sub edit : Local {
                             title_count => $c->form->valid->{"${prefix}_count"}
                     });
                 }
-            
+
             };
             if ($@) {
                 push @{$c->stash->{errors}}, $@;
             }
             if ( defined($c->stash->{errors}) ) {
                 CUFTS::DB::DBI->dbi_rollback();
-                
+
                 # See if there's any "new" fields that need to be added
-                
+
                 foreach my $param ( keys %{$c->form->valid} ) {
                     if ( $param =~ / new(\d+)_issn /xsm ) {
                         if ( $1 > $c->stash->{max_issn_field} ) {
@@ -311,7 +311,7 @@ sub edit : Local {
                         }
                     }
                 }
-                
+
             } else {
                 CUFTS::DB::DBI->dbi_commit;
                 return $c->forward('/journalauth/done_edits');
@@ -321,7 +321,7 @@ sub edit : Local {
 
     $c->stash->{max_title_field} ||= 0;
     $c->stash->{max_issn_field}  ||= 0;
-    
+
     $c->stash->{load_javascript} = 'journal_auth.js';
     $c->stash->{journal_auth}    = $journal_auth;
     $c->stash->{template}        = 'journalauth/edit.tt';
@@ -339,8 +339,8 @@ sub edit_marc : Local {
     if ($c->req->params->{save}) {
 
         $c->form($form_validate_marc);
-        unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {      
-            
+        unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
+
             my @fields;
             foreach my $field_type (sort keys %$marc_fields) {
                 my $row = 0;
@@ -349,7 +349,7 @@ sub edit_marc : Local {
                 while ($c->form->valid->{"${row}-${field_type}-exists"}) {
                     my @subfields;
                     my $indicators = [];
-                    
+
                     foreach my $subfield (@{$marc_fields->{$field_type}->{subfields}}) {
                         my $value = $c->form->valid->{"${row}-${field_type}${subfield}"};
                         next unless defined($value) && $value ne '';
@@ -360,7 +360,7 @@ sub edit_marc : Local {
                     $indicators->[0] = $c->form->valid->{"${row}-${field_type}-1"};
                     $indicators->[1] = $c->form->valid->{"${row}-${field_type}-2"};
                     $row++;
-                    
+
                     next unless scalar(@subfields);  # Don't save blank fields, they're to be "deleted"
 
                     $c->stash->{max_seen_fields}->{$field_type} = $row;
@@ -394,12 +394,12 @@ sub edit_marc : Local {
             }
         }
     }
-    
+
     $c->stash->{marc_fields} = $marc_fields;
     $c->stash->{load_javascript} = 'journal_auth.js';
     $c->stash->{journal_auth} = $journal_auth;
     $c->stash->{template} = 'journalauth/edit_marc.tt';
-}   
+}
 
 sub done_edits : Local {
     my ($self, $c) = @_;
@@ -416,12 +416,12 @@ sub marc_file : Local {
     my ( $self, $c, $journal_auth_id) = @_;
 
     my $journal_auth = CUFTS::DB::JournalsAuth->retrieve($journal_auth_id);
-    
+
     if ( $c->req->params->{upload} ) {
-        
+
         $c->form($form_validate_marc_upload);
-        unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {      
-        
+        unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
+
             my $marc_string = $c->request->upload('upload_data')->slurp();
             my $record;
 
@@ -434,7 +434,7 @@ sub marc_file : Local {
             if ($@) {
                 push @{$c->stash->{errors}}, "Error creating MARC record: $@";
             }
-            
+
             if ( defined($c->stash->{errors}) && scalar(@{$c->stash->{errors}}) ) {
                 CUFTS::DB::DBI->dbi_rollback();
             } else {
@@ -463,17 +463,18 @@ sub marc_download : Local {
 sub merge : Local {
     my ($self, $c) = @_;
     $c->form($form_validate_merge);
-    
-    if ( !($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) ) {     
+
+    if ( !($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) ) {
 
         my $ids = $c->form->valid->{merge};
         my $merge_to = $c->form->valid->{merge_to};
 
         $ids = ref($ids) eq 'ARRAY' ? $ids : [ $ids ];
-        
+
         $ids = [ grep { $_ != $merge_to } @$ids ];
         unshift( @$ids, $merge_to );
 
+        my $schema = $c->model('CUFTS')->schema;
 
         if ( scalar(@$ids) < 2 ) {
             push @{$c->stash->{errors}}, "You must select multiple records to merge.";
@@ -481,16 +482,16 @@ sub merge : Local {
         else {
             my $merged_ja;
             eval {
-                $merged_ja = CUFTS::JournalsAuth->merge(@$ids);
+                $schema->txn_do( sub {
+                    $merged_ja = CUFTS::JournalsAuth->merge($schema, @$ids);
+                });
             };
             if ($@) {
-                CUFTS::DB::DBI->dbi_rollback();
                 push @{$c->stash->{errors}}, "Error merging records: $@";
-            } else {
-                CUFTS::DB::DBI->dbi_commit();
             }
-
-            return $c->redirect("/journalauth/search?search=search&field=ids&string=" . $merged_ja->id);
+            else {
+                return $c->redirect("/journalauth/search?search=search&field=ids&string=" . $merged_ja->id);
+            }
         }
     }
     else {
