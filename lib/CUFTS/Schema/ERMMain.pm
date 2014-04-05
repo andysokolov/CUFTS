@@ -941,14 +941,9 @@ sub get_group_records {
     return [] if !hascontent( $self->group_records );
 
     my @record_ids = split( /[,\s]+/, $self->group_records );
-    my $recordset = $self->result_source->resultset->search(
-        {
-            site => $self->site,
-            id   => { '-in' => \@record_ids }
-        }
-    );
+    my $rs = $self->site->erm_mains({ id   => { '-in' => \@record_ids } });
 
-    my %records = map { $_->id => $_ } $recordset->all();
+    my %records = map { $_->id => $_ } $rs->all();
     my @records;
     foreach my $id ( @record_ids ) {
         push( @records, $records{$id} );
