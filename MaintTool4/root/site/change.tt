@@ -1,0 +1,15 @@
+[%- SET header_section = c.loc('Change Site') -%]
+[%- breadcrumbs.push([ '', c.loc('Change Site') ] ) -%]
+
+<form name="change-site" class="form-horizontal" method="POST">
+<fieldset class="well">
+    <h2 class="legend">[% c.loc('change current site') %]</h2>
+    <label for="new-site">[% c.loc('Site') %]:</label>
+    <select class="span6" name="new_site">
+    [% FOREACH site IN sites %]
+        <option value="[% site.id %]" [% 'selected="1"' IF c.site.id == site.id %]>[% site.name | html %] ([% site.key %])</option>
+    [% END %]
+    </select>
+    <input type="submit" name="submit" value="[% c.loc('change site') %]" class="btn"/>
+</fieldset>
+</form>

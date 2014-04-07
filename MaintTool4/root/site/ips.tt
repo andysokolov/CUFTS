@@ -1,0 +1,117 @@
+[%- SET header_section = c.loc('Site Network') -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('Site').action_for('edit') ), c.loc('Site Settings') ] ) -%]
+[%- breadcrumbs.push([ '', c.loc('Site Network') ] ) -%]
+[%- SET page_id = 'site-settings' -%]
+
+[%- PROCESS form_results.tt -%]
+
+<form method="post" class="form-horizontal">
+
+<fieldset class="short-inputs well">
+<h2 class="legend">[% c.loc('site domains') | html %]</h2>
+
+<div id="domains-container">
+[% SET domain_count = 0 %]
+[% FOREACH domain IN domains %]
+ [% SET domain_id = domain.name || 'domain' _ loop.count %]
+ <div class="control-group  [% IF form_submitted AND ( c.form.missing(domain_id) OR c.form.invalid(domain_id) ) %]error[% END %]">
+  
+  <input class="inline" id="[% domain_id %]" type="text" size="40" maxlength="255" name="[% domain_id %]" value="[% domain.domain | html %]"> <button class="btn btn-danger delete-domain" data-delete="[% domain_id %]"><i class="icon-minus"></i> [% c.loc('delete') %]</button> [% PROCESS field_error.tt field=domain_id %]
+ </div>
+ [% SET domain_count = loop.count + 1 %]
+[% END %]
+</div>
+
+<div id="add-domain-container">
+    <button id="add-domain" class="btn"><i class="icon-plus"></i> [% c.loc('new domain') %]</button>
+</div>
+
+</fieldset>
+
+
+
+<fieldset class="short-inputs well">
+<h2 class="legend">[% c.loc('site IP ranges') | html %]</h2>
+
+<div id="ips-container">
+[% SET ip_count = 0 %]
+[% FOREACH ip IN ips %]
+ [%- 
+     SET id = ip.name.defined ? ip.name : loop.count;
+     SET ip_low_id = 'ip_low' _ id;
+     SET ip_high_id = 'ip_high' _ id;
+     IF id > ip_count; ip_count = id; END;
+ -%]
+ <div class="control-group [% IF form_submitted AND ( c.form.missing(ip_low_id) OR c.form.invalid(ip_low_id) OR c.form.missing(ip_high_id) OR c.form.invalid(ip_high_id) ) %]error[% END %]">
+  <input class="inline" type="text" data-to-delete="ip_[% id %]" name="[% ip_low_id %]" value="[% ip.ip_low %]" maxlength="15" /> -
+  <input class="inline" type="text" data-to-delete="ip_[% id %]" name="[% ip_high_id %]" value="[% ip.ip_high %]" maxlength="15" /> <button class="btn btn-danger delete-ips" data-delete="ip_[% id %]"><i class="icon-minus"></i> [% c.loc('delete') %]</button>[% PROCESS field_error.tt field=ip_low_id, type='ip' %][% PROCESS field_error.tt field=ip_high_id, type='ip' %]
+ </div>
+ [% SET ip_count = ip_count + 1 %]
+[% END %]
+</div>
+
+<div id="add-domain-container">
+    <button id="add-ips" class="btn"><i class="icon-plus"></i> [% c.loc('new IP range') | html %]</button>
+</div>
+
+</fieldset>
+
+<div>
+    <input type="submit" class="btn btn-primary" name="submit" value="[% c.loc('submit') | html %]" />
+</div>
+
+</form>
+
+
+<script>
+$(document).ready( function() {
+
+    var add_domain_count = [% domain_count %];
+    var add_ip_count     = [% ip_count %];
+
+    $('#add-domain').bind(
+        'click', function() {
+            var id = 'domain' + add_domain_count;
+            $('#domains-container').append(
+                $('<div class="control-group"><input class="inline" id="' + id + '" type="text" size="40" maxlength="255" name="' + id + '" /> <button class="btn btn-danger delete-domain" data-delete="' + id + '"><i class="icon-minus"></i> [% c.loc('delete') %]</button></div>')
+            );
+            add_domain_count = add_domain_count + 1;
+            return false;
+        }
+    );
+
+    $('.delete-domain').live( 'click', function() {
+        var data = $(this).attr('data-delete');
+        var input = $('#' + data);
+        input.attr( 'disabled', !input.attr('disabled') );
+        input.toggleClass('to-delete');
+        console.log(this);
+        return false;
+    });
+
+    $('#add-ips').bind(
+        'click', function() {
+
+            var low_id =  'ip_low'  + add_ip_count;
+            var high_id = 'ip_high' + add_ip_count;
+
+            $('#ips-container').append(
+                $('<div class="control-group"><input class="inline" type="text" data-to-delete="ip_' +  add_ip_count + '" name="' + low_id + '" maxlength="15" /> - <input class="inline" type="text" data-to-delete="ip_' + add_ip_count + '" id="' + high_id + '" name="' + high_id + '" maxlength="15" /> <button class="btn btn-danger delete-ips" data-delete="ip_' + add_ip_count + '"><i class="icon-minus"></i> [% c.loc('delete') %]</button></div>')
+            );
+
+            add_ip_count = add_ip_count + 1;
+
+            return false;
+        }
+    );
+
+    $('.delete-ips').live( 'click', function() { 
+        var id = $(this).attr('data-delete');
+        var input = $('[data-to-delete=' + id + ']');
+        input.attr( 'disabled', !input.attr('disabled') );
+        input.toggleClass('to-delete');
+        return false;
+    });
+
+} );
+</script>

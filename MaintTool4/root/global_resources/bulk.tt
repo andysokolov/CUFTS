@@ -1,0 +1,22 @@
+[%- SET header_section = c.loc('Global Resources') -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('GlobalResources').action_for('list'), { page => gr_page } ), c.loc('Global Resources List') ] ) -%]
+[%- breadcrumbs.push([ '', resource.name ] ) -%]
+[%- SET page_id = 'global-resources-bulk' -%]
+
+[% PROCESS form_results.tt %]
+
+<h1 class="well-inset">[% resource.name | html %]</h1>
+
+[% PROCESS global_resources/subview.tt %]
+
+<form action="[% c.uri_for( c.controller.action_for('bulk'), resource.id ) | html %]" method="post" enctype="multipart/form-data">
+<input type="hidden" name="gr_page" value="[% gr_page | html %]" />
+<fieldset class="container-fluid well">
+<h2 class="legend">[% c.loc('title list maintenance') | html %]</h2>
+
+<div class="control-group">
+    <label for="file">[% c.loc('upload title list') | html %]:</label>
+   <input id="file" type="file" name="file" /> <input type="submit" name="upload" value="upload" class="btn" />
+</div>
+</fieldset>
+</form>

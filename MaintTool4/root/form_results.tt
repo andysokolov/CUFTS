@@ -1,0 +1,43 @@
+[% IF results %]
+<section class="alert alert-block alert-success">
+<a class="close" data-dismiss="alert" href="#">&times;</a>
+ <ul>
+ [% FOREACH result IN results %]
+  <li>[% result | html %]</li>
+ [% END %]
+ </ul>
+</section>
+[% END %]
+
+[%- RETURN IF !form_submitted -%]
+[% IF !errors AND form_errors; SET errors=form_errors; END %]
+
+[%- IF errors OR c.form.has_unknown OR c.form.has_invalid OR c.form.has_missing %]
+ <section class="alert alert-block alert-error">
+ <a class="close" data-dismiss="alert" href="#">&times;</a>
+
+  [% IF c.form.has_invalid || c.form.has_missing %]
+    <ul><li>[% c.loc('There were problems with the submitted data.  See below.') %]</li></ul>
+  [% END %]
+
+
+  [% IF errors %]
+   <ul>
+    [% FOREACH error IN errors %]
+     <li>[% error | html %]</li>
+    [% END %]
+   </ul>
+  [% END %]
+
+  [% IF c.form.has_unknown %]
+   The following parameters were found but not handled:
+   <ul>
+    [% FOREACH unknown IN c.form.unknown %]
+     <li>[% unknown | html %]</li>
+    [% END %]
+   </ul>
+  [% END -%]
+
+
+</section>
+[% END -%]

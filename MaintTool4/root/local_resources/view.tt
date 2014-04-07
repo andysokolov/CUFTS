@@ -1,0 +1,74 @@
+[%- SET header_section = c.loc('Local Resources') -%]
+[%- SET page_id = 'local-resources-view' -%]
+[%- SET resource = local_resource.defined AND !global_resource.defined ? local_resource : global_resource -%]
+[%- SET yes = c.loc('yes'); SET no = c.loc('no') -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('LocalResources').action_for('list'), { page => lr_page } ), c.loc('Local Resources List') ] ) -%]
+[%- breadcrumbs.push([ '', resource.name ] ) -%]
+
+
+<div class="form-inline" style="margin: 0 0 2px 14px;">
+ <h1 style="width: 50%; margin: 0; padding: 0; display: inline">[% resource.name | html %]</h1>
+ 
+<div class="span4" style="float: right; text-align: right;">
+ <form style="display: inline;" method="post" action="[% c.uri_for( c.controller('LocalResources').action_for('edit'), [ load_resource_type, resource_id ] ) | html %]">
+  <button class="btn">[% c.loc('edit') %]</button><input type="hidden" name="lr_page" value="[% lr_page | html %]" />
+ </form>
+ [% IF resource.do_module('has_title_list') %]
+ <form style="display: inline;" class="form-inline" method="post" action="[% global_resource ? c.uri_for( c.controller('LocalResources::Titles').action_for('list_global'), [ 'global', global_resource.id ], { lr_page => page, show_active => 'all', apply_filter => 1, filter => '' } ) : c.uri_for( c.controller('LocalResources::Titles').action_for('list_local'), [ 'local', local_resource.id ] ) | html %]">
+  <input type="hidden" name="lr_page" value="[% lr_page | html %]" />
+  <button class="btn">
+    [% c.loc('Titles: ') | html %]
+    [%- IF global_resource.defined %]
+     [% local_resource.auto_activate ? global_resource.title_count : ( local_resource.record_count('active', 'true') || 0 ) | html %] of [% global_resource.title_count %]
+    [% ELSE %]
+     [% local_resource.record_count %]
+    [% END -%]
+  </button>
+ </form> 
+ [% END %]
+ [% IF local_resource.defined %]
+ <form style="display: inline;" method="post" action="[% c.uri_for( c.controller('LocalResources').action_for('delete'), [ 'local', local_resource.id ] ) | html %]">
+  <button class="btn btn-danger">[% c.loc('delete') %]</button><input type="hidden" name="lr_page" value="[% lr_page | html %]" />
+ </form>
+ [% END %]
+</div>
+</div>
+
+<div id="resource" class="well container-fluid">
+<h2 class="legend">[% c.loc('general settings') %]</h2>
+<table class="properties">
+[% IF global_resource.defined %]
+<tr><th>[% c.loc('key') %]</th><td>[% resource.key | html %]</td></tr>
+[% END %]
+<tr><th>[% c.loc('provider') %]</th><td>[% resource.provider | html %]</td></tr>
+<tr><th>[% c.loc('type') %]</th><td>[% resource.resource_type.type | html %]</td></tr>
+<tr><th>[% c.loc('module') %]</th><td>[% resource.module | html %]</td></tr>
+<tr><th>[% c.loc('proxy') %]</th><td>[% local_resource.proxy ? yes : no| html %]</td></tr>
+<tr><th>[% c.loc('dedupe') %]</th><td>[% local_resource.dedupe ? yes : no | html %]</td></tr>
+<tr><th>[% c.loc('auto_activate') %]</th><td>[% local_resource.auto_activate ? yes : no | html %]</td></tr>
+<tr><th>[% c.loc('active') %]</th><td>[% local_resource.active ? yes : no | html %]</td></tr>
+
+[% SET details = resource.do_module(global_resource.defined ? 'global_resource_details' : 'local_resource_details') %]
+[% FOREACH detail IN details %]
+ [% SET val = global_resource.defined AND !local_resource.$detail.defined ? global_resource.$detail : local_resource.$detail %]
+ [% NEXT UNLESS val.defined %]
+ <tr class="hastip" title="[% resource.do_module('get_resource_details_help', detail) %]">
+  <th>[% c.loc(detail.replace('_', ' ')) | html %]</td>
+  <td class="field[% loop.count % 2 %]">
+    [% IF detail.search('url$') %]<a href="[% resource.$detail | html %]">[% val | html %]</a>
+    [% ELSE %][% val | html %][% END %]
+  </td>
+ </tr>
+[% END %]
+
+</table>
+</div>
+
+<div id="services" class="well container-fluid">
+<h2 class="legend">[% c.loc('active services') %]</h2>
+<table class="properties zebra">
+[% FOREACH service IN services %]
+ <tr><td>[% service | html %]</td></tr>
+[% END %]
+</table>
+</div>

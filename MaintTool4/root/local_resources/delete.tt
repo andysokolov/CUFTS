@@ -1,0 +1,26 @@
+[%- SET header_section = c.loc('Local Resources') -%]
+[%- SET page_id = 'local-resources-delete' -%]
+[%- SET global_resource = local_resource.resource -%]
+[%- SET resource_name = local_resource.name OR global_resource.name -%]
+
+[%- breadcrumbs.push([ c.uri_for( c.controller('LocalResources').action_for('list'), { page => lr_page } ), c.loc('Local Resources List') ] ) -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('LocalResources').action_for('edit'), [ 'local', local_resource.id ], { lr_page => lr_page } ), resource_name ] ) -%]
+[%- breadcrumbs.push([ '', c.loc('Delete') ] ) -%]
+
+<h1>[% resource_name | html %]</h1>
+
+[% PROCESS local_resources/subview.tt %]
+
+<form action="[% c.uri_for( c.controller('LocalResources').action_for('delete'), [ 'local', local_resource.id ] ) | html %]" method="post">
+<input type="hidden" name="lr_page" value="[% lr_page | html %]" />
+
+<fieldset class="container-fluid well">
+<h2 class="legend">[% c.loc('delete resource') | html %]</h2>
+
+<div class="control-group">
+   <label>[% c.loc('Delete this local resource and all attached journals and CJDB records?') | html %]</label>
+   <input class="btn btn-danger" type="submit" name="do_delete" value="[% c.loc('delete') | html %]" />
+</div>
+
+</fieldset>
+</form>

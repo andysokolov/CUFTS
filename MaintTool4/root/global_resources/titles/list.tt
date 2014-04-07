@@ -1,0 +1,56 @@
+[%- SET header_section = c.loc('Global Resource Titles') -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('GlobalResources').action_for('list'), { page => gr_page } ), c.loc('Global Resources List') ] ) -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('GlobalResources').action_for('view'), [ resource.id ], { gr_page => gr_page } ), resource.name ] ) -%]
+[%- breadcrumbs.push([ '', c.loc('Titles') ]) -%]
+
+[%- SET page_id = 'global-titles-list' -%]
+
+[% SET columns = resource.do_module('title_list_fields') %]
+[% IF !columns.in('journal_auth'); columns.push('journal_auth'); END %]
+[% IF !columns.in('id'); columns.unshift('id'); END %]
+
+<h1>[% resource.name | html %]</h1>
+
+<div>
+<form method="GET" class="span12 form-inline control-bar">
+  <label for="filter">[% c.loc('Filter') %]: <input type="text" name="filter" value="[% filter | html %]" style="width: 13em;"> <input type="submit" class="btn" name="apply_filter" value="[% c.loc('filter') %]"></label>
+</form>
+</div>
+
+<div style="width: 100%; float: left; margin-bottom: 20px;" class="scrollable">
+<table class="grid zebra" style="width: 100%;">
+<tr class="header">
+ [% FOREACH col IN columns %]
+  <th class="nowrap">[% c.loc( col.replace('_', ' ') ) | html %]</th>
+ [% END %]
+</tr>
+
+[% WHILE ( title = titles_rs.next ) %]
+ <tr>
+  [% FOREACH col IN columns %]
+   [% SET coltype = title.$col.can('ymd') ? 'date' : '' %]
+   <td class="field-[% col | html %] [% coltype | html %]">
+
+    [% IF col == 'issn' OR col=='e_issn' %]
+        [% SET col = col _ '_dashed' %]
+    [% END %]
+
+    [% IF col == 'id' %]
+     <a href="[% c.uri_for( c.controller.action_for('title_edit'), resource.id, title.id, { gt_page => page, gr_page => gr_page } ) | html %]">[% title.id %]</a>
+    [% ELSIF col == 'journal_auth' %]
+     [%- title.get_column('journal_auth') | html -%]
+    [% ELSIF coltype == 'date' %]
+     [%- title.$col.ymd | html -%]
+    [% ELSE %]
+     [%- title.$col | html -%]
+    [% END %]
+   </td>
+  [% END %]
+ </tr>
+[% END %]
+
+</table>
+
+[% PROCESS paging.tt pager = titles_rs.pager %]
+
+</div>

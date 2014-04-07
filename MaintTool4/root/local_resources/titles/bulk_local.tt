@@ -1,0 +1,37 @@
+[%- SET header_section = c.loc('Local Resources') -%]
+[%- SET page_id = 'local-locals-bulk-local' -%]
+
+[%- breadcrumbs.push([ c.uri_for( c.controller('LocalResources').action_for('list'), { page => lr_page } ), c.loc('Local Resources List') ] ) -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('LocalResources').action_for('view'), [ 'local', local_resource.id ], { lr_page => lr_page } ), local_resource.name ] ) -%]
+[%- breadcrumbs.push([ '', 'Bulk' ] ) -%]
+
+[%- PROCESS form_results.tt -%]
+
+<h1 class="well-inset">[% local_resource.name | html %]</h1>
+
+[%- PROCESS local_resources/subview.tt -%]
+
+<form method="post" enctype="multipart/form-data" action="[% c.uri_for( c.controller('LocalResources::Titles').action_for('bulk_local'), [ 'local', local_resource.id ] ) %]">
+<input type="hidden" name="lr_page" value="[% lr_page | html %]" />
+
+<fieldset class="container-fluid well">
+<h2 class="legend">[% c.loc('title list maintenance') | html %]</h2>
+
+<div class="control-group">
+    <label for="file">[% c.loc('upload title list') | html %]:</label>
+   <input id="file" type="file" name="file" /> <input type="submit" name="upload" value="[% c.loc('upload') %]" class="btn"/>
+</div>
+
+</fieldset>
+
+<fieldset class="container-fluid well">
+<h2 class="legend">[% c.loc('title list export') | html %]</h2>
+<div class="container-group">
+ <label for="format">[% c.loc('format') | html %]:</label>
+  <input type="hidden" name="format" value="tab" />[% c.loc('tab delimited') %]
+<!--  <select id="format" name="format"><option value="tab">[% c.loc('tab delimited') %]</option><option value="xml">[% c.loc('XML') %]</option></select> -->
+</div>
+<input type="submit" name="export" value="[% c.loc('export') %]" class="btn btn-primary" />
+</fieldset>
+
+</form>

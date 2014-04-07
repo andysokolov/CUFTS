@@ -1,0 +1,20 @@
+[% PROCESS form_results.tt %]
+
+<form name="login" method="POST">
+<fieldset class="well container-fluid">
+<h2 class="legend">[% c.loc('CUFTS maintenance tool login') %]</h2>
+
+<div class="control-group [% IF form_submitted AND (c.form.missing('name') OR c.form.invalid('name')) %]error[% END %]">
+<label for="login_key" class="required">[% c.loc('account') %]:</label>
+<input type="text" name="login_key" size="20" maxlength="64" value="[% params.login_key | html %]" autofocus />[% PROCESS field_error.tt field='login_key' %]
+</div>
+
+<div class="control-group [% IF form_submitted AND (c.form.missing('name') OR c.form.invalid('name')) %]error[% END %]">
+<label for="login_password" class="required">[% c.loc('password') %]:</label>
+<input type="password" name="login_password" size="20" maxlength="64" />[% PROCESS field_error.tt field='login_password' %]
+</div>
+
+<button type="submit" class="btn btn-primary" value="login" name="submit">login</button>
+
+</fieldset>
+</form>

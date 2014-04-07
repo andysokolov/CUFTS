@@ -1,0 +1,59 @@
+[%# Template for bulk updating a local resource overlaying a global resource %]
+
+[%- SET header_section = c.loc('Local Resources') -%]
+[%- SET page_id = 'local-resources-bulk-global' -%]
+[%- SET match_columns = global_resource.do_module('local_matchable_on_columns') -%]
+[%- SET resource = local_resource -%]
+[%- SET resource_name = local_resource.name OR global_resource.name -%]
+
+[%- breadcrumbs.push([ c.uri_for( c.controller('LocalResources').action_for('list'), { page => lr_page } ), c.loc('Local Resources List') ] ) -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('LocalResources').action_for('view'), [ 'local', local_resource.id ], { lr_page => lr_page } ), resource_name ] ) -%]
+[%- breadcrumbs.push([ '', 'Bulk' ] ) -%]
+
+[%- PROCESS form_results.tt -%]
+
+<h1>[% resource_name | html %]</h1>
+
+[%- PROCESS local_resources/subview.tt -%]
+
+<form method="post" enctype="multipart/form-data" action="[% c.uri_for( c.controller('LocalResources::Titles').action_for('bulk_global'), [ 'local', local_resource.id ] ) %]">
+<fieldset class="container-fluid well">
+<h2 class="legend">[% c.loc('title list maintenance') | html %]</h2>
+
+<div class="control-group">
+    <label for="file">[% c.loc('action') | html %]:</label>
+    <select name="type"><option value="activation">activate</option><option type="overlay">overlay</option></select>
+</div>
+
+<div class="control-group">
+    <label for="file">[% c.loc('match on') | html %]:</label>
+   <select name="match">
+     [% FOREACH columns IN match_columns %]
+      <option value="[% columns | html %]">[% columns | html %]</option>
+     [% END %]
+    </select>
+</div>
+
+<div class="control-group">
+    <label for="file">[% c.loc('deactivate other titles') | html %]:</label>
+    <select name="deactivate"><option value="1">yes</option><option value="0">no</option></select>
+</div>
+
+<div class="control-group">
+    <label for="file">[% c.loc('upload title list') | html %]:</label>
+   <input id="file" type="file" name="file" /> <input type="submit" name="upload" value="upload" class="btn btn-primary" />
+</div>
+
+</fieldset>
+
+<fieldset class="container-fluid well">
+<h2 class="legend">[% c.loc('title list export') | html %]</h2>
+<div>
+    <label for="format">[% c.loc('format') | html %]:</label>
+    <input type="hidden" name="format" value="tab" />[% c.loc('tab delimited') %]
+<!--    <select id="format" name="format"><option value="tab">[% c.loc('tab delimited') %]</option><option value="xml">[% c.loc('XML') %]</option></select> -->
+</div>
+<input type="submit" name="export" value="[% c.loc('export') %]" class="btn btn-primary" />
+</fieldset>
+</form>
+

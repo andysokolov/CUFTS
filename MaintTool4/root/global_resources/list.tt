@@ -1,0 +1,88 @@
+[%- SET header_section = c.loc('Global Resources') -%]
+[%- breadcrumbs.push([ '', c.loc('Global Resources List') ] ) -%]
+[%- SET page_id = 'global-resources-list' -%]
+
+
+<div>
+<form method="GET" class="span6 form-inline control-bar">
+  <label for="filter">[% c.loc('Filter') %]: <input type="text" name="filter" value="[% filter | html %]" style="width: 13em;"> <input type="submit" class="btn" name="apply_filter" value="[% c.loc('filter') %]"></label>
+</form>
+<form method="GET" class="form-inline control-bar" action="[% c.uri_for( c.controller('GlobalResources').action_for('edit'), 'new' ) | html %]">
+    <button style="float: right;" class="btn"><i class="icon-plus"></i> [% c.loc('New Resource') %]</button>
+</form>
+</div>
+
+<table class="grid zebra" style="width: 100%;">
+<tr class="header compact">
+ <th>&nbsp;</th>
+ <th class="text-right">[% c.loc('id') %]</th>
+ <th class="expand">
+   <a href="[% SET sort_hash = { sort => sort == 'name' ? 'name_d' : 'name' }; c.request.uri_with(sort_hash) %]">[% c.loc('resource') %]
+   [% PROCESS show_arrow down_flag='name', up_flag = 'name_d' %]
+   </a>
+ </th>
+ <th class="expand">
+  <a href="[% SET sort_hash = { sort => sort == 'provider' ? 'provider_d' : 'provider' }; c.request.uri_with(sort_hash) %]">[% c.loc('provider') %]
+  [% PROCESS show_arrow down_flag='provider', up_flag = 'provider_d' %]
+  </a>
+ </th>
+ <th>[% c.loc('type') %]</th>
+ <th class="text-right">[% c.loc('titles') %]</th>
+ <th class="text-center">[% c.loc('active') %]</th>
+ <th class="text-right">
+  <a href="[% SET sort_hash = { sort => sort == 'scanned' ? 'scanned_d' : 'scanned' }; c.request.uri_with(sort_hash) %]">[% c.loc('scanned') %]
+  [% PROCESS show_arrow down_flag='scanned', up_flag = 'scanned_d' %]
+  </a>
+ </th>
+ <th class="text-right nowrap">
+  <a href="[% SET sort_hash = { sort => sort == 'next' ? 'next_d' : 'next' }; c.request.uri_with(sort_hash) %]">[% c.loc('next update') %]
+  [% PROCESS show_arrow down_flag='next', up_flag = 'next_d' %]
+  </a>
+ </th>
+</tr>
+
+[% WHILE ( resource = resources_rs.next ) %]
+<tr>
+ <td class="nowrap">
+  <a href="[% c.uri_for( c.controller('GlobalResources').action_for('view'), resource.id, { gr_page => page } ) | html %]">[% c.loc('view') %]</a> |
+  <a href="[% c.uri_for( c.controller('GlobalResources').action_for('edit'), resource.id, { gr_page => page } ) | html %]">[% c.loc('edit') %]</a> |
+  <a href="[% c.uri_for( c.controller('GlobalResources').action_for('bulk'), resource.id, { gr_page => page } ) | html %]">[% c.loc('bulk') %]</a>
+ </td>
+
+ <td class="text-right nowrap">[% resource.id %]</td>
+
+ <td>[% resource.name | html %]</td>
+
+ <td>[% resource.provider | html %]</td>
+
+ <td class="nowrap">[% resource.resource_type.type | html %]</td>
+
+ <td class="text-right nowrap">
+  [% IF resource.do_module('has_title_list') %]
+   <a href="[% c.uri_for( c.controller('GlobalResources').action_for('titles_list'), resource.id, { gr_page => page } ) | html %]">[% resource.title_count %]</a>
+  [% ELSE %]
+   [% c.loc('N/A') %]
+  [% END %]
+ </td>
+
+ <td class="text-center nowrap">[% resource.active ? c.loc('yes') : c.loc('no') %]</td>
+
+ <td class="text-right nowrap">
+  [% IF resource.title_list_scanned %][% resource.title_list_scanned.ymd %][% END %]
+ </td>
+
+ <td class="text-right nowrap">
+  [%- SET nu = resource.next_update -%][% IF nu %][% nu.ymd %][% END %]
+ </td>
+
+
+</tr>
+[% END %]
+
+</table>
+
+[% PROCESS paging.tt pager = resources_rs.pager %]
+
+[% BLOCK show_arrow %]
+ [% IF sort == down_flag %]<i class="icon-chevron-down"></i>[% ELSIF sort == up_flag %]<i class="icon-chevron-up"></i>[% END %]
+[% END %]

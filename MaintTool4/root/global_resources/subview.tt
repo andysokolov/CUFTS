@@ -1,0 +1,22 @@
+<div id="general-settings" class="container-fluid well">
+<h2>[% c.loc('general settings') %]</h2>
+<table class="properties">
+<tr><th>[% c.loc('name') %]</th><td>[% resource.name | html %]</td></tr>
+<tr><th>[% c.loc('key') %]</th><td>[% resource.key | html %]</td></tr>
+<tr><th>[% c.loc('provider') %]</th><td>[% resource.provider | html %]</td></tr>
+<tr><th>[% c.loc('type') %]</th><td>[% resource.resource_type.type | html %]</td></tr>
+<tr><th>[% c.loc('module') %]</th><td>[% resource.module | html %]</td></tr>
+<tr><th>[% c.loc('active') %]</th><td>[% resource.active ? c.loc('yes') : c.loc('no') %]</td></tr>
+
+[% SET details = resource.do_module('global_resource_details') %]
+[% SET help = resource.do_module('help_template') %]
+[% FOREACH detail IN details %]
+ [% NEXT UNLESS resource.$detail.defined %]
+ <tr class="hastip" title="[% resource.do_module('get_resource_details_help', detail) %]">
+  <th>[% detail.replace('_', ' ') | html %]</td>
+  <td class="field[% loop.count % 2 %]">[% IF detail.search('url$') %]<a href="[% resource.$detail | html %]">[% resource.$detail | html %]</a>[% ELSE %][% resource.$detail | html %][% END %]</td>
+ </tr>
+[% END %]
+
+</table>
+</div>

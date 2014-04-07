@@ -1,0 +1,13 @@
+[% RETURN IF !form_submitted %]
+[% IF c.form.missing(field) %]
+ <span class="help-inline">* [% c.loc('Required field') %]</span>
+[% ELSIF c.form.invalid(field) %]
+    [% IF field_messages.$field.defined %]
+        [% SET error_message = field_messages.$field %]
+    [% ELSE %]
+        [% SET error_message = field_messages.generic.$type %]
+    [% END %]
+
+ <span class="help-inline">* [% c.loc(error_message) || c.loc('Error in field') %]</span>
+[% END %]
+

@@ -1,0 +1,63 @@
+[%- SET header_section = c.loc('Site Settings') -%]
+[%- breadcrumbs.push([ '', c.loc('Site Settings') ] ) -%]
+[%- SET page_id = 'site-settings' -%]
+
+[%- PROCESS form_results.tt -%]
+
+<form method="post">
+<fieldset class="well span12">
+<h2 class="legend">general settings</h2>
+
+  <label for="key">[% c.loc('key') %]:</label>
+  <span>[% site.key | html %]</span>
+
+  [% INCLUDE show_textfield field='name', required=1 %]
+  [% INCLUDE show_textfield field='email', required=1 %]
+  [% INCLUDE show_textfield field='erm_notification_email', label='ERM notification email' %]
+  [% INCLUDE show_textfield field='proxy_prefix' %]
+  [% INCLUDE show_textfield field='proxy_prefix_alternate' %]
+  [% INCLUDE show_textfield field='proxy_WAM' %]
+
+  <button type="submit" class="btn btn-primary" value="submit" name="submit">[% c.loc('submit') %]</button>
+
+</fieldset>
+</form>
+
+<form action="[% c.uri_for( c.controller('Site').action_for('ips') ) | html %]" method="GET">
+<fieldset class="well span12">
+<h2 class="legend">[% c.loc('domains') %] <button style="margin-left: 10px;" class="btn btn-small"><i class="icon-pencil"></i> [% c.loc('edit') %]</button></h2>
+[% SET domains = site.domains %]
+[% IF domains != '' %]
+ <ul>
+ [% IF domains.exists('id') %][% domains = [domains] %][% END %]
+ [% FOREACH domain IN site.domains %]
+	<li>[% domain.domain %]</li>
+ [% END %]
+ </ul>
+[% END %]
+</fieldset>
+</form>
+
+<form action="[% c.uri_for( c.controller('Site').action_for('ips') ) | html %]" method="GET">
+<fieldset class="well legend span12">
+<h2>[% c.loc('IP networks') %]<button style="margin-left: 10px;" class="btn btn-small"><i class="icon-pencil"></i> [% c.loc('edit') %]</button></h2>
+[% SET ips = site.ips %]
+[% IF ips != '' %]
+ <ul>
+ [% IF ips.id %][% SET ips = [ips] %][% END %]
+ [% FOREACH ip IN ips.sort('ip_low') %]
+  <li>[% ip.ip_low %] - [% ip.ip_high %]</li>
+ [% END %]
+ </ul>
+[% END %]
+</fieldset>
+</form>
+
+[% BLOCK show_textfield %]
+  [% SET maxlength = maxlength OR 255 %]
+  [% SET label = label OR field.replace('_', ' ') %]
+  <div class="control-group [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]">
+  <label for="[% field %]" [% IF required %]class="required"[% END %]>[% c.loc(label) %]:</label>
+  <input class="span8" type="text" id="[% field %]" name="[% field %]" value="[% params.defined ? params.$field : site.$field | html %]" maxlength="[% maxlength %]" />[% PROCESS field_error.tt %]
+  </div>
+[% END %]

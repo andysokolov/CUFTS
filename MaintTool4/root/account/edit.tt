@@ -1,0 +1,36 @@
+[%- SET header_section = 'Account Settings' -%]
+[%- breadcrumbs.push([ '', c.loc('Account Settings') ] ) -%]
+[%- SET page_id = 'account-settings' -%]
+
+[%- PROCESS form_results.tt -%]
+
+<form method="post">
+<fieldset class="well legend span12">
+<h2 class="legend">[% c.loc('account settings') %]</h2>
+
+<div class="control-group">
+    <label for="key">key:</label>
+    <span>[% account.key | html %]</span>
+</div>
+
+  [% INCLUDE show_textfield field='name', required=1 %]
+  [% INCLUDE show_textfield field='email', required=1 %]
+  [% INCLUDE show_textfield field='phone' %]
+  [% INCLUDE show_textfield field='password', value='' %]
+  [% INCLUDE show_textfield field='verify_password', value='' %]
+
+  <button type="submit" class="btn btn-primary" value="submit" name="submit">[% c.loc('submit') %]</button>
+
+</fieldset>
+</form>
+
+[% BLOCK show_textfield %]
+  [% SET maxlength = maxlength OR 255 %]
+  [% SET label = label OR field.replace('_', ' ') %]
+  [% SET value = value.defined ? value : params.defined ? params.$field : account.$field %]
+  <div class="control-group [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]">
+  <label for="[% field %]" [% IF required %]class="required"[% END %]>[% c.loc(label) %]:</label>
+  <input class="span8" type="text" id="[% field %]" name="[% field %]" value="[% value | html %]" maxlength="[% maxlength %]" />[% PROCESS field_error.tt %]
+  </div>
+[% END %]
+

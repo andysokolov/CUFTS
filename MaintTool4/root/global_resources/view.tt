@@ -1,0 +1,50 @@
+[%- SET header_section = c.loc('Global Resources') -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('GlobalResources').action_for('list'), { page => gr_page } ), c.loc('Global Resources List') ] ) -%]
+[%- breadcrumbs.push([ '', resource.name ] ) -%]
+[%- SET page_id = 'global-resources-view' -%]
+
+<div class="form-inline" style="margin: 0 0 2px 14px;">
+ <h1 style="width: 50%; margin: 0; padding: 0; display: inline">[% resource.name | html %]</h1>
+ 
+<div class="span4" style="float: right; text-align: right;">
+ [% IF resource.do_module('has_title_list') %]
+ <form style="display: inline;" class="form-inline" method="post" action="[% c.uri_for( c.controller('GlobalResources').action_for('titles_list'), resource.id, { gr_page => gr_page } ) | html %]">
+  <button class="btn">[% c.loc('Titles: ') | html %][% resource.title_count %]</button>
+ </form> 
+ [% END %]
+ <form style="display: inline;" method="post" action="[% c.uri_for( c.controller('GlobalResources').action_for('delete'), resource.id, { gr_page => gr_page } ) | html %]">
+  <button class="btn btn-danger">[% c.loc('delete') %]</button><input type="hidden" name="gr_page" value="[% gr_page | html %]" />
+ </form>
+</div>
+</div>
+
+[% PROCESS global_resources/subview.tt %]
+
+<div id="services" class="container-fluid well">
+<h2 class="legend">[% c.loc('active services') %]</h2>
+<ul class="unstyled">
+[% FOREACH service IN services %]
+ <li>[% service | html %]</li>
+[% END %]
+</ul>
+</div>
+
+<div id="active-local-resources" class="container-fluid well">
+<h2 class="legend">[% c.loc('active local resources') %]</h2>
+<table class="properties zebra">
+<tr>
+ <th>[% c.loc('site') %]</th>
+ <th>[% c.loc('auto activated') %]</th>
+ <th>[% c.loc('resource id') %]</th>
+ <th>[% c.loc('site email') %]</th>
+</tr>
+[% FOREACH active IN activated %]
+ <tr>
+  <td>[% active.0 | html %]</td>
+  <td>[% active.1 ? c.loc('yes') : c.loc('no') %]</td>
+  <td>[% active.2 | html %]</td>
+  <td>[% active.3 | html %]</td>
+ </tr>
+[% END %]
+</table>
+</div>

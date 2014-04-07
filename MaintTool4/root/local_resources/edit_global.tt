@@ -1,0 +1,112 @@
+[%# Template for local resource overlaying a global resource %]
+[%- SET header_section = c.loc('Local Resources') -%]
+[%- SET page_id = 'local-resources-edit' -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('LocalResources').action_for('list'), { page => lr_page } ), c.loc('Local Resources List') ] ) -%]
+[%- breadcrumbs.push([ '', global_resource.name ] ) -%]
+
+[%- PROCESS form_results.tt -%]
+
+<div class="container-fluid span12" style="margin-left: 14px; padding-left: 0; padding-right: 14px;">
+
+ <h1 style="width: 50%; margin: 0; padding: 0; display: inline">[% global_resource.name | html %]</h1>
+ 
+ <div style="float: right; text-align: right;"> 
+[% IF local_resource %]
+ <form style="display: inline;" method="post" action="[% c.uri_for( c.controller('LocalResources').action_for('view'), [ 'local', local_resource.id ] ) | html %]">
+  <button class="btn">[% c.loc('view') %]</button><input type="hidden" name="lr_page" value="[% lr_page | html %]" />
+ </form>
+[% END %]
+[% IF global_resource.do_module('has_title_list') %]
+ <form style="display: inline;" class="form-inline" method="post" action="[% c.uri_for( c.controller('LocalResources::Titles').action_for('list_global'), [ 'global', global_resource.id ], { lr_page => page, show_active => 'all', apply_filter => 1, filter => '' } ) | html %]">
+  <input type="hidden" name="lr_page" value="[% lr_page | html %]" />
+  <button class="btn">[% c.loc('Titles: ') | html %][% local_resource.auto_activate ? global_resource.title_count : ( local_resource.record_count('active', 'true') || 0 ) | html %] of [% global_resource.title_count %]</button>
+ </form> 
+ [% END %]
+ [% IF local_resource.defined %]
+ <form style="display: inline;" method="post" action="[% c.uri_for( c.controller('LocalResources').action_for('delete'), [ 'local', local_resource.id ] ) | html %]">
+  <button class="btn btn-danger">[% c.loc('delete') %]</button><input type="hidden" name="lr_page" value="[% lr_page | html %]" />
+ </form>
+ [% END %]
+</div>
+
+</div>
+
+<form method="post" action="[% c.uri_for( c.controller('LocalResources').action_for('edit'), [load_resource_type, resource_id] || 'new' ) | html %]">
+<input type="hidden" name="lr_page" value="[% lr_page | html %]" />
+
+<fieldset class="container-fluid well">
+<h2 class="legend">[% c.loc('general settings') %]</h2>
+
+<div class="control-group">
+    <label for="name">[% c.loc('name') %]:</label>
+    [% global_resource.name | html %]
+</div>
+<div class="control-group">
+    <label for="provider">[% c.loc('provider') %]:</label>
+    [% global_resource.provider | html %]
+</div>
+<div class="control-group">
+    <label for="resource_type">[% c.loc('resource_type') %]:</label>
+    [% global_resource.resource_type.type %]
+</div>
+<div class="control-group">
+    <label for="module">[% c.loc('module') %]:</label>
+    [% global_resource.module | html %]
+</div>
+<div class="control-group">
+    <label for="proxy">[% c.loc('proxy') %]:</label>
+    <select name="proxy">
+        <option value="1" [% 'selected="selected"' IF ( params.defined ? params.proxy : local_resource.proxy ) == 1 %]>[% c.loc('yes') %]</option>
+        <option value="0" [% 'selected="selected"' IF ( params.defined ? params.proxy : local_resource.proxy ) == 0 %]>[% c.loc('no') %]</option>
+    </select>[% PROCESS field_error.tt field='proxy' %]
+</div>
+<div class="control-group">
+    <label for="dedupe">[% c.loc('dedupe') %]:</label>
+    <select name="dedupe">
+        <option value="1" [% 'selected="selected"' IF ( params.defined ? params.dedupe : local_resource.dedupe ) == 1 %]>[% c.loc('yes') %]</option>
+        <option value="0" [% 'selected="selected"' IF ( params.defined ? params.dedupe : local_resource.dedupe ) == 0 %]>[% c.loc('no') %]</option>
+    </select>[% PROCESS field_error.tt field='dedupe' %]
+</div>
+<div class="control-group">
+    <label for="auto_activate">[% c.loc('auto activate') %]:</label>
+    <select name="auto_activate">
+        <option value="1" [% 'selected="selected"' IF ( params.defined ? params.auto_activate : local_resource.auto_activate ) == 1 %]>[% c.loc('yes') %]</option>
+        <option value="0" [% 'selected="selected"' IF ( params.defined ? params.auto_activate : local_resource.auto_activate ) == 0 %]>[% c.loc('no') %]</option>
+    </select>[% PROCESS field_error.tt field='auto_activate' %]
+</div>
+<div class="control-group">
+    <label for="active">[% c.loc('active') %]:</label>
+    <select name="active">
+        <option value="1" [% 'selected="selected"' IF ( params.defined ? params.active : local_resource.active ) == 1 %]>[% c.loc('yes') %]</option>
+        <option value="0" [% 'selected="selected"' IF ( params.defined ? params.active : local_resource.active ) == 0 %]>[% c.loc('no') %]</option>
+    </select>[% PROCESS field_error.tt field='active' %]
+</div>
+</fieldset>
+
+[% SET details = global_resource.do_module('local_resource_details') %]
+
+<fieldset class="container-fluid well">
+<h2 class="legend">[% c.loc('resource details') %]</h2>
+ [% FOREACH detail IN details %]
+ <div>
+     <label for="[% detail %]">[% c.loc(detail.replace('_', ' ')) | html %]:</label>
+    [%# TODO: localization for the help text below? %]
+     <input class="span8" type="text" id="[% detail %]" name="[% detail %]" value="[% params.defined ? params.$detail : local_resource.$detail | html %]" maxlength="255" title="[% global_resource.do_module('get_resource_details_help', detail) | html %]" />[% PROCESS field_error.tt field=detail %]
+ </div>
+ [% END %]
+ </fieldset>
+
+
+<fieldset class="container-fluid well form-horizontal">
+<h2 class="legend">[% c.loc('services') %]</h2>
+[% FOREACH service IN services.sort('name') %]
+ [%- SET service_id = service.id -%]
+ <div class="control-group">
+     <input type="checkbox" name="resource_services" value="[% service_id %]" [% 'checked="checked"' IF resource_services.$service_id %]> <label class="checkbox" for="[% service.name | html %]">[% service.name | html %]</label>
+ </div>
+[% END %]
+</fieldset>
+
+<input type="submit" name="submit" value="[% c.loc('submit') %]" class="btn btn-primary" />
+
+</form>

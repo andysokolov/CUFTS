@@ -1,0 +1,88 @@
+[%- SET header_section = c.loc('Global Resources') -%]
+[%- SET resource_name = resource.name || 'New Global Resource' %]
+[%- breadcrumbs.push([ c.uri_for( c.controller('GlobalResources').action_for('list'), { page => gr_page } ), c.loc('Global Resources List') ] ) -%]
+[%- breadcrumbs.push([ '', resource_name ] ) -%]
+[%- SET page_id = 'global-resources-edit' -%]
+
+[%- PROCESS form_results.tt -%]
+
+<form method="post" class="form-inline" style="margin: 0 0 2px 14px;" action="[% c.uri_for( c.controller('GlobalResources').action_for('delete'), resource.id ) | html %]">
+ <h1 style="width: 50%; margin: 0; padding: 0; display: inline">[% resource_name | html %]</h1>
+ [% IF resource %]<button style="float: right;" class="btn btn-danger">[% c.loc('delete') %]</button><input type="hidden" name="gr_page" value="[% gr_page | html %]" />[% END %]
+</form>
+
+<form method="post" action="[% c.uri_for( c.controller('GlobalResources').action_for('edit'), resource.id || 'new' ) | html %]">
+
+<input type="hidden" name="gr_page" value="[% gr_page | html %]" />
+
+<fieldset class="well container-fluid">
+<h2 class="legend">[% c.loc('general settings') %]</h2>
+
+[% INCLUDE show_textfield field='name', required=1, maxlength=1024 %]
+[% INCLUDE show_textfield field='key', maxlength=1024 %]
+[% INCLUDE show_textfield field='provider', maxlength=1024 %]
+
+<div class="control-group [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]">
+    <label for="resource_type">[% c.loc('resource_type') %]:</label>
+    <select name="resource_type">
+        [% FOREACH resource_type IN resource_types %]
+            <option value="[% resource_type.id %]" [% 'selected="selected"' IF ( params.defined ? params.resource_type : resource.resource_type.id ) == resource_type.id %]>[% resource_type.type | html %]</option>
+        [% END %]
+    </select>[% PROCESS field_error.tt field='resource_type' %]
+</div>
+
+<div class="control-group [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]">
+    <label for="module">[% c.loc('module') %]:</label>
+    <select name="module">
+        [% FOREACH module IN module_list %]
+            <option value="[% module | html %]" [% 'selected="selected"' IF ( params.defined ? params.module : resource.module ) == module OR ( !resource.module.defined AND module == 'blank' )%]>[% module | html %]</option>
+        [% END %]
+    </select>[% PROCESS field_error.tt field='module' %]
+</div>
+
+<div class="control-group [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]">
+    <label for="active">[% c.loc('active') %]:</label>
+    <select name="active">
+        <option value="1" [% 'selected="selected"' IF ( params.defined ? params.active : resource.active ) == 1 %]>[% c.loc('yes') %]</option>
+        <option value="0" [% 'selected="selected"' IF ( params.defined ? params.active : resource.active ) == 0 %]>[% c.loc('no') %]</option>
+    </select>[% PROCESS field_error.tt field='active' %]
+</div>
+</fieldset>
+
+[% SET details = resource.do_module('global_resource_details') %]
+
+<fieldset class="well container-fluid">
+<h2 class="legend">[% c.loc('resource details') %]</h2>
+[% FOREACH detail IN details %]
+<div>
+    <label for="[% detail %]">[% c.loc(detail.replace('_', ' ')) | html %]:</label>
+    [%# TODO: localization for the help text below? %]
+    <input class="span8" rel="popover" type="text" id="[% detail %]" name="[% detail %]" value="[% params.defined ? params.$detail : resource.$detail | html %]" maxlength="255" data-content="[% resource.do_module('get_resource_details_help', detail) | html %]" data-trigger="focus" />[% PROCESS field_error.tt field=detail %]
+</div>
+[% END %]
+</fieldset>
+
+
+<fieldset class="well container-fluid form-horizontal">
+<h2 class="legend">[% c.loc('services') %]</h2>
+[% FOREACH service IN services.sort('name') %]
+ [%- SET service_id = service.id -%]
+  <div class="control-group">
+     <input type="checkbox" name="resource_services" id="[% service.name %]" value="[% service.id %]" [% 'checked="checked"' IF resource_services.$service_id %]> <label class="checkbox" for="[% service.name | html %]">[% service.name | html %]</label>
+ </div>
+[% END %]
+</fieldset>
+
+<input class="btn btn-primary" type="submit" name="submit" value="submit" />
+
+</form>
+
+[% BLOCK show_textfield %]
+  [% SET maxlength = maxlength OR 255 %]
+  [% SET class = class OR 'span8' %]
+  [% SET label = label OR field.replace('_', ' ') %]
+  <div class="control-group [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]">
+  <label for="[% field %]" [% IF required %]class="required"[% END %]>[% c.loc(label) %]:</label>
+  <input class="span8" type="text" id="[% field %]" name="[% field %]" value="[% params.defined ? params.$field : resource.$field | html %]" maxlength="[% maxlength %]" />[% PROCESS field_error.tt %]
+  </div>
+[% END %]

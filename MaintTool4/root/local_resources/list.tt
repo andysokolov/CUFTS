@@ -1,0 +1,101 @@
+[%- SET header_section = c.loc('Local Resources') -%]
+[%- breadcrumbs.push([ '', c.loc('Local Resources List') ] ) -%]
+[%- SET page_id = 'local-resources-list' -%]
+
+<div>
+<form method="GET" class="span10 form-inline control-bar">
+    <select name="show_active" style="width: 10em" >
+      <option value="all" [% IF !show_active.defined OR show_active == 'all' %]selected="selected"[% END %]>[% c.loc('show all') | html %]</option>
+      <option value="active" [% IF show_active == 'active' %]selected="selected"[% END %]>[% c.loc('show active') | html %]</option>
+      <option value="inactive" [% IF show_active == 'inactive' %]selected="selected"[% END %]>[% c.loc('show inactive') | html %]</option>
+    </select>&nbsp;
+    <label for="filter">[% c.loc('Filter') %]: <input type="text" name="filter" style="width: 15em;" value="[% filter | html %]"> <input type="submit" class="btn" name="apply_filter" value="[% c.loc('filter') %]"></label>
+</form>
+<form method="GET" class="form-inline control-bar span2" action="[% c.uri_for( c.controller('LocalResources').action_for('edit'), [ 'local', 'new' ] ) | html %]">
+    <button style="float: right; width: 200px;" class="btn"><i class="icon-plus"></i> [% c.loc('New Local Resource') %]</button>
+</form>
+</div>
+
+
+<table class="grid zebra" style="width: 100%;">
+<tr class="header compact">
+ <th>&nbsp;</th>
+ <th class="expand nowrap">
+   <a href="[% SET sort_hash = { sort => sort == 'name' ? 'name_d' : 'name' }; c.request.uri_with(sort_hash) %]">[% c.loc('resource') | html %]
+   [% PROCESS show_arrow down_flag='name', up_flag = 'name_d' %]
+   </a>
+ </th>
+ <th class="expand nowrap">
+  <a href="[% SET sort_hash = { sort => sort == 'provider' ? 'provider_d' : 'provider' }; c.request.uri_with(sort_hash) %]">[% c.loc('provider') | html %]
+  [% PROCESS show_arrow down_flag='provider', up_flag = 'provider_d' %]
+  </a>
+ </th>
+ <th>[% c.loc('type') %]</th>
+ <th class="text-right">[% c.loc('titles') | html %]</th>
+ <th style="width: 1%;" class="text-center">[% c.loc('active') | html %]</th>
+ <th style="width: 1%;" class="text-right nowrap">
+   <a href="[% SET sort_hash = { sort => sort == 'rank' ? 'rank_d' : 'rank' }; c.request.uri_with(sort_hash) %]">[% c.loc('rank') | html %]
+  [% PROCESS show_arrow down_flag='rank', up_flag = 'rank_d' %]
+  </a>
+</th>
+ <th class="text-right nowrap">
+  <a href="[% SET sort_hash = { sort => sort == 'scanned' ? 'scanned_d' : 'scanned' }; c.request.uri_with(sort_hash) %]">[% c.loc('scanned') | html %]
+  [% PROCESS show_arrow down_flag='scanned', up_flag = 'scanned_d' %]
+  </a>
+ </th>
+</tr>
+
+[% WHILE ( resource = resources_rs.next ) %]
+ [%- SET link_type = resource.local_id ? 'local' : 'global';
+     SET link_id   = resource.local_id ? resource.local_id : resource.global_id; -%]
+
+<tr class="resource-[% resource.active ? 'active' : 'inactive' %]">
+ <td class="nowrap">
+  [% IF resource.local_id %]
+   <a href="[% c.uri_for( c.controller('LocalResources').action_for('view'), [ link_type, link_id ], { lr_page => page } ) | html  %]">[% c.loc('view') %]</a> |
+   <a href="[% c.uri_for( c.controller('LocalResources').action_for('edit'), [ link_type, link_id ], { lr_page => page } ) | html %]">[% c.loc('edit') %]</a> |
+   <a href="[% c.uri_for( c.controller('LocalResources::Titles').action_for( resource.global_id ? 'bulk_global' : 'bulk_local' ), [ link_type, link_id ], { lr_page => page } ) | html %]">[% c.loc('bulk') %]</a>
+  [% ELSE %]
+   [% c.loc('view') %] |
+   <a href="[% c.uri_for( c.controller('LocalResources').action_for('edit'), [ link_type, link_id ], { lr_page => page } ) | html %]">[% c.loc('edit') %]</a> |
+   [% c.loc('bulk') %]
+  [% END %]
+  </td>
+
+  <td>[% resource.name | html %]</td>
+
+ <td>[% resource.provider | html %]</td>
+
+ <td class="nowrap">[% resource.resource_type | html %]</td>
+
+ <td class="text-right nowrap">
+  [% IF resource.is_global AND resource.do_module('has_title_list') %]
+   <a href="[% c.uri_for( c.controller('LocalResources::Titles').action_for('list_global'), [ link_type, link_id ], { lr_page => page, show_active => 'active', apply_filter => 1, filter => '' } ) | html %]">[% resource.auto_activate ? resource.global_resource.title_count : ( resource.local_resource.record_count('active', 'true') || 0 ) | html %]</a>
+   of
+   <a href="[% c.uri_for( c.controller('LocalResources::Titles').action_for('list_global'), [ link_type, link_id ], { lr_page => page, show_active => 'all', apply_filter => 1, filter => '' } ) | html %]">[% resource.global_resource.title_count %]</a>
+  [% ELSIF resource.do_module('has_title_list') %]
+   <a href="[% c.uri_for( c.controller('LocalResources::Titles').action_for('list_local'), [ link_type, link_id ], { lr_page => page } ) | html %]">[% resource.local_resource.record_count %]</a>
+  [% ELSE %]
+   N/A
+  [% END %] </td>
+
+ <td class="text-center nowrap active-field">[% resource.active ? c.loc('yes') : c.loc('no') %]</td>
+
+ <td class="text-right nowrap">[% resource.rank || 0 | html %]</td>
+
+ <td class="text-right nowrap">
+  [% IF resource.title_list_scanned %][% resource.title_list_scanned.ymd %][% END %]
+ </td>
+</tr>
+[% END %]
+
+<tr class="paging"><td colspan="8">[% PROCESS paging.tt pager = resources_rs.pager %]</td></tr>
+</table>
+
+[% BLOCK show_arrow %]
+ [% IF sort == down_flag %]
+  <img src="[% c.uri_for_static('images/arrow-down.gif') %]" style="vertical-align: bottom" />
+ [% ELSIF sort == up_flag %]
+  <img src="[% c.uri_for_static('images/arrow-up.gif') %]" style="vertical-align: bottom" />
+ [% END %]
+[% END %]

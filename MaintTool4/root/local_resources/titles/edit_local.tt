@@ -1,0 +1,33 @@
+[%- SET header_section = c.loc('Local Resource Title') -%]
+[%- SET page_id = 'local-title-edit-local' -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('LocalResources').action_for('list'), { page => lr_page } ), c.loc('Local Resources List') ] ) -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('LocalResources').action_for('view'), [ 'local', local_resource.id ], { lr_page => lr_page } ), local_resource.name ] ) -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('LocalResources::Titles').action_for('list_local'), [ 'local', local_resource.id ], { lr_page => lr_page, page => lt_page } ), 'Titles' ] ) -%]
+[%- breadcrumbs.push([ '', local_title.title ]) -%]
+
+[%- PROCESS form_results.tt -%]
+
+<h1 class="well-inset">[% local_title.title || 'New Title' | html %]</h1>
+
+<form method="post" action="[% c.uri_for( c.controller('LocalResources::Titles').action_for('edit_local_title'), [ 'local', local_resource.id, local_title_id ] ) %]">
+<input type="hidden" name="lr_page" value="[% lr_page | html %]" />
+<input type="hidden" name="lt_page" value="[% lt_page | html %]" />
+<fieldset class="container-fluid well">
+<table class="grid zebra">
+<tr>
+ <th>field</th>
+ <th>local value</th>
+</tr>
+[% FOREACH field IN title_fields %]
+ [%- NEXT IF field == 'id' -%]
+ <tr>
+  <td>[% c.loc( field.replace('_', ' ') ) | html %]</td>
+  <td><div style="margin-bottom: 0" class="control-group  [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]"><input name="[% field | html %]" value="[% IF params.defined %][%- params.$field | html -%][% ELSE %][%- local_title.$field | html -%][% END %]" size="30" maxlength="1024" />[% PROCESS field_error.tt %]</div></td>
+ </tr>
+[% END %]
+</table>
+<div style="margin-top: 1em;">
+<input type="submit" name="apply" value="[% c.loc('Save') | html %]" class="btn btn-primary" />
+</form>
+</div>
+</fieldset>

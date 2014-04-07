@@ -1,0 +1,26 @@
+<ul class="nav">
+[% FOREACH item IN menu %]
+ [% IF !item.1.length %]
+  <li><a class="navigation-submenu-trigger" href="">[% item.0 | html %]</a>
+  <ul style="display: none" class="sub1">
+  [% FOREACH subitem IN item.1 %]
+   <li><a href="[% url_base %][% subitem.1 %]">[% subitem.0 | html %]</a></li>
+  [% END %]
+  </ul></li>
+ [% ELSE %]
+ <li><a href="[% url_base %][% item.1 %]">[% item.0 | html %]</a></li>
+ [% END %]
+[% END %]
+</ul>
+<script>
+ $( function() { 
+     $('.navigation-submenu-trigger').click(
+         function(event) {
+             event.preventDefault();
+             var to_toggle = $(this).parent().find('ul');
+             $('#nav-main ul li ul').not(to_toggle).hide();
+             to_toggle.toggle();
+         }
+     );
+ } );
+</script>

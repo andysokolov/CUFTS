@@ -1,0 +1,22 @@
+[%- SET header_section = c.loc('Local Resources') -%]
+[%- SET page_id = 'local-locals-bulk-global-results' -%]
+[%- SET resource = local_resource -%]
+[%- SET resource_name = local_resource.name OR global_resource.name -%]
+
+[%- breadcrumbs.push([ c.uri_for( c.controller('LocalResources').action_for('list'), { page => lr_page } ), c.loc('Local Resources List') ] ) -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('LocalResources').action_for('view'), [ 'local', local_resource.id ], { lr_page => lr_page } ), resource_name ] ) -%]
+[%- breadcrumbs.push([ '', 'Bulk' ] ) -%]
+
+<h1 class="well-inset">[% resource_name | html %]</h1>
+
+[%- PROCESS form_results.tt -%]
+
+<div class="container-fluid well">
+<h2 class="legend">[% c.loc('title list load results') %]</h2>
+<table class="properties">
+<tr><th>errors</td><td>[% bulk_results.error_count %]</td></tr>
+<tr><th>processed</td><td>[% bulk_results.processed_count %]</td></tr>
+<tr><th>new</td><td>[% bulk_results.new_count %]</td></tr>
+<tr><th>deleted</td><td>[% bulk_results.deleted_count %]</td></tr>
+</table>
+</div>

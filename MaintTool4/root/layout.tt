@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUFTS Maintenance Tool</title>
+    <link rel="stylesheet" href="[% c.uri_for_static('bootstrap/css/bootstrap.min.css') | html %]">
+    <link rel="stylesheet" href="[% c.uri_for_static('css/mainttool.css') | html %]" />
+    <!-- <script src="http://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.0.6-development-only.js"></script> -->
+    <script src="[% c.uri_for_static('js/jquery-1.11.0.min.js') | html %]"></script>
+</head>
+<body id="[% page_id %]">
+
+<header><img id="header-main-image" src="[% c.uri_for_static('images/cufts_header1.gif') %]" />
+    <div id="header-right" class="container-fluid">
+    <div id="header-section">&nbsp;[% header_section | html %]</div>
+    <div id="logged-in">[% IF c.user %]Logged in as: <b>[% c.user.name | html %]</b>[% END %]
+     [% IF c.site %]&nbsp;&nbsp;Active site: <b>[% c.site.name | html %]</b>[% END %]</div>
+    </div>
+</header>
+
+<div class="container-fluid" id="main">
+    <div class="row-fluid">
+
+          <nav class="sidebar-nav">
+            [% PROCESS menu.tt %]
+          </nav>
+
+
+        <div id="content-container" class="container-fluid">
+            <section id="content">
+            [% PROCESS breadcrumbs.tt %]
+            [% content %]
+            </section>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="[% c.uri_for_static('js/mainttool.js') | html %]"></script>
+<script src="[% c.uri_for_static('bootstrap/js/bootstrap.min.js') | html %]"></script>
+</html>

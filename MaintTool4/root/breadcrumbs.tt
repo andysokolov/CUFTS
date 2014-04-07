@@ -1,0 +1,10 @@
+[% RETURN IF !breadcrumbs %]
+<ul class="breadcrumb">
+[% FOREACH crumb IN breadcrumbs %]
+[% IF loop.last %]
+<li class="active">[% c.loc(crumb.1) | html %]</li>
+[% ELSE %]
+ <li><a href="[% crumb.0 | html %]">[% c.loc(crumb.1) | html %]</a> <span class="divider">/</span></li>
+[% END %]
+[% END %]
+</ul>

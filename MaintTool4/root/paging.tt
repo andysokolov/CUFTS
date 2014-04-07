@@ -1,0 +1,17 @@
+[% SET paging_max_show_page = (pager.current_page + 5) < pager.last_page ? (pager.current_page + 5) : pager.last_page %]
+[% SET paging_min_show_page = pager.current_page < 5 ? 1 : pager.current_page - 5 %]
+[% SET paging_spacer = pager.last_page > 200 ? 25 : 10 %]
+<div class="pagination">
+<ul>
+<li class="[% pager.current_page == 1 ? 'active' : '' %]"><a href="[% c.request.uri_with( page => 1 ) | html %]">[% c.loc('First') | html %]</a></li><li class="[% pager.current_page == 1 ? 'active' : '' %]"><a href="[% c.request.uri_with( page => (pager.current_page - 1) ) | html %]">[% c.loc('Prev') | html %]</a></li>
+[%- FOREACH paging_show_page IN [1 .. pager.last_page] -%]
+[%- IF pager.current_page == paging_show_page -%]<li class="active active-number"><span>[% paging_show_page %]</span></li>
+[%- ELSIF paging_show_page > paging_min_show_page && paging_show_page < paging_max_show_page -%]<li><a href="[% c.request.uri_with( page => paging_show_page ) | html %]">[% paging_show_page %]</a></li>
+[%- ELSIF paging_show_page == paging_min_show_page -%][%- UNLESS paging_show_page == 1 -%]<li><span class="paging-current">...</span></li>[%- END -%]<li><a href="[% c.request.uri_with( page => paging_show_page ) | html %]">[% paging_show_page %]</a></li>
+[%- ELSIF paging_show_page == paging_max_show_page -%]<li><a href="[% c.request.uri_with( page => paging_show_page ) | html %]">[% paging_show_page %]</a></li>[%- UNLESS paging_show_page == pager.last_page -%]<li><span class="paging-current">...</span></li>[%- END -%]
+[%- ELSIF paging_show_page % paging_spacer == 0 -%]<li><a href="[% c.request.uri_with( page => paging_show_page ) | html %]">[% paging_show_page %]</a></li>
+[%- ELSIF paging_show_page == pager.last_page %]<li class="[% pager.current_page == pager.last_page ? 'active' : '' %]"><a href="[% c.request.uri_with( page => pager.last_page ) | html%]">[% pager.last_page %]</a></li>[%- END -%]
+[%- END -%]
+<li class="[% pager.current_page == pager.last_page ? 'active' : '' %]"><a href="[% c.request.uri_with( page => (pager.current_page + 1) ) | html %]">[% c.loc('Next') | html %]</a></li><li class="[% pager.current_page == pager.last_page ? 'active' : '' %]"><a href="[% c.request.uri_with( page => pager.last_page ) | html%]">[% c.loc('Last') | html %]</a></li>
+</ul>
+</div>

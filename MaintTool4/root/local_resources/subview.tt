@@ -1,0 +1,23 @@
+<div id="general-settings" class="container-fluid well">
+<h2 class="legend">[% c.loc('general settings') %]</h2>
+<table class="properties">
+<tr><th>[% c.loc('name') %]</th><td>[% global_resource.name OR local_resource.name | html %]</td></tr>
+<tr><th>[% c.loc('key') %]</th><td>[% global_resource.key OR local_resource.key | html %]</td></tr>
+<tr><th>[% c.loc('provider') %]</th><td>[% global_resource.provider OR local_resource.provider | html %]</td></tr>
+<tr><th>[% c.loc('type') %]</th><td>[% global_resource.resource_type.type OR local_resource.resource_type.type | html %]</td></tr>
+<tr><th>[% c.loc('module') %]</th><td>[% global_resource.module OR local_resource.module | html %]</td></tr>
+<tr><th>[% c.loc('active') %]</th><td>[% local_resource.active ? c.loc('yes') : c.loc('no') %]</td></tr>
+</table>
+</div>
+
+[% RETURN %]
+
+[% SET details = resource.do_module('global_resource_details') %]
+[% SET help = resource.do_module('help_template') %]
+[% FOREACH detail IN details %]
+ [% NEXT UNLESS resource.$detail.defined %]
+ <tr class="hastip" title="[% resource.do_module('get_resource_details_help', detail) %]">
+  <th>[% detail.replace('_', ' ') | html %]</td>
+  <td class="field[% loop.count % 2 %]">[% IF detail.search('url$') %]<a href="[% resource.$detail | html %]">[% resource.$detail | html %]</a>[% ELSE %][% resource.$detail | html %][% END %]</td>
+ </tr>
+[% END %]
