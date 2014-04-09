@@ -25,7 +25,7 @@ my $form_validate_titles = {
     optional => ['page', 'filter', 'display_per_page', 'apply_filter'],
     filters  => ['trim'],
     defaults => { 'filter' => '', 'page' => 1 },
-};  
+};
 
 my $form_validate_bulk = {
     required => ['file', 'upload'],
@@ -73,14 +73,14 @@ sub menu : Local {
         my $filter = $c->session->{global_menu_filter};
         $filter =~ s/([%_])/\\$1/g;
         $filter =~ s#\\#\\\\\\\\#;
-            
+
         $search{-nest} =
             [
              name => { ilike => "\%$filter\%" },
              provider => { ilike => "\%$filter\%" },
             ];
     }
-    
+
     defined($c->session->{global_menu_show}) && $c->session->{global_menu_show} eq 'show active' and
         $search{active} = 'true';
 
@@ -97,13 +97,13 @@ sub menu : Local {
         }
     }
 
-    my @resources = scalar(keys %search) > 0 
-                    ? CUFTS::DB::Resources->search_where(\%search, $search_options) 
+    my @resources = scalar(keys %search) > 0
+                    ? CUFTS::DB::Resources->search_where(\%search, $search_options)
                     : CUFTS::DB::Resources->search({}, $search_options);
 
-    # Delete the title list filter, it should be clear when we go to 
+    # Delete the title list filter, it should be clear when we go to
     # browse a new list
-    
+
     delete $c->session->{global_titles_filter};
 
     $c->stash->{sort} = $c->session->{global_menu_sort};
@@ -120,7 +120,7 @@ sub view : Local {
         return die('No resource loaded to view');
 
     # Find sites with this resource activated
-    
+
     my @activated;
     foreach my $local_resource ( $c->stash->{resource}->local_resources ) {
         next if !$local_resource->active;
@@ -132,7 +132,7 @@ sub view : Local {
 
     $c->stash->{activated} = \@activated;
     $c->stash->{template} = 'global/view.tt';
-}   
+}
 
 
 sub edit : Local {
@@ -146,11 +146,11 @@ sub edit : Local {
     if ($c->req->params->{submit}) {
 
         $c->form($form_validate);
-        
+
         unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
-        
+
             # Remove services and recreate links, then update and save the resource
-            
+
             eval {
                 if (defined($resource)) {
                     $resource->update_from_form($c->form);
@@ -158,7 +158,7 @@ sub edit : Local {
                 } else {
                     $resource = CUFTS::DB::Resources->create_from_form($c->form);
                 }
-                
+
                 foreach my $service ($c->form->valid('resource_services')) {
                     $resource->add_to_services({ service => $service });
                 }
@@ -167,7 +167,7 @@ sub edit : Local {
                 CUFTS::DB::DBI->dbi_rollback;
                 die;
             }
-            
+
             CUFTS::DB::DBI->dbi_commit;
             return $c->redirect('/global/menu');
         }
@@ -180,22 +180,24 @@ sub edit : Local {
     $c->stash->{template} = 'global/edit.tt';
 }
 
-    
+
 sub delete : Local {
     my ($self, $c, $resource_id) = @_;
-    
-    defined($c->stash->{resource}) or
+
+    my $resource = $c->model('CUFTS::GlobalResources')->find({ id => $resource_id });
+    defined($resource) or
          die('No resource loaded to delete.');
-        
-    $c->stash->{resource}->delete();
-    CUFTS::DB::DBI->dbi_commit;
-    
+
+    $c->model('CUFTS')->schema->txn_do( sub {
+        $resource->delete();
+    });
+
     $c->redirect('/global/menu');
 }
 
 sub titles : Local {
     my ($self, $c, $resource_id) = @_;
-    
+
     defined($c->stash->{resource}) or
         die('No resource loaded for title list');
 
@@ -208,7 +210,7 @@ sub titles : Local {
     $c->form($form_validate_titles);
 
     my $search = { resource => $resource_id };
-    
+
     ##
     ## Set up filter for finding specific titles
     ##
@@ -223,7 +225,7 @@ sub titles : Local {
     } else {
         $filter = $c->session->{global_titles_filter};
     }
-             
+
     if ($filter) {
         $filter =~ s/([%_])/\\$1/g;
         $filter =~ s#\\#\\\\\\\\#;
@@ -238,7 +240,7 @@ sub titles : Local {
     my $order_by = 'title';  # Hardcode for now, allow for other sorts later?
     my $display_per_page = $c->form->{valid}->{display_per_page} || $c->config->{default_display_per_page};
 
-    my ( $pager, $iterator ) = $titles_module->pager($search, 
+    my ( $pager, $iterator ) = $titles_module->pager($search,
                                                      { order_by => $order_by,
                                                        rows     => $display_per_page,
                                                        page     => $page }
@@ -268,18 +270,18 @@ sub bulk : Local {
 
     defined($c->stash->{resource}) or
         die('No resource loaded for bulk loading');
-    
+
     if ($c->req->params->{upload}) {
-        
+
         $c->form($form_validate_bulk);
-        
+
         unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
-            
+
             if (my $upload = $c->req->upload('file')) {
 
                 # Grab the title list upload and copy it to the right place
 
-                my $upload_dir = $CUFTS::Config::CUFTS_TITLE_LIST_UPLOAD_DIR;               
+                my $upload_dir = $CUFTS::Config::CUFTS_TITLE_LIST_UPLOAD_DIR;
 
                 my ($sec, $min, $hour, $mday, $mon, $year, $wday) = localtime(time);
                 $mon += 1;
@@ -287,18 +289,18 @@ sub bulk : Local {
 
                 my $filename = "titles_${resource_id}_${year}-${mon}-${mday}_${hour}-${min}-${sec}";
 
-                $upload->copy_to("${upload_dir}/${filename}") or 
+                $upload->copy_to("${upload_dir}/${filename}") or
                     die("Unable to copy title list file '${upload_dir}/${filename}': $!");
-                    
+
                 # Create the data file
 
-                open (CUFTSDAT, ">${upload_dir}/${filename}.CUFTSdat") or 
+                open (CUFTSDAT, ">${upload_dir}/${filename}.CUFTSdat") or
                     die("Unable to create '${upload_dir}/${filename}.CUFTSdat' file: $!");
 
                 print CUFTSDAT "$resource_id\n";
                 print CUFTSDAT $c->stash->{current_account}->id . "\n";
                 close CUFTSDAT;
-                
+
                 return $c->redirect('/global/bulkdone');
 
             }
@@ -307,23 +309,23 @@ sub bulk : Local {
 
     $c->stash->{template} = 'global/bulk.tt';
 }
-    
+
 sub bulkdone : Local {
     my ($self, $c) = @_;
-    
+
     $c->stash->{template} = 'global/bulkdone.tt';
 }
 
 sub edit_title : Local {
     my ($self, $c, $resource_id) = @_;
-    
+
     my $resource = $c->stash->{resource};
     my $fields = [ @{$resource->do_module('title_list_fields')} ];
     if ( !grep { $_ eq 'journal_auth' } @$fields ) {
         push @$fields, 'journal_auth';
     }
     $c->stash->{fields} = $fields;
-    
+
     my %validate = %$form_validate_edit_title;
     push @{$validate{optional}}, @$fields;
 
@@ -339,7 +341,7 @@ sub edit_title : Local {
     }
 
     if ($c->form->valid->{apply}) {
-        
+
         eval {
             if (defined($title)) {
                 $title->update_from_form($c->form);
@@ -361,7 +363,7 @@ sub edit_title : Local {
 
     $c->stash->{paging_page} = $c->form->valid->{paging_page};
     $c->stash->{template} = 'global/edit_title.tt';
-}   
+}
 
 
 
