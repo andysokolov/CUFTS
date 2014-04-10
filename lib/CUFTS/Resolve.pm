@@ -363,9 +363,11 @@ sub overlay_global_resource_data {
     my $is_local = !defined $global;
     if ($is_local) {
         $resource->resource($local);
+        $resource->is_local(1);
     }
     else {
         $resource->resource($global);
+        $resource->is_local(0);
     }
 
     foreach my $column ( $resource->columns ) {

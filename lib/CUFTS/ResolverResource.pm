@@ -57,6 +57,16 @@ has 'resource' => (
     is  => 'rw',
 );
 
+has 'is_local' => (
+    isa => 'Bool',
+    is  => 'rw',
+);
+
+sub is_global {
+    my ( $self, $val ) = @_;
+    return defined $val ? !$self->is_local(!$val) : !$self->is_local;
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 

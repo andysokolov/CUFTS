@@ -655,10 +655,9 @@ sub _search_active {
     my $global_rs = $class->global_rs($schema);
     my $local_rs  = $class->local_rs($schema);
 
-    my $global = defined( $resource->resource ) ? 1 : 0;
-    my $search_rs = $global ? $global_rs : $local_rs;
+    my $search_rs = $resource->is_global ? $global_rs : $local_rs;
 
-    my %search_terms = ( resource => $global ? $resource->resource->id : $resource->id );
+    my %search_terms = ( resource => $resource->is_global ? $resource->resource->id : $resource->id );
     my @issns = $request->issns;
     if ( scalar @issns ) {
         my @issn_search;
@@ -691,7 +690,7 @@ sub _search_active {
     my @active;
     while ( my $match = $final_rs->next ) {
 
-        if ($global) {
+        if ( $resource->is_global ) {
             my $local = $local_rs->search({
                 journal  => $match->id,
                 resource => $resource->id,
@@ -704,7 +703,7 @@ sub _search_active {
             }
         }
         else {
-            push @active, $match if $match->active;
+            push(@active, $match) if $match->active;
         }
     }
 
