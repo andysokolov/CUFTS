@@ -670,14 +670,14 @@ sub _search_active {
         $search_terms{'-or'} = \@issn_search;
     }
     elsif ( hascontent( $request->title ) ) {
-        if ( scalar @{$request->journal_auths} ) {
+        if ( defined $request->journal_auths && scalar @{$request->journal_auths} ) {
             $search_terms{'-or'} = [
                 { title        => { 'ilike' => $request->title } },
                 { journal_auth => { '-in'   => $request->journal_auths } }
             ];
         }
         else {
-            $search_terms{title} = { 'ilike', $request->title };
+            $search_terms{title} = { 'ilike' => $request->title };
         }
     }
     else {
