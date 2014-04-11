@@ -25,7 +25,12 @@ use base qw(CUFTS::Resources::GenericJournalDOI CUFTS::Resources::Base::Journals
 use CUFTS::Exceptions;
 use CUFTS::Util::Simple;
 use HTML::Entities;
+use LWP::UserAgent;
+use HTTP::Request::Common;
 use URI::Escape qw(uri_escape);
+use String::Util qw(hascontent);
+use JSON::XS qw(decode_json);
+
 
 use strict;
 
@@ -176,5 +181,58 @@ sub clean_data {
 sub can_getTOC {
     return 0;
 }
+
+sub build_linkFulltext {
+    my ($class, $records, $resource, $site, $request) = @_;
+
+    defined($records) && scalar(@$records) > 0 or
+        return [];
+    defined($resource) or
+        CUFTS::Exception::App->throw('No resource defined in build_linkFulltext');
+    defined($site) or
+        CUFTS::Exception::App->throw('No site defined in build_linkFulltext');
+    defined($request) or
+        CUFTS::Exception::App->throw('No request defined in build_linkFulltext');
+
+    # Lookup PMC number using DOI
+    if ( hascontent($request->doi) && !hascontent($request->pmcid) ) {
+
+
+#         my $pmid = $schema->resultset('SearchCache')->search({
+#             type    => 'crossref',
+#             query => $cache_query,
+#         })->first;
+#
+#         if ( !defined($cache_data) ) {
+
+        my $url = 'http://www.pubmedcentral.nih.gov/utils/idconv/v1.0/?format=json&ids=' . uri_escape($request->doi);
+        my $ua = LWP::UserAgent->new( 'timeout' => 15 );
+        my $response = $ua->request( GET $url );
+
+        $response->is_success or return [];
+        my $data = decode_json($response->content);
+        if ( exists $data->{records} && scalar @{$data->{records}} ) {
+            $request->pmcid($data->{records}->[0]->{pmcid});
+        }
+
+    # $cache_data = $schema->resultset('SearchCache')->create({
+    #     type   => 'crossref',
+    #     query  => $cache_query,
+    #     result => $request->pmid,
+    # });
+
+    }
+
+    if ( hascontent($request->pmcid) ) {
+        my $result = new CUFTS::Result('http://www.ncbi.nlm.nih.gov/pmc/articles/' . $request->pmcid);
+        $result->record($records->[0]);
+        return [$result];
+    } else {
+        return [];
+    }
+}
+
+
+
 
 1;

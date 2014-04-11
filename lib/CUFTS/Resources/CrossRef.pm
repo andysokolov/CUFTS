@@ -24,7 +24,6 @@ use base qw(CUFTS::Resources);
 
 use CUFTS::Exceptions;
 use CUFTS::Util::Simple;
-use CUFTS::DB::SearchCache;
 
 use LWP::UserAgent;
 use HTTP::Request::Common;
@@ -102,10 +101,10 @@ sub get_records {
 
     # Check the cache
 
-    my $cache_data = CUFTS::DB::SearchCache->search(
+    my $cache_data = $schema->resultset('SearchCache')->search({
         type    => 'crossref',
-        'query' => $cache_query,
-    )->first;
+        query   => $cache_query,
+    })->first;
 
     if ( !defined($cache_data) ) {
 
@@ -117,19 +116,17 @@ sub get_records {
 
         my $start_time = time;
 
-        my $ua = LWP::UserAgent->new( 'timeout' => 20 );
+        my $ua = LWP::UserAgent->new( 'timeout' => 15 );
         my $response = $ua->request( GET $openurl );
 
         $response->is_success or return undef;
         my $xml  = trim_string( $response->content );
 
-        $cache_data = CUFTS::DB::SearchCache->create(
-            {   type   => 'crossref',
-                query  => $cache_query,
-                result => $xml,
-            }
-        );
-        CUFTS::DB::SearchCache->dbi_commit;
+        $cache_data = $schema->resultset('SearchCache')->create({
+            type   => 'crossref',
+            query  => $cache_query,
+            result => $xml,
+        });
     }
 
     my $doc = XML::LibXML->load_xml( string => $cache_data->result );

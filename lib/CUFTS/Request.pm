@@ -204,6 +204,11 @@ has 'pmid' => (
 	is         => 'rw',
 );
 
+has 'pmcid' => (
+    isa        => 'Maybe[Str]',
+    is         => 'rw',
+);
+
 has 'bibcode' => (
 	isa        => 'Maybe[Str]',
 	is         => 'rw',

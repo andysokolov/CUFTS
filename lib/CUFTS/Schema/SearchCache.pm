@@ -24,6 +24,10 @@ __PACKAGE__->add_columns(
         data_type => 'text',
         is_nullable => 0,
     },
+    result => {
+        data_type => 'text',
+        is_nullable => 0,
+    },
     created => {
         data_type => 'datetime',
         set_on_create => 1,
