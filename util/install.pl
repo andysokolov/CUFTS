@@ -67,7 +67,9 @@ my @modules = qw(
     DBIx::Class::EncodedColumn
     DBIx::Class::Helpers
     DBIx::Class::InflateColumn::DateTime
+    DBIx::Class::InflateColumn::Serializer
     DBIx::Class::TimeStamp
+    DBIx::Class::FromValidators
     Exception::Class
     Exception::Class::DBI
     Getopt::Long
@@ -92,6 +94,7 @@ my @modules = qw(
     Template::Plugin::JSON
     Template::Plugin::Number::Format
     Term::ReadLine
+    Test::DBIx::Class
     Text::CSV
     Unicode::String
     URI::Escape
