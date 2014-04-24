@@ -147,7 +147,7 @@ sub preprocess_file {
 #
 
 sub load_title_list {
-    my ($class, $schema, $resource, $title_list, $local) = @_;
+    my ($class, $schema, $resource, $title_list, $local, $job) = @_;
     my $errors;
 
     $local = (defined $local && ($local eq 'local' || $local == 1)) ? 'local' : 'global';
@@ -170,6 +170,8 @@ sub load_title_list {
 
     $class->title_list_extra_requires();
 
+    $job->terminate_possible() if defined $job;
+
     *IN = *{$class->preprocess_file(*IN)};
 
     $class->title_list_skip_lines(*IN);
@@ -182,6 +184,8 @@ sub load_title_list {
 
     my $duplicate_records = $class->find_duplicates_for_loading(*IN, $field_headings);
 
+    $job->terminate_possible() if defined $job;
+
     my $timestamp = $schema->get_now();
 
     my $count = 0;
@@ -192,7 +196,10 @@ sub load_title_list {
 
     $schema->txn_begin();
 
-    while (my $row = $class->title_list_parse_row(*IN)) {
+    while ( my $row = $class->title_list_parse_row(*IN) ) {
+
+        $job->terminate_possible() if defined $job;
+
         $count++;
 
         next if $row =~ /^#/;       # Skip comment lines
@@ -251,7 +258,7 @@ sub load_title_list {
     my $title_count = $rs->search({ resource => $resource->id })->count;
     if ( $title_count == 0 ) {
         $schema->txn_rollback();
-        die("All titles will be deleted by this load.  Rolling back changes.  There is probably an error in the resource module or the title list format has changed.  Resource ID: " . $resource->id);
+        die("All titles will be deleted by this load. Rolling back changes. There is probably an error in the resource module or the title list format has changed.  Resource ID: " . $resource->id);
     }
 
     my $local_resouces_auto_activated = $class->check_is_global($local) ? $class->activate_all($schema, $resource, 0) : '';
@@ -539,23 +546,63 @@ sub is_duplicate {
     return $duplicates->{$identifier} > 1 ? 1 : 0;
 }
 
-
+# Deletes all titles attached to a resource, manually cascading to delete from local resource title lists as well.
+# Manually doing the cascade means we skip any triggers at the row level, but iterating through every title takes too much work.
+# Now that this has been decoupled to a batch job, that may not be as big an issue, in which case the "delete" calls could be changed to "delete_all"
 
 sub delete_title_list {
-    my ($class, $schema, $resource_id, $local) = @_;
+    my ($class, $schema, $resource, $local, $job) = @_;
 
     return unless $class->has_title_list;
 
-    ($resource_id = int($resource_id)) > 0 or
-        CUFTS::Exception::App->throw('delete_title_list called without resource_id');
+    if ( !ref $resource && int($resource) ) {
+        $resource = $schema->resultset('GlobalResources')->find(int($resource));
+    }
+    defined $resource or
+        return CUFTS::Exception::App->throw('Unable to find resource.');
 
-    $local = (defined $local && ($local eq 'local' || $local == 1)) ? 'local' : 'global';
+    if ( !$class->check_is_local($local) ) {
+        my $local_resources_rs = $resource->local_resources;
+        my $total_local_count  = $local_resources_rs->count * 2;
+        my $count = 0;
+        while ( my $local_resource = $local_resources_rs->next ) {
+            my $titles_rs = $class->local_rs($schema)->search({ resource => $local_resource->id });
+            my $cjdb_rs   = $schema->resultset('CJDBLinks')->search({ resource => $local_resource->id });
 
-    my $rs = $local eq 'local' ? $class->local_rs($schema) : $class->global_rs($schema);
-    defined $rs or
-        CUFTS::Exception::App->throw("resource does not have an associated database module for loading title lists");
+            $job->terminate_possible() if defined $job;
 
-    $rs->search({ resource => $resource_id })->delete_all;
+            $count++;
+            $job->checkpoint( (($count/$total_local_count)*95), 'Deleting ' . $cjdb_rs->count . ' CJDB links for local resource id  ' . $local_resource->id ) if defined $job;
+            $cjdb_rs->delete;
+
+            $job->terminate_possible() if defined $job;
+
+            $count++;
+            $job->checkpoint( (($count/$total_local_count)*95), 'Deleting ' . $titles_rs->count . ' titles from local resource id  ' . $local_resource->id ) if defined $job;
+            $titles_rs->delete;
+        }
+
+        $job->terminate_possible() if defined $job;
+        my $global_titles_rs = $class->global_rs($schema)->search({ resource => $resource->id });
+        $job->checkpoint( 99, 'Deleting ' . $global_titles_rs->count . ' global resource titles' ) if defined $job;
+        $global_titles_rs->delete;
+    }
+    else {
+        my $titles_rs = $class->local_rs($schema)->search({ resource => $resource->id });
+        my $cjdb_rs   = $schema->resultset('CJDBLinks')->search({ resource => $resource->id });
+
+        $job->terminate_possible() if defined $job;
+
+        $job->checkpoint( 33, 'Deleting ' . $cjdb_rs->count . ' CJDB links.' ) if defined $job;
+        $cjdb_rs->delete;
+
+        $job->terminate_possible() if defined $job;
+
+        $job->checkpoint( 66, 'Deleting ' . $titles_rs->count . ' titles.' ) if defined $job;
+        $titles_rs->delete;
+    }
+
+    # TODO:  Sweep CJDB journals for orphaned CJDB journals after links were deleted?
 
     return 1;
 }
@@ -850,6 +897,13 @@ sub _match_on_rs {
     return $rs->search($search);
 }
 
+sub _log_record_field {
+    my ( $class, $record, $field ) = @_;
+
+    $field .= '_display' if $record->can($field . '_display');
+
+    return $record->can($field) && hascontent($record->$field) ? $record->$field : '';
+}
 
 sub log_new_title {
     my ($class, $resource, $db_record, $timestamp) = @_;
@@ -872,7 +926,7 @@ sub log_new_title {
         print LOG "\n";
     }
 
-    print LOG join "\t", map {defined($db_record->$_) ? $db_record->$_ : ''} @{$class->title_list_fields};
+    print LOG join "\t", map { $class->_log_record_field($db_record, $_) } @{$class->title_list_fields};
     print LOG "\n";
 
     close LOG;
@@ -905,7 +959,7 @@ sub log_deleted_title {
         print LOG "\n";
     }
 
-    print LOG join "\t", map {$db_record->$_ || ''} @{$class->title_list_fields};
+    print LOG join "\t", map { $class->_log_record_field($db_record, $_) } @{$class->title_list_fields};
     print LOG "\n";
 
     close LOG;
@@ -960,7 +1014,7 @@ sub log_deleted_local_title {
         $class->can('overlay_global_title_data') and
             $class->overlay_global_title_data($local_record, $db_record);
 
-        print LOG join "\t", map {defined($local_record->$_) ? $local_record->$_ :  ''} @title_list_fields;
+        print LOG join "\t", map { $class->_log_record_field($local_record, $_) } @title_list_fields;
         print LOG "\n";
 
         close LOG;
@@ -993,7 +1047,7 @@ sub log_modified_title {
         print LOG "\n";
     }
 
-    print LOG join "\t", map {$db_record->$_ || ''} @{$class->title_list_fields};
+    print LOG join "\t", map { $class->_log_record_field($db_record, $_) } @{$class->title_list_fields};
     print LOG "\n";
 
     close LOG;
@@ -1049,12 +1103,12 @@ sub log_modified_local_title {
         foreach my $field (@title_list_fields) {
             print LOG "\t" unless $count++ == 0;
             defined($db_record->$field) and
-                print LOG $db_record->$field;
+                print LOG $class->_log_record_field($db_record, $field);
 
             next if $field eq 'id';
 
             defined($local_record->$field) and
-                print LOG ' [' . $local_record->$field . ']';
+                print LOG ' [' . $class->_log_record_field($local_record, $field) . ']';
             defined($new_record->{$field}) && (!defined($db_record->$field) || ($new_record->{$field} ne $db_record->$field)) and
                 print LOG ' (' . $new_record->{$field} . ')';
 
