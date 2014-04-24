@@ -1,6 +1,6 @@
 use strict;
 
-use Test::More tests => 40;
+use Test::More tests => 41;
 
 BEGIN {
 	use_ok('CUFTS::Request');
@@ -107,3 +107,13 @@ is($r5->issue, 	'8', 'openurl1: issue');
 is($r5->spage, 	'23', 'openurl1: spage');
 is($r5->date, 	'1997-04-01', 'openurl1: date');
 
+my $r6 = CUFTS::Request->parse_openurl_0({
+	genre  => 'article',
+	issn   => '0378-5173',
+	volume => '441',
+	issue  => '12',
+	title  => '',
+	spage  => '121',
+	date   => '2013-01-30',
+});
+isa_ok($r6, 'CUFTS::Request');

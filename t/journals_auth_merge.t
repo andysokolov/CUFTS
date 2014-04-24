@@ -240,7 +240,7 @@ is_deeply( [ sort map { $_->tag } $merged1->cjdb_tags->all ], [ 'testtag1', 'tes
 
 # Check that assocatiated Global and Local journals got merged
 
-my $check_j1 = $resource1->journals({ id => 1 })->first;
+my $check_j1 = $resource1->global_journals({ id => 1 })->first;
 is( $check_j1->journal_auth->id, $merged1->id, 'global journals link updated' );
 
 $check_j1 = $local_resource1->local_journals({ id => 1 })->first;
