@@ -58,10 +58,10 @@ sub can_getFulltext {
     my ( $class, $request ) = @_;
 
     return 0
-        if     is_empty_string( $request->spage  ) 
-            || is_empty_string( $request->volume )    
+        if     is_empty_string( $request->spage  )
+            || is_empty_string( $request->volume )
             || is_empty_string( $request->issue  );
-       
+
     return $class->SUPER::can_getFulltext($request);
 }
 
@@ -89,7 +89,7 @@ sub can_getTOC {
 
 # fulltext linking works on some but not all highwire journals so comment out for now
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -127,7 +127,7 @@ sub build_linkFulltext {
 
 # TOC linking works on some but not all highwire journals so comment out for now
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -155,7 +155,7 @@ sub build_linkTOC {
 }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

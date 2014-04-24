@@ -147,7 +147,7 @@ sub clean_data {
 
     sub parse_date {
         my ($date) = @_;
-        
+
         my ( $month, $day, $year );
 
         if ( ( $year, $month, $day ) = $date =~ m{ (\d{4}) - (\d{1,2}) - (\d{1,2}) }xsm ) {
@@ -175,7 +175,7 @@ sub clean_data {
             elsif ( $month =~ /^Dec/i ) { $month = 12 }
             return sprintf( "%04i-%02i-%02i", $year, $month, $day );
         }
-        
+
         return undef;
     }
 }
@@ -187,7 +187,7 @@ sub clean_data {
 ##
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -197,7 +197,7 @@ sub build_linkJournal {
         or CUFTS::Exception::App->throw('No site defined in build_linkJournal');
     defined($request)
         or CUFTS::Exception::App->throw('No request defined in build_linkJournal');
-        
+
     if ( is_empty_string( $resource->url_base ) ) {
         CUFTS::Exception::App->throw('No url_base set for resource');
     }
@@ -206,7 +206,7 @@ sub build_linkJournal {
 
     foreach my $record (@$records) {
 
-        next if is_empty_string( $record->issn   ) 
+        next if is_empty_string( $record->issn   )
              && is_empty_string( $record->e_issn );
 
         my $url = $resource->url_base;
@@ -232,7 +232,7 @@ sub can_getTOC {
 
     return 0 if is_empty_string( $request->issue  )
              && is_empty_string( $request->volume );
-    
+
     return $class->SUPER::can_getTOC($request);
 }
 
@@ -246,7 +246,7 @@ sub can_getFulltext {
 }
 
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -265,7 +265,7 @@ sub build_linkTOC {
 
     foreach my $record (@$records) {
 
-        next if is_empty_string( $record->issn   ) 
+        next if is_empty_string( $record->issn   )
              && is_empty_string( $record->e_issn );
 
         my $url = $resource->url_base;
@@ -294,7 +294,7 @@ sub build_linkTOC {
 }
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -312,7 +312,7 @@ sub build_linkFulltext {
     my @results;
     foreach my $record (@$records) {
 
-        next if is_empty_string( $record->issn   ) 
+        next if is_empty_string( $record->issn   )
              && is_empty_string( $record->e_issn );
 
         my $url = $resource->url_base;
@@ -349,14 +349,14 @@ sub build_linkFulltext {
 
 __DATA__
 ContentType	Name	DOI	OpenURL	Direct Link	Publisher	Print Issn/Isbn	Online Issn/Isbn	Subject	Oldest Volume	Oldest Issue	Oldest CoverDate	Newest Volume	Newest Issue	Newest CoverDate	Oldest Volume with Abstracts	Oldest Issue with Abstracts	Oldest CoverDate with Abstracts	Newest Volume with Abstracts	Newest Issue with Abstracts	Newest CoverDate with Abstracts	Copyright	Series / Parent Publication	Author / Editor	Subtitle	Volume	Issue	Pages	Notes
-Journal	4OR: A Quarterly Journal of Operations Research		http://www.metapress.com/openurl.asp?genre=journal&issn=1619-4500	http://www.metapress.com/content/111812	Springer Berlin / Heidelberg	1619-4500	1614-2411		Volume 1	1	01/03/2003	Volume 6	3	01/09/2008	Volume 1	1	01/03/2003	Volume 6	3	01/09/2008								
-Journal	The AAPS Journal		http://www.metapress.com/openurl.asp?genre=journal&eissn=1550-7416	http://www.metapress.com/content/120921	Springer New York		1550-7416		Volume 1	2	10/06/1999	Volume 10	1	22/03/2008	Volume 1	2	10/06/1999	Volume 10	1	22/03/2008								
-Journal	AAPS PharmSciTech		http://www.metapress.com/openurl.asp?genre=journal&eissn=1530-9932	http://www.metapress.com/content/120971	Springer New York		1530-9932		Volume 1	1	12/03/2000	Volume 9	2	01/06/2008	Volume 1	1	12/03/2000	Volume 9	2	01/06/2008								
-Journal	Abdominal Imaging		http://www.metapress.com/openurl.asp?genre=journal&issn=0942-8925	http://www.metapress.com/content/100116	Springer New York	0942-8925	1432-0509		Volume 1	1	25/12/1976	Volume 33	5	01/09/2008	Volume 1	1	25/12/1976	Volume 33	5	01/09/2008								
-Journal	Abhandlungen aus dem Mathematischen Seminar der Universität Hamburg		http://www.metapress.com/openurl.asp?genre=journal&issn=0025-5858	http://www.metapress.com/content/120934	Springer Berlin / Heidelberg	0025-5858	1865-8784		Volume 6	1	01/12/1928	Volume 75	1	01/12/2005	Volume 6	1	01/12/1928	Volume 75	1	01/12/2005								
-Journal	Abstracts of the Papers Communicated to the Royal Society of London (1843-1854)		http://www.metapress.com/openurl.asp?genre=journal&issn=0365-0855	http://www.metapress.com/content/120145	The Royal Society	0365-0855			Volume 5	-1	1843-01-01	Volume 6	-1	1850-01-01														
-Journal	Artificial Intelligence Review		http://www.metapress.com/openurl.asp?genre=journal&issn=0269-2821	http://www.metapress.com/content/100240	Springer Netherlands	0269-2821	1573-7462		Volume 1	1	01/03/1986	Volume 26	4	09/12/2006	Volume 1	1	01/03/1986	Volume 24	3	09/11/2005								
-Journal	Artificial Life and Robotics		http://www.metapress.com/openurl.asp?genre=journal&issn=1433-5298	http://www.metapress.com/content/112249	Springer Japan	1433-5298	1614-7456		Volume 1	1	10/03/1997	Volume 12	1	01/03/2008	Volume 1	1	10/03/1997	Volume 12	1	01/03/2008								
-Journal	Artificial Satellites		http://www.metapress.com/openurl.asp?genre=journal&issn=0208-841X	http://www.metapress.com/content/120727	Versita	0208-841X			Volume 41	1	01/01/2006	Volume 42	3	01/01/2007	Volume 41	1	01/01/2006	Volume 42	2	01/01/2007								
-Journal	Arts Education Policy Review		http://www.metapress.com/openurl.asp?genre=journal&issn=1063-2913	http://www.metapress.com/content/119955	"Heldref Publications, a division of the Helen Dwight Reid Educational Foundation"	1063-2913	1940-4395		Volume 105	3	01/01/2004	Volume 109	5	01/05/2008	Volume 108	3	01/01/2007	Volume 109	5	01/05/2008								
-Journal	Asia Europe Journal		http://www.metapress.com/openurl.asp?genre=journal&issn=1610-2932	http://www.metapress.com/content/110364	Springer Berlin / Heidelberg	1610-2932	1612-1031		Volume 1	1	24/02/2003	Volume 6	2	01/06/2008	Volume 1	1	24/02/2003	Volume 5	4	22/01/2008								
+Journal	4OR: A Quarterly Journal of Operations Research		http://www.metapress.com/openurl.asp?genre=journal&issn=1619-4500	http://www.metapress.com/content/111812	Springer Berlin / Heidelberg	1619-4500	1614-2411		Volume 1	1	01/03/2003	Volume 6	3	01/09/2008	Volume 1	1	01/03/2003	Volume 6	3	01/09/2008
+Journal	The AAPS Journal		http://www.metapress.com/openurl.asp?genre=journal&eissn=1550-7416	http://www.metapress.com/content/120921	Springer New York		1550-7416		Volume 1	2	10/06/1999	Volume 10	1	22/03/2008	Volume 1	2	10/06/1999	Volume 10	1	22/03/2008
+Journal	AAPS PharmSciTech		http://www.metapress.com/openurl.asp?genre=journal&eissn=1530-9932	http://www.metapress.com/content/120971	Springer New York		1530-9932		Volume 1	1	12/03/2000	Volume 9	2	01/06/2008	Volume 1	1	12/03/2000	Volume 9	2	01/06/2008
+Journal	Abdominal Imaging		http://www.metapress.com/openurl.asp?genre=journal&issn=0942-8925	http://www.metapress.com/content/100116	Springer New York	0942-8925	1432-0509		Volume 1	1	25/12/1976	Volume 33	5	01/09/2008	Volume 1	1	25/12/1976	Volume 33	5	01/09/2008
+Journal	Abhandlungen aus dem Mathematischen Seminar der Universität Hamburg		http://www.metapress.com/openurl.asp?genre=journal&issn=0025-5858	http://www.metapress.com/content/120934	Springer Berlin / Heidelberg	0025-5858	1865-8784		Volume 6	1	01/12/1928	Volume 75	1	01/12/2005	Volume 6	1	01/12/1928	Volume 75	1	01/12/2005
+Journal	Abstracts of the Papers Communicated to the Royal Society of London (1843-1854)		http://www.metapress.com/openurl.asp?genre=journal&issn=0365-0855	http://www.metapress.com/content/120145	The Royal Society	0365-0855			Volume 5	-1	1843-01-01	Volume 6	-1	1850-01-01
+Journal	Artificial Intelligence Review		http://www.metapress.com/openurl.asp?genre=journal&issn=0269-2821	http://www.metapress.com/content/100240	Springer Netherlands	0269-2821	1573-7462		Volume 1	1	01/03/1986	Volume 26	4	09/12/2006	Volume 1	1	01/03/1986	Volume 24	3	09/11/2005
+Journal	Artificial Life and Robotics		http://www.metapress.com/openurl.asp?genre=journal&issn=1433-5298	http://www.metapress.com/content/112249	Springer Japan	1433-5298	1614-7456		Volume 1	1	10/03/1997	Volume 12	1	01/03/2008	Volume 1	1	10/03/1997	Volume 12	1	01/03/2008
+Journal	Artificial Satellites		http://www.metapress.com/openurl.asp?genre=journal&issn=0208-841X	http://www.metapress.com/content/120727	Versita	0208-841X			Volume 41	1	01/01/2006	Volume 42	3	01/01/2007	Volume 41	1	01/01/2006	Volume 42	2	01/01/2007
+Journal	Arts Education Policy Review		http://www.metapress.com/openurl.asp?genre=journal&issn=1063-2913	http://www.metapress.com/content/119955	"Heldref Publications, a division of the Helen Dwight Reid Educational Foundation"	1063-2913	1940-4395		Volume 105	3	01/01/2004	Volume 109	5	01/05/2008	Volume 108	3	01/01/2007	Volume 109	5	01/05/2008
+Journal	Asia Europe Journal		http://www.metapress.com/openurl.asp?genre=journal&issn=1610-2932	http://www.metapress.com/content/110364	Springer Berlin / Heidelberg	1610-2932	1612-1031		Volume 1	1	24/02/2003	Volume 6	2	01/06/2008	Volume 1	1	24/02/2003	Volume 5	4	22/01/2008

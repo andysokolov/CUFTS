@@ -82,12 +82,12 @@ sub clean_data {
     my ( $class, $record ) = @_;
 
     # Get rid of quotes around titles and publishers with commas in them
-    
+
     $record->{title}     = trim_string( $record->{title},     '"' );
     $record->{publisher} = trim_string( $record->{publisher}, '"' );
 
     my $start = $record->{'___Backfiles'};
-    
+
     if ( $start =~ /^ \s* (\d{4}) /xsm ) {
         $record->{ft_start_date} = $1 . '-01-01';
     }
@@ -127,6 +127,3 @@ Acta Ethnographica Hungarica	1216-9803	1588-2586	2000 vol. 44 iss.1	http://www.s
 Ägypten und Levante	1015-5104	1813-5145	2003 vol. 12	http://www.swetswise.com/link/access_db?issn=1015-5104	Austrian Academy of Sciences Press
 AI Communications	0921-7126	0921-7126	1997 vol. 10 iss.1	http://www.swetswise.com/link/access_db?issn=0921-7126	IOS Press
 "Allergy, Asthma, and Clinical Immunology"	1710-1484	1710-1492	2004 vol. 1 iss.1	http://www.swetswise.com/link/access_db?issn=1710-1484	BC Decker
-
-
-

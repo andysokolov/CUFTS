@@ -149,14 +149,14 @@ sub resource_details_help {
 ##
 
 sub build_linkDatabase {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     my @results;
 
     foreach my $record (@$records) {
 
         my $url = $resource->database_url;
-        if ( is_empty_string($url) ) { 
+        if ( is_empty_string($url) ) {
             $url = $resource->url_base;
             if ( $resource->auth_name ) {
                 $url .= $resource->auth_name;
@@ -185,14 +185,14 @@ sub build_linkDatabase {
 }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     my @results;
 
     foreach my $record (@$records) {
 
         my $url = $resource->url_base;
-        if ( is_empty_string($url) ) { 
+        if ( is_empty_string($url) ) {
             $url = $resource->database_url;
         }
         if ( is_empty_string($url) ) {
@@ -201,24 +201,24 @@ sub build_linkJournal {
 
         my $escaped_title = uri_escape($record->title);
         my $resource_identifier = $resource->resource_identifier;
-        
+
         # Try first style of linking:
         # http://infotrac.galegroup.com.darius/itw/infomark/1/1/1/purl=rc18%5fSP09%5F0%5F%5Fjn+%22Computers+in+Libraries%22
-        
-        
+
+
         if ( $url =~ /purl=rc1/ ) {
             $url .= "\%22${escaped_title}\%22";
         }
-        
+
         # Second link style
         # http://find.galegroup.com/itx/publicationSearch.do?dblist=&serQuery=Locale%28en%2C%2C%29%3AFQE%3D%28JX%2CNone%2C24%29%22{title}%22%24&inPS=true&type=getIssues&searchTerm=&prodId={resource_identifier}&currentPosition=0
         # may need an authname: &userGroupName=leth89164
-        
+
         elsif ( $url =~ /\{title\}/ ) {
             $url =~ s/\{title\}/$escaped_title/e;
             $url =~ s/\{resource_identifier\}/$resource_identifier/e;
         }
-        
+
         # Original, should have an example here.
         else {
             if ( $resource->resource_identifier ) {
@@ -231,11 +231,11 @@ sub build_linkJournal {
 
             $url .= "&title=${escaped_title}";
         }
-        
+
         if ( $resource->auth_name ) {
             $url .= $resource->auth_name;
         }
-        
+
         $url .= __add_proxy_suffix($url, $resource->proxy_suffix);
 
         my $result = new CUFTS::Result($url);
@@ -258,11 +258,11 @@ sub can_getJournal {
 
 sub __add_proxy_suffix {
     my ( $url, $suffix ) = @_;
-    
+
     if ( not_empty_string( $suffix ) ) {
         # if the URL has a "?" in it already, then convert a leading ? from the suffix into a &
 
-        if ( $url =~ /\?/ ) {  
+        if ( $url =~ /\?/ ) {
             $suffix =~ s/^\?/&/;
         }
         return $suffix;

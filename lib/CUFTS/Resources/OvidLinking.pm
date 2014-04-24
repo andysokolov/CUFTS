@@ -124,11 +124,11 @@ sub resource_details_help {
 sub can_getFulltext {
     my ( $class, $request ) = @_;
 
-    if ( 
+    if (
          (    is_empty_string( $request->volume )
            || is_empty_string( $request->issue  )
            || is_empty_string( $request->spage  )
-         ) 
+         )
          && is_empty_string( $request->atitle )
        )
     {
@@ -157,7 +157,7 @@ sub can_getTOC {
 ##
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -205,7 +205,7 @@ sub build_linkFulltext {
 }
 
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -245,7 +245,7 @@ sub build_linkTOC {
 }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -259,9 +259,9 @@ sub build_linkJournal {
     my @results;
 
     foreach my $record (@$records) {
-        
+
         my $url;
-        
+
         if ( not_empty_string($record->journal_url ) ) {
             $url = $record->journal_url;
         }
@@ -277,7 +277,7 @@ sub build_linkJournal {
             else {
                 $url .= uri_escape($record->title) . '.JN';
             }
-            
+
         }
 
         my $result = new CUFTS::Result($url);
@@ -290,7 +290,7 @@ sub build_linkJournal {
 }
 
 sub build_linkDatabase {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

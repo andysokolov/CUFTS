@@ -88,7 +88,7 @@ sub clean_data {
     }
 
     $record->{title} = trim_string( $record->{title}, '"' );
-    $record->{title} =~ s/\(.*\)$//; 
+    $record->{title} =~ s/\(.*\)$//;
 
     if ( defined($record->{e_issn}) && $record->{e_issn} !~ / \d{4} - \d{3}[\dxX] /xsm ) {
         delete $record->{e_issn};
@@ -103,7 +103,7 @@ sub clean_data {
 }
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -119,9 +119,9 @@ sub build_linkFulltext {
     foreach my $record (@$records) {
         my $url = $class->_build_openurl( $record, $resource, $request );
         next if !defined($url);
-        
+
         $url .= "&spage=" . $request->spage;
-        
+
         my $result = new CUFTS::Result($url);
         $result->record($record);
 

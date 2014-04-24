@@ -95,7 +95,7 @@ SERVICE:
                 my $method = 'build_link' . $service->method;
                 if ( $module->can($method) ) {
 
-                    my $results = $module->$method( $records, $resource, $site, $request );
+                    my $results = $module->$method( $self->schema, $records, $resource, $site, $request );
                     next SERVICE if !defined($results) || scalar(@$results) == 0;
 
                     # Add the proxy prefix to the results

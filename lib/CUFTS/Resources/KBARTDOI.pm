@@ -33,7 +33,7 @@ sub overridable_resource_details {
 
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

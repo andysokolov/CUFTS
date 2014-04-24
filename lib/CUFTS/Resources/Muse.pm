@@ -73,7 +73,7 @@ sub clean_data {
     if ( defined( $record->{issn} ) ) {
         $record->{issn} =~ s/[^0-9xX]//g;
     }
-    
+
     if ( defined( $record->{e_issn} ) ) {
         $record->{e_issn} =~ s/[^0-9xX]//g;
     }
@@ -81,19 +81,19 @@ sub clean_data {
     if ( defined( $start ) && $start =~ / vol\. \s* (\d+) /xsmi ) {
         $record->{vol_ft_start} = $1;
     }
-    
+
     if ( defined( $start ) && $start =~ / (?: no\. | issue ) \s* (\d+) /xsmi ) {
         $record->{iss_ft_start} = $1;
     }
-    
+
     if ( defined( $end ) && $end =~ / vol\. \s* (\d+) /xsmi ) {
         $record->{vol_ft_end} = $1;
     }
-    
+
     if ( defined( $end ) && $end =~ / (?: issue | no\. ) \s* (\d+) /xsmi ) {
         $record->{iss_ft_end} = $1;
     }
-    
+
     if ( defined( $start ) && $start =~ / \( (.+) \s+ (\d{4}) .* \) /xsm ) {
 
         my $month = $1;
@@ -163,7 +163,7 @@ sub can_getTOC {
 }
 
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -179,7 +179,7 @@ sub build_linkTOC {
     foreach my $record (@$records) {
         my $url = $class->_build_openurl( $record, $resource, $request );
         next if !defined($url);
-        
+
         my $result = new CUFTS::Result($url);
         $result->record($record);
 
@@ -200,7 +200,7 @@ sub can_getFulltext {
 }
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -216,9 +216,9 @@ sub build_linkFulltext {
     foreach my $record (@$records) {
         my $url = $class->_build_openurl( $record, $resource, $request );
         next if !defined($url);
-        
+
         $url .= "&spage=" . $request->spage;
-        
+
         my $result = new CUFTS::Result($url);
         $result->record($record);
 
@@ -256,7 +256,7 @@ sub _build_openurl {
 
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

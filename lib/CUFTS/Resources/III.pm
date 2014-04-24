@@ -32,7 +32,7 @@ sub local_resource_details {
 }
 
 sub search_getHoldings {
-    my ( $class, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $resource, $site, $request ) = @_;
 
     not_empty_string( $resource->url_base )
         or CUFTS::Exception::App->throw('No url_base defined for III resource.');

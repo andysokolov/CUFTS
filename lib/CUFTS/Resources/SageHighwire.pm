@@ -73,7 +73,7 @@ sub title_list_field_map {
 
 sub clean_data {
     my ( $class, $record ) = @_;
-    
+
     $record->{title} =~ s/ \xAE $//xsm;  # Remove trailing (r)
 
     $record->{ft_start_date} = sprintf( '%4i-%02i', ($record->{'___First Year'} || $record->{'___FirstYear'} ), ( $record->{'___First Month'} || $record->{'___FirstMonth'} ) );
@@ -94,7 +94,7 @@ sub clean_data {
             delete $record->{iss_ft_end};
         }
     }
-    
+
     return $errs;
 }
 
@@ -110,16 +110,16 @@ sub can_getFulltext {
     my ( $class, $request ) = @_;
 
     return 0
-        if     is_empty_string( $request->spage  ) 
-            || is_empty_string( $request->volume )    
+        if     is_empty_string( $request->spage  )
+            || is_empty_string( $request->volume )
             || is_empty_string( $request->issue  );
-       
+
     return $class->SUPER::can_getFulltext($request);
 }
 
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

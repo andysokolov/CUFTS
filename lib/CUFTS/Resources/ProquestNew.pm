@@ -1,4 +1,4 @@
-## CUFTS::Resources::Proquest
+## CUFTS::Resources::ProquestNew
 ##
 ## Copyright Todd Holbrook - Simon Fraser University (2003)
 ##
@@ -80,7 +80,7 @@ sub title_list_skip_lines_count { return 2 }
 
 sub clean_data {
     my ( $class, $record ) = @_;
-    
+
     if ( not_empty_string($record->{ft_end_date}) && $record->{ft_end_date} =~ /current/i ) {
         delete $record->{ft_end_date};
     }
@@ -138,7 +138,7 @@ sub can_getFulltext {
 }
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -169,7 +169,7 @@ sub build_linkFulltext {
         }
 
         ##
-        ## Hack for Wall Street Journal - it doesn't have vol/iss indexed and 
+        ## Hack for Wall Street Journal - it doesn't have vol/iss indexed and
         ## does not return results if you include them in the search.
         ##
 
@@ -211,7 +211,7 @@ sub build_linkFulltext {
 }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

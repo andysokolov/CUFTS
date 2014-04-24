@@ -540,7 +540,7 @@ sub search_getFulltext {
         or CUFTS::Exception::App->throw("No build_linkFulltext method defined for class: $class");
 
     if ( defined($active) && scalar(@$active) > 0 ) {
-        return $class->build_linkFulltext( $active, $resource, $site, $request );
+        return $class->build_linkFulltext( $schema, $active, $resource, $site, $request );
     }
     else {
         return undef;
@@ -560,7 +560,7 @@ sub search_getJournal {
         or CUFTS::Exception::App->throw("No build_linkJournal method defined for class: $class");
 
     if ( defined($active) && scalar(@$active) > 0 ) {
-        return $class->build_linkJournal( $active, $resource, $site, $request );
+        return $class->build_linkJournal( $schema, $active, $resource, $site, $request );
     }
     else {
         return undef;
@@ -580,7 +580,7 @@ sub search_getTOC {
         or CUFTS::Exception::App->throw("No build_linkTOC method defined for class: $class");
 
     if ( defined($active) && scalar(@$active) > 0 ) {
-        return $class->build_linkTOC( $active, $resource, $site, $request );
+        return $class->build_linkTOC( $schema, $active, $resource, $site, $request );
     }
     else {
         return undef;
@@ -600,7 +600,7 @@ sub search_getDatabase {
         or CUFTS::Exception::App->throw("No build_linkDatabase method defined for class: $class");
 
     if ( defined($active) && scalar(@$active) > 0 ) {
-        return $class->build_linkDatabase( $active, $resource, $site, $request );
+        return $class->build_linkDatabase( $schema, $active, $resource, $site, $request );
     }
     else {
         return undef;
@@ -608,7 +608,7 @@ sub search_getDatabase {
 }
 
 sub build_linkDatabase {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
     return [] if !hascontent( $resource->database_url );
 
     my @results;
@@ -623,7 +623,7 @@ sub build_linkDatabase {
 }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

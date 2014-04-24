@@ -8,7 +8,7 @@
 ## the terms of the GNU General Public License as published by the Free
 ## Software Foundation; either version 2 of the License, or (at your option)
 ## any later version.
-## 
+##
 ## CUFTS is distributed in the hope that it will be useful, but WITHOUT ANY
 ## WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 ## FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -47,13 +47,13 @@ sub title_list_fields {
 sub overridable_resource_details {
     return undef;
 }
-    
+
 
 sub title_list_field_map {
     return {
         'Maintitle'         => 'title',
         'ISSN'          => 'issn',
-        
+
     };
 }
 
@@ -64,9 +64,9 @@ sub clean_data {
 
     $record->{'title'} =~ s/^"/;
     $record->{'title'} =~ s/"$/;
-    
+
     # Figure out fulltext field
-    
+
     my $ft_field;
     foreach my $field (keys $record) {
         if ($field =~ /^___.+Full\s+Text\s+coverage/i) {
@@ -74,8 +74,8 @@ sub clean_data {
             last;
         }
     }
-        
-    if (defined($ft_field)) {           
+
+    if (defined($ft_field)) {
         my $coverage = $record->{$ft_field};
         if ($coverage =~ /(\d{4}).*\-.*(\d{4})/) {
             $record->{'ft_start_date'} = $1;
@@ -84,7 +84,7 @@ sub clean_data {
             $record->{'ft_start_date'} = $1;
         }
     }
-    
+
     return $self->SUPER::clean_data($record);
 }
 

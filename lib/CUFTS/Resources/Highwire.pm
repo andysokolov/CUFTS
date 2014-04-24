@@ -66,13 +66,13 @@ sub title_list_field_map {
         'End-date of full text'         => 'ft_end_date',
         'End- date of full text'        => 'ft_end_date',
         'End-date of full-text'         => 'ft_end_date',
-        'Print ISSN number?'             => 'issn', 
+        'Print ISSN number?'             => 'issn',
         'Online ISSN number?'            => 'e_issn',
-        'What is the print ISSN number?'             => 'issn', 
-        'What is the online ISSN number?'            => 'e_issn', 
-        'What is print ISSN number?'                 => 'issn', 
-        'What is online ISSN number?'                => 'e_issn', 
-        'What is the main URL for the journal site?' => 'journal_url', 
+        'What is the print ISSN number?'             => 'issn',
+        'What is the online ISSN number?'            => 'e_issn',
+        'What is print ISSN number?'                 => 'issn',
+        'What is online ISSN number?'                => 'e_issn',
+        'What is the main URL for the journal site?' => 'journal_url',
         'Who is the publisher?'                      => 'publisher',
     }
 }
@@ -140,7 +140,7 @@ sub clean_data {
 
             return sprintf( "%04i-%02i-%02i", $year, $month, $day );
         }
-        
+
         return undef;
     }
 }
@@ -155,10 +155,10 @@ sub can_getFulltext {
     my ( $class, $request ) = @_;
 
     return 0
-        if     is_empty_string( $request->spage  ) 
-            || is_empty_string( $request->volume )    
+        if     is_empty_string( $request->spage  )
+            || is_empty_string( $request->volume )
             || is_empty_string( $request->issue  );
-       
+
     return $class->SUPER::can_getFulltext($request);
 }
 
@@ -186,7 +186,7 @@ sub can_getTOC {
 
 # fulltext linking works on some but not all highwire journals so comment out for now
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -218,7 +218,7 @@ sub build_linkFulltext {
 
 # TOC linking works on some but not all highwire journals so comment out for now
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -246,7 +246,7 @@ sub build_linkTOC {
 }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

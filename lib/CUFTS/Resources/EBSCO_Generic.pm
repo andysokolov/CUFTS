@@ -91,7 +91,7 @@ sub title_list_field_map {
 
 sub skip_record {
     my ( $class, $record ) = @_;
-    
+
 #    return 1 if $record->{'___Source Type'} =~ /book|monograph/i;
 
     return 0
@@ -117,7 +117,7 @@ sub clean_data {
             $record->{ft_start_date} = $1;
         }
 
-    
+
         if ( $fulltext =~ m{ to \s+ (\d{1,2}) / (\d{1,2}) / (\d{4}) \s* $}xsm ) {
             $record->{ft_end_date} = "$3/$1/$2";
         }
@@ -126,9 +126,9 @@ sub clean_data {
         }
 
     }
-    
+
     if ( defined( $record->{'___Searchable Cited References'} ) ) {
-    
+
         if ( $record->{'___Searchable Cited References'} =~ m{^ \s* (\d{1,2}) / (\d{1,2}) / (\d{1,4}) }xsm ) {
             $record->{cit_start_date} = "$3/$1/$2";
         }
@@ -137,9 +137,9 @@ sub clean_data {
         }
 
     }
-    
+
     if ( defined( $record->{'___Searchable Cited References'} ) ) {
-    
+
         if ( $record->{'___Searchable Cited References'} =~ m{ to \s+ (\d{1,2}) / (\d{1,2}) / (\d{4}) }xsm ) {
             $record->{cit_end_date} = "$3/$1/$2";
         }
@@ -207,9 +207,9 @@ sub resource_details_help {
 sub can_getTOC {
     my ( $class, $request ) = @_;
 
-    return 0 
+    return 0
         if is_empty_string( $request->volume );
-    
+
     return $class->SUPER::can_getTOC($request);
 
 }
@@ -225,7 +225,7 @@ sub can_getFulltext {
 }
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -280,7 +280,7 @@ sub build_linkFulltext {
 }
 
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -322,7 +322,7 @@ sub build_linkTOC {
 }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -358,7 +358,7 @@ sub build_linkJournal {
 }
 
 sub build_linkDatabase {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     my $db = $resource->resource_identifier;
     return [] if is_empty_string($db);

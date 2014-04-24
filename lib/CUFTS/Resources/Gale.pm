@@ -97,7 +97,7 @@ sub overridable_resource_details {
 }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -128,7 +128,7 @@ sub build_linkJournal {
 # http://infotrac.galegroup.com/itw/infomark/1/1/1/purl=rc11_LT_0_sn_0891-6330_AND_vo_16_AND_iu_4
 
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -182,7 +182,7 @@ sub build_linkTOC {
 # http://infotrac.galegroup.com/itw/infomark/1/1/1/purl=rc11_LT_0_sn_0891-6330_AND_vo_16_AND_iu_4
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -217,7 +217,7 @@ sub build_linkFulltext {
         if ( not_empty_string($request->volume) ) {
             $url .= '+AND+vo+' . $request->volume;
         }
-    
+
         if ( not_empty_string($request->issue) ) {
             $url .= '+AND+iu+' . $request->issue;
         }
@@ -226,12 +226,12 @@ sub build_linkFulltext {
             $url .= '+AND+sp+' . $request->spage;
         }
 
-#        if ( not_empty_string($request->atitle) ) { 
+#        if ( not_empty_string($request->atitle) ) {
 #            $url .= '+AND+ti+' . $request->atitle;
 #        }
 
         $url .= __add_proxy_suffix($url, $resource->proxy_suffix);
-        
+
         my $result = new CUFTS::Result($url);
         $result->record($record);
         push @results, $result;
@@ -242,11 +242,11 @@ sub build_linkFulltext {
 
 sub __add_proxy_suffix {
     my ( $url, $suffix ) = @_;
-    
+
     if ( not_empty_string( $suffix ) ) {
         # if the URL has a "?" in it already, then convert a leading ? from the suffix into a &
 
-        if ( $url =~ /\?/ ) {  
+        if ( $url =~ /\?/ ) {
             $suffix =~ s/^\?/&/;
         }
         return $suffix;

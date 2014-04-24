@@ -87,43 +87,43 @@ sub clean_data {
         # return ['Skipping due to non-fulltext backfile entry'];
     }
 
-    # 
+    #
     # if ( !defined( $record->{'___start'} ) ) {
     #     return ['Skipping due to missing holdings data'];
     # }
 
     $record->{title} = trim_string( $record->{title}, '"' );
     $record->{title} =~ s/\(.+\)$//;
-        
+
     # if ( $record->{e_issn} !~ / \d{4} - \d{3}[\dxX] /xsm ) {
     #     delete $record->{e_issn};
     # }
-    # 
+    #
     # my ( $start_vol, $start_iss, $start_year ) = split /\s*\/\s*/, $record->{'___start'};
-    # 
+    #
     # if ( defined($start_vol) && $start_vol =~ / (\d+) \s* -? /xsm ) {
     #     $record->{vol_ft_start} = $1;
     # }
-    # 
+    #
     # if ( defined($start_iss) && $start_iss =~ / (\d+) \s* -? /xs, ) {
     #     $record->{iss_ft_start} = $1;
     # }
-    # 
+    #
     # if ( defined($start_year) && $start_year =~ / (\d{4}) /xsm ) {
     #     $record->{ft_start_date} = $1;
     # }
-    # 
+    #
     # if ( defined( $record->{'___end'} ) ) {
     #     my ( $end_vol, $end_iss, $end_year ) = split /\s*\/\s*/, $record->{'___end'};
-    #     
+    #
     #     if ( defined($end_vol) && $end_vol =~ / -? \s* (\d+) /xsm ) {
     #         $record->{vol_ft_end} = $1;
     #     }
-    # 
+    #
     #     if ( defined($end_iss) && $end_iss =~ / -? \s* (\d+) /xsm ) {
     #         $record->{iss_ft_end} = $1;
     #     }
-    # 
+    #
     #     if ( defined($end_year) && $end_year =~ / (\d{4}) /xsm ) {
     #         $record->{ft_end_date} = $1;
     #     }

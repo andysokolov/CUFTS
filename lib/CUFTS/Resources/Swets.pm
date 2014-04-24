@@ -103,7 +103,7 @@ sub clean_data {
     }
 
     # Check that dates make sense.. sometimes there are bad dates like "0410"
-    
+
     if ( defined($record->{ft_start_date}) && $record->{ft_start_date} !~ /^(19|20)/ ) {
         return [ 'Invalid date: ' . $record->{ft_start_date} ];
     }
@@ -137,8 +137,8 @@ sub clean_data {
 
 sub can_getFulltext {
     my ( $class, $request ) = @_;
-    
-    return 0 
+
+    return 0
         if is_empty_string( $request->spage  )
         || is_empty_string( $request->issue  )
         || is_empty_string( $request->volume );
@@ -152,7 +152,7 @@ sub can_getTOC {
     return 0
         if is_empty_string( $request->issue  )
         || is_empty_string( $request->volume );
-        
+
     return $class->SUPER::can_getFulltext($request);
 }
 
@@ -163,7 +163,7 @@ sub can_getTOC {
 ##
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -194,7 +194,7 @@ sub build_linkFulltext {
 }
 
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -224,7 +224,7 @@ sub build_linkTOC {
 }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

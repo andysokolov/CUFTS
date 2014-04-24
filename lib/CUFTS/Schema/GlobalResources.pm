@@ -5,7 +5,7 @@ use base qw/DBIx::Class::Core/;
 
 use String::Util qw( hascontent );
 
-__PACKAGE__->load_components(qw/ TimeStamp /);
+__PACKAGE__->load_components(qw/ FromValidators TimeStamp /);
 
 __PACKAGE__->table('resources');
 __PACKAGE__->add_columns(
@@ -85,6 +85,14 @@ __PACKAGE__->add_columns(
         data_type => 'datetime',
         is_nullable => 1,
     },
+    update_months => {
+        data_type => 'integer',
+        is_nullable => 1,
+    },
+    next_update => {
+        data_type => 'date',
+        is_nullable => 1,
+    },
     title_count => {
         data_type => 'integer',
         is_nullable => 0,
@@ -110,6 +118,8 @@ __PACKAGE__->belongs_to( resource_type => 'CUFTS::Schema::ResourceTypes',   'res
 __PACKAGE__->has_many( global_journals   => 'CUFTS::Schema::GlobalJournals',            'resource' );
 __PACKAGE__->has_many( local_resources   => 'CUFTS::Schema::LocalResources',            'resource' );
 __PACKAGE__->has_many( resource_services => 'CUFTS::Schema::GlobalResourcesServices',   'resource' );
+__PACKAGE__->has_many( jobs              => 'CUFTS::Schema::JobQueue',                  'global_resource_id' );
+
 
 __PACKAGE__->many_to_many( services => 'resource_services', 'service' );
 
@@ -143,6 +153,7 @@ sub do_module {
     }
 
     $module = $CUFTS::Config::CUFTS_MODULE_PREFIX . $module;
+    eval "require $module";
 
     return $module->$method(@args);
 }

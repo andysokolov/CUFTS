@@ -8,7 +8,7 @@
 ## the terms of the GNU General Public License as published by the Free
 ## Software Foundation; either version 2 of the License, or (at your option)
 ## any later version.
-## 
+##
 ## CUFTS is distributed in the hope that it will be useful, but WITHOUT ANY
 ## WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 ## FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -36,12 +36,12 @@ sub title_list_fields {
 		title
 		issn
 		e_issn
-		
+
 		ft_start_date
 		ft_end_date
 		cit_start_date
 		cit_end_date
-		
+
 		vol_cit_start
 		vol_cit_end
 		vol_ft_start
@@ -50,7 +50,7 @@ sub title_list_fields {
 		iss_cit_end
 		iss_ft_start
 		iss_ft_end
-		
+
 		embargo_months
 		embargo_days
 	)];
@@ -126,7 +126,7 @@ sub overridable_resource_details {
 		 )
 	];
 }
-	
+
 
 ## help_template - path to the help template for this resource relative to the
 ## general templates directory
@@ -156,7 +156,7 @@ sub resource_details_help {
 
 #sub can_getFulltext {
 #	my ($class, $request) = @_;
-#	
+#
 #	return 0 unless assert_ne($request->spage);
 #	return $class->SUPER::can_getFulltext($request);
 #}
@@ -168,15 +168,15 @@ sub resource_details_help {
 ##
 
 sub build_linkFulltext {
-	my ($class, $records, $resource, $site, $request) = @_;
+	my ($class, $schema, $records, $resource, $site, $request) = @_;
 
-	defined($records) && scalar(@$records) > 0 or 
+	defined($records) && scalar(@$records) > 0 or
 		return [];
-	defined($resource) or 
+	defined($resource) or
 		CUFTS::Exception::App->throw('No resource defined in build_linkFulltext');
-	defined($site) or 
+	defined($site) or
 		CUFTS::Exception::App->throw('No site defined in build_linkFulltext');
-	defined($request) or 
+	defined($request) or
 		CUFTS::Exception::App->throw('No request defined in build_linkFulltext');
 
 	my @results;
@@ -188,7 +188,7 @@ sub build_linkFulltext {
 
 		my $result = new CUFTS::Result($url);
 		$result->record($record);
-		
+
 		push @results, $result;
 	}
 
@@ -197,15 +197,15 @@ sub build_linkFulltext {
 
 
 sub build_linkTOC {
-	my ($class, $records, $resource, $site, $request) = @_;
-	
-	defined($records) && scalar(@$records) > 0 or 
+	my ($class, $schema, $records, $resource, $site, $request) = @_;
+
+	defined($records) && scalar(@$records) > 0 or
 		return [];
-	defined($resource) or 
+	defined($resource) or
 		CUFTS::Exception::App->throw('No resource defined in build_linkJournal');
-	defined($site) or 
+	defined($site) or
 		CUFTS::Exception::App->throw('No site defined in build_linkJournal');
-	defined($request) or 
+	defined($request) or
 		CUFTS::Exception::App->throw('No request defined in build_linkJournal');
 
 	my @results;
@@ -217,7 +217,7 @@ sub build_linkTOC {
 
 		my $result = new CUFTS::Result($url);
 		$result->record($record);
-		
+
 		push @results, $result;
 	}
 
@@ -226,15 +226,15 @@ sub build_linkTOC {
 
 
 sub build_linkJournal {
-	my ($class, $records, $resource, $site, $request) = @_;
-	
-	defined($records) && scalar(@$records) > 0 or 
+	my ($class, $schema, $records, $resource, $site, $request) = @_;
+
+	defined($records) && scalar(@$records) > 0 or
 		return [];
-	defined($resource) or 
+	defined($resource) or
 		CUFTS::Exception::App->throw('No resource defined in build_linkJournal');
-	defined($site) or 
+	defined($site) or
 		CUFTS::Exception::App->throw('No site defined in build_linkJournal');
-	defined($request) or 
+	defined($request) or
 		CUFTS::Exception::App->throw('No request defined in build_linkJournal');
 
 	my @results;
@@ -246,7 +246,7 @@ sub build_linkJournal {
 
 		my $result = new CUFTS::Result($url);
 		$result->record($record);
-		
+
 		push @results, $result;
 	}
 

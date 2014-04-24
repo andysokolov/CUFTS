@@ -60,7 +60,7 @@ sub can_getTOC {
 }
 
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -80,7 +80,7 @@ sub build_linkTOC {
         if ( $url !~ m{/$} ) {
             $url .= '/';
         }
-        
+
         $url .= $request->year;
         $url .= '/v' . $request->volume;
         $url .= '/n' . $request->issue;

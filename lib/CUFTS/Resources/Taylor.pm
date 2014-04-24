@@ -76,7 +76,7 @@ sub can_getTOC {
 ##
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -94,7 +94,7 @@ sub build_linkFulltext {
         my $url = 'http://www.tandfonline.com/openurl?genre=article';
 
         # DOI Linking not working on new platform (2011-06-27)
-        
+
         # if ( not_empty_string( $request->doi ) ) {
         #     $url .= '&doi=' . uri_escape( $request->doi );
         # }
@@ -124,7 +124,7 @@ sub build_linkFulltext {
 }
 
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

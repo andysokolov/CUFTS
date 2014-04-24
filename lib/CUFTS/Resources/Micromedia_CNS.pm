@@ -66,7 +66,7 @@ sub can_getFulltext {
 }
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -112,13 +112,13 @@ sub can_getTOC {
     my ( $class, $request ) = @_;
 
     return 0 if is_empty_string( $request->date );
-    
+
     return $class->SUPER::can_getTOC($request);
 }
 
 # use title search with date rather than issn since many issn links don't seem to work with this list
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -159,7 +159,7 @@ sub build_linkTOC {
 # found too many problems with ISSN searches coming up blank for titles in the list so
 # use title search link (takes longer but has higher success rate)
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

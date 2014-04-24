@@ -59,7 +59,7 @@ sub clean_data {
             delete $record->{$field};
         }
     }
-    
+
     if ( $record->{issn} !~ / \d{4} -? \d{3}[\dxX] /xsm ) {
         delete $record->{issn};
     }
@@ -92,7 +92,7 @@ sub preprocess_file {
     foreach my $x ( 0 .. $#in_header ) {
         $columns{ $in_header[$x] } = $x;
     }
-    
+
     my %data;
 
     while ( my $line = <$IN> ) {
@@ -133,7 +133,7 @@ sub preprocess_file {
             if ( $year > $data{$journal_id}->{ft_end_date} ) {
                 $data{$journal_id}->{ft_end_date} = $year;
             }
-            
+
             if ( $volumes < $data{$journal_id}->{vol_ft_start} ) {
                 $data{$journal_id}->{vol_ft_start} = $volumes;
             }
@@ -143,7 +143,7 @@ sub preprocess_file {
             }
         }
     }
-    
+
     print $fh (
         join "\t", qw(
             title
@@ -173,7 +173,7 @@ sub preprocess_file {
             )
         );
         print $fh "\n";
-        
+
     }
 
     close *$IN;
@@ -205,7 +205,7 @@ sub can_getTOC {
 ##
 
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -260,7 +260,7 @@ sub prepTitle {
 }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -292,7 +292,7 @@ sub build_linkJournal {
 }
 
 sub build_linkDatabase {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

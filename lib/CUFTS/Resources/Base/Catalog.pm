@@ -8,7 +8,7 @@
 ## the terms of the GNU General Public License as published by the Free
 ## Software Foundation; either version 2 of the License, or (at your option)
 ## any later version.
-## 
+##
 ## CUFTS is distributed in the hope that it will be useful, but WITHOUT ANY
 ## WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 ## FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -32,8 +32,8 @@ sub has_title_list {
 
 sub can_getHoldings {
 	my ($class, $request) = @_;
-	
-	if ( defined($request->genre) && 
+
+	if ( defined($request->genre) &&
 	     ($request->genre eq 'journal' || $request->genre eq 'article') &&
 	     (assert_ne($request->issn) || assert_ne($request->title) || assert_ne($request->eissn))) {
 		return 1;
@@ -46,11 +46,11 @@ sub can_getHoldings {
 }
 
 sub search_getHoldings {
-	my ($class, $resource, $site, $request) = @_;
+	my ($class, $schema, $resource, $site, $request) = @_;
 	
 	$class->can('build_linkHoldings') or
 		CUFTS::Exception::App->throw("No build_linkHoldings method defined for class: $class");
-	 
+
 	return $class->build_linkHoldings($resource, $site, $request);
 }
 

@@ -2,12 +2,13 @@ package CUFTS::Schema::GlobalJournals;
 
 use strict;
 
-use String::Util qw(hascontent);
+use String::Util qw(hascontent trim);
+use CUFTS::Util::Simple qw(dashed_issn);
 # use CUFTS::Util::Journal;
 
 use base qw/DBIx::Class::Core/;
 
-__PACKAGE__->load_components(qw/ InflateColumn::DateTime TimeStamp /);
+__PACKAGE__->load_components(qw/ FromValidators InflateColumn::DateTime TimeStamp /);
 
 __PACKAGE__->table('journals');
 __PACKAGE__->add_columns(
@@ -173,7 +174,43 @@ __PACKAGE__->add_columns(
 __PACKAGE__->set_primary_key( 'id' );
 
 __PACKAGE__->belongs_to( global_resource => 'CUFTS::Schema::GlobalResources',  'resource' );
-__PACKAGE__->belongs_to( journal_auth   => 'CUFTS::Schema::JournalsAuth',    'journal_auth',  { join_type => 'left' } );
+__PACKAGE__->belongs_to( journal_auth    => 'CUFTS::Schema::JournalsAuth',     'journal_auth',  { join_type => 'left' } );
+
+__PACKAGE__->has_many( local_journals => 'CUFTS::Schema::LocalJournals', 'journal' );
+
+sub issn_display {
+    return dashed_issn( shift->issn );
+}
+
+sub e_issn_display {
+    return dashed_issn( shift->e_issn );
+}
+
+sub journal_auth_display {
+    return shift->get_column('journal_auth');
+}
+
+sub ft_start_date_display {
+    return _date_display( shift->ft_start_date );
+}
+
+sub ft_end_date_display {
+    return _date_display( shift->ft_end_date );
+}
+
+sub cit_start_date_display {
+    return _date_display( shift->cit_start_date );
+}
+
+sub cit_end_date_display {
+    return _date_display( shift->cit_end_date );
+}
+
+sub _date_display {
+    my $date = shift;
+    return defined $date ? $date->ymd : undef;
+}
+
 
 # sub store_column {
 #     my ( $self, $name, $value ) = @_;

@@ -5,7 +5,7 @@ use base qw/DBIx::Class::Core/;
 
 use String::Util qw( hascontent );
 
-__PACKAGE__->load_components(qw/ TimeStamp /);
+__PACKAGE__->load_components(qw/ FromValidators TimeStamp /);
 
 __PACKAGE__->table('local_resources');
 __PACKAGE__->add_columns(
@@ -169,10 +169,12 @@ sub delete_titles {
 sub record_count {
     my ($self, @other) = @_;
 
-    my $module = $CUFTS::Config::CUFTS_MODULE_PREFIX . $self->module;
+    warn($self->id . ' -- ' . $self->module);
+
+    my $module = $CUFTS::Config::CUFTS_MODULE_PREFIX . ( $self->module || $self->global_resource->module);
     if ($module->has_title_list) {
-        my $schema = $self->resultsource->schema;
-        return $module->global_rs($schema)->search({ resource => $self->id, @other })->count;
+        my $schema = $self->result_source->schema;
+        return $module->local_rs($schema)->search({ resource => $self->id, @other })->count;
     }
 
     return undef;

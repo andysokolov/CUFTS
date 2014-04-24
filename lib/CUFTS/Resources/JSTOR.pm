@@ -24,7 +24,7 @@ use base qw(CUFTS::Resources::Base::KBART);
 
 use CUFTS::Exceptions;
 use CUFTS::Util::Simple;
-use URI::Escape qw(uri_escape_utf8);
+use URI::Escape qw(uri_escape);
 use Unicode::String qw(utf8);
 use String::Util qw(hascontent);
 
@@ -52,13 +52,13 @@ sub title_list_fields {
     ];
 }
 
-### sub title_list_read_row {
-###     my ($class, $IN) = @_;
-###     my $text = <$IN>;
-###     return undef if !hascontent($text);
-###     my $text2 = '' . utf8($text)->latin1;
-###     return $text2;
-### }
+sub title_list_read_row {
+    my ($class, $IN) = @_;
+    my $text = <$IN>;
+    return undef if !hascontent($text);
+    my $text2 = '' . utf8($text)->latin1;
+    return $text2;
+}
 
 sub clean_data {
     my ( $class, $record ) = @_;
@@ -78,7 +78,7 @@ sub can_getFulltext {
 }
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     my @skip_issue_in_sici = qw( 00664162 1543592X );
 
@@ -97,21 +97,21 @@ sub build_linkFulltext {
         next if is_empty_string( $record->issn );
 
         # Build a SICI for linking
-        
+
         # http://links.jstor.org/sici?sici=0090-5364%28198603%2914%3A1%3C1%3AOTCOBE%3E2.0.CO%3B2-U
         # Abstract from Lynch, Clifford A. “The Integrity of Digital Information; Mechanics and Definitional Issues.” JASIS 45:10 (Dec. 1994) p. 737-44
         # 0002-8231(199412)45:10<737:TIODIM>2.3.TX;2-M
         # http://makealink.jstor.org/public-tools/GetURL?volume=54&issue=8&date=19701201&journal_title=00267902&page=562
         # http://links.jstor.org/sici?sici=00267902%281970%2954:8%3A8%3C562%3E2.3.TX
-        
+
         my $volume = $request->volume;
         $volume =~ s/^suppl?\s*//i;
 
         my $issue = $request->issue;
         $issue =~ s/^suppl?\s*//i;
-        
+
         my $sici = $record->issn;
-        
+
         $sici .= '(' . $request->year . $request->month . ')';
         $sici .= $volume;
         if ( not_empty_string( $issue ) && !grep { $_ eq $record->issn } @skip_issue_in_sici ) {
@@ -120,7 +120,7 @@ sub build_linkFulltext {
         $sici .= '<' . $request->spage . '>';
         $sici .= '2.3.TX';  # ??
 
-        my $url = 'http://links.jstor.org/sici?sici=' . uri_escape_utf8($sici);
+        my $url = 'http://links.jstor.org/sici?sici=' . uri_escape($sici);
 
         my $result = new CUFTS::Result($url);
         $result->record($record);
@@ -145,7 +145,7 @@ sub can_getTOC {
 }
 
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -169,7 +169,7 @@ sub build_linkTOC {
             push @params, 'issue=' . $request->issue;
         }
 
-        if (     is_empty_string( $request->volume ) 
+        if (     is_empty_string( $request->volume )
              &&  is_empty_string( $request->issue  )
              && not_empty_string( $request->date   ) )
         {
@@ -191,7 +191,7 @@ sub build_linkTOC {
 }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -205,7 +205,7 @@ sub build_linkJournal {
     my @results;
 
     foreach my $record (@$records) {
-        
+
         my $url = $record->journal_url;
         if ( is_empty_string($url) ) {
             next if is_empty_string( $record->issn );

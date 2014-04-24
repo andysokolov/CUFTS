@@ -86,24 +86,24 @@ sub _preprocess_file {
 	my $headings_array = $class->title_list_parse_row($IN);
 	defined($headings_array) && ref($headings_array) eq 'ARRAY' or
 		die("Unable to preprocess headings line");
-	
+
 	print $fh join '|', @$headings_array;
 	print $fh "\n";
-	
+
 	while ( my $row = $class->title_list_parse_row($IN) ) {
 
 		next if $row =~ /^#/;    	# Skip comment lines
 		next unless $row =~ /\S/; 	# Skip blank lines
-		
-		my $record = $class->title_list_build_record($headings_array, $row);			
+
+		my $record = $class->title_list_build_record($headings_array, $row);
 
         my @fulltext_ranges = split /\s*;\s*/, $record->{'Full Text Start/End Date'};
         my @index_ranges    = split /\s*;\s*/, $record->{'Indexing Start/End Date'};
-        
+
         foreach my $fulltext ( @fulltext_ranges ) {
             $record->{'Full Text Start/End Date'} = $fulltext;
             $record->{'Indexing Start/End Date'}  = shift @index_ranges;
-            
+
             print $fh join '|', map { defined($record->{$_}) ? $record->{$_} : ''  } @$headings_array;
             print $fh "\n";
 
@@ -228,7 +228,7 @@ sub can_getFulltext {
 
     return 0 if is_empty_string( $request->spage  )
              && is_empty_string( $request->atitle );
-             
+
     return $class->SUPER::can_getFulltext($request);
 }
 
@@ -236,7 +236,7 @@ sub can_getTOC {
     my ( $class, $request ) = @_;
 
     return 0 if is_empty_string( $request->volume );
-    
+
     return $class->SUPER::can_getTOC($request);
 }
 
@@ -247,7 +247,7 @@ sub can_getTOC {
 ##
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -293,7 +293,7 @@ sub build_linkFulltext {
 }
 
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -336,7 +336,7 @@ sub build_linkTOC {
 }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

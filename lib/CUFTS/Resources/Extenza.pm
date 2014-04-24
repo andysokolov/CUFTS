@@ -57,7 +57,7 @@ sub can_getTOC {
 
 sub clean_data {
     my ( $class, $record ) = @_;
-    
+
     if ( defined($record->{issn}) && $record->{issn} !~ /\d{4}-?\d{3}[xX\d]/ ) {
         delete $record->{issn};
     }
@@ -65,7 +65,7 @@ sub clean_data {
     if ( defined($record->{e_issn}) && $record->{e_issn} !~ /\d{4}-?\d{3}[xX\d]/ ) {
         delete $record->{e_issn};
     }
-    
+
     $record->{title} = utf8( $record->{title} )->latin1;
 
     return $class->SUPER::clean_data($record);
@@ -73,7 +73,7 @@ sub clean_data {
 
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

@@ -53,7 +53,7 @@ sub clean_data {
     elsif ( $record->{'___Start Date'} =~ /^ ([a-z]{3,}) \/ \w+ - (\d{4})/xsmi ) {
         $record->{ft_start_date} = format_date( $2, $1, undef, 'start' );
     }
-    
+
 
     # January-2001
     if ( $record->{'___End Date'} =~ /^ ([a-z]{3,})-(\d{4}) /xsmi ) {

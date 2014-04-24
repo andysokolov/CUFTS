@@ -58,7 +58,7 @@ sub title_list_fields {
 sub can_getFulltext {
     my ( $class, $request ) = @_;
 
-    return 0 
+    return 0
         if is_empty_string( $request->spage );
 
     return $class->SUPER::can_getFulltext($request);
@@ -77,7 +77,7 @@ sub can_getTOC {
 ##
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

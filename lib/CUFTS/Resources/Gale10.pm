@@ -136,7 +136,7 @@ sub resource_details_help {
 
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -196,7 +196,7 @@ sub can_getTOC {
 
 
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -239,7 +239,7 @@ sub build_linkTOC {
         if ( not_empty_string($request->volume) ) {
             $url .= '&rft.volume=' . $request->volume;
         }
-    
+
         if ( not_empty_string($request->issue) ) {
             $url .= '&rft.issue=' . $request->issue;
         }
@@ -271,7 +271,7 @@ sub can_getFulltext {
 # Creates an OpenURL 1.0 request for gale.
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -314,7 +314,7 @@ sub build_linkFulltext {
         if ( not_empty_string($request->volume) ) {
             $url .= '&rft.volume=' . $request->volume;
         }
-    
+
         if ( not_empty_string($request->issue) ) {
             $url .= '&rft.issue=' . $request->issue;
         }
@@ -338,7 +338,7 @@ sub build_linkFulltext {
 
 sub _build_base_url {
     my ( $auth_name, $resource_identifier ) = @_;
-    
+
     return "http://find.galegroup.com/openurl/openurl?url_ver=Z39.88-2004&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx"
             . "&ctx_enc=info%3Aofi%3Aenc%3AUTF-8&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal"
             . "&req_dat=info%3Asid%2Fgale%3Augnid%3A${auth_name}"

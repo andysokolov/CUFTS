@@ -73,8 +73,14 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->set_primary_key( 'id' );
 
-# __PACKAGE__->has_many('sites', ['CUFTS::DB::Accounts_Sites' => 'site'], 'account');
+__PACKAGE__->has_many( 'accounts_sites' => 'CUFTS::Schema::AccountsSites', 'account' );
+
+__PACKAGE__->many_to_many( 'sites' => 'accounts_sites', 'site' );
+
+sub check_password {
+    my ( $self, $password ) = @_;
+
+    return $self->password eq crypt( $password, $self->key );
+}
 
 1;
-
-

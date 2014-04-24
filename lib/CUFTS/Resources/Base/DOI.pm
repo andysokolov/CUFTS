@@ -8,7 +8,7 @@
 ## the terms of the GNU General Public License as published by the Free
 ## Software Foundation; either version 2 of the License, or (at your option)
 ## any later version.
-## 
+##
 ## CUFTS is distributed in the hope that it will be useful, but WITHOUT ANY
 ## WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 ## FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -20,7 +20,7 @@
 
 ##
 ## DOI is a helper base resource meant to supply extra routines
-## to resources which list articles in doi.org. 
+## to resources which list articles in doi.org.
 ##
 
 package CUFTS::Resources::Base::DOI;
@@ -34,15 +34,15 @@ use URI::Escape;
 
 
 sub build_linkFulltext {
-	my ($class, $records, $resource, $site, $request) = @_;
+	my ($class, $schema, $records, $resource, $site, $request) = @_;
 
-	defined($records) && scalar(@$records) > 0 or 
+	defined($records) && scalar(@$records) > 0 or
 		return [];
-	defined($resource) or 
+	defined($resource) or
 		CUFTS::Exception::App->throw('No resource defined in build_linkFulltext');
-	defined($site) or 
+	defined($site) or
 		CUFTS::Exception::App->throw('No site defined in build_linkFulltext');
-	defined($request) or 
+	defined($request) or
 		CUFTS::Exception::App->throw('No request defined in build_linkFulltext');
 
 	if ( not_empty_string($request->doi) ) {
@@ -52,7 +52,7 @@ sub build_linkFulltext {
 
 		my $result = new CUFTS::Result($url);
 		$result->record($records->[0]);
-		
+
 		return [$result];
 	} else {
 		return [];
@@ -63,7 +63,7 @@ sub can_getFulltext {
 	my ($class, $request) = @_;
 
 	return 1 if not_empty_string($request->doi);
-	return 0;	
+	return 0;
 }
 
 1;

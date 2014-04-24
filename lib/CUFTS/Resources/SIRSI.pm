@@ -30,7 +30,7 @@ sub local_resource_details {
 }
 
 sub search_getHoldings {
-    my ( $class, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $resource, $site, $request ) = @_;
 
     my $url = $resource->url_base
         or CUFTS::Exception::App->throw('No url_base defined for SIRSI resource.');

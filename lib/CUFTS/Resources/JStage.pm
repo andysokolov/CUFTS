@@ -59,13 +59,13 @@ sub title_list_skip_lines_count { return 1; }
 
 sub clean_data {
     my ( $class, $record ) = @_;
-    
+
     return $class->SUPER::clean_data($record);
 }
 
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -105,7 +105,7 @@ sub can_getFulltext {
 
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

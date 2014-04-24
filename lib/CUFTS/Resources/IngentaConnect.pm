@@ -62,12 +62,12 @@ sub clean_data {
     my ( $class, $record ) = @_;
 
     $record->{title} = HTML::Entities::decode_entities( $record->{title} );
-    
+
     # An "E" in the ISSN probably indicates it's in scientific notation and really a long ISBN
     if ( defined($record->{issn}) && ( length($record->{issn}) > 9 || $record->{issn} =~ /E/ ) ) {
         return [ 'Skipping monograph with ISBN: ' . $record->{issn} ];
     }
-    
+
     if ( defined( $record->{ft_start_date} ) ) {
 
         if ( $record->{ft_start_date} =~ / (\d{4}) \s* - \s* (\d{4}) /xsm ) {
@@ -96,14 +96,14 @@ sub clean_data {
     {
         delete $record->{issn};
     }
-    
+
     if ( $record->{___vol_range} =~ m{^ (\d+)/(\d+) - (\d+)/(\d+) $}msx ) {
         $record->{vol_ft_start} = $1;
         $record->{iss_ft_start} = $2;
         $record->{vol_ft_end}   = $3;
         $record->{iss_ft_start} = $4;
     }
-    
+
     my $year = (localtime())[5] + 1900;
     if ( defined($record->{ft_end_date}) && $record->{ft_end_date} >= ($year - 1) ) {
         delete $record->{ft_end_date};
@@ -148,51 +148,51 @@ sub title_list_get_field_headings {
 
 # sub preprocess_file {
 #     my ( $class, $IN ) = @_;
-# 
+#
 #     use File::Temp;
-# 
+#
 #     my ( $fh, $filename ) = File::Temp::tempfile();
 #     my %seen;
-# 
+#
 #     # publisher, title, issn, e_issn, coverage, url
 #     while ( my $line = <$IN> ) {
 #         my ( $publisher, $title, $issn, $e_issn, $coverage, $url )
 #             = @{ $class->title_list_split_row($line) };
-# 
+#
 #         if ( !defined( $seen{$url} ) ) {
 #             $seen{$url} = {};
 #         }
-# 
+#
 #         $seen{$url}->{publisher} ||= $publisher;
 #         $seen{$url}->{title}     ||= $title;
-# 
+#
 #         my @temp_issns;
-#         if ( defined($issn) 
-#              && $issn ne '0000-0000' 
-#              && $issn =~ /\d{4}-\d{3}[\dxX]/ ) 
+#         if ( defined($issn)
+#              && $issn ne '0000-0000'
+#              && $issn =~ /\d{4}-\d{3}[\dxX]/ )
 #         {
 #             push @temp_issns, $issn;
 #         }
-#             
-# 
+#
+#
 #         if ( defined($e_issn)
 #             && $e_issn ne '0000-0000'
 #             && $e_issn =~ /\d{4}-\d{3}[\dxX]/ )
 #         {
 #             push @temp_issns, $e_issn;
 #         }
-# 
+#
 #         foreach my $temp_issn (@temp_issns) {
-# 
+#
 #             if ( !defined( $seen{$url}->{issns} ) ) {
 #                 $seen{$url}->{issns} = [];
 #             }
-# 
+#
 #             push @{ $seen{$url}->{issns} }, $temp_issn;
 #         }
-# 
+#
 #         my ( $temp_start, $temp_end ) = split /-/, $coverage;
-#         
+#
 #         if (defined($temp_start)
 #             && ( !defined( $seen{$url}->{start} )
 #                 || $temp_start < $seen{$url}->{start} )
@@ -200,7 +200,7 @@ sub title_list_get_field_headings {
 #         {
 #             $seen{$url}->{start} = $temp_start;
 #         }
-#         
+#
 #         if (defined($temp_end)
 #             && ( !defined( $seen{$url}->{end} )
 #                 || $temp_end > $seen{$url}->{end} )
@@ -209,35 +209,35 @@ sub title_list_get_field_headings {
 #             $seen{$url}->{end} = $temp_end;
 #         }
 #     }
-# 
+#
 #     foreach my $url ( keys %seen ) {
 #         print $fh '"', $seen{$url}->{publisher}, '",';
 #         print $fh '"', $seen{$url}->{title},     '",';
-# 
+#
 #         if ( defined( $seen{$url}->{issns} ) ) {
 #             print $fh shift( @{ $seen{$url}->{issns} } );
 #         }
 #         print $fh ',';
-# 
+#
 #         if ( defined( $seen{$url}->{issns} ) ) {
 #             print $fh shift( @{ $seen{$url}->{issns} } );
 #         }
 #         print $fh ',';
-# 
+#
 #         print $fh $seen{$url}->{start}, '-', $seen{$url}->{end}, ',';
-# 
+#
 #         print $fh $url;
 #         print $fh "\n";
 #     }
-# 
+#
 #     close *$IN;
 #     seek *$fh, 0, 0;
-# 
+#
 #     return $fh;
 # }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -273,7 +273,7 @@ sub can_getFulltext {
 
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

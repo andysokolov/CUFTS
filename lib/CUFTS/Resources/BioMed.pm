@@ -85,7 +85,7 @@ sub clean_data {
 ##
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -111,7 +111,7 @@ sub build_linkJournal {
 }
 
 sub build_linkDatabase {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -126,7 +126,7 @@ sub build_linkDatabase {
 
     foreach my $record (@$records) {
 
-        my $url = $resource->database_url 
+        my $url = $resource->database_url
                   || 'http://www.biomedcentral.com/search/';
 
         my $result = new CUFTS::Result($url);

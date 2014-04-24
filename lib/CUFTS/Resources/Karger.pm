@@ -93,7 +93,7 @@ sub can_getFulltext {
     my ( $class, $request ) = @_;
 
     return 0 if is_empty_string( $request->doi );
-    
+
     return $class->SUPER::can_getFulltext($request);
 }
 
@@ -104,7 +104,7 @@ sub can_getTOC {
         if is_empty_string( $request->year   )
         || is_empty_string( $request->volume )
         || is_empty_string( $request->issue  );
-        
+
     return $class->SUPER::can_getFulltext($request);
 }
 
@@ -115,7 +115,7 @@ sub can_getTOC {
 ##
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -139,7 +139,7 @@ sub build_linkFulltext {
 }
 
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -154,7 +154,7 @@ sub build_linkTOC {
 
     foreach my $record (@$records) {
         next if is_empty_string( $record->db_identifier );
-        
+
         my $url = $base_url . $record->db_identifier;
         $url .= '/' . $request->year;
         $url .= '/' . sprintf( "%03u", $request->volume );
@@ -170,7 +170,7 @@ sub build_linkTOC {
 }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

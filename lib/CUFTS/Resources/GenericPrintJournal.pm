@@ -89,7 +89,7 @@ sub title_list_field_map {
 }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -136,11 +136,11 @@ sub modify_cjdb_link_hash {
     #    embargo => '',  # moving wall
     #    current => '',  # moving wall
     # }
-    
+
     # Hash should be directly modified here, if necessary.
 
     # Convert fulltext to print
-    
+
     if ( exists $hash->{urls} ) {
         # New style update_cjdb_fast hash
         foreach my $url ( @{$hash->{urls}} ) {

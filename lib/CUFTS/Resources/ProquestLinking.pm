@@ -56,7 +56,7 @@ sub can_getTOC {
 }
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -81,7 +81,7 @@ sub build_linkFulltext {
         }
 
         ##
-        ## Hack for Wall Street Journal - it doesn't have vol/iss indexed and 
+        ## Hack for Wall Street Journal - it doesn't have vol/iss indexed and
         ## does not return results if you include them in the search.
         ##
 
@@ -118,7 +118,7 @@ sub build_linkFulltext {
             $url = 'http://gateway.proquest.com/openurl?ctx_ver=Z39.88-2004&res_id=xri:pqm&rft_val_fmt=ori:/fmt:kev:mtx:article&genre=article&';
             delete $params{service};
         }
-        
+
         $url .= join '&', map { $_ . '=' . $params{$_} } keys %params;
 
         my $result = new CUFTS::Result($url);
@@ -131,7 +131,7 @@ sub build_linkFulltext {
 }
 
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -156,7 +156,7 @@ sub build_linkTOC {
         }
 
         ##
-        ## Hack for Wall Street Journal - it doesn't have vol/iss indexed and 
+        ## Hack for Wall Street Journal - it doesn't have vol/iss indexed and
         ## does not return results if you include them in the search.
         ##
 
@@ -195,7 +195,7 @@ sub build_linkTOC {
 }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

@@ -108,7 +108,7 @@ sub clean_data {
     else {
         $record->{ft_end_date} = get_date($record->{'___Coverage End'});
     }
-    
+
     # Unless the Coverage Level includes "Full-text", assume it has abstracts only and move the fulltext dates to citation dates
 
     if ( not_empty_string( $record->{'___Coverage Level'} ) && $record->{'___Coverage Level'} !~ /full.?text/i ) {
@@ -142,7 +142,7 @@ sub clean_data {
 
             return sprintf( "%04i-%02i-%02i", $year, $month, $day );
         }
-        
+
         return undef;
     }
 
@@ -150,7 +150,7 @@ sub clean_data {
 
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -177,7 +177,7 @@ sub build_linkJournal {
 
 
 sub build_linkDatabase {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -210,7 +210,7 @@ sub can_getFulltext {
 
 
 sub build_linkFulltext {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -224,13 +224,13 @@ sub build_linkFulltext {
     my @results;
 
     foreach my $record (@$records) {
-    
+
         my $url = 'http://www.lexisnexis.com/us/lnacademic/api/version1/sr?shr=t&csi='
                   . $record->db_identifier
                   . '&sr=';
-                  
+
         my @search_fields;
-                 
+
         if ( not_empty_string( $request->atitle ) ) {
             my $search_title = lc( $request->atitle );
             $search_title =~ s/\(.+?\)$//;                 # remove trailing (...)
@@ -239,7 +239,7 @@ sub build_linkFulltext {
             $search_title =~ s/\s\s+/ /g;                  # compress spaces
             push @search_fields, ( 'HLEAD(' . uri_escape( $search_title ) . ')' );
         }
-        
+
         if ( not_empty_string( $request->aulast ) ) {
             my $search_author = lc( $request->aulast );
             $search_author =~ s/[^a-z0-9\s]//g;            # remove punctuation
@@ -250,7 +250,7 @@ sub build_linkFulltext {
 
         if ( not_empty_string( $request->date ) ) {
             push @search_fields, ( 'DATE%20IS%20' . uri_escape($request->date) );
-        
+
         }
 
         $url .= join '%20AND%20', @search_fields;

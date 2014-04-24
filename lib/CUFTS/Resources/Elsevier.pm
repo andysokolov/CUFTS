@@ -95,8 +95,8 @@ sub title_list_split_row {
 
 sub skip_record {
     my ( $class, $record ) = @_;
-    
-    return 1 if not_empty_string( $record->{'___Entitlement Status'} ) 
+
+    return 1 if not_empty_string( $record->{'___Entitlement Status'} )
              && $record->{'___Entitlement Status'} =~ /not\s+available/i;
     return 0;
 }
@@ -104,10 +104,10 @@ sub skip_record {
 
 sub clean_data {
     my ( $class, $record ) = @_;
-    
+
     if ( not_empty_string( $record->{ft_start_date} ) ) {
         my ( $day, $month, $year );
-        
+
         # 01-Sep-08
         if ( $record->{ft_start_date} =~ /(\d+)-(\w+)-(\d{2})/ ) {
             ( $day, $month, $year ) = ( $1, $2, $3 );
@@ -136,12 +136,12 @@ sub clean_data {
         else {
             delete $record->{ft_start_date};
         }
-        
+
     }
 
     if ( not_empty_string( $record->{ft_end_date} ) ) {
         my ( $day, $month, $year );
-        
+
         # 31-Jan-90
         if ( $record->{ft_end_date} =~ /(\d+)-(\w+)-(\d{2})/ ) {
             ( $day, $month, $year ) = ( $1, $2, $3 );
@@ -227,7 +227,7 @@ sub clean_data {
 
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];

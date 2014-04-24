@@ -111,7 +111,7 @@ sub overridable_resource_details {
 }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -139,15 +139,15 @@ sub build_linkJournal {
 }
 
 sub build_linkFulltext {
-	my ($class, $records, $resource, $site, $request) = @_;
+	my ($class, $schema, $records, $resource, $site, $request) = @_;
 
-	defined($records) && scalar(@$records) > 0 or 
+	defined($records) && scalar(@$records) > 0 or
 		return [];
-	defined($resource) or 
+	defined($resource) or
 		CUFTS::Exception::App->throw('No resource defined in build_linkFulltext');
-	defined($site) or 
+	defined($site) or
 		CUFTS::Exception::App->throw('No site defined in build_linkFulltext');
-	defined($request) or 
+	defined($request) or
 		CUFTS::Exception::App->throw('No request defined in build_linkFulltext');
 
 	if ( not_empty_string($request->doi) ) {
@@ -157,7 +157,7 @@ sub build_linkFulltext {
 
 		my $result = new CUFTS::Result($url);
 		$result->record($records->[0]);
-		
+
 		return [$result];
 	} else {
 		return [];
@@ -168,7 +168,7 @@ sub can_getFulltext {
 	my ($class, $request) = @_;
 
 	return 1 if not_empty_string($request->doi);
-	return 0;	
+	return 0;
 }
 
 

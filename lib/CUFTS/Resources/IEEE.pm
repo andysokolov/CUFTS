@@ -76,7 +76,7 @@ sub title_list_split_row {
 
 sub clean_data {
     my ( $class, $record ) = @_;
-    
+
     if ( not_empty_string($record->{ft_start_date}) && $record->{ft_start_date} !~ /\d{4}/ ) {
         delete $record->{ft_start_date};
     }
@@ -90,9 +90,9 @@ sub clean_data {
     }
 
     # Remove [ see also... ]
-    
+
     $record->{title} =~ s/ \s+ \[ .+ \] \s* //xsm;
-    
+
     return $class->SUPER::clean_data($record);
 }
 
@@ -119,7 +119,7 @@ sub can_getTOC {
 ##
 
 sub build_linkTOC {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
@@ -148,7 +148,7 @@ sub build_linkTOC {
 }
 
 sub build_linkJournal {
-    my ( $class, $records, $resource, $site, $request ) = @_;
+    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 
     defined($records) && scalar(@$records) > 0
         or return [];
