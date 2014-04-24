@@ -283,7 +283,7 @@ JOURNAL:
 
             if ( defined $link ) {
 
-                my $urls = get_ft_urls( $resolver_journal, $resource, $site, $module );
+                my $urls = get_ft_urls( $schema, $resolver_journal, $resource, $site, $module );
                 next JOURNAL if !defined $urls || !scalar @$urls;
 
                 $link->{urls} = $urls;
@@ -737,7 +737,7 @@ sub get_cufts_cit_coverage {
 ##
 
 sub get_ft_urls {
-    my ( $local_journal, $resource, $site, $module ) = @_;
+    my ( $schema, $local_journal, $resource, $site, $module ) = @_;
 
     my $request = new CUFTS::Request;
     $request->title( $local_journal->title );
@@ -747,7 +747,7 @@ sub get_ft_urls {
     my @urls;
 
     if ( $module->can_getJournal($request) ) {
-        my $results = $module->build_linkJournal( [$local_journal], $resource, $site, $request );
+        my $results = $module->build_linkJournal( $schema, [$local_journal], $resource, $site, $request );
 
         foreach my $result (@$results) {
             $module->prepend_proxy( $result, $resource, $site, $request );
@@ -756,7 +756,7 @@ sub get_ft_urls {
     }
 
     if ( !scalar(@urls) && $module->can_getDatabase($request) ) {
-        my $results = $module->build_linkDatabase( [$local_journal], $resource, $site, $request );
+        my $results = $module->build_linkDatabase( $schema, [$local_journal], $resource, $site, $request );
         foreach my $result (@$results) {
             $module->prepend_proxy( $result, $resource, $site, $request );
             push @urls, [ 2, $result->url ];
@@ -972,7 +972,7 @@ sub build_dump {
 
         $resources_display{$resource_id}->{name} =   hascontent($resource->name)  ? $resource->name
                                                    : defined($global_resource)    ? $global_resource->name
-                                                   : '';
+                                                                                  : '';
 
         if ( !$site_cjdb_display_db_name_only ) {
             my $provider =   hascontent($resource->provider) ? $resource->provider
@@ -1244,7 +1244,7 @@ sub create_brief_MARC {
     $seen{title}{ lc($title) }++;
     my $article_count = CUFTS::CJDB::Util::count_articles($title);
     $title = latin1_to_marc8($logger, $title);
-    if ( !defined($title) ) {
+    if ( !hascontent($title) ) {
         $logger->info("Skipping record due to title which cannot be MARC8 encoded.");
         return undef;
     }
