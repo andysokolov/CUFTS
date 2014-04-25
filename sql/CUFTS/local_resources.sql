@@ -72,3 +72,4 @@ CREATE TABLE local_resources (
 
 
 CREATE INDEX local_resources_site_idx ON local_resources(site);
+CREATE UNIQUE INDEX local_resources_res_site_idx ON local_resources(resource,site) WHERE resources IS NOT NULL;

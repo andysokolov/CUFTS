@@ -10,9 +10,11 @@ CREATE TABLE resources (
     module           VARCHAR(256) NOT NULL,
 
     active           BOOLEAN NOT NULL DEFAULT TRUE,
-    
+
     title_list_scanned    TIMESTAMP,
     title_count           INTEGER,
+    update_months         INTEGER,
+    next_update           DATE,
 
     resource_identifier VARCHAR(256),
     database_url        VARCHAR(1024),

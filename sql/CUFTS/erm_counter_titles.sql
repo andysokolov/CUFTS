@@ -3,6 +3,7 @@ CREATE TABLE erm_counter_titles (
     title           VARCHAR(1024) NOT NULL,
     issn            VARCHAR(8),
     e_issn          VARCHAR(8),
+    doi             VARCHAR(1024),
     journal_auth    INTEGER
 );
 
