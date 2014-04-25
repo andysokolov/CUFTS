@@ -48,7 +48,7 @@ my $form_validate_titles = {
     optional => ['page', 'filter', 'display_per_page', 'apply_filter'],
     filters => ['trim'],
     defaults => { 'filter' => '', 'page' => 1 },
-};  
+};
 
 my $form_validate_bulk = {
     required => ['file', 'upload'],
@@ -59,7 +59,7 @@ sub auto : Private {
 
     if (defined($resource_id) && $resource_id =~ /^([gl])(\d+)$/) {
         my ($type, $id) = ($1, $2);
-        
+
         if ($type eq 'l') {
             $c->stash->{local_resource} = CUFTS::DB::LocalResources->retrieve($id);
             $c->stash->{global_resource} = $c->stash->{local_resource}->resource;
@@ -100,7 +100,7 @@ sub menu : Local {
         my $filter = $c->session->{local_menu_filter};
         $filter =~ s/([%_])/\\$1/g;
         $filter =~ s#\\#\\\\\\\\#;
-            
+
         $search{-nest} =
             [
              name => {ilike => "\%$filter\%"},
@@ -113,22 +113,22 @@ sub menu : Local {
     $active and
         $search{active} = 'true';
 
-    my @local_resources = $c->session->{local_menu_filter} 
+    my @local_resources = $c->session->{local_menu_filter}
                           ? CUFTS::DB::LocalResources->search_where({ -nest => [\%search, {resource => { '!=' => undef }}], site => $c->{stash}->{current_site}->id })
                           : CUFTS::DB::LocalResources->search_where({ %search, site => $c->{stash}->{current_site}->id });
 
     # Merge resources into a resource that we can treat like a real CDBI resource except for DB interaction.
 
     my $resources = CUFTS::MaintTool::M::MergeResources->merge(\@local_resources, \@global_resources, $active);
-                                                     
+
     # Delete the title list filter, it should be clear when we go to browse a new list
-    
+
     delete $c->session->{local_titles_filter};
 
     # Sort resources before displaying.  Set is too small to bother with Schwartzian Transform
     # Sort reverse numeric by rank (only numeric field so far), by any other field with name being the second
     # sort column, or just by name as default.
-    
+
     my $sort = $c->session->{local_menu_sort} || 'name';
     if ($sort eq 'rank') {
         @$resources = sort { (int($b->$sort || 0) <=> int($a->$sort || 0)) or lc($a->name) cmp lc($b->name) } @$resources;
@@ -137,7 +137,7 @@ sub menu : Local {
     } else {
         @$resources = sort { lc($a->$sort) cmp lc($b->$sort) } @$resources;
     }
-        
+
     $c->stash->{filter} = $c->session->{local_menu_filter};
     $c->stash->{sort} = $sort;
     $c->stash->{show} = $c->session->{local_menu_show} || 'show active';
@@ -149,24 +149,24 @@ sub menu : Local {
 
 sub find_json : Local {
     my ( $self, $c ) = @_;
-    
+
     my $params = $c->req->params;
-    
+
     my %search = ( active => 'true', site => $c->stash->{current_site}->id );
     if (my $term = $params->{name}) {
         $term =~ s/([%_])/\\$1/g;
         $term =~ s#\\#\\\\\\\\#;
         $search{name} = { 'ilike' => "\%$term\%" };
-    }  
+    }
     if (my $term = $params->{provider}) {
         $term =~ s/([%_])/\\$1/g;
         $term =~ s#\\#\\\\\\\\#;
         $search{provider} = { 'ilike' => "\%$term\%" };
-    }  
+    }
     if (my $term = $params->{erm_main}) {
         $search{erm_main} = $term;
-    }  
-    
+    }
+
     my $options = { order_by => 'LOWER(name)' };
     $options->{rows} = $params->{limit} || 1000;  # Hard limit, too many means something is probably wrong
     $options->{page} = ( $params->{start} / $options->{rows} ) + 1;
@@ -182,7 +182,7 @@ sub find_json : Local {
         rowcount => $pager->total_entries,
         results  => [ map { {id => $_->id, name => $_->name, provider => $_->provider, erm_main => ($_->erm_main ? $_->erm_main->key : undef) } } @resources ],
     };
-    
+
     $c->forward('V::JSON');
 }
 
@@ -197,7 +197,7 @@ sub view : Local {
     } else {
         return die('No resource loaded to view');
     }
-}   
+}
 
 
 sub edit : Local {
@@ -215,13 +215,13 @@ sub edit : Local {
     if ($c->req->params->{submit}) {
 
         $c->form(defined($global_resource) ? $form_validate_global : $form_validate_local);
-        
+
         unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
-        
+
             # Remove services and recreate links, then update and save the resource
-            
+
             eval {
-                
+
                 if ( !defined($local_resource) ) {
                     my $new_record = { site => $c->stash->{current_site}->id };
 
@@ -238,34 +238,34 @@ sub edit : Local {
                     $c->stash->{local_resource} = $local_resource;
 
                 }
-                
+
                 $local_resource->update_from_form($c->form);
                 CUFTS::DB::LocalResources_Services->search({local_resource => $local_resource->id})->delete_all;
-                
+
                 foreach my $service ($c->form->valid('resource_services')) {
                     $local_resource->add_to_services({ service => $service });
                 }
-                
+
                 if ($local_resource->auto_activate) {
                     $local_resource->activate_titles();
                 }
-                
+
             };
-            
+
             if ($@) {
                 my $err = $@;
                 CUFTS::DB::DBI->dbi_rollback;
                 die($err);
             }
-            
+
             CUFTS::DB::DBI->dbi_commit;
-            
+
             return $c->redirect('/local/menu');
         }
     }
 
     # Get all the ERM mains for a select box - switch this to use the search system later
-    
+
     my $erm_mains = CUFTS::DB::ERMMain->retrieve_all_for_site( $c->stash->{current_site}->id, 1 );    # 1 - fast, no objects
     $c->stash->{erm_mains} = $erm_mains;
 
@@ -287,13 +287,12 @@ sub edit : Local {
 
 sub delete : Local {
     my ($self, $c, $resource_id) = @_;
-    
-    defined($c->stash->{local_resource}) or
-         die('No resource loaded to delete.');
-        
-    $c->stash->{local_resource}->delete();
-    CUFTS::DB::DBI->dbi_commit;
-    
+
+    my $resource = $c->model('CUFTS::LocalResources')->find({ id => $c->stash->{local_resource}->id })
+        or die('No resource loaded to delete.');
+
+    $resource->delete();
+
     $c->redirect('/local/menu');
 }
 

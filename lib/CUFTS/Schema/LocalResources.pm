@@ -3,6 +3,8 @@ package CUFTS::Schema::LocalResources;
 use strict;
 use base qw/DBIx::Class::Core/;
 
+use Moose;
+
 use String::Util qw( hascontent );
 
 __PACKAGE__->load_components(qw/ FromValidators TimeStamp /);
@@ -138,6 +140,10 @@ __PACKAGE__->has_many( resource_services => 'CUFTS::Schema::LocalResourcesServic
 
 __PACKAGE__->many_to_many( services => 'resource_services', 'service' );
 
+before 'delete' => sub {
+    shift->delete_titles();
+};
+
 sub global_resource {
     shift->resource(@_);
 }
@@ -162,7 +168,7 @@ sub provider_display {
 sub delete_titles {
     my ($self) = @_;
 
-    return $self->do_module('delete_title_list', $self->id, 0);
+    return $self->do_module('delete_title_list', $self->result_source->schema, $self->id, 1);
 }
 
 
@@ -202,5 +208,8 @@ sub is_local_resource {
 }
 
 
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
