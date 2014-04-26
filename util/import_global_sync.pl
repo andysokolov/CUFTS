@@ -149,7 +149,7 @@ sub create_resource {
         defined $service_record or
             die("Unable to find matching service name: " . $service->{service});
 
-        $resource->add_to_services({ service => $service_record->id });
+        $resource->add_to_resource_services({ service => $service_record->id });
 
     }
 
