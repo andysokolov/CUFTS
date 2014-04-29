@@ -1010,7 +1010,7 @@ CJDB_RECORD:
         }
         elsif ( exists $MARC_cache->{ja}->{$journals_auth_id} ) {
             $MARC_record = $MARC_cache->{ja}->{$journals_auth_id};
-            $MARC_record->leader('00000nai  22001577a 4500');
+            $MARC_record->leader('00000nas  22001577a 4500');   # was "nai"
         }
         else {
             $MARC_record = create_brief_MARC( $logger, $site, $cjdb_record->journals_auth );
