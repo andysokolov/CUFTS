@@ -774,8 +774,6 @@ sub overlay_title_list {
 
         my @global_records = $class->_match_on_rs($global_resource->id, $global_rs, \@match_on, $record)->all;
 
-        warn('GR: ' . join ',', map { $_->id } @global_records );
-
         my $global_record;
         if ( scalar @global_records == 0 ) {
             my $err = "record $count: Could not match global record on:";
