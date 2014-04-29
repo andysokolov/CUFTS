@@ -676,9 +676,10 @@ sub activation_title_list {
 
         $processed_count++;
 
-        my @global_records = $class->_match_on_rs($global_resource->id, $global_rs, \@match_on, $record)->all;
+        my $global_rs = $class->_match_on_rs($global_resource->id, $global_rs, \@match_on, $record);
+        next if !defined $global_rs;
 
-        foreach my $global_record (@global_records) {
+        while ( my $global_record = $global_rs->next ) {
 
             # Find or create local records
 
@@ -773,9 +774,12 @@ sub overlay_title_list {
 
         $processed_count++;
 
-        my @global_records = $class->_match_on_rs($global_resource->id, $global_rs, \@match_on, $record)->all;
+        my $global_rs = $class->_match_on_rs($global_resource->id, $global_rs, \@match_on, $record);
+        next if !defined $global_rs;
 
+        my @global_records = $global_rs->all;
         my $global_record;
+
         if ( scalar @global_records == 0 ) {
             my $err = "record $count: Could not match global records on ";
             $err .= join ', ', map { "$_: $record->{$_}" } @match_on;
@@ -906,7 +910,7 @@ sub _match_on_rs {
         $can_search++;
     }
 
-    return [] if !$can_search;  # Don't search if we have no data fields.
+    return undef if !$can_search;  # Don't search if we have no data fields.
 
     return $rs->search($search);
 }
