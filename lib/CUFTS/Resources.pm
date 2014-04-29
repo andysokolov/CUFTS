@@ -776,10 +776,8 @@ sub overlay_title_list {
 
         my $global_record;
         if ( scalar @global_records == 0 ) {
-            my $err = "record $count: Could not match global record on:";
-            foreach my $match_on (@match_on) {
-                $err .= " '$match_on' => '" . $record->{$match_on} . "'";
-            }
+            my $err = "record $count: Could not match global records on ";
+            $err .= join ', ', map { "$_: $record->{$_}" } @match_on;
             push @$errors, $err;
             next;
         }
@@ -787,10 +785,8 @@ sub overlay_title_list {
             $global_record = $global_records[0];
         }
         else {
-            my $err = "record $count: Matched multiple global records on:";
-            foreach my $match_on (@match_on) {
-                $err .= " '$match_on' => '" . $record->{$match_on} . "'";
-            }
+            my $err = "record $count: Matched multiple global records on ";
+            $err .= join ', ', map { "$_: $record->{$_}" } @match_on;
             push @$errors, $err;
             next;
         }
@@ -908,9 +904,6 @@ sub _match_on_rs {
 
         $can_search++;
     }
-
-    use Data::Dumper;
-    warn(Dumper($search));
 
     return [] if !$can_search;  # Don't search if we have no data fields.
 
