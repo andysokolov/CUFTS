@@ -189,102 +189,97 @@ sub load_title_list {
 
     my $timestamp = $schema->get_now();
 
-    my $checkafter = 0;
     my $count = 0;
     my $error_count = 0;
     my $processed_count = 0;
+    my $deleted_count = 0;
     my $new_count = 0;
     my $modified_count = 0;
+    my $local_resouces_auto_activated = 0;
 
-    $schema->txn_begin();
+    $job->checkpoint( 0, 'Beginning read from title list file' );
 
-    while ( my $row = $class->title_list_parse_row(*IN) ) {
+    $schema->txn_do( sub {
 
-        if ( defined $job ) {
-            $job->terminate_possible();
-            my $checkpoint = int( ( tell(*IN) / $filesize ) * 50 );
-            if ( $checkpoint > $checkafter ) {
-                $job->checkpoint( $checkpoint, "Reading from title list, row $count" );
-                $checkafter++;
+        while ( my $row = $class->title_list_parse_row(*IN) ) {
+
+            $job->terminate_possible() if defined $job;
+            $class->running_checkpoint( $job, tell(*IN), $filesize, 0, 50, "Reading from title list, row $count" );
+
+            $count++;
+
+            next if $row =~ /^#/;       # Skip comment lines
+            next unless $row =~ /\S/;   # Skip blank lines
+
+            my $record = $class->title_list_build_record($field_headings, $row);
+
+            defined($record) && (ref($record) eq 'HASH') or
+                CUFTS::Exception::App->throw("build_record did not return a hash ref");
+
+            my $data_errors = $class->clean_data($record);
+            next if $class->skip_record($record);
+            if (defined($data_errors) && ref($data_errors) eq 'ARRAY' && scalar(@$data_errors) > 0) {
+                push @$errors, map {"line $count: $_"} @$data_errors;
+                $error_count++;
             }
-        }
+            else {
+                $processed_count++;
 
-        $count++;
+                # Wrap all the updating code in eval so that we can catch any database update
+                # errors and roll back the update.
 
-        next if $row =~ /^#/;       # Skip comment lines
-        next unless $row =~ /\S/;   # Skip blank lines
-
-        my $record = $class->title_list_build_record($field_headings, $row);
-
-        defined($record) && (ref($record) eq 'HASH') or
-            CUFTS::Exception::App->throw("build_record did not return a hash ref");
-
-        my $data_errors = $class->clean_data($record);
-        next if $class->skip_record($record);
-        if (defined($data_errors) && ref($data_errors) eq 'ARRAY' && scalar(@$data_errors) > 0) {
-            push @$errors, map {"line $count: $_"} @$data_errors;
-            $error_count++;
-        }
-        else {
-            $processed_count++;
-
-            # Wrap all the updating code in eval so that we can catch any database update
-            # errors and roll back the update.
-
-            eval {
-                if ( my $existing_title = $class->_find_existing_title($schema, $resource->id, $record, $local) ) {
-                    $class->_update_record($resource->id, $record, $existing_title, $timestamp, $local);
-                }
-                else {
-                    ##
-                    ## Try for a modify
-                    ##
-                    my $partial_match = $class->_find_partial_match($schema, $resource->id, $record, $local);
-                    if ($partial_match && !$class->is_duplicate($record, $duplicate_records)) {
-                        $class->_modify_record($schema, $resource, $record, $partial_match, $timestamp, $local);
-                        $modified_count++;
+                eval {
+                    if ( my $existing_title = $class->_find_existing_title($schema, $resource->id, $record, $local) ) {
+                        $class->_update_record($resource->id, $record, $existing_title, $timestamp, $local);
                     }
                     else {
-                        $class->_load_record($schema, $resource, $record, $timestamp, $local);
-                        $new_count++;
+                        ##
+                        ## Try for a modify
+                        ##
+                        my $partial_match = $class->_find_partial_match($schema, $resource->id, $record, $local);
+                        if ($partial_match && !$class->is_duplicate($record, $duplicate_records)) {
+                            $class->_modify_record($schema, $resource, $record, $partial_match, $timestamp, $local);
+                            $modified_count++;
+                        }
+                        else {
+                            $class->_load_record($schema, $resource, $record, $timestamp, $local);
+                            $new_count++;
+                        }
                     }
-                }
-            };
-            if ($@) {
-                $schema->txn_rollback();
-                if (ref($@) && $@->can('error')) {
-                    CUFTS::Exception::App->throw("Database error while loading title list, row " . ($count - 1) . "\n" . $@->error);
-                } else {
-                    die("Database error while loading title list, row " . ($count - 1) . "\n" . $@);
+                };
+                if ($@) {
+                    if (ref($@) && $@->can('error')) {
+                        CUFTS::Exception::App->throw("Database error while loading title list, row " . ($count - 1) . "\n" . $@->error);
+                    } else {
+                        die("Database error while loading title list, row " . ($count - 1) . "\n" . $@);
+                    }
                 }
             }
         }
-    }
-    close(IN);
+        close(IN);
 
-    $job->debug('Deleting old records') if defined $job;
+        $job->debug('Deleting old records') if defined $job;
 
-    my $deleted_count = $class->_delete_old_records($schema, $resource, $timestamp, $local);
+        $deleted_count = $class->delete_old_records($schema, $resource, $timestamp, $local, $job);
 
-    $job->checkpoint( 75, "Deleted old records." ) if defined $job;
+        $job->checkpoint( 75, "Deleted old records." ) if defined $job;
 
-    my $title_count = $rs->search({ resource => $resource->id })->count;
-    if ( $title_count == 0 ) {
-        $schema->txn_rollback();
-        die("All titles will be deleted by this load. Rolling back changes. There is probably an error in the resource module or the title list format has changed.  Resource ID: " . $resource->id);
-    }
+        my $title_count = $rs->search({ resource => $resource->id })->count;
+        if ( $title_count == 0 ) {
+            die("All titles will be deleted by this load. Rolling back changes. There is probably an error in the resource module or the title list format has changed.  Resource ID: " . $resource->id);
+        }
 
-    $job->debug('Activating auto-activated local resources') if defined $job;
+        $job->debug('Activating auto-activated local resources') if defined $job;
 
-    my $local_resouces_auto_activated = $class->check_is_global($local) ? $class->activate_all($schema, $resource, 0) : '';
+        $local_resouces_auto_activated = $class->check_is_global($local) ? $class->activate_all($schema, $resource, 0, $job) : '';
 
-    $job->checkpoint( 99, "Activated $local_resouces_auto_activated local resources" ) if defined $job;
+        $job->checkpoint( 99, "Activated $local_resouces_auto_activated local resources" ) if defined $job;
 
-    $resource->title_count($title_count) if $class->check_is_global($local);
-    $resource->title_list_scanned($timestamp);
-    $resource->update;
+        $resource->title_count($title_count) if $class->check_is_global($local);
+        $resource->title_list_scanned($timestamp);
+        $resource->update;
 
-    $schema->txn_commit();
+    });
 
     my $results = {
         errors                         => $errors,
@@ -307,8 +302,8 @@ sub _update_record {
 }
 
 
-sub _delete_old_records {
-    my ($class, $schema, $resource, $timestamp, $local, $log) = @_;
+sub delete_old_records {
+    my ($class, $schema, $resource, $timestamp, $local, $job) = @_;
 
     my $resource_id = $resource->id;
 
@@ -316,8 +311,14 @@ sub _delete_old_records {
 
     $rs = $rs->search({ resource => $resource_id , scanned => [ { '<' => $timestamp }, undef ] });
 
+    my $expected_count = $rs->count;
     my $deleted_count = 0;
+
     while ( my $title = $rs->next ) {
+
+        $job->terminate_possible() if $job;
+        $class->running_checkpoint( $job, $deleted_count, $expected_count, 50, 25, "Deleted old records $deleted_count of $expected_count" );
+
         $class->log_deleted_title($schema, $resource, $title, $timestamp, $local);
         $title->delete;
         $deleted_count++;
@@ -1266,6 +1267,15 @@ sub email_changes {
     }
 
     return 1;
+}
+
+# Passes off information about the count, and the range that we want to checkpoint through. Simplifies
+# having to do the checkpoint math and keep a running total.
+
+sub running_checkpoint {
+    my ( $class, $job, $count, $max, $start, $range, $message ) = @_;
+    return if !defined $job;
+    $job->running_checkpoint( $count, $max, $start, $range, $message );
 }
 
 
