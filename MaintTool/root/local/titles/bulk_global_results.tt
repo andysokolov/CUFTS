@@ -7,3 +7,8 @@
 <tr><td class="label0">new</td><td class="field0">[% bulk_results.new_count %]</td></tr>
 <tr><td class="label1">deactivated</td><td class="field1">[% bulk_results.deactivated_count %]</td></tr>
 </table>
+
+<div>
+[% FOREACH error IN bulk_results.errors %]
+ [% error | html %]<br />
+[% END %]
