@@ -203,7 +203,7 @@ sub title_list_field_map {
 }
 
 sub local_matchable_on_columns {
-    return [ '', 'issn', 'title', 'issn,title' ];
+    return [ 'issn,e_issn', 'issn,e_issn,title', 'title',  ];
 }
 
 sub local_to_global_field {

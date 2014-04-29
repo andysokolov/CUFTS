@@ -173,6 +173,7 @@ sub load_title_list {
     $job->terminate_possible() if defined $job;
 
     *IN = *{$class->preprocess_file(*IN)};
+    my $filesize = (stat(*IN))[7] || 1;  # avoid divide by zero
 
     $class->title_list_skip_lines(*IN);
 
@@ -188,6 +189,7 @@ sub load_title_list {
 
     my $timestamp = $schema->get_now();
 
+    my $checkafter = 0;
     my $count = 0;
     my $error_count = 0;
     my $processed_count = 0;
@@ -198,7 +200,14 @@ sub load_title_list {
 
     while ( my $row = $class->title_list_parse_row(*IN) ) {
 
-        $job->terminate_possible() if defined $job;
+        if ( defined $job ) {
+            $job->terminate_possible();
+            my $checkpoint = int( ( tell(*IN) / $filesize ) * 50 );
+            if ( $checkpoint > $checkafter ) {
+                $job->checkpoint( $checkpoint, "Reading from title list, row $count" );
+                $checkafter++;
+            }
+        }
 
         $count++;
 
@@ -253,7 +262,11 @@ sub load_title_list {
     }
     close(IN);
 
+    $job->debug('Deleting old records') if defined $job;
+
     my $deleted_count = $class->_delete_old_records($schema, $resource, $timestamp, $local);
+
+    $job->checkpoint( 75, "Deleted old records." ) if defined $job;
 
     my $title_count = $rs->search({ resource => $resource->id })->count;
     if ( $title_count == 0 ) {
@@ -261,7 +274,17 @@ sub load_title_list {
         die("All titles will be deleted by this load. Rolling back changes. There is probably an error in the resource module or the title list format has changed.  Resource ID: " . $resource->id);
     }
 
+    $job->debug('Activating auto-activated local resources') if defined $job;
+
     my $local_resouces_auto_activated = $class->check_is_global($local) ? $class->activate_all($schema, $resource, 0) : '';
+
+    $job->checkpoint( 99, "Activated $local_resouces_auto_activated local resources" ) if defined $job;
+
+    $resource->title_count($title_count) if $class->check_is_global($local);
+    $resource->title_list_scanned($timestamp);
+    $resource->update;
+
+    $schema->txn_commit();
 
     my $results = {
         errors                         => $errors,
@@ -274,12 +297,6 @@ sub load_title_list {
         timestamp                      => $timestamp,
     };
 
-    $resource->title_count($title_count) if $class->check_is_global($local);
-    $resource->title_list_scanned($timestamp);
-    $resource->update;
-
-    $schema->txn_commit();
-
     return $results;
 }
 
@@ -291,7 +308,7 @@ sub _update_record {
 
 
 sub _delete_old_records {
-    my ($class, $schema, $resource, $timestamp, $local) = @_;
+    my ($class, $schema, $resource, $timestamp, $local, $log) = @_;
 
     my $resource_id = $resource->id;
 
@@ -439,6 +456,10 @@ sub title_list_build_record {
 
         next if $value eq '';
         next if $field eq '';
+
+        if ( $field eq 'issn' || $field eq 'e_issn' ) {
+            $value = $class->_clean_issn($value);
+        }
 
         $record{$field} = $value;
     }
@@ -753,6 +774,8 @@ sub overlay_title_list {
 
         my @global_records = $class->_match_on_rs($global_resource->id, $global_rs, \@match_on, $record)->all;
 
+        warn('GR: ' . join ',', map { $_->id } @global_records );
+
         my $global_record;
         if ( scalar @global_records == 0 ) {
             my $err = "record $count: Could not match global record on:";
@@ -874,16 +897,12 @@ sub _match_on_rs {
     my $search = { resource => $resource_id };
     my $can_search = 0;
     foreach my $field (@$fields) {
+        next if $field eq 'id' || $field eq 'journal_auth';
         next if !hascontent($data->{$field});
 
         # Special case ISSN to search both issn and e_issn fields
-        if ($field eq 'issn') {
-            my $issn_search = [ {issn => $data->{issn}}, {e_issn => $data->{issn}} ];
-            # Also search e_issn if it's included in the data.
-            if ( hascontent($data->{e_issn}) ) {
-                push @$issn_search, {issn => $data->{e_issn}}, {e_issn => $data->{e_issn}};
-            }
-            $search->{-or} = $issn_search;
+        if ( $field eq 'issn' || $field eq 'e_issn' ) {
+            push @{$search->{-or}}, [ { issn => $data->{$field} }, { e_issn => $data->{$field} } ]
         }
         else {
             $search->{$field} = $data->{$field};
@@ -892,9 +911,19 @@ sub _match_on_rs {
         $can_search++;
     }
 
+    use Data::Dumper;
+    warn(Dumper($search));
+
     return [] if !$can_search;  # Don't search if we have no data fields.
 
     return $rs->search($search);
+}
+
+sub _clean_issn {
+    my ( $class, $issn ) = @_;
+    $issn = uc($issn);
+    $issn =~ tr/0-9X//cd;
+    return $issn;
 }
 
 sub _log_record_field {
