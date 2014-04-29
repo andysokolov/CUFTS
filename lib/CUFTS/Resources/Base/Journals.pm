@@ -370,18 +370,17 @@ sub _find_existing_title {
 
     my $rs = $class->check_is_local($local) ? $class->local_rs($schema) : $class->global_rs($schema);
 
-    my $search = { resource => $resource_id };
+    my $search = {};
 
-    if ( hascontent($record->{issn}) ) {
-        $search->{issn} = $record->{issn};
-    }
-    if ( hascontent($record->{e_issn}) ) {
-        $search->{e_issn} = $record->{e_issn};
-    }
-    if ( !exists($record->{issn}) && !exists($record->{e_issn}) ) {
-        $search->{title} = $record->{title};
+    $search->{issn}   = $record->{issn}   if hascontent($record->{issn});
+    $search->{e_issn} = $record->{e_issn} if hascontent($record->{e_issn});
+    $search->{title}  = $record->{title}  if hascontent($record->{title});
+
+    if ( !scalar keys %$search ) {
+        die("Title list load would search all titles. Likely an incorrect module or changed title list format.");
     }
 
+    $search->{resource} = $resource_id;
     $rs = $rs->search($search);
 
     my @matched_titles;
@@ -985,14 +984,19 @@ sub _check_current_years {
 }
 
 sub activate_all {
-    my ( $class, $schema, $global_resource, $commit ) = @_;
+    my ( $class, $schema, $global_resource, $commit, $job ) = @_;
 
     defined($global_resource)
         or CUFTS::Exception::App::CGI->throw("No global_resource found in activate_all");
 
     my $local_resources_rs = $global_resource->local_resources({ auto_activate => 't' });
+    my $local_resources_count = $local_resources_rs->count();
 
+    my $count = 0;
     while ( my $local_resource = $local_resources_rs->next ) {
+
+        $job->terminate_possible() if defined $job;
+        $class->running_checkpoint( $job, ++$count, $local_resources_count, 75, 24, "Auto-activating local resources $count/$local_resources_count" );
 
         my $global_rs = $class->global_rs($schema);
         my $local_rs  = $class->local_rs($schema);
@@ -1040,7 +1044,7 @@ sub activate_all {
         }
     }
 
-    return $local_resources_rs->count;
+    return $local_resources_count;
 }
 
 # -------------------------
