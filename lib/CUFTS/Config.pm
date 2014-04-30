@@ -32,9 +32,10 @@ use CUFTS::AdvancedConfig;
 use CUFTS::Schema;
 
 sub get_schema {
-	return CUFTS::Schema->connect( $CUFTS::Config::CUFTS_DB_STRING, 
-								   $CUFTS::Config::CUFTS_USER, 
-								   $CUFTS::Config::CUFTS_PASSWORD, 
+	return CUFTS::Schema->connect( $CUFTS::Config::CUFTS_DB_STRING,
+								   $CUFTS::Config::CUFTS_USER,
+								   $CUFTS::Config::CUFTS_PASSWORD,
+								   pg_enable_utf8 => 1,
 #								   { quote_names => 1 }
 	);
 }
