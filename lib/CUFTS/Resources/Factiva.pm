@@ -135,7 +135,7 @@ sub build_linkFulltext {
 
     foreach my $record (@$records) {
 
-        my $url = 'http://global.factiva.com/redir/default.aspx?p=ou&cookie=on&XSID=' . uri_escape($resource->auth_name);
+        my $url = 'https://global.factiva.com/redir/default.aspx?p=ou&cookie=on&XSID=' . uri_escape($resource->auth_name);
 
         if ( hascontent($record->issn) ) {
             $url .= '&issn=' . dashed_issn( $record->issn );
