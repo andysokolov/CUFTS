@@ -12,7 +12,7 @@
 [%- SET display_templates = [ ['main', 'human'], ['xml', 'XML'], ['opensearch', 'OpenSearch'], ] -%]
 [%- SET genres = [ 'article', 'book', 'bookitem', 'journal' ] -%]
 <div id="test">
-	<form name="testform" action="[% url_base %]/test/do" method="post">
+	<form name="testform" action="[% c.uri_for( c.controller('Test').action_for('do') ) | html %]" method="post">
 		<label for="_site">[% c.loc( 'site' ) %]</label>
 		<select name="_site" id="_site">
 			[% FOREACH site IN sites %]
