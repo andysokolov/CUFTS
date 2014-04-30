@@ -44,6 +44,7 @@ sub title_list_fields {
             ft_end_date
             db_identifier
             cjdb_note
+            journal_auth
         )
     ];
 }
