@@ -197,7 +197,7 @@ sub load_title_list {
     my $modified_count = 0;
     my $local_resouces_auto_activated = 0;
 
-    $job->checkpoint( 0, 'Beginning read from title list file' );
+    $job->checkpoint( 0, 'Beginning read from title list file' ) if defined $job;
 
     $schema->txn_do( sub {
 
@@ -1150,6 +1150,46 @@ sub log_modified_local_title {
 
 sub activate_all {
     my ($class, $schema, $resource, $commit) = @_;
+}
+
+sub activate_local_titles {
+    my ( $class, $schema, $local_resource ) = @_;
+
+    defined($local_resource)
+        or CUFTS::Exception::App::CGI->throw("No local_resource found in activate_local_titles");
+
+    my $global_resource = $local_resource->global_resource
+        or CUFTS::Exception::App::CGI->throw("No global_resource found in activate_local_titles");
+
+    my $ltg_field = $global_resource->do_module('local_to_global_field'); # Local to global linking field
+    my $local_resource_id  = $local_resource->id;
+    my $global_resource_id = $global_resource->id;
+
+    $schema->txn_do( sub {
+        my $local_rs  = $class->local_rs($schema);
+
+        # Set existing records to active
+
+        $class->local_rs($schema)->search({ resource => $local_resource->id, active => 'f' })->update({ active => 't' });
+
+        # Anything left not activated needs new records
+
+        my $global_rs = $class->global_rs($schema)->search_inactive_local( $local_resource_id, { resource => $global_resource_id } );
+        while ( my $global_title = $global_rs->next ) {
+            $local_rs->create({ resource => $local_resource_id, $ltg_field => $global_title->id, active => 't' });
+        }
+    });
+}
+
+sub deactivate_local_titles {
+    my ( $class, $schema, $local_resource ) = @_;
+
+    defined($local_resource)
+        or CUFTS::Exception::App::CGI->throw("No local_resource found in activate_local_titles");
+
+    $schema->txn_do( sub {
+        $class->local_rs($schema)->search({ resource => $local_resource->id, active => 't' })->update({ active => 'f' });
+    });
 }
 
 

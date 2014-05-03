@@ -983,6 +983,10 @@ sub _check_current_years {
     return 1;
 }
 
+
+# Go through all attached local resources that are set to auto activate and make sure
+# their local journals are synced.
+
 sub activate_all {
     my ( $class, $schema, $global_resource, $commit, $job ) = @_;
 
