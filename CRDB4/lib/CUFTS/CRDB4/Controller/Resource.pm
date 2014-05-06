@@ -33,7 +33,7 @@ sub load_resource :Chained('base') :PathPart('') :CaptureArgs(1) {
         site        => $c->site->id,
     };
 
-    if ( $self->account->has_role('staff') ) {
+    if ( $c->account->has_role('staff') ) {
         $search->{public} = 't';
     }
 
