@@ -176,11 +176,13 @@ sub edit : Local {
 sub delete : Local {
     my ($self, $c, $resource_id) = @_;
 
-    my $resource = $c->model('CUFTS::GlobalResources')->find({ id => $resource_id });
+    my $resource = $c->model('CUFTS::GlobalResources')->find({ id => $c->stash->{resource}->id });
     defined($resource) or
          die('No resource loaded to delete.');
 
-    $c->model('CUFTS')->schema->txn_do( sub {
+    my $schema = $c->model('CUFTS')->schema;
+    $schema->txn_do( sub {
+        $resource->do_module('delete_title_list', $schema, $resource, 0);
         $resource->delete();
     });
 

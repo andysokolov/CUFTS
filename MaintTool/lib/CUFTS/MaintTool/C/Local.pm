@@ -277,10 +277,15 @@ sub edit : Local {
 sub delete : Local {
     my ($self, $c, $resource_id) = @_;
 
-    my $resource = $c->model('CUFTS::LocalResources')->find({ id => $c->stash->{local_resource}->id })
-        or die('No resource loaded to delete.');
+    my $resource = $c->model('CUFTS::LocalResources')->find({ id => $c->stash->{local_resource}->id });
+    defined($resource) or
+         die('No resource loaded to delete.');
 
-    $resource->delete();
+    my $schema = $c->model('CUFTS')->schema;
+    $schema->txn_do( sub {
+        $resource->do_module('delete_title_list', $schema, $resource, 1);
+        $resource->delete();
+    });
 
     $c->redirect('/local/menu');
 }
