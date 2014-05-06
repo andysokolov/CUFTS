@@ -48,6 +48,13 @@ sub trim_string :Export( :DEFAULT ) {
     return $string;
 }
 
+sub clean_issn :Export( :DEFAULT ) {
+    my ($string) = @_;
+    my $string = uc($string);
+    $string =~ tr/0-9X//cd;
+    return $string;
+}
+
 sub dashed_issn :Export( :DEFAULT ) {
     my ($string) = @_;
     return undef if !defined $string;
