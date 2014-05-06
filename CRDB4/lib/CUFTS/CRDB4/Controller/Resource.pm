@@ -28,11 +28,16 @@ sub load_resource :Chained('base') :PathPart('') :CaptureArgs(1) {
         }
     }
 
-    my $erm = $c->model('CUFTS::ERMMain')->find({
+    my $search = {
         id          => $resource_id,
         site        => $c->site->id,
-        public_list => 't',
-    });
+    };
+
+    if ( $self->account->has_role('staff') ) {
+        $search->{public} = 't';
+    }
+
+    my $erm = $c->model('CUFTS::ERMMain')->find($search);
 
     $c->stash->{erm} = $erm;
     push @{$c->stash->{breadcrumbs}}, [ $c->uri_for_site( $c->controller('Resource')->action_for('resource'), [ $resource_id ] ), $erm->main_name ];
@@ -51,7 +56,7 @@ sub resource :Chained('load_resource') :PathPart('') :Args(0) {
     my ( $self, $c ) = @_;
 
     # Create links to subject searches
-    $c->stash->{subject_links} = [ map { [ $_->subject, $c->uri_for_site( $c->controller('Browse')->action_for('browse'), { subject => $_->id } ) ] }  
+    $c->stash->{subject_links} = [ map { [ $_->subject, $c->uri_for_site( $c->controller('Browse')->action_for('browse'), { subject => $_->id } ) ] }
                                     sort { $a->subject cmp $b->subject } $c->stash->{erm}->subjects ];
 
     $c->stash->{display_fields} = [
