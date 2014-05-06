@@ -173,6 +173,8 @@ sub _setup_menu {
             ] ];
         }
 
+        push @menu, [ $c->loc('Jobs'), $c->uri_for( $c->controller('Jobs')->action_for('list') ) ];
+
         push @menu, [ $c->loc('Account Settings'), $c->uri_for( $c->controller('Account')->action_for('edit') ) ];
 
         push @menu, [ $c->loc('Logout'), $c->uri_for( $c->controller('Root')->action_for('logout') ) ];

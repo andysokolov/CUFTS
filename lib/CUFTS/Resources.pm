@@ -107,7 +107,21 @@ sub filter_on {
     return [];
 }
 
+sub services {
+    return [];
+}
 
+sub services_methods {
+    return {
+        'metadata'          => 'Metadata',
+        'holdings'          => 'Holdings',
+        'web search'        => 'WebSearch',
+        'table of contents' => 'TOC',
+        'fulltext'          => 'Fulltext',
+        'journal'           => 'Journal',
+        'database'          => 'Database',
+    }
+}
 
 # ----------------------------------------------------------------------------
 

@@ -9,7 +9,7 @@ use CUFTS::DB::MergedResources;
 my $form_validate_local = {
     required => ['name', 'provider', 'module', 'resource_type'],
     optional => [
-        'provider', 'proxy', 'dedupe', 'rank', 'active', 'resource_services', 'submit', 'cancel',
+        'provider', 'proxy', 'dedupe', 'rank', 'active', 'submit', 'cancel',
         'resource_identifier', 'database_url', 'auth_name', 'auth_passwd', 'url_base', 'notes_for_local', 'cjdb_note', 'proxy_suffix', 'erm_main'
     ],
     defaults => {
@@ -17,7 +17,6 @@ my $form_validate_local = {
         'proxy' => 'false',
         'dedupe' => 'false',
         'auto_activate' => 'false',
-        'resource_services' => []
     },
     filters => ['trim'],
     missing_optional_valid => 1,
@@ -25,7 +24,7 @@ my $form_validate_local = {
 
 my $form_validate_global = {
     optional => [
-        'proxy', 'dedupe', 'auto_activate', 'rank', 'active', 'resource_services', 'submit', 'cancel',
+        'proxy', 'dedupe', 'auto_activate', 'rank', 'active', 'submit', 'cancel',
         'resource_identifier', 'database_url', 'auth_name', 'auth_passwd', 'url_base', 'cjdb_note', 'proxy_suffix', 'erm_main'
     ],
     defaults => {
@@ -33,7 +32,6 @@ my $form_validate_global = {
         'proxy' => 'false',
         'dedupe' => 'false',
         'auto_activate' => 'false',
-        'resource_services' => []
     },
     filters => ['trim'],
     missing_optional_valid => 1,
@@ -218,8 +216,6 @@ sub edit : Local {
 
         unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
 
-            # Remove services and recreate links, then update and save the resource
-
             eval {
 
                 if ( !defined($local_resource) ) {
@@ -240,11 +236,6 @@ sub edit : Local {
                 }
 
                 $local_resource->update_from_form($c->form);
-                CUFTS::DB::LocalResources_Services->search({local_resource => $local_resource->id})->delete_all;
-
-                foreach my $service ($c->form->valid('resource_services')) {
-                    $local_resource->add_to_services({ service => $service });
-                }
 
                 if ($local_resource->auto_activate) {
                     $local_resource->activate_titles();
@@ -275,11 +266,9 @@ sub edit : Local {
     $c->stash->{module_list} = [CUFTS::ResourcesLoader->list_modules()];
 
     if (defined($global_resource)) {
-        $c->stash->{services} = [$global_resource->services];
         $c->stash->{template} = 'local/edit_global.tt';
     } else {
         $c->stash->{resource_types} = [CUFTS::DB::ResourceTypes->retrieve_all()];
-        $c->stash->{services} = [CUFTS::DB::Services->retrieve_all()];
         $c->stash->{template} = 'local/edit_local.tt';
     }
 }

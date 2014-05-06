@@ -28,6 +28,9 @@ use HTML::Entities qw();
 
 use strict;
 
+sub services {
+    return [ qw( journal database ) ];
+}
 
 sub title_list_extra_requires {
     require CUFTS::Util::CSVParse;

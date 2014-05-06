@@ -81,6 +81,7 @@ __PACKAGE__->columns(All => qw(
 __PACKAGE__->columns(Essential => __PACKAGE__->columns);
 
 __PACKAGE__->has_a('erm_main' => 'CUFTS::DB::ERMMain');
+__PACKAGE__->has_a('local_resource', 'CUFTS::DB::LocalResources');
 
 1;
 

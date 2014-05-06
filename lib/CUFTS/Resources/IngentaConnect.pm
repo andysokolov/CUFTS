@@ -28,6 +28,10 @@ use CUFTS::Util::Simple;
 
 use strict;
 
+sub services {
+    return [ qw( fulltext journal database ) ];
+}
+
 sub title_list_extra_requires {
     require CUFTS::Util::CSVParse;
 }

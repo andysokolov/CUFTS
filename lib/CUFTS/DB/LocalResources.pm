@@ -8,7 +8,7 @@
 ## the terms of the GNU General Public License as published by the Free
 ## Software Foundation; either version 2 of the License, or (at your option)
 ## any later version.
-## 
+##
 ## CUFTS is distributed in the hope that it will be useful, but WITHOUT ANY
 ## WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 ## FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -38,11 +38,11 @@ __PACKAGE__->columns(All => qw(
 	id
 
 	site
-	
+
 	name
 
 	resource
-	
+
 	provider
 	resource_type
 
@@ -61,7 +61,7 @@ __PACKAGE__->columns(All => qw(
 	proxy_suffix
 
 	active
-		
+
 	title_list_scanned
 
 	cjdb_note
@@ -74,7 +74,7 @@ __PACKAGE__->columns(All => qw(
 	erm_basic_subscription_notes
 
 	erm_datescosts_cost
-	erm_datescosts_contract_end	
+	erm_datescosts_contract_end
 	erm_datescosts_renewal_notification
 	erm_datescosts_notification_email
 	erm_datescosts_local_fund
@@ -102,18 +102,18 @@ __PACKAGE__->columns(All => qw(
 
 	created
 	modified
-));                      
+));
 
-                                                                                  
+
 __PACKAGE__->columns(Essential => qw(
 	id
 
 	site
-	
+
 	name
 
 	resource
-	
+
 	provider
 	resource_type
 
@@ -132,7 +132,7 @@ __PACKAGE__->columns(Essential => qw(
 	proxy_suffix
 
 	active
-		
+
 	title_list_scanned
 
 	cjdb_note
@@ -147,7 +147,6 @@ __PACKAGE__->has_a('resource_type' => 'CUFTS::DB::ResourceTypes');
 __PACKAGE__->has_a('resource' => 'CUFTS::DB::Resources');
 __PACKAGE__->has_a('site' => 'CUFTS::DB::Sites');
 
-__PACKAGE__->has_many('services', ['CUFTS::DB::LocalResources_Services' => 'service'], 'local_resource');
 __PACKAGE__->has_many('hidden_fields', ['CUFTS::DB::HiddenFields' => 'field'], 'resource');
 __PACKAGE__->has_many('local_journals' => 'CUFTS::DB::LocalJournals');
 
@@ -158,7 +157,7 @@ __PACKAGE__->add_trigger('before_delete' => \&delete_titles);
 
 sub record_count {
 	my ($self, @other) = @_;
-	
+
 	if ($self->do_module('has_title_list')) {
 		my $titles_module = $self->do_module('local_db_module');
 		return $titles_module->count_search('resource' => $self->id, @other);
@@ -170,7 +169,7 @@ sub record_count {
 
 sub normalize_column_values {
 	my ($self, $values) = @_;
-	
+
 	# Force rank to 0 if it is empty
 
 	if ( exists($values->{rank}) && defined($values->{rank}) && $values->{rank} eq '' ) {
@@ -183,21 +182,21 @@ sub normalize_column_values {
 
 sub do_module {
 	my ($self, $method, @args) = @_;
-	
+
 	my $module = $self->module;
-	defined($module) or 
+	defined($module) or
 		defined($self->resource) and
 			$module = $self->resource->module;
-			
+
 	if ( is_empty_string( $module ) ) {
 	    warn( "Empty module being used, defaulting to blank" );
 	    $module = 'blank';
-	}		
-			
+	}
+
 	$module = $CUFTS::Config::CUFTS_MODULE_PREFIX . $module;
-	
+
 	return $module->$method(@args);
-}	
+}
 
 sub activate_titles {
 	$_[0]->_tivate_titles('true');
@@ -234,12 +233,12 @@ sub _tivate_titles {
         elsif ($flag eq 'false') {
             return 1 if $local_count == 0;
         }
-        
+
         # Updates are needed
-        
+
 		while (my $global_title = $global_titles->next) {
 			# Check for existing local title record, create it if it does not exist.
-		
+
 			my @local_titles = $local_titles_module->search( resource => $self->id, $local_to_global_field => $global_title->id);
 			if (scalar(@local_titles) == 0) {
 				my $record = {
@@ -253,7 +252,7 @@ sub _tivate_titles {
 					$local_titles[0]->update;
 			} else {
 				die("Multiple local title matches for global title " . $global_title->id);
-			}			
+			}
 		}
 	} else {
 		my $titles = $local_titles_module->search( resource => $self->id);
@@ -269,7 +268,7 @@ sub _tivate_titles {
 
 sub delete_titles {
 	my ($self) = @_;
-	
+
 	return $self->do_module('delete_title_list', $self->id, 1);
 }
 
@@ -279,4 +278,3 @@ sub is_local_resource {
 }
 
 1;
-

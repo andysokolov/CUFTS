@@ -34,17 +34,6 @@
 
 <tr><td><br /></td></tr>
 
-<tr><td>
-<table class="wide-outlined">
-<tr><td class="heading-bar" align="left">services</td></tr>
-[% FOREACH service IN resource.services.sort('name') %]
- <tr><td class="field[% loop.count % 2 %]">
-  [% service.name | html %]
- </td></tr>
-[% END %]
-</table>
-</td></tr>
-
 <tr><td><br /></td></tr>
 
 <tr><td>

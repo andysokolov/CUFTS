@@ -45,6 +45,7 @@ header #header-right #logged-in {
     /*color: black;*/
     /*color: #d0deed;*/
     color: white;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 div#main {
@@ -294,6 +295,11 @@ table.grid tr td.expand, table.grid tr th.expand {
 .pagination ul>.active-number>a, .pagination ul>.active-number>span {
     font-weight: bold;
     color: #444;
+}
+
+.pagination .active a {
+   pointer-events: none;
+   cursor: default;
 }
 
 /* -- properties style -- */

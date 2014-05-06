@@ -7,11 +7,11 @@ my $form_validate = {
     required => ['name', 'resource_type', 'module'],
     optional => [
         # Standard fields
-        'key', 'provider', 'active', 'resource_services', 'submit', 'cancel',
+        'key', 'provider', 'active', 'submit', 'cancel',
         # Resource details...
         'resource_identifier', 'database_url', 'auth_name', 'auth_passwd', 'url_base', 'notes_for_local',
     ],
-    defaults => { 'active' => 'false', 'resource_services' => [] },
+    defaults => { 'active' => 'false' },
     filters  => ['trim'],
     missing_optional_valid => 1,
 };
@@ -149,18 +149,11 @@ sub edit : Local {
 
         unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
 
-            # Remove services and recreate links, then update and save the resource
-
             eval {
                 if (defined($resource)) {
                     $resource->update_from_form($c->form);
-                    CUFTS::DB::Resources_Services->search(resource => $resource_id)->delete_all;
                 } else {
                     $resource = CUFTS::DB::Resources->create_from_form($c->form);
-                }
-
-                foreach my $service ($c->form->valid('resource_services')) {
-                    $resource->add_to_services({ service => $service });
                 }
             };
             if ($@) {
@@ -176,7 +169,6 @@ sub edit : Local {
     $c->stash->{resource} = $resource;
     $c->stash->{module_list} = [CUFTS::ResourcesLoader->list_modules()];
     $c->stash->{resource_types} = [CUFTS::DB::ResourceTypes->retrieve_all()];
-    $c->stash->{services} = [CUFTS::DB::Services->retrieve_all()];
     $c->stash->{template} = 'global/edit.tt';
 }
 

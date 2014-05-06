@@ -30,6 +30,9 @@ use String::Util qw(hascontent);
 
 use strict;
 
+sub services {
+    return [ qw( fulltext journal database ) ];
+}
 
 my $base_url = 'http://makealink.jstor.org/public-tools/GetURL?';
 

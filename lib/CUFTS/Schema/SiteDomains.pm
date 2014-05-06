@@ -4,7 +4,7 @@ use strict;
 
 use base qw/DBIx::Class::Core/;
 
-__PACKAGE__->load_components(qw//);
+__PACKAGE__->load_components(qw/ FromValidatorsCUFTS /);
 
 __PACKAGE__->table('site_domains');
 __PACKAGE__->add_columns(

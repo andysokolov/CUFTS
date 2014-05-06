@@ -1,7 +1,7 @@
 [%- SET header_section = c.loc('Local Resource Titles') -%]
 [%- SET resource_name = local_resource.name OR global_resource.name -%]
 [%- breadcrumbs.push([ c.uri_for( c.controller('LocalResources').action_for('list'), { page => lr_page } ), c.loc('Local Resources List') ] ) -%]
-[%- breadcrumbs.push([ c.uri_for( c.controller('LocalResources').action_for('view'), [ 'global', global_resource.id ], { lr_page => lr_page } ), resource_name ] ) -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('LocalResources').action_for('view'), [ 'global', global_resource.id ], { lr_page => lr_page } ), global_resource.name ] ) -%]
 [%- breadcrumbs.push([ '', c.loc('Titles') ]) -%]
 [%- SET page_id = 'local-titles-list' -%]
 
@@ -13,7 +13,8 @@
 
 
 <div>
-<form method="GET" class="span6 form-inline control-bar" action="[% c.uri_for( c.controller('LocalResources::Titles').action_for('list_global'), [ 'global', global_resource.id ] ) | html %]">
+<form method="GET" class="form-inline control-bar" action="[% c.uri_for( c.controller('LocalResources::Titles').action_for('list_global'), [ 'global', global_resource.id ] ) | html %]">
+<div class="span6">
     [% IF local_resource AND !local_resource.auto_activate %]
     <select name="show_active" style="width: 10em" >
       <option value="all" [% IF !show_active.defined OR show_active == 'all' %]selected="selected"[% END %]>[% c.loc('show all') %]</option>
@@ -22,8 +23,8 @@
     </select>&nbsp;
     [% END %]
     <label for="filter">[% c.loc('Filter') %]: <input type="text" name="filter" style="width: 15em;" value="[% filter | html %]"> <input type="submit" class="btn" name="apply_filter" value="[% c.loc('filter') %]"></label>
-</form>
-<form method="POST" class="span6 form-inline control-bar" style="text-align: right;" action="[% c.uri_for( c.controller('LocalResources::Titles').action_for('list_global'), [ 'global', global_resource.id ] ) | html %]">
+</div>
+<div class="span6" style="text-align: right; margin-bottom: 8px;">
   <input type="hidden" name="page" value="[% page | html %]" />
   <input type="hidden" name="lr_page" value="[% lr_page | html %]" />
 [% IF local_resource AND !local_resource.auto_activate %]
@@ -43,15 +44,17 @@
 </tr>
 
 [% WHILE ( title = titles_rs.next ) %]
-  
+
   [%- SET global_id = title.id -%]
   [%- SET local_title = local_titles.$global_id -%]
   [%- SET row_class = (local_title.active || local_resource.auto_activate) ? 'active' : 'inactive' -%]
 
  <tr class="[% row_class | html %]">
-  
- <td class="text-center"> 
-  [% IF local_resource.auto_activate %]
+
+ <td class="text-center">
+  [% IF !local_resource.defined %]
+   <input type="checkbox" name="ignoreme" value="" disabled="disabled" />
+  [% ELSIF local_resource.auto_activate %]
    <input type="checkbox" name="ignoreme" value="" disabled="disabled" checked="checked" />
   [% ELSE %]
    <input type="checkbox" name="new_[% global_id %]_active" [% 'checked="checked"' IF local_title.active %] value="1" />
@@ -60,11 +63,11 @@
  </td>
 
  [% FOREACH col IN columns %]
-   
+
    [%- PROCESS column_val -%]
 
    <td class="field-[% col | html %] [% PROCESS column_class %]">
-    [% IF col == 'id' %]
+    [% IF col == 'id' AND local_resource.defined AND !local_resource.auto_activate %]
      <a href="[% c.uri_for( c.controller('LocalResources::Titles').action_for('edit_global_title'), [ 'global', global_resource.id, title.id ], { lr_page => lr_page, lt_page => page } ) | html %]">[% title.id %]</a>
     [% ELSE %]
      [% val | html %]
@@ -74,9 +77,10 @@
  </tr>
 [% END %]
 
-
-<tr class="paging"><td colspan="[% columns.size + 1 %]">[% PROCESS paging.tt pager = titles_rs.pager %]</td></tr>
 </table>
+
+[% PROCESS paging.tt pager = titles_rs.pager %]
+
 </div>
 
 </form>
@@ -88,13 +92,14 @@
 [%- END -%]
 
 [%- BLOCK column_val -%]
-   [%- 
-      IF col != 'id' AND local_title.$col.hascontent;
-       SET val = local_title.$col;
-       SET local_override = 1;
-      ELSE;
-       SET val = title.$col;
-       SET local_override = 0;
-      END;
-    -%]
+ [%- SET display_col = col _ '_display' -%]
+ [%-
+  IF col != 'id' AND local_title.$col.hascontent;
+   SET val = local_title.can(display_col) ? local_title.$display_col : local_title.$col;
+   SET local_override = 1;
+  ELSE;
+   SET val = title.can(display_col) ? title.$display_col : title.$col;
+   SET local_override = 0;
+  END;
+ -%]
 [%- END -%]

@@ -28,6 +28,10 @@ use URI::Escape;
 
 use strict;
 
+sub services {
+    return [ qw( fulltext journal database ) ];
+}
+
 my $default_url_base = 'gateway.ovid.com';
 
 ## title_list_fields - Controls what fields get displayed and loaded from

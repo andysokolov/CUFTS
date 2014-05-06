@@ -8,7 +8,7 @@
 
 <div class="form-inline" style="margin: 0 0 2px 14px;">
  <h1 style="width: 50%; margin: 0; padding: 0; display: inline">[% resource.name | html %]</h1>
- 
+
 <div class="span4" style="float: right; text-align: right;">
  <form style="display: inline;" method="post" action="[% c.uri_for( c.controller('LocalResources').action_for('edit'), [ load_resource_type, resource_id ] ) | html %]">
   <button class="btn">[% c.loc('edit') %]</button><input type="hidden" name="lr_page" value="[% lr_page | html %]" />
@@ -24,7 +24,7 @@
      [% local_resource.record_count %]
     [% END -%]
   </button>
- </form> 
+ </form>
  [% END %]
  [% IF local_resource.defined %]
  <form style="display: inline;" method="post" action="[% c.uri_for( c.controller('LocalResources').action_for('delete'), [ 'local', local_resource.id ] ) | html %]">
@@ -61,14 +61,5 @@
  </tr>
 [% END %]
 
-</table>
-</div>
-
-<div id="services" class="well container-fluid">
-<h2 class="legend">[% c.loc('active services') %]</h2>
-<table class="properties zebra">
-[% FOREACH service IN services %]
- <tr><td>[% service | html %]</td></tr>
-[% END %]
 </table>
 </div>

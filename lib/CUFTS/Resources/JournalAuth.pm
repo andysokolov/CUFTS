@@ -27,6 +27,9 @@ use CUFTS::Util::Simple;
 use CUFTS::Config;
 use String::Util qw(trim hascontent);
 
+sub services {
+    return [ qw( metadata ) ];
+}
 
 use strict;
 

@@ -20,7 +20,7 @@
 
 package CUFTS::Resources::PubMedCentral;
 
-use base qw(CUFTS::Resources::GenericJournalDOI CUFTS::Resources::Base::Journals);
+use base qw(CUFTS::Resources::GenericJournalDOI);
 
 use CUFTS::Exceptions;
 use CUFTS::Util::Simple;

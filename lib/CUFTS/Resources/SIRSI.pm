@@ -25,6 +25,11 @@ use CUFTS::Exceptions;
 use CUFTS::Result;
 use strict;
 
+
+sub services {
+    return [ qw( holdings ) ];
+}
+
 sub local_resource_details {
     return [qw(url_base)];
 }

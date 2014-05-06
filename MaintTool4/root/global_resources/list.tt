@@ -2,6 +2,7 @@
 [%- breadcrumbs.push([ '', c.loc('Global Resources List') ] ) -%]
 [%- SET page_id = 'global-resources-list' -%]
 
+[%- PROCESS form_results.tt -%]
 
 <div>
 <form method="GET" class="span6 form-inline control-bar">
@@ -44,9 +45,9 @@
 [% WHILE ( resource = resources_rs.next ) %]
 <tr>
  <td class="nowrap">
-  <a href="[% c.uri_for( c.controller('GlobalResources').action_for('view'), resource.id, { gr_page => page } ) | html %]">[% c.loc('view') %]</a> |
-  <a href="[% c.uri_for( c.controller('GlobalResources').action_for('edit'), resource.id, { gr_page => page } ) | html %]">[% c.loc('edit') %]</a> |
-  <a href="[% c.uri_for( c.controller('GlobalResources').action_for('bulk'), resource.id, { gr_page => page } ) | html %]">[% c.loc('bulk') %]</a>
+  <a href="[% c.uri_for( c.controller('GlobalResources').action_for('view'), [resource.id], { gr_page => page } ) | html %]">[% c.loc('view') %]</a> |
+  <a href="[% c.uri_for( c.controller('GlobalResources').action_for('edit'), [resource.id], { gr_page => page } ) | html %]">[% c.loc('edit') %]</a> |
+  <a href="[% c.uri_for( c.controller('GlobalResources').action_for('bulk'), [resource.id], { gr_page => page } ) | html %]">[% c.loc('bulk') %]</a>
  </td>
 
  <td class="text-right nowrap">[% resource.id %]</td>
@@ -59,7 +60,7 @@
 
  <td class="text-right nowrap">
   [% IF resource.do_module('has_title_list') %]
-   <a href="[% c.uri_for( c.controller('GlobalResources').action_for('titles_list'), resource.id, { gr_page => page } ) | html %]">[% resource.title_count %]</a>
+   <a href="[% c.uri_for( c.controller('GlobalResources').action_for('titles_list'), [resource.id], { gr_page => page } ) | html %]">[% resource.title_count %]</a>
   [% ELSE %]
    [% c.loc('N/A') %]
   [% END %]

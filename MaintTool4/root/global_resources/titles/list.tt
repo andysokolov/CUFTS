@@ -28,21 +28,13 @@
 [% WHILE ( title = titles_rs.next ) %]
  <tr>
   [% FOREACH col IN columns %]
-   [% SET coltype = title.$col.can('ymd') ? 'date' : '' %]
+   [%- SET coltype = title.$col.can('ymd') ? 'date' : '' -%]
+   [%- SET display_col = col _ '_display' -%]
    <td class="field-[% col | html %] [% coltype | html %]">
-
-    [% IF col == 'issn' OR col=='e_issn' %]
-        [% SET col = col _ '_dashed' %]
-    [% END %]
-
     [% IF col == 'id' %]
-     <a href="[% c.uri_for( c.controller.action_for('title_edit'), resource.id, title.id, { gt_page => page, gr_page => gr_page } ) | html %]">[% title.id %]</a>
-    [% ELSIF col == 'journal_auth' %]
-     [%- title.get_column('journal_auth') | html -%]
-    [% ELSIF coltype == 'date' %]
-     [%- title.$col.ymd | html -%]
+     <a href="[% c.uri_for( c.controller.action_for('title_edit'), [resource.id], title.id, { gt_page => page, gr_page => gr_page } ) | html %]">[% title.id %]</a>
     [% ELSE %]
-     [%- title.$col | html -%]
+     [%- title.can(display_col) ? title.$display_col : title.$col | html -%]
     [% END %]
    </td>
   [% END %]

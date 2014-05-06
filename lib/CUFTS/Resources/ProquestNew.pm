@@ -29,6 +29,10 @@ use URI::Escape qw(uri_escape);
 
 use strict;
 
+sub services {
+    return [ qw( fulltext journal database ) ];
+}
+
 my $base_url = 'http://gateway.proquest.com/openurl?ctx_ver=Z39.88-2004&res_id=xri:pqm&rft_val_fmt=ori:/fmt:kev:mtx:journal';
 
 sub global_resource_details {

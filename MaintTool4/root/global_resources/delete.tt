@@ -8,7 +8,7 @@
 
 [% PROCESS global_resources/subview.tt %]
 
-<form action="[% c.uri_for( c.controller.action_for('delete'), resource.id ) | html %]" method="post">
+<form action="[% c.uri_for( c.controller.action_for('delete'), [ resource.id ] ) | html %]" method="post">
 <input type="hidden" name="gr_page" value="[% gr_page | html %]" />
 <fieldset class="container-fluid well">
 <h2 class="legend">[% c.loc('delete resource') | html %]</h2>

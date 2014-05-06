@@ -25,9 +25,11 @@ use base qw(CUFTS::Resources::Base::Journals);
 use CUFTS::Exceptions;
 use CUFTS::Util::Simple;
 
-use base qw(CUFTS::Resources::Base::Journals);
-
 use strict;
+
+sub services {
+    return [ qw( fulltext journal database ) ];
+}
 
 my $base_url = 'http://www.karger.com/';
 

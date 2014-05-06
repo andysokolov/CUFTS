@@ -29,7 +29,7 @@ sub change :Chained('base') :PathPart('change') :Args(0) {
     # Build list of sites used for both display and confirmation of
     # access to chosen site
 
-	my $site_rs   = $c->user->administrator ? $c->model('CUFTS::Sites') : $c->user->sites;
+    my $site_rs   = $c->user->administrator ? $c->model('CUFTS::Sites') : $c->user->sites;
     my @site_list = $site_rs->search({}, { order_by => 'name' } );
 
     my $new_site_id = int( $c->form->valid->{new_site} || 0);
@@ -136,11 +136,8 @@ sub ips :Chained('base') :PathPart('ips') :Args(0)  {
             eval {
                 $c->model('CUFTS')->txn_do( sub {
 
-    				$c->site->domains->delete_all();
-    				$c->site->ips->delete_all();
-
-                    # CUFTS::DB::SiteDomains->search('site' => $c->site->id)->delete_all;
-                    # CUFTS::DB::SiteIPs->search('site' => $c->site->id)->delete_all;
+                    $c->site->domains->delete_all();
+                    $c->site->ips->delete_all();
 
                     foreach my $param ( keys(%{$c->form->valid}) ) {
 
@@ -178,14 +175,15 @@ sub ips :Chained('base') :PathPart('ips') :Args(0)  {
                     die($err);
                 }
 
-                push @{$c->stash->{results}}, $c->loc('Site data updated.');
+                push @{$c->flash->{results}}, $c->loc('Site data updated.');
+                return $c->redirect( $c->uri_for( $c->controller('Site')->action_for('ips') ) );
             }
         }
 
     }
     else {
-        $c->stash->{domains}  = [ $c->site->domains ];
-        $c->stash->{ips}      = [ $c->site->ips ];
+        $c->stash->{domains}  = [ $c->site->domains({}, { order_by => 'domain' }) ];
+        $c->stash->{ips}      = [ $c->site->ips({}, { order_by => 'ip_low' }) ];
     }
 
     $c->stash->{template} = 'site/ips.tt';

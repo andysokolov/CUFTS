@@ -2,8 +2,8 @@ package CUFTS::MaintTool4::Controller::LocalResources::Titles;
 use Moose;
 use namespace::autoclean;
 
-use String::Util qw(trim hascontent);
-use List::MoreUtils qw(uniq);
+use String::Util    qw( trim hascontent );
+use List::MoreUtils qw( uniq );
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -27,20 +27,18 @@ sub load_resources :Chained('../load_resources') :PathPart('titles') :CaptureArg
     my $local_resource  = $c->stash->{local_resource};
     my $global_resource = $c->stash->{global_resource};
 
-    if ( defined($global_resource) && !$global_resource->do_module('has_title_list') ) {
+    if ( defined $global_resource && !$global_resource->do_module('has_title_list') ) {
         die( $c->loc('This resource does not support title lists.') );
     }
 
-    if ( defined($local_resource) ) {
-        my $local_titles_model = $local_resource->do_module('local_db_module') or
-            die( $c->loc('Attempt to view title list for resource type without a local_db_module.') );
-        $c->stash->{local_titles_model} = "CUFTS::${local_titles_model}";
+    if ( defined $local_resource ) {
+        $c->stash->{local_titles_rs} = $local_resource->do_module('local_rs', $c->model('CUFTS')->schema );
+        die( $c->loc('Attempt to view title list for resource type without a local_rs.') ) if !defined $c->stash->{local_titles_rs};
     }
 
-    if ( defined($global_resource) ) {
-        my $global_titles_model = $global_resource->do_module('global_db_module') or
-            die( $c->loc('Attempt to view title list for resource type without a global_db_module.') );
-        $c->stash->{global_titles_model} = "CUFTS::${global_titles_model}";
+    if ( defined $global_resource ) {
+        $c->stash->{global_titles_rs} = $global_resource->do_module('global_rs', $c->model('CUFTS')->schema );
+        die( $c->loc('Attempt to view title list for resource type without a global_rs.') ) if !defined $c->stash->{global_titles_rs};
     }
 
 }
@@ -56,18 +54,9 @@ sub list_global :Chained('load_resources') :PathPart('list/global') :Args(0) {
 
     my $global_resource     = $c->stash->{global_resource};
     my $local_resource      = $c->stash->{local_resource};
-    my $local_titles_model  = $c->stash->{local_titles_model};
-    my $global_titles_model = $c->stash->{global_titles_model};
+    my $local_rs            = $c->stash->{local_titles_rs};
+    my $global_rs           = $c->stash->{global_titles_rs};
     my $ltg_field           = $global_resource->do_module('local_to_global_field'); # Local to global linking field
-
-    ##
-    ## Set up local/global title list modules
-    ##
-
-    # If we don't have a local resource yet we should make one
-    if ( !defined($local_resource) ) {
-        $local_resource = $c->model('CUFTS::LocalResources')->create({ site => $c->site->id, resource => $global_resource->id, active => 0 });
-    }
 
     ##
     ## Validate form and set control session variables (filter, show active, etc.)
@@ -80,7 +69,7 @@ sub list_global :Chained('load_resources') :PathPart('list/global') :Args(0) {
         defaults        => { filter => '', show_active => 'all', page => 1 },
     });
 
-    if ( defined($c->form->valid->{show_active}) ) {
+    if ( defined $c->form->valid->{show_active} ) {
         $c->session->{local_title_list_show} = $c->form->valid->{show_active}; # Force boolean
     }
 
@@ -98,7 +87,8 @@ sub list_global :Chained('load_resources') :PathPart('list/global') :Args(0) {
         $c->session->{local_titles_filter}   = $filter if $filter ne ($c->session->{local_titles_filter}   || '');
         $c->session->{local_title_list_show} = $active if $active ne ($c->session->{local_title_list_show} || '');
 
-    } else {
+    }
+    else {
         $filter = $c->session->{local_titles_filter}   || $filter;
         $active = $c->session->{local_title_list_show} || $active;
     }
@@ -119,35 +109,35 @@ sub list_global :Chained('load_resources') :PathPart('list/global') :Args(0) {
         rows     => 25,
     );
 
+    $global_rs = $global_rs->search( \%search, \%search_options );
+
     ##
     ## Prefetch local linked titles if we have a local resource. Also limit to active titles if the "show active" filter is on
     ##
 
-    my $titles_rs = $c->model($global_titles_model)->search( \%search );
-
-    if ( defined($local_resource) && !$local_resource->auto_activate && $active ne 'all' ) {
-        $titles_rs = $titles_rs->search_active( $local_resource->id, $global_resource->id, $active eq 'active' ? 1 : 0 );
+    if ( defined $local_resource && !$local_resource->auto_activate && $active ne 'all' ) {
+        if ( $active eq 'active' ) {
+            $global_rs = $global_rs->search_active_local( $local_resource->id );
+        }
+        elsif ( $active eq 'inactive' ) {
+            $global_rs = $global_rs->search_inactive_local( $local_resource->id );
+        }
+        else {
+            die( $c->loc('Unrecognized active flag: ') . $active );
+        }
     }
-
-    ##
-    ## Do paging, ordering, limit here. search_active does a set operation for "not active" which cannot work on
-    ## resultsets that
-    ##
-
-    $titles_rs = $titles_rs->search({}, \%search_options);
-
 
     ##
     ## Activate/deactivate all titles if that button was pushed. Do this here so that the generated
     ## local titles can be loaded into the map in the next step.
     ##
     if ( $c->form->valid('activate_all') ) {
-        $local_resource->activate_titles();
-        $c->stash->{results} = [ $c->loc('All titles activated.') ]
+        $local_resource->do_module('activate_local_titles', $c->model('CUFTS')->schema, $local_resource);
+        $c->stash->{results} = [ $c->loc('All titles activated.') ];
     }
     elsif ( $c->form->valid('deactivate_all') ) {
-        $local_resource->deactivate_titles();
-        $c->stash->{results} = [ $c->loc('All titles deactivated.') ]
+        $local_resource->do_module('deactivate_local_titles', $c->model('CUFTS')->schema, $local_resource);
+        $c->stash->{results} = [ $c->loc('All titles deactivated.') ];
     }
 
     ##
@@ -155,13 +145,13 @@ sub list_global :Chained('load_resources') :PathPart('list/global') :Args(0) {
     ##
 
     my %local_titles;
-    if ( defined($local_resource) && hascontent($local_titles_model) ) {
-        my $local_titles_rs = $c->model($local_titles_model)->search({
+    if ( defined $local_resource && defined $local_rs ) {
+        $local_rs = $local_rs->search({
             resource   => $local_resource->id,
-            $ltg_field => { '-in' =>  [ map { $_->id } $titles_rs->all ] },
+            $ltg_field => { '-in' =>  [ map { $_->id } $global_rs->all ] },
         });
-        $titles_rs->reset;  # We looped through to get the ids for loading matching local titles. Reset here for display.
-        %local_titles = ( map { $_->get_column($ltg_field) => $_ } $local_titles_rs->all );
+        $global_rs->reset;  # We looped through to get the ids for loading matching local titles. Reset here for display.
+        %local_titles = ( map { $_->get_column($ltg_field) => $_ } $local_rs->all );
     }
 
     ##
@@ -170,23 +160,28 @@ sub list_global :Chained('load_resources') :PathPart('list/global') :Args(0) {
 
     if ( $c->form->valid('apply_changes') ) {
         eval {
+            $c->model('CUFTS')->schema->txn_do( sub {
+                # If we don't have a local resource yet we should make one
 
-            while ( my $title = $titles_rs->next ) {
-                my $newval  = int( $c->form->valid( 'new_'  . $title->id . '_active') || 0 );
-                my $origval = int( $c->form->valid( 'orig_' . $title->id . '_active') || 0 );
-                if ( $newval != $origval ) {
-                    my $local_title = $local_titles{$title->id};
-                    if ( defined($local_title) ) {
-                        $local_title->active($newval);
-                        $local_title->update;
-                    }
-                    else {
-                        $local_titles{$title->id} = $c->model($local_titles_model)->create({ resource => $local_resource->id, $ltg_field => $title->id, active => $newval });
+                if ( !defined $local_resource  ) {
+                    $local_resource = $c->model('CUFTS::LocalResources')->create({ site => $c->site->id, resource => $global_resource->id, active => 0 });
+                }
+
+                while ( my $title = $global_rs->next ) {
+                    my $newval  = int( $c->form->valid( 'new_'  . $title->id . '_active') || 0 );
+                    my $origval = int( $c->form->valid( 'orig_' . $title->id . '_active') || 0 );
+                    if ( $newval != $origval ) {
+                        my $local_title = $local_titles{$title->id};
+                        if ( defined $local_title ) {
+                            $local_title->update({ active => $newval });
+                        }
+                        else {
+                            $local_titles{$title->id} = $local_rs->create({ resource => $local_resource->id, $ltg_field => $title->id, active => $newval });
+                        }
                     }
                 }
-            }
-            $titles_rs->reset;
-
+                $global_rs->reset;
+            });
         };
 
         if ($@) {
@@ -208,19 +203,17 @@ sub list_global :Chained('load_resources') :PathPart('list/global') :Args(0) {
 
     my @temp_cols = uniq( @{$global_resource->do_module('title_list_fields')}, @{$global_resource->do_module('overridable_title_list_fields')} );
     my %seen_cols;
-    while ( my $title = $titles_rs->next ) {
+    while ( my $title = $global_rs->next ) {
         foreach my $col (@temp_cols) {
             next if $seen_cols{$col};
             my $local_title = $local_titles{$title->id};
-            $seen_cols{$col} = 1 if hascontent($title->$col) || ( defined($local_title) && hascontent( $local_title->$col ) );
+            $seen_cols{$col} = 1 if hascontent($title->$col) || ( defined $local_title && hascontent( $local_title->$col ) );
         }
     }
-    $titles_rs->reset;  # We looped through to check for used columns
+    $global_rs->reset;  # We looped through to check for used columns
     my @columns = grep { $seen_cols{$_} } @temp_cols;
 
-    # Make sure we have id and journal_auth columns if they weren't in the original list. Make sure journal_auth is the last field.
-
-    # TODO: Do we want journal_auth hard coded here? It's probably missing from some resource modules since it was added after many were written.
+    # Make sure we have id and journal_auth columns as first and last columns
 
     unshift(@columns, 'id') if !grep { $_ eq 'id'} @columns;
     @columns = ( (grep { $_ ne 'journal_auth' } @columns), 'journal_auth' );
@@ -233,14 +226,11 @@ sub list_global :Chained('load_resources') :PathPart('list/global') :Args(0) {
     $c->stash->{page}         = $c->form->valid->{page};
     $c->stash->{lr_page}      = $c->form->valid->{lr_page};
     $c->stash->{show_active}  = $c->session->{local_title_list_show};
-    $c->stash->{titles_rs}    = $titles_rs;         # Global titles resultsource
+    $c->stash->{titles_rs}    = $global_rs;         # Global titles resultsource
     $c->stash->{local_titles} = \%local_titles;     # Map of local titles by global id
     $c->stash->{filter}       = $c->session->{local_titles_filter};
     $c->stash->{template}     = 'local_resources/titles/list_global.tt';
 }
-
-
-
 
 
 
@@ -254,8 +244,8 @@ Lists titles in a local resource
 sub list_local :Chained('load_resources') :PathPart('list/local') :Args(0) {
     my ($self, $c) = @_;
 
-    my $local_resource      = $c->stash->{local_resource};
-    my $local_titles_model  = $c->stash->{local_titles_model};
+    my $local_resource = $c->stash->{local_resource};
+    my $titles_rs      = $c->stash->{local_titles_rs};
 
     ##
     ## Validate form and set control session variables (filter, show active, etc.)
@@ -278,7 +268,8 @@ sub list_local :Chained('load_resources') :PathPart('list/local') :Args(0) {
     if ( $c->form->{valid}->{apply_filter} && $filter ne ($c->session->{local_titles_filter} || '') ) {
         $c->form->{valid}->{page} = 1;  # Reset page to one if filter has changed
         $c->session->{local_titles_filter} = $filter;
-    } else {
+    }
+    else {
         $filter = $c->session->{local_titles_filter};
     }
 
@@ -298,7 +289,7 @@ sub list_local :Chained('load_resources') :PathPart('list/local') :Args(0) {
         rows     => 25,
     );
 
-    my $titles_rs = $c->model($local_titles_model)->search( \%search, \%search_options );
+    $titles_rs = $titles_rs->search( \%search, \%search_options );
 
     ##
     ## Figure out which columns are in use for this data set
@@ -352,8 +343,8 @@ sub edit_global_title :Chained('load_resources') :PathPart('edit/global') :Args(
 
     my $global_resource     = $c->stash->{global_resource};
     my $local_resource      = $c->stash->{local_resource};
-    my $local_titles_model  = $c->stash->{local_titles_model};
-    my $global_titles_model = $c->stash->{global_titles_model};
+    my $local_rs            = $c->stash->{local_titles_rs};
+    my $global_rs           = $c->stash->{global_titles_rs};
     my $overridable_fields  = $global_resource->do_module('overridable_title_list_fields');
     my $ltg_field           = $global_resource->do_module('local_to_global_field');
 
@@ -361,12 +352,12 @@ sub edit_global_title :Chained('load_resources') :PathPart('edit/global') :Args(
     ## Get the requested global title
     ##
 
-    my $global_title = $c->model($global_titles_model)->search({ id => $title_id, resource => $global_resource->id })->first
+    my $global_title = $global_rs->find({ id => $title_id, resource => $global_resource->id })
         or die( $c->loc('Unable to find global title by id') );
 
     ##
     ## Validate the form
-    ## TODO: Add in better validation so we can catch errors on the form directly rather than letting the DB edit fail s
+    ## TODO: Add in better validation so we can catch errors on the form directly rather than letting the DB edit fail
     ##
 
     my %validate = (
@@ -387,8 +378,8 @@ sub edit_global_title :Chained('load_resources') :PathPart('edit/global') :Args(
     ##
 
     my $local_title;
-    if ( defined($local_resource) ) {
-        $local_title = $c->model($local_titles_model)->search({ $ltg_field => $title_id, resource => $local_resource->id })->first;
+    if ( defined $local_resource ) {
+        $local_title = $local_rs->find({ $ltg_field => $title_id, resource => $local_resource->id });
     }
 
     if ( hascontent($c->form->valid->{apply}) ) {
@@ -408,7 +399,7 @@ sub edit_global_title :Chained('load_resources') :PathPart('edit/global') :Args(
                     if (defined($local_title)) {
                         $local_title->update_from_fv($c->form);
                     } else {
-                        $local_title = $c->model($local_titles_model)->create_from_fv($c->form, { resource => $local_resource->id, $ltg_field => $global_title->id });
+                        $local_title = $local_rs->create_from_fv($c->form, { resource => $local_resource->id, $ltg_field => $global_title->id });
                     }
 
                 });
@@ -446,6 +437,9 @@ sub edit_local_title :Chained('load_resources') :PathPart('edit/local') :Args(1)
     my $local_resource      = $c->stash->{local_resource};
     my $local_titles_model  = $c->stash->{local_titles_model};
     my $fields              = $local_resource->do_module('title_list_fields');
+    my $local_rs            = $c->stash->{local_titles_rs};
+
+    push@$fields, 'journal_auth' if !grep { $_ eq 'journal_auth' } @$fields;
 
     ##
     ## Get the requested local title
@@ -453,7 +447,7 @@ sub edit_local_title :Chained('load_resources') :PathPart('edit/local') :Args(1)
 
     my $local_title;
     if ( $title_id ne 'new' && int($title_id) ) {
-        $local_title = $c->model($local_titles_model)->search({ id => int($title_id), resource => $local_resource->id })->first;
+        $local_title = $local_rs->find({ id => int($title_id), resource => $local_resource->id });
     }
 
     ##
@@ -485,10 +479,13 @@ sub edit_local_title :Chained('load_resources') :PathPart('edit/local') :Args(1)
 
                 $c->model('CUFTS')->txn_do( sub {
 
-                    if (defined($local_title)) {
+                    if ( defined $local_title ) {
+                        warn('(1)');
                         $local_title->update_from_fv($c->form);
-                    } else {
-                        $local_title = $c->model($local_titles_model)->create_from_fv($c->form, { resource => $local_resource->id });
+                    }
+                    else {
+                        warn(ref $local_rs);
+                        $local_title = $local_rs->create_from_fv($c->form, { resource => $local_resource->id });
                     }
 
                 });
@@ -524,14 +521,12 @@ sub edit_local_title :Chained('load_resources') :PathPart('edit/local') :Args(1)
 sub bulk_local :Chained('load_resources') :PathPart('bulk/local') :Args(0) {
     my ($self, $c) = @_;
 
-    my $local_resource      = $c->stash->{local_resource};
-    my $local_titles_model  = $c->stash->{local_titles_model};
-
     $c->form({
         optional => [ qw( file upload export format lr_page ) ],
     });
 
-    defined($local_resource) or
+    my $local_resource = $c->stash->{local_resource};
+    defined $local_resource or
         die( $c->loc('Unable to find local resource.') );
 
     if ( $c->req->params->{upload} || $c->req->params->{export} ) {
@@ -540,25 +535,34 @@ sub bulk_local :Chained('load_resources') :PathPart('bulk/local') :Args(0) {
         unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
 
             if ( $c->form->valid('export') ) {
-                $c->stash->{csv}->{data} = $self->_build_export_data($c);
-                $c->stash->{current_view} = 'CSV';
-
+                $c->stash(
+                    filename      => 'local_titles_' . $local_resource->id,
+                    data          => $self->_build_export_data($c),
+                    current_view  => 'CSV',
+                );
+                return $c->detach();
             }
-            elsif (my $upload = $c->req->upload('file')) {
+            elsif ( my $upload = $c->req->upload('file') ) {
 
-                my $tmp;
-
-                eval {
-                     $tmp = $local_resource->do_module('load_title_list', $local_resource, $upload->tempname, 1);
-                };
-                if ($@) {
-                    $c->stash->{errors} = [ $@ ];
-                    warn( $c->loc('Transaction failed: ') . $@ );
-                } else {
-                    $c->stash->{bulk_results} = $tmp;
-                    $c->stash->{template} = 'local_resources/titles/bulk_local_results.tt';
+                my $jq = $c->job_queue;
+                my $job = $jq->add_job({
+                    type       => 'local title list load',
+                    class      => 'title list',
+                    account_id => $self->user->id,
+                    site_id    => $self->site->id,
+                    data       => { local_resource_id => $local_resource->id },
+                });
+                if ( !defined $job ) {
+                    die( $c->loc('Unable to create JQ job.') );
                 }
 
+                my $upload_dir = $CUFTS::Config::CUFTS_JQ_UPLOAD_DIR;
+                my $filename = $job->id; # . '-local_titles-' . $local_resource->id;
+
+                $upload->copy_to("${upload_dir}/${filename}") or
+                    die("Unable to copy title list file '${upload_dir}/${filename}': $!");
+
+                push @{$c->stash->{results}}, $c->loc('Title list uploaded and submitted to job queue.');
             }
 
         }
@@ -595,7 +599,7 @@ sub bulk_global :Chained('load_resources') :PathPart('bulk/global') :Args(0) {
             elsif (my $upload = $c->req->upload('file')) {
 
                 eval {
-                    if ( !defined($local_resource) ) {
+                    if ( !defined $local_resource ) {
                         $local_resource = $c->stash->{local_resource} = CUFTS::DB::LocalResources->create({ resource => $global_resource->id, site => $c->stash->{current_site}->id, auto_activate => 0 });
                     }
                     my $method = $c->form->valid->{type} . '_title_list';
@@ -623,28 +627,25 @@ sub _build_export_data {
 
     my $local_resource      = $c->stash->{local_resource};
     my $global_resource     = $c->stash->{global_resource};
-    my $local_titles_model  = $c->stash->{local_titles_model};
-    my $global_titles_model = $c->stash->{global_titles_model};
+    my $local_titles_rs     = $c->stash->{local_titles_rs};
+    my $global_titles_rs    = $c->stash->{global_titles_rs};
 
+    my ( @columns, $titles_rs );
     if ( defined($global_resource) ) {
-        my @columns = grep { $_ ne 'id' } @{$global_resource->do_module('title_list_fields')};
-        my @data;
-        my $titles_rs = $c->model($global_titles_model)->search({ resource => $global_resource->id });
-        while ( my $title = $titles_rs->next ) {
-            push @data, [ map { $title->$_ } @columns ];
-        }
-        return \@data;
+        @columns = grep { $_ ne 'id' } @{$global_resource->do_module('title_list_fields')};
+        $titles_rs = $global_titles_rs->search({ resource => $global_resource->id });
     }
     else {
-        my @columns = grep { $_ ne 'id' } @{$local_resource->do_module('title_list_fields')};
-        my @data;
-        my $titles_rs = $c->model($local_titles_model)->search({ resource => $local_resource->id });
-        while ( my $title = $titles_rs->next ) {
-            push @data, [ map { $title->$_ } @columns ];
-        }
-        return \@data;
+        @columns = grep { $_ ne 'id' } @{$local_resource->do_module('title_list_fields')};
+        $titles_rs = $local_titles_rs->search({ resource => $local_resource->id });
     }
 
+    my @data = [ @columns ];
+    while ( my $title = $titles_rs->next ) {
+        push @data, [ map { my $cd = $_ . '_display'; $title->can($cd) ? $title->$cd : $title->$_ } @columns ];
+    }
+
+    return \@data;
 }
 
 

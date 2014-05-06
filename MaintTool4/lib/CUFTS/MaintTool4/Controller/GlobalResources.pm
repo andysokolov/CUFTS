@@ -5,6 +5,7 @@ use namespace::autoclean;
 
 use String::Util qw( hascontent trim );
 use CUFTS::ResourcesLoader;
+use CUFTS::JQ::Client;
 
 use Data::FormValidator::Constraints qw(:closures);
 
@@ -30,6 +31,17 @@ sub base :Chained('/loggedin') :PathPart('global_resources') :CaptureArgs(0) {
         die( $c->loc('User not authorized for global editting') );
         $c->detach;
     }
+}
+
+sub load_global_resource :Chained('base') :PathPart('') CaptureArgs(1) {
+    my ( $self, $c, $resource_id ) = @_;
+
+    $c->stash->{global_resource} = $c->model('CUFTS::GlobalResources')->find({ id => $resource_id });
+    if ( !defined $c->stash->{global_resource} ) {
+        die( $c->loc('Unable to find global resource id: ') . $resource_id );
+        $c->detach;
+    }
+
 }
 
 
@@ -100,7 +112,7 @@ sub list :Chained('base') :PathPart('') :Args(0) {
     # Delete the title list filter, it should be clear when we go to browse a new title list
     delete $c->session->{global_titles_filter};
 
-    $c->stash->{page} 		    = $c->form->valid('page');
+    $c->stash->{page}           = $c->form->valid('page');
     $c->stash->{sort}           = $c->session->{global_list_sort} || 'name';
     $c->stash->{filter}         = $c->session->{global_list_filter};
     $c->stash->{show}           = $c->session->{global_list_show} || 'show all';
@@ -109,15 +121,10 @@ sub list :Chained('base') :PathPart('') :Args(0) {
 }
 
 
-sub view :Chained('base') :PathPart('view') :Args(1) {
-    my ( $self, $c, $resource_id ) = @_;
+sub view :Chained('load_global_resource') :PathPart('view') :Args(0) {
+    my ( $self, $c ) = @_;
 
-    my $resource = $c->model('CUFTS::GlobalResources')->find({ id => $resource_id });
-    if ( !defined $resource ) {
-        die( $c->loc('Unable to find resource id: ') . $resource_id );
-        $c->detach;
-        return;
-    }
+    my $resource = $c->stash->{global_resource};
 
     # Find sites with this resource activated
 
@@ -129,21 +136,23 @@ sub view :Chained('base') :PathPart('view') :Args(1) {
     }
     @activated = sort { lc($a->[0]) cmp lc($b->[0]) } @activated;
 
-    # Get active services
+    # Get recent jobs
 
-    my @services = map { $_->name } $resource->services->search({}, { order_by => 'name' })->all;
+    my @jobs = $resource->jobs->search( {}, { order_by => { -desc => 'id' }, rows => 10 } )->all;
 
-    $c->stash->{gr_page}	= $c->request->params->{gr_page};
+    # Setup stash
+
+    $c->stash->{gr_page}   = $c->request->params->{gr_page} || 1;
     $c->stash->{resource}  = $resource;
     $c->stash->{activated} = \@activated;
-    $c->stash->{services}  = \@services;
+    $c->stash->{jobs}      = \@jobs;
     $c->stash->{template}  = 'global_resources/view.tt';
 }
 
 
 
 sub edit :Chained('base') :PathPart('edit') :Args(1) {
-    my ($self, $c, $resource_id) = @_;
+    my ( $self, $c, $resource_id ) = @_;
 
     my $resource;
     if ( $resource_id ne 'new' ) {
@@ -153,21 +162,19 @@ sub edit :Chained('base') :PathPart('edit') :Args(1) {
             $c->detach;
             return;
         }
-
-        $c->stash->{resource_services} = { map { $_->get_column('service') => $_ } $resource->resource_services->all };
     }
 
 
     $c->form({
-        required => ['name', 'resource_type', 'module'],
+        required => [ qw( name resource_type module ) ],
         optional => [
             'gr_page',
             # Standard fields
-            qw( key provider active resource_services submit cancel),
+            qw( key provider active submit cancel),
             # Resource details...
             qw( resource_identifier database_url title_list_url update_months auth_name auth_passwd url_base notes_for_local ),
         ],
-        defaults => { active => 'false', resource_services => [] },
+        defaults => { active => 'false' },
         filters  => ['trim'],
         field_filters => { update_months => 'integer' },
         missing_optional_valid => 1,
@@ -180,19 +187,12 @@ sub edit :Chained('base') :PathPart('edit') :Args(1) {
 
         unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
 
-            # Remove services and recreate links, then update and save the resource
-
             eval {
                 $c->model('CUFTS')->txn_do( sub {
                     if (defined($resource)) {
                         $resource->update_from_fv($c->form);
-                        $resource->resource_services->delete_all;
                     } else {
                         $resource = $c->model('CUFTS::GlobalResources')->create_from_fv($c->form);
-                    }
-
-                    foreach my $service ($c->form->valid('resource_services')) {
-                        $resource->add_to_resource_services({ service => $service });
                     }
                 });
 
@@ -203,41 +203,42 @@ sub edit :Chained('base') :PathPart('edit') :Args(1) {
             }
             else {
                 push @{$c->stash->{results}}, $c->loc('Resource data updated.');
-                $c->stash->{resource_services} = { map { $_->get_column('service') => $_ } $resource->resource_services->all };
                 delete $c->stash->{params}; # Use the updated record instead of any saved parameters
                 # return $c->redirect( $c->uri_for( $c->controller->action_for('list') ) );
             }
         }
     }
 
-    $c->stash->{gr_page}           = $c->form->valid->{gr_page};
+    $c->stash->{gr_page}           = $c->form->valid->{gr_page} || 1;
     $c->stash->{resource}          = $resource;
     $c->stash->{module_list}       = [ CUFTS::ResourcesLoader->list_modules() ];
     $c->stash->{resource_types}    = [ $c->model('CUFTS::ResourceTypes')->all() ];
-    $c->stash->{services}          = [ $c->model('CUFTS::Services')->all() ];
     $c->stash->{template}          = 'global_resources/edit.tt';
 }
 
+##
+## Mark resource for deleting, then return to global list
+##
 
-sub delete :Chained('base') :PathPart('delete') :Args(1) {
-    my ($self, $c, $resource_id) = @_;
+sub delete :Chained('load_global_resource') :PathPart('delete') :Args(0) {
+    my ( $self, $c ) = @_;
 
-    my $resource = $c->model('CUFTS::GlobalResources')->find({ id => $resource_id });
-    if ( !defined($resource) ) {
-        die( $c->loc('Unable to find resource id: ') . $resource_id );
-        $c->detach;
-        return;
-    }
+    my $resource = $c->stash->{global_resource};
 
     if ( $c->req->params->{do_delete} ) {
-        # TODO: This should chain delete titles, local_resources,
+        my $job = $c->job_queue->add_job({
+            info               => 'Delete global resource (' . $resource->id . '): ' . $resource->name,
+            type               => 'global resources',
+            class              => 'global resource delete',
+            global_resource_id => $resource->id,
+        });
 
-        $resource->delete();
+        push @{$c->flash->{results}}, $c->loc('Created deletion job for global resource: ') . $job->id;
 
         return $c->redirect( $c->uri_for( $c->controller('GlobalResources')->action_for('list'), { page => $c->req->params->{gr_page} } ) );
     }
 
-    $c->stash->{gr_page}  = $c->req->params->{gr_page};
+    $c->stash->{gr_page}  = $c->req->params->{gr_page} || 1;
     $c->stash->{resource} = $resource;
     $c->stash->{template} = 'global_resources/delete.tt';
 }
@@ -247,12 +248,10 @@ sub delete :Chained('base') :PathPart('delete') :Args(1) {
 ## Title list handling
 ##
 
-sub titles_list :Chained('base') :PathPart('titles') :Args(1) {
-    my ($self, $c, $resource_id) = @_;
+sub titles_list :Chained('load_global_resource') :PathPart('titles') :Args(0) {
+    my ( $self, $c) = @_;
 
-    my $resource = $c->model('CUFTS::GlobalResources')->find({ id => $resource_id });
-    defined $resource or
-        die( $c->loc('Unable to find resource id: ') . $resource_id );
+    my $resource = $c->stash->{global_resource};
 
     $resource->do_module('has_title_list') or
         die( $c->loc('This resource does not support title lists.') );
@@ -275,7 +274,7 @@ sub titles_list :Chained('base') :PathPart('titles') :Args(1) {
     ## Build search filter
     ##
 
-    my %search = ( resource => $resource_id );
+    my %search = ( resource => $resource->id );
 
     my $filter = $c->form->{valid}->{filter};
     if ( hascontent($filter) ) {
@@ -305,12 +304,11 @@ sub titles_list :Chained('base') :PathPart('titles') :Args(1) {
 }
 
 
-sub title_edit :Chained('base') :PathPart('title') :Args(2) {
-    my ( $self, $c, $resource_id, $title_id ) = @_;
+sub title_edit :Chained('load_global_resource') :PathPart('title') :Args(1) {
+    my ( $self, $c, $title_id ) = @_;
 
-    my $resource = $c->model('CUFTS::GlobalResources')->find({ id => $resource_id });
-    defined $resource or
-        die( $c->loc('Unable to find resource id: ') . $resource_id );
+    my $resource    = $c->stash->{global_resource};
+    my $resource_id = $resource->id;
 
     $resource->do_module('has_title_list') or
         die( $c->loc('This resource does not support title lists.') );
@@ -352,8 +350,6 @@ sub title_edit :Chained('base') :PathPart('title') :Args(2) {
 
         unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
 
-            # Remove services and recreate links, then update and save the resource
-
             eval {
                 if ( defined $title ) {
                     $title->update_from_fv($c->form);
@@ -384,12 +380,11 @@ sub title_edit :Chained('base') :PathPart('title') :Args(2) {
 }
 
 
-sub bulk :Chained('base') :PathPart('bulk') :Args(1) {
-    my ($self, $c, $resource_id) = @_;
+sub bulk :Chained('load_global_resource') :PathPart('bulk') :Args(0) {
+    my ( $self, $c ) = @_;
 
-    my $resource = $c->model('CUFTS::GlobalResources')->find({ id => $resource_id });
-    defined $resource or
-        die( $c->loc('Unable to find resource id: ') . $resource_id );
+    my $resource    = $c->stash->{global_resource};
+    my $resource_id = $resource->id;
 
     if ( $c->req->params->{upload} ) {
 
@@ -408,21 +403,22 @@ sub bulk :Chained('base') :PathPart('bulk') :Args(1) {
                 $mon += 1;
                 $year += 1900;
 
-                my $filename = "titles_${resource_id}_${year}-${mon}-${mday}_${hour}-${min}-${sec}";
+                my $filename = $upload_dir . "/titles_${resource_id}_${year}-${mon}-${mday}_${hour}-${min}-${sec}";
 
-                $upload->copy_to("${upload_dir}/${filename}") or
-                    die("Unable to copy title list file '${upload_dir}/${filename}': $!");
+                $upload->copy_to($filename) or
+                    die("Unable to copy title list file '$filename': $!");
 
-                # Create the data file
+                # Create a new job to load this title
 
-                open (CUFTSDAT, ">${upload_dir}/${filename}.CUFTSdat") or
-                    die("Unable to create '${upload_dir}/${filename}.CUFTSdat' file: $!");
+                my $job = $c->job_queue->add_job({
+                    info               => 'Global title list load  (' . $resource_id . '): ' . $resource->name,
+                    class              => 'global title list load',
+                    type               => 'global resource',
+                    global_resource_id => $resource_id,
+                    data               => { file => $filename },
+                });
 
-                print CUFTSDAT "$resource_id\n";
-                print CUFTSDAT $c->user->id . "\n";
-                close CUFTSDAT;
-
-                $c->stash->{results} = $c->loc('The update file has been uploaded and will be processed when the title list updating script is next run.  You should receive an email message containing the results of the processing.')
+                push @{$c->stash->{results}}, $c->loc( 'Created load job for title list: ') . $job->id;
             }
         }
     }

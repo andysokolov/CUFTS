@@ -29,6 +29,10 @@ use URI::Escape qw(uri_escape);
 
 use strict;
 
+sub services {
+    return [ qw( fulltext journal database ) ];
+}
+
 sub local_resource_details {
     my ($class) = @_;
     return [

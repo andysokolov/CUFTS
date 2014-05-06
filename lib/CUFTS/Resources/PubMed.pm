@@ -37,6 +37,10 @@ use Data::Dumper;
 
 use strict;
 
+sub services {
+    return [ qw( metadata ) ];
+}
+
 my $month_lookup = {
     'jan' => '01',
     'feb' => '02',

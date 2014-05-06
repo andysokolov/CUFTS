@@ -1,13 +1,14 @@
 package CUFTS::Schema::LocalResources;
 
 use strict;
-use base qw/DBIx::Class::Core/;
-
-use Moose;
 
 use String::Util qw( hascontent );
 
-__PACKAGE__->load_components(qw/ FromValidators TimeStamp /);
+use Moose;
+
+extends qw/DBIx::Class::Core/;
+
+__PACKAGE__->load_components(qw/ FromValidatorsCUFTS TimeStamp /);
 
 __PACKAGE__->table('local_resources');
 __PACKAGE__->add_columns(
@@ -136,9 +137,6 @@ __PACKAGE__->belongs_to( erm_main      => 'CUFTS::Schema::ERMMain',         'erm
 __PACKAGE__->belongs_to( resource_type => 'CUFTS::Schema::ResourceTypes',   'resource_type',    { join_type => 'left' } );
 
 __PACKAGE__->has_many( local_journals    => 'CUFTS::Schema::LocalJournals',          'resource' );
-__PACKAGE__->has_many( resource_services => 'CUFTS::Schema::LocalResourcesServices', 'local_resource' );
-
-__PACKAGE__->many_to_many( services => 'resource_services', 'service' );
 
 before 'delete' => sub {
     shift->delete_titles();
@@ -175,8 +173,6 @@ sub delete_titles {
 sub record_count {
     my ($self, @other) = @_;
 
-    warn($self->id . ' -- ' . $self->module);
-
     my $module = $CUFTS::Config::CUFTS_MODULE_PREFIX . ( $self->module || $self->global_resource->module);
     if ($module->has_title_list) {
         my $schema = $self->result_source->schema;
@@ -192,8 +188,13 @@ sub do_module {
 
     my $module = $self->module;
     if ( !hascontent($module) ) {
-        warn( "Empty module being used, defaulting to blank" );
-        $module = 'blank';
+        if ( defined $self->global_resource  && hascontent($self->global_resource->module) ) {
+            $module = $self->global_resource->module;
+        }
+        else {
+            warn( "Empty module being used, defaulting to blank" );
+            $module = 'blank';
+        }
     }
 
     $module = $CUFTS::Config::CUFTS_MODULE_PREFIX . $module;
@@ -210,6 +211,6 @@ sub is_local_resource {
 
 
 no Moose;
-__PACKAGE__->meta->make_immutable;
+__PACKAGE__->meta->make_immutable(inline_constructor => 0);
 
 1;

@@ -31,6 +31,10 @@ use URI::Escape;
 use CUFTS::Exceptions;
 use CUFTS::Util::Simple;
 
+sub services {
+    return [ qw( fulltext journal database ) ];
+}
+
 sub _search_fields {
     return {
         issn   => 'is',

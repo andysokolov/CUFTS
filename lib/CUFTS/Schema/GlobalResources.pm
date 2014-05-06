@@ -5,7 +5,7 @@ use base qw/DBIx::Class::Core/;
 
 use String::Util qw( hascontent );
 
-__PACKAGE__->load_components(qw/ FromValidators TimeStamp /);
+__PACKAGE__->load_components(qw/ FromValidatorsCUFTS TimeStamp /);
 
 __PACKAGE__->table('resources');
 __PACKAGE__->add_columns(
@@ -117,11 +117,8 @@ __PACKAGE__->belongs_to( resource_type => 'CUFTS::Schema::ResourceTypes',   'res
 
 __PACKAGE__->has_many( global_journals   => 'CUFTS::Schema::GlobalJournals',            'resource' );
 __PACKAGE__->has_many( local_resources   => 'CUFTS::Schema::LocalResources',            'resource' );
-__PACKAGE__->has_many( resource_services => 'CUFTS::Schema::GlobalResourcesServices',   'resource' );
 __PACKAGE__->has_many( jobs              => 'CUFTS::Schema::JobQueue',                  'global_resource_id' );
 
-
-__PACKAGE__->many_to_many( services => 'resource_services', 'service' );
 
 sub delete_titles {
     my ($self) = @_;

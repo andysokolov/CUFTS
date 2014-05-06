@@ -2,13 +2,15 @@ package CUFTS::Schema::GlobalJournals;
 
 use strict;
 
+use Moose;
+
 use String::Util qw(hascontent trim);
-use CUFTS::Util::Simple qw(dashed_issn);
-# use CUFTS::Util::Journal;
+use CUFTS::Util::Simple qw(dashed_issn clean_issn);
+use CUFTS::Resources::Base::Journals;
 
 use base qw/DBIx::Class::Core/;
 
-__PACKAGE__->load_components(qw/ FromValidators InflateColumn::DateTime TimeStamp /);
+__PACKAGE__->load_components(qw/ FromValidatorsCUFTS InflateColumn::DateTime TimeStamp /);
 
 __PACKAGE__->table('journals');
 __PACKAGE__->add_columns(
@@ -178,6 +180,49 @@ __PACKAGE__->belongs_to( journal_auth    => 'CUFTS::Schema::JournalsAuth',     '
 
 __PACKAGE__->has_many( local_journals => 'CUFTS::Schema::LocalJournals', 'journal' );
 
+__PACKAGE__->resultset_class('CUFTS::ResultSet::GlobalJournals');
+
+around issn => sub {
+    my ($orig, $self) = (shift, shift);
+
+    if (@_) {
+        $self->$orig( clean_issn($_[0]) );
+    }
+    else {
+        $self->$orig();
+    }
+};
+
+around e_issn => sub {
+    my ($orig, $self) = (shift, shift);
+
+    if (@_) {
+        $self->$orig( clean_issn($_[0]) );
+    }
+    else {
+        $self->$orig();
+    }
+};
+
+around update => sub {
+    my ($orig, $self) = (shift, shift);
+
+    if (@_) {
+        my $data = $_[0];
+
+        # Expand YYYY and YYYY-MM dates
+        CUFTS::Resources::Base::Journal->_clean_data_dates($data);
+
+        $data->{issn}   = clean_issn( $data->{issn} )   if exists $data->{issn};
+        $data->{e_issn} = clean_issn( $data->{e_issn} ) if exists $data->{e_issn};
+
+        $self->$orig($data);
+    }
+    else {
+        $self->$orig();
+    }
+};
+
 sub issn_display {
     return dashed_issn( shift->issn );
 }
@@ -230,5 +275,8 @@ sub _date_display {
 
 #     return $self->next::method($name, $value);
 # }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;

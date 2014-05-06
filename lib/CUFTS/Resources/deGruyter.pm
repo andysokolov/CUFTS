@@ -29,6 +29,10 @@ use Unicode::String qw(utf8);
 
 use strict;
 
+sub services {
+    return [ qw( fulltext journal database ) ];
+}
+
 sub title_list_fields {
     return [
         qw(

@@ -2,6 +2,8 @@ package CUFTS::MaintTool4;
 use Moose;
 use namespace::autoclean;
 
+use CUFTS::JQ::Client;
+
 use Catalyst::Runtime 5.80;
 
 # Set flags and add plugins for the application.
@@ -54,6 +56,20 @@ has 'site' => (
     is => 'rw',
     isa => 'Object',
 );
+
+sub job_queue {
+    my ( $c ) = @_;
+    my $log_fh = IO::File->new(">> $CUFTS::Config::CUFTS_JQ_LOG");
+    warn("Unable to open JQ log file: $!") if !defined $log_fh;
+    return CUFTS::JQ::Client->new({
+        job_schema  => $c->model('CUFTS')->schema,
+        work_schema => $c->model('CUFTS')->schema,
+        identifier  => 'MaintTool4',
+        site_id     => $c->site->id,
+        account_id  => $c->user->id,
+        log_fh      => $log_fh,
+    });
+}
 
 sub redirect {
     my ( $c, $uri ) = @_;

@@ -32,8 +32,11 @@ use URI::Escape qw(uri_escape_utf8);
 use String::Util qw(hascontent);
 use XML::LibXML;
 
-
 use strict;
+
+sub services {
+    return [ qw( metadata ) ];
+}
 
 sub has_title_list { return 0; }
 

@@ -33,6 +33,10 @@ use URI::Escape qw(uri_escape);
 
 use strict;
 
+sub services {
+    return [ qw( fulltext journal database ) ];
+}
+
 sub title_list_fields {
     return [
         qw(

@@ -37,19 +37,4 @@
 </td></tr>
 <tr><td><br /></td></tr>
 
-<tr><td>
-<table class="wide-outlined">
-<tr><td class="heading-bar" align="left">services</td></tr>
-[% FOREACH service IN global_resource.services.sort('name') %]
- <tr><td class="field[% loop.count % 2 %]">
-  [% IF local_resource.services.in(service.id, 'id') %]
-   <b>[% service.name %]</b>
-  [% ELSE %]
-   [% service.name %]
-  [% END %]
- </td></tr>
-[% END %]
-</table>
-</td></tr>
-
 </table>

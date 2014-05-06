@@ -9,7 +9,7 @@
 
 <h1 class="well-inset">[% resource.name | html %]</h1>
 
-<form method="post" action="[% c.uri_for( c.controller.action_for('title_edit'), resource.id, title.id ) | html %]" >
+<form method="post" action="[% c.uri_for( c.controller.action_for('title_edit'), [resource.id], title.id ) | html %]" >
 <input type="hidden" name="gt_page" value="[% gt_page | html %]" />
 <input type="hidden" name="gr_page" value="[% gr_page | html %]" />
 
@@ -30,8 +30,9 @@
 
 [% BLOCK display_value %]
  [%- RETURN IF !title.defined; RETURN IF !field.defined -%]
- [%- IF field.substr(-5) == '_date' -%]
-  [%- title.$field.ymd | html -%]
+ [%- SET display_field = field _ '_display' -%]
+ [% IF title.can(display_field) %]
+  [%- title.$display_field | html -%]
  [%- ELSE -%]
   [%- title.$field | html -%]
  [%- END -%]

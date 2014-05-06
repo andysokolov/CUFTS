@@ -82,17 +82,16 @@ RESOURCE:
             my $compiled_results;
 SERVICE:
             foreach my $service (@$services) {
-                my $service_name = $service->name;
 
                 # Dedupe providers that have already provided a link at this service level
 
                 next SERVICE if $local_resource->dedupe
                                 && hascontent($provider)
-                                && $provider_dedupe{$provider}->{$service_name};
+                                && $provider_dedupe{$provider}->{$service};
 
                 # Search for and build results
 
-                my $method = 'build_link' . $service->method;
+                my $method = 'build_link' . $module->services_methods->{$service};
                 if ( $module->can($method) ) {
 
                     my $results = $module->$method( $self->schema, $records, $resource, $site, $request );
@@ -104,7 +103,7 @@ SERVICE:
                         $module->prepend_proxy( $result, $resource, $site, $request );
                     }
 
-                    push @{ $compiled_results->{services}->{ $service_name }->{results} }, @$results;
+                    push @{ $compiled_results->{services}->{ $service }->{results} }, @$results;
 
                     # store details about services/resources if they haven't been set yet
 
@@ -112,11 +111,11 @@ SERVICE:
                         $compiled_results->{resource} = $resource;
                     }
 
-                    if ( !defined( $compiled_results->{services}->{ $service_name }->{service} ) ) {
-                        $compiled_results->{services}->{ $service_name }->{service} = $service;
+                    if ( !defined( $compiled_results->{services}->{ $service }->{service} ) ) {
+                        $compiled_results->{services}->{ $service }->{service} = $service;
                     }
 
-                    $provider_dedupe{ $resource->provider }->{ $service_name } = 1;
+                    $provider_dedupe{ $resource->provider }->{ $service } = 1;
                 }
             }
 
@@ -316,24 +315,11 @@ sub get_services {
     my ( $self, $resource, $module, $site, $request ) = @_;
 
     my @valid_services;
-    my @services        = $resource->services;
+    my $services        = $module->services;
     my $global_resource = $resource->resource;
 
-    # Check whether the service is active at the global level as well
-    if ( defined( $global_resource ) ) {
-
-        my @global_services = $global_resource->services;
-        my @new_services;
-        foreach my $service (@services) {
-            foreach my $global_service (@global_services) {
-                push(@new_services, $service) if $global_service->id == $service->id;
-            }
-        }
-        @services = @new_services;
-    }
-
-    foreach my $service (@services) {
-        my $method = 'can_get' . $service->method;
+    foreach my $service (@$services) {
+        my $method = 'can_get' . $module->services_methods->{$service};
 
         if ( $module->can($method) && $module->$method($request) ) {
             push @valid_services, $service;

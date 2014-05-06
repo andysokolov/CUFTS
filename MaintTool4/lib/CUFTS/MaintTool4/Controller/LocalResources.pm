@@ -45,17 +45,18 @@ sub load_resources :Chained('base') :PathPart('') :CaptureArgs(2) {
             $c->detach;
             return;
         }
-        $c->stash->{global_resource} = $c->stash->{local_resource}->resource;
+        $c->stash->{global_resource} = $c->stash->{local_resource}->global_resource;
 
-    } else {
+    }
+    else {
 
-        $c->stash->{global_resource} = $c->model('CUFTS::Resources')->find({ id => $resource_id });
+        $c->stash->{global_resource} = $c->model('CUFTS::GlobalResources')->find({ id => $resource_id });
         if ( !$c->stash->{global_resource} ) {
             die( $c->loc('Unable to find global resource id: ') . $resource_id );
             $c->detach;
             return;
         }
-        $c->stash->{local_resource} = $c->model('CUFTS::LocalResources')->search({ site => $c->site->id, resource => $resource_id })->first;
+        $c->stash->{local_resource} = $c->model('CUFTS::LocalResources')->find({ site => $c->site->id, resource => $resource_id });
 
     }
 }
@@ -139,8 +140,6 @@ sub list :Chained('base') :PathPart('') :Args(0) {
 sub view :Chained('load_resources') :PathPart('view') :Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->stash->{services} = [ map { $_->name } $c->stash->{local_resource}->services->search( {},  { order_by => 'name' } )->all ];
-
     $c->stash->{lr_page}   = $c->request->params->{lr_page};
     $c->stash->{template}  = 'local_resources/view.tt';
 }
@@ -155,12 +154,11 @@ sub edit :Chained('load_resources') :PathPart('edit') :Args(0) {
         required => [],
         optional => [ qw(
             lr_page
-            provider proxy dedupe rank auto_activate active resource_services submit
+            provider proxy dedupe rank auto_activate active submit
             resource_identifier database_url title_list_url update_months auth_name auth_passwd url_base notes_for_local cjdb_note proxy_suffix erm_main
         ) ],
         defaults => {
             active              => 'false',
-            resource_services   => [],
             proxy               => 'false',
             dedupe              => 'false',
             auto_activate       => 'false',
@@ -182,21 +180,15 @@ sub edit :Chained('load_resources') :PathPart('edit') :Args(0) {
 
         unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
 
-            # Remove services and recreate links, then update and save the resource
-
             eval {
                 $c->model('CUFTS')->txn_do( sub {
-                    if (defined($local_resource)) {
+                    if ( defined $local_resource ) {
                         $local_resource->update_from_fv($c->form);
-                        $local_resource->local_resources_services->delete_all;
-                    } else {
+                    }
+                    else {
                         $local_resource = $c->model('CUFTS::LocalResources')->create_from_fv($c->form, { site => $c->site->id, resource => defined($global_resource) ? $global_resource->id : undef });
                         $c->stash->{local_resource} = $local_resource;
                         push @{$c->flash->{results}}, $c->loc('Created new local resource.');
-                    }
-
-                    foreach my $service ($c->form->valid('resource_services')) {
-                        $local_resource->add_to_local_resources_services({ service => $service });
                     }
 
                     $local_resource->activate_titles() if $local_resource->auto_activate;
@@ -216,11 +208,6 @@ sub edit :Chained('load_resources') :PathPart('edit') :Args(0) {
 
     if ( $c->stash->{resource_id} eq 'new' && $local_resource ) {
         return $c->redirect( $c->uri_for( $c->controller('LocalResources')->action_for('edit'), ['local', $local_resource->id ], { page => $c->req->params->{lr_page} } ) );
-    }
-
-    $c->stash->{services} = [ $global_resource ? $global_resource->services->all : $c->model('CUFTS::Services')->all ];
-    if ( $local_resource ) {
-        $c->stash->{resource_services} = { map { $_->get_column('service') => $_ } $local_resource->local_resources_services->all };
     }
 
     $c->stash->{lr_page}           = $c->form->valid->{lr_page};

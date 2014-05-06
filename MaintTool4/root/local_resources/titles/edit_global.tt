@@ -24,8 +24,8 @@
 [% FOREACH field IN overridable_fields %]
  <tr>
   <td>[% c.loc( field.replace('_', ' ') ) | html %]</td>
-  <td style="padding: 2px;"><div style="margin-bottom: 0" class="control-group  [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]"><input name="[% field | html %]" value="[% IF params.defined %][%- params.$field | html -%][% ELSE %][% local_title.$field | html %][% END %]" size="30" maxlength="1024" />[% PROCESS field_error.tt %]</div></td>
-  <td>[% global_title.$field | html %]</td>
+  <td style="padding: 2px;"><div style="margin-bottom: 0" class="control-group  [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]"><input name="[% field | html %]" value="[% IF params.defined %][%- params.$field | html -%][% ELSE %][% PROCESS display_value title=local_title, field=field | html %][% END %]" size="30" maxlength="1024" />[% PROCESS field_error.tt %]</div></td>
+  <td>[% PROCESS display_value title=global_title, field=field | html %]</td>
  </tr>
 [% END %]
 </table>
@@ -35,3 +35,12 @@
 </fieldset>
 </form>
 
+[% BLOCK display_value %]
+ [%- RETURN IF !title.defined; RETURN IF !field.defined -%]
+ [%- SET display_field = field _ '_display' -%]
+ [% IF title.can(display_field) %]
+  [%- title.$display_field | html -%]
+ [%- ELSE -%]
+  [%- title.$field | html -%]
+ [%- END -%]
+[% END %]

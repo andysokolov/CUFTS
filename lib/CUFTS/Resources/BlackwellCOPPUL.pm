@@ -29,6 +29,10 @@ use URI::Escape;
 
 use strict;
 
+sub services {
+    return [ qw( journal database ) ];
+}
+
 ## title_list_fields - Controls what fields get displayed and loaded from
 ## title lists.
 

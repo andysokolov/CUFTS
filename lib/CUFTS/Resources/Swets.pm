@@ -27,6 +27,10 @@ use CUFTS::Util::Simple;
 
 use strict;
 
+sub services {
+    return [ qw( fulltext journal database ) ];
+}
+
 my $url_base = 'http://www.swetswise.com/link/access_db?';
 
 ## title_list_fields - Controls what fields get displayed and loaded from

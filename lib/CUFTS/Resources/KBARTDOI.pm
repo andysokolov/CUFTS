@@ -31,7 +31,6 @@ sub overridable_resource_details {
     return undef;
 }
 
-
 sub build_linkJournal {
     my ( $class, $schema, $records, $resource, $site, $request ) = @_;
 

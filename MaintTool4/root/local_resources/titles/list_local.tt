@@ -27,26 +27,28 @@
 </tr>
 
 [% WHILE ( title = titles_rs.next ) %]
-  
- <tr class="">
-  
-  [% FOREACH col IN columns %]
 
-   <td class="field-[% col %] [% PROCESS column_class %]">
-    [% IF col == 'id' %]
-     <a href="[% c.uri_for( c.controller('LocalResources::Titles').action_for('edit_local_title'), [ 'local', local_resource.id, title.id ], { lr_page => lr_page, lt_page => page } ) | html %]">[% title.id %]</a>
-    [% ELSE %]
-     [% title.$col | html %]
-    [% END %]
+ <tr class="">
+  [% FOREACH col IN columns %]
+   [%- SET coltype = title.$col.can('ymd') ? 'date' : '' -%]
+   [%- SET display_col = col _ '_display' -%]
+   <td class="field-[% col | html %] [% PROCESS column_class | html %]">
+   [% IF col == 'id' %]
+    <a href="[% c.uri_for( c.controller('LocalResources::Titles').action_for('edit_local_title'), [ 'local', local_resource.id, title.id ], { lr_page => lr_page, lt_page => page } ) | html %]">[% title.id %]</a>
+   [% ELSE %]
+    [%- title.can(display_col) ? title.$display_col : title.$col | html -%]
+   [% END %]
    </td>
   [% END %]
  </tr>
 [% END %]
 
-
-<tr class="paging"><td colspan="[% columns.size %]">[% PROCESS paging.tt pager = titles_rs.pager %]</td></tr>
 </table>
+
+[% PROCESS paging.tt pager = titles_rs.pager %]
+
 </div>
+
 
 [% BLOCK column_class %]
  [%- IF col.search('date$') -%] date[%- END -%]

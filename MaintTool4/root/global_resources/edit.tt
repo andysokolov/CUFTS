@@ -6,10 +6,21 @@
 
 [%- PROCESS form_results.tt -%]
 
-<form method="post" class="form-inline" style="margin: 0 0 2px 14px;" action="[% c.uri_for( c.controller('GlobalResources').action_for('delete'), resource.id ) | html %]">
+<div class="form-inline" style="margin: 0 0 2px 14px;">
  <h1 style="width: 50%; margin: 0; padding: 0; display: inline">[% resource_name | html %]</h1>
- [% IF resource %]<button style="float: right;" class="btn btn-danger">[% c.loc('delete') %]</button><input type="hidden" name="gr_page" value="[% gr_page | html %]" />[% END %]
-</form>
+
+[% IF resource %]
+ <div class="span4" style="float: right; text-align: right;">
+   <a class="btn" href="[% c.uri_for( c.controller('GlobalResources').action_for('view'), [resource.id], { gr_page => gr_page } ) | html %]">[% c.loc('view') %]</a>
+  [% IF resource.do_module('has_title_list') %]
+   <a class="btn" href="[% c.uri_for( c.controller('GlobalResources').action_for('titles_list'), [resource.id], { gr_page => gr_page } ) | html %]">[% c.loc('Titles: ') | html %][% resource.title_count %]</a>
+  [% END %]
+  <a class="btn btn-danger" href="[% c.uri_for( c.controller('GlobalResources').action_for('delete'), [resource.id], { gr_page => gr_page } ) | html %]">[% c.loc('delete') %]</a>
+ </div>
+[% END %]
+
+</div>
+
 
 <form method="post" action="[% c.uri_for( c.controller('GlobalResources').action_for('edit'), resource.id || 'new' ) | html %]">
 
@@ -59,17 +70,6 @@
     [%# TODO: localization for the help text below? %]
     <input class="span8" rel="popover" type="text" id="[% detail %]" name="[% detail %]" value="[% params.defined ? params.$detail : resource.$detail | html %]" maxlength="255" data-content="[% resource.do_module('get_resource_details_help', detail) | html %]" data-trigger="focus" />[% PROCESS field_error.tt field=detail %]
 </div>
-[% END %]
-</fieldset>
-
-
-<fieldset class="well container-fluid form-horizontal">
-<h2 class="legend">[% c.loc('services') %]</h2>
-[% FOREACH service IN services.sort('name') %]
- [%- SET service_id = service.id -%]
-  <div class="control-group">
-     <input type="checkbox" name="resource_services" id="[% service.name %]" value="[% service.id %]" [% 'checked="checked"' IF resource_services.$service_id %]> <label class="checkbox" for="[% service.name | html %]">[% service.name | html %]</label>
- </div>
 [% END %]
 </fieldset>
 

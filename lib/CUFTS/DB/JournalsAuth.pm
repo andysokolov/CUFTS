@@ -8,7 +8,7 @@
 ## the terms of the GNU General Public License as published by the Free
 ## Software Foundation; either version 2 of the License, or (at your option)
 ## any later version.
-## 
+##
 ## CUFTS is distributed in the hope that it will be useful, but WITHOUT ANY
 ## WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 ## FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -41,7 +41,7 @@ __PACKAGE__->columns(All => qw(
 
 	created
 	modified
-));                                                                                                        
+));
 __PACKAGE__->columns(Essential => qw(
 	id
 	title
@@ -59,10 +59,10 @@ __PACKAGE__->has_many('global_journals' => 'CUFTS::DB::Journals', { cascade => '
 
 sub search_by_issns {
 	my ($class, @issns) = @_;
-	
+
 	scalar(@issns) == 0 and
 		return ();
-		
+
 	my @bind;
 	my $sql = 'SELECT DISTINCT ON (journals_auth.id) journals_auth.* FROM journals_auth JOIN journals_auth_issns ON (journals_auth.id = journals_auth_issns.journal_auth) WHERE journals_auth_issns.issn IN (';
 
@@ -77,7 +77,7 @@ sub search_by_issns {
 		$sql .= '?';
 		$count == scalar(@issns) or
 			$sql .= ',';
-		
+
 		push @bind, $issn;
 	}
 
@@ -86,40 +86,40 @@ sub search_by_issns {
 	my $dbh = $class->db_Main();
 	my $sth = $dbh->prepare_cached($sql);
 	$sth->execute(@bind);
-	
-	my @results = $class->sth_to_objects($sth);	
+
+	my @results = $class->sth_to_objects($sth);
 
 	return @results;
-}	
+}
 
 sub search_by_exact_title_with_no_issns {
 	my ($class, $title) = @_;
-	
+
 	my $sql = 'SELECT journals_auth.* FROM journals_auth LEFT OUTER JOIN journals_auth_issns ON (journals_auth.id = journals_auth_issns.journal_auth) WHERE journals_auth_issns.issn IS NULL AND journals_auth.title ilike ?';
 
 	my $dbh = $class->db_Main();
 	my $sth = $dbh->prepare_cached($sql);
 	$sth->execute($title);
-	
-	my @results = $class->sth_to_objects($sth);	
+
+	my @results = $class->sth_to_objects($sth);
 
 	return @results;
-}	
+}
 
 
 sub search_by_title_with_no_issns {
 	my ( $class, $title ) = @_;
-	
+
 	my $sql = 'SELECT DISTINCT ON (journals_auth.id) journals_auth.* FROM journals_auth JOIN journals_auth_titles ON (journals_auth_titles.journal_auth = journals_auth.id) LEFT OUTER JOIN journals_auth_issns ON (journals_auth.id = journals_auth_issns.journal_auth) WHERE journals_auth_issns.issn IS NULL AND journals_auth.title ILIKE ?';
 
 	my $dbh = $class->db_Main();
 	my $sth = $dbh->prepare_cached($sql);
 	$sth->execute($title);
-	
-	my @results = $class->sth_to_objects($sth);	
+
+	my @results = $class->sth_to_objects($sth);
 
 	return @results;
-}	
+}
 
 sub has_fulltext {
     my ( $self, $journal_auth_id ) = @_;
@@ -129,11 +129,11 @@ sub has_fulltext {
     }
 
     $journal_auth_id = $self->id;  # $self
-    
+
     my $sql = "SELECT COUNT(*) FROM journals WHERE journal_auth = ? AND (";
     $sql .= join ' OR ', map { "$_ IS NOT NULL" } @CUFTS::Config::CUFTS_JOURNAL_FT_FIELDS;
     $sql .= ')';
-    
+
     my $dbh = $self->db_Main();
 	my $sth = $dbh->prepare_cached($sql);
 	$sth->execute($journal_auth_id);
@@ -145,33 +145,32 @@ sub has_fulltext {
 
 sub search_by_title {
     my ( $class, $title ) = @_;
-	
+
 	my $sql = 'SELECT DISTINCT ON (journals_auth.id) journals_auth.* FROM journals_auth JOIN journals_auth_titles ON (journals_auth_titles.journal_auth = journals_auth.id) WHERE journals_auth_titles.title ILIKE ?';
 
 	my $dbh = $class->db_Main();
 	my $sth = $dbh->prepare_cached($sql);
 	$sth->execute($title);
-	
-	my @results = $class->sth_to_objects($sth);	
+
+	my @results = $class->sth_to_objects($sth);
 
 	return @results;
 }
 
 # __PACKAGE__->set_sql('by_title' => qq{
 #   SELECT DISTINCT ON (journals_auth.id) journals_auth.* FROM journals_auth JOIN journals_auth_titles ON (journals_auth_titles.journal_auth = journals_auth.id) WHERE journals_auth_titles.title ILIKE ?
-# });   
+# });
 
 sub marc_object {
 	my ($self) = @_;
-	
+
 	defined($self->MARC) or
 		return undef;
 
-	my $obj = MARC::File::USMARC->decode($self->MARC);
+	my $obj = MARC::File::USMARC->decode($self->marc);
 	return $obj;
 }
 
 1;
 
 __END__
-

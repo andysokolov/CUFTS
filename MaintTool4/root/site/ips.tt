@@ -15,7 +15,7 @@
 [% FOREACH domain IN domains %]
  [% SET domain_id = domain.name || 'domain' _ loop.count %]
  <div class="control-group  [% IF form_submitted AND ( c.form.missing(domain_id) OR c.form.invalid(domain_id) ) %]error[% END %]">
-  
+
   <input class="inline" id="[% domain_id %]" type="text" size="40" maxlength="255" name="[% domain_id %]" value="[% domain.domain | html %]"> <button class="btn btn-danger delete-domain" data-delete="[% domain_id %]"><i class="icon-minus"></i> [% c.loc('delete') %]</button> [% PROCESS field_error.tt field=domain_id %]
  </div>
  [% SET domain_count = loop.count + 1 %]
@@ -36,7 +36,7 @@
 <div id="ips-container">
 [% SET ip_count = 0 %]
 [% FOREACH ip IN ips %]
- [%- 
+ [%-
      SET id = ip.name.defined ? ip.name : loop.count;
      SET ip_low_id = 'ip_low' _ id;
      SET ip_high_id = 'ip_high' _ id;
@@ -80,7 +80,7 @@ $(document).ready( function() {
         }
     );
 
-    $('.delete-domain').live( 'click', function() {
+    $('.delete-domain').on( 'click', function() {
         var data = $(this).attr('data-delete');
         var input = $('#' + data);
         input.attr( 'disabled', !input.attr('disabled') );
@@ -105,7 +105,7 @@ $(document).ready( function() {
         }
     );
 
-    $('.delete-ips').live( 'click', function() { 
+    $('.delete-ips').on( 'click', function() {
         var id = $(this).attr('data-delete');
         var input = $('[data-to-delete=' + id + ']');
         input.attr( 'disabled', !input.attr('disabled') );

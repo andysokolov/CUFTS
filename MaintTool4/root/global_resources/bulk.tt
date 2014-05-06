@@ -9,7 +9,7 @@
 
 [% PROCESS global_resources/subview.tt %]
 
-<form action="[% c.uri_for( c.controller.action_for('bulk'), resource.id ) | html %]" method="post" enctype="multipart/form-data">
+<form action="[% c.uri_for( c.controller.action_for('bulk'), [resource.id] ) | html %]" method="post" enctype="multipart/form-data">
 <input type="hidden" name="gr_page" value="[% gr_page | html %]" />
 <fieldset class="container-fluid well">
 <h2 class="legend">[% c.loc('title list maintenance') | html %]</h2>

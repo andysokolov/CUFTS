@@ -37,15 +37,4 @@
 </td></tr>
 <tr><td><br /></td></tr>
 
-<tr><td>
-<table class="wide-outlined">
-<tr><td class="heading-bar" align="left">services</td></tr>
-[% FOREACH service IN local_resource.services.sort('name') %]
- <tr><td class="field[% loop.count % 2 %]">
-  [% service.name | html %]
- </td></tr>
-[% END %]
-</table>
-</td></tr>
-
 </table>

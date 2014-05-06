@@ -63,19 +63,6 @@
 
 <tr><td><br /></td></tr>
 
-<tr><td>
-<table class="wide-outlined">
-<tr><td class="heading-bar" align="left">services</td></tr>
-[% FOREACH service IN services.sort('name') %]
- <tr><td class="field[% loop.count % 2 %]">
-  <input type="checkbox" name="resource_services" value="[% service.id %]" [% 'checked="checked"' IF local_resource.services.in(service.id, 'id') %]>
-  [% service.name %]
- </td></tr>
-[% END %]
-</table>
-</td></tr>
-
 <tr><td style="padding-top: 1em"><input type="submit" name="submit" value="submit"> <input type="submit" name="cancel" value="cancel"></td></tr>
 </table>
 </form>
-

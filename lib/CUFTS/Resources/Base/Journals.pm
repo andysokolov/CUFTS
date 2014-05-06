@@ -57,7 +57,9 @@ sub local_rs {
     return $schema->resultset('LocalJournals');
 }
 
-
+sub services {
+    return [ qw( journal database ) ];
+}
 
 sub has_title_list {
     return 1;
@@ -251,10 +253,12 @@ sub filter_on {
         return [ title => { ilike => "\%$string\%" } ];   # Characters other than ISSN patterns exist, so just try the title
     }
     else {
+        my $cleaned_issn = uc($string);
+        $cleaned_issn =~ tr/0-9X//cd;
         return [                                          # Could be a title or ISSN, try both
             title  => { ilike => "\%$string\%" },
-            issn   => { ilike => "\%$string\%" },
-            e_issn => { ilike => "\%$string\%" }
+            issn   => { ilike => "\%$cleaned_issn\%" },
+            e_issn => { ilike => "\%$cleaned_issn\%" }
         ];
     }
 }

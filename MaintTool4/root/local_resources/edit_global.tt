@@ -9,8 +9,8 @@
 <div class="container-fluid span12" style="margin-left: 14px; padding-left: 0; padding-right: 14px;">
 
  <h1 style="width: 50%; margin: 0; padding: 0; display: inline">[% global_resource.name | html %]</h1>
- 
- <div style="float: right; text-align: right;"> 
+
+ <div style="float: right; text-align: right;">
 [% IF local_resource %]
  <form style="display: inline;" method="post" action="[% c.uri_for( c.controller('LocalResources').action_for('view'), [ 'local', local_resource.id ] ) | html %]">
   <button class="btn">[% c.loc('view') %]</button><input type="hidden" name="lr_page" value="[% lr_page | html %]" />
@@ -20,7 +20,7 @@
  <form style="display: inline;" class="form-inline" method="post" action="[% c.uri_for( c.controller('LocalResources::Titles').action_for('list_global'), [ 'global', global_resource.id ], { lr_page => page, show_active => 'all', apply_filter => 1, filter => '' } ) | html %]">
   <input type="hidden" name="lr_page" value="[% lr_page | html %]" />
   <button class="btn">[% c.loc('Titles: ') | html %][% local_resource.auto_activate ? global_resource.title_count : ( local_resource.record_count('active', 'true') || 0 ) | html %] of [% global_resource.title_count %]</button>
- </form> 
+ </form>
  [% END %]
  [% IF local_resource.defined %]
  <form style="display: inline;" method="post" action="[% c.uri_for( c.controller('LocalResources').action_for('delete'), [ 'local', local_resource.id ] ) | html %]">
@@ -95,17 +95,6 @@
  </div>
  [% END %]
  </fieldset>
-
-
-<fieldset class="container-fluid well form-horizontal">
-<h2 class="legend">[% c.loc('services') %]</h2>
-[% FOREACH service IN services.sort('name') %]
- [%- SET service_id = service.id -%]
- <div class="control-group">
-     <input type="checkbox" name="resource_services" value="[% service_id %]" [% 'checked="checked"' IF resource_services.$service_id %]> <label class="checkbox" for="[% service.name | html %]">[% service.name | html %]</label>
- </div>
-[% END %]
-</fieldset>
 
 <input type="submit" name="submit" value="[% c.loc('submit') %]" class="btn btn-primary" />
 

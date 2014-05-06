@@ -25,7 +25,6 @@ use base qw(CUFTS::Resources::Base::DOI CUFTS::Resources::Base::Journals);
 use CUFTS::Exceptions;
 use CUFTS::Util::Simple;
 use HTML::Entities;
-use Data::Dumper;
 use strict;
 
 sub title_list_fields {

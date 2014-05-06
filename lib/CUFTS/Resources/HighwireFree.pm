@@ -27,6 +27,10 @@ use CUFTS::Util::Simple;
 
 use strict;
 
+sub services {
+    return [ qw( fulltext journal database ) ];
+}
+
 ## title_list_fields - Controls what fields get displayed and loaded from
 ## title lists.
 ##

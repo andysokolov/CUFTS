@@ -27,6 +27,10 @@ use CUFTS::Util::Simple;
 
 use strict;
 
+sub services {
+    return [ qw( fulltext journal database ) ];
+}
+
 my $base_url = 'http://openurl.proquest.com/in?service=pq&';
 
 sub title_list_fields {

@@ -32,6 +32,10 @@ use strict;
 
 use URI::Escape;
 
+sub services {
+	return [ qw( fulltext journal database ) ];
+}
+
 
 sub build_linkFulltext {
 	my ($class, $schema, $records, $resource, $site, $request) = @_;

@@ -65,7 +65,7 @@ __PACKAGE__->add_columns(
     data => {
         data_type => 'text',
         is_nullable => 1,
-        serializer_class => 'Storable',
+        serializer_class => 'JSON',
     },
     checkpoint_timestamp => {
         data_type => 'datetime',

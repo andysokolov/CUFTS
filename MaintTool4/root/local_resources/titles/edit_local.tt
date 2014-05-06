@@ -7,12 +7,14 @@
 
 [%- PROCESS form_results.tt -%]
 
-<h1 class="well-inset">[% local_title.title || 'New Title' | html %]</h1>
+<h1 class="well-inset">[% local_resource.name | html %]</h1>
+
 
 <form method="post" action="[% c.uri_for( c.controller('LocalResources::Titles').action_for('edit_local_title'), [ 'local', local_resource.id, local_title_id ] ) %]">
 <input type="hidden" name="lr_page" value="[% lr_page | html %]" />
 <input type="hidden" name="lt_page" value="[% lt_page | html %]" />
 <fieldset class="container-fluid well">
+<h2 class="legend">[% local_title.title || c.loc('New Local Title') | html %]</h2>
 <table class="grid zebra">
 <tr>
  <th>field</th>
@@ -22,7 +24,7 @@
  [%- NEXT IF field == 'id' -%]
  <tr>
   <td>[% c.loc( field.replace('_', ' ') ) | html %]</td>
-  <td><div style="margin-bottom: 0" class="control-group  [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]"><input name="[% field | html %]" value="[% IF params.defined %][%- params.$field | html -%][% ELSE %][%- local_title.$field | html -%][% END %]" size="30" maxlength="1024" />[% PROCESS field_error.tt %]</div></td>
+  <td><div style="margin-bottom: 0" class="control-group  [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]"><input name="[% field | html %]" value="[% IF params.defined %][%- params.$field | html -%][% ELSE %][%- PROCESS display_value title=local_title, field=field -%][% END %]" size="30" maxlength="1024" />[% PROCESS field_error.tt %]</div></td>
  </tr>
 [% END %]
 </table>
@@ -31,3 +33,13 @@
 </form>
 </div>
 </fieldset>
+
+[% BLOCK display_value %]
+ [%- RETURN IF !title.defined; RETURN IF !field.defined -%]
+ [%- SET display_field = field _ '_display' -%]
+ [% IF title.can(display_field) %]
+  [%- title.$display_field | html -%]
+ [%- ELSE -%]
+  [%- title.$field | html -%]
+ [%- END -%]
+[% END %]

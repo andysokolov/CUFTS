@@ -70,7 +70,12 @@
 
  <td class="text-right nowrap">
   [% IF resource.is_global AND resource.do_module('has_title_list') %]
-   <a href="[% c.uri_for( c.controller('LocalResources::Titles').action_for('list_global'), [ link_type, link_id ], { lr_page => page, show_active => 'active', apply_filter => 1, filter => '' } ) | html %]">[% resource.auto_activate ? resource.global_resource.title_count : ( resource.local_resource.record_count('active', 'true') || 0 ) | html %]</a>
+   [%- SET local_title_count = resource.auto_activate ? resource.global_resource.title_count : ( resource.local_resource.record_count('active', 'true') || 0 ) %]
+   [% IF local_title_count > 0 %]
+    <a href="[% c.uri_for( c.controller('LocalResources::Titles').action_for('list_global'), [ link_type, link_id ], { lr_page => page, show_active => 'active', apply_filter => 1, filter => '' } ) | html %]">[% resource.auto_activate ? resource.global_resource.title_count : ( resource.local_resource.record_count('active', 'true') || 0 ) | html %]</a>
+   [% ELSE %]
+    0
+   [% END %]
    of
    <a href="[% c.uri_for( c.controller('LocalResources::Titles').action_for('list_global'), [ link_type, link_id ], { lr_page => page, show_active => 'all', apply_filter => 1, filter => '' } ) | html %]">[% resource.global_resource.title_count %]</a>
   [% ELSIF resource.do_module('has_title_list') %]
@@ -89,8 +94,9 @@
 </tr>
 [% END %]
 
-<tr class="paging"><td colspan="8">[% PROCESS paging.tt pager = resources_rs.pager %]</td></tr>
 </table>
+
+[% PROCESS paging.tt pager = resources_rs.pager %]
 
 [% BLOCK show_arrow %]
  [% IF sort == down_flag %]

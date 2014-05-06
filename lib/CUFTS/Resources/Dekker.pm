@@ -27,6 +27,10 @@ use CUFTS::Util::Simple;
 
 use strict;
 
+sub services {
+    return [ qw( fulltext journal database ) ];
+}
+
 my $urlbase = 'http://www.dekker.com/servlet/product/';
 
 sub title_list_fields {
