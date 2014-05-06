@@ -33,14 +33,14 @@ sub load_resource :Chained('base') :PathPart('') :CaptureArgs(1) {
         site        => $c->site->id,
     };
 
-    if ( !$c->account || ( $c->account && !$c->account->has_role('staff') ) ) {
+    if ( !defined $c->account || ( defined $c->account && !$c->account->has_role('staff') ) ) {
         $search->{public} = 't';
     }
 
-    my $erm = $c->model('CUFTS::ERMMain')->find($search);
+    my $erm = $c->model('CUFTS::ERMMain')->search($search)->first;
 	
     if ( !defined $erm ) {
-        die( $c->loc('Unable to find ERM record.') );
+        return $c->detach( $c->controller('Root')->action_for('default') );
     }
 
     $c->stash->{erm} = $erm;
