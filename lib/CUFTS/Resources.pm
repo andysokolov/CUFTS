@@ -592,8 +592,9 @@ sub delete_title_list {
     return unless $class->has_title_list;
 
     if ( !ref $resource && int($resource) ) {
-        $resource = $schema->resultset('GlobalResources')->find(int($resource));
+        $resource = $schema->resultset($class->check_is_local($local) ? 'LocalResources' : 'GlobalResources')->find(int($resource));
     }
+
     defined $resource or
         return CUFTS::Exception::App->throw('Unable to find resource.');
 
