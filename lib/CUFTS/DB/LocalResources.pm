@@ -22,7 +22,6 @@ package CUFTS::DB::LocalResources;
 
 use CUFTS::DB::LocalJournals;
 use CUFTS::DB::HiddenFields;
-use CUFTS::DB::LocalResources_Services;
 use CUFTS::DB::Resources;
 use CUFTS::DB::ResourceTypes;
 use CUFTS::DB::ERMMain;

@@ -23,7 +23,6 @@ package CUFTS::DB::Resources;
 use strict;
 use base 'CUFTS::DB::DBI';
 
-use CUFTS::DB::Resources_Services;
 use CUFTS::DB::ResourceTypes;
 use CUFTS::DB::LocalResources;
 
