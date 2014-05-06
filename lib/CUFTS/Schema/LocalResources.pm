@@ -136,7 +136,8 @@ __PACKAGE__->belongs_to( resource      => 'CUFTS::Schema::GlobalResources', 'res
 __PACKAGE__->belongs_to( erm_main      => 'CUFTS::Schema::ERMMain',         'erm_main',         { join_type => 'left' } );
 __PACKAGE__->belongs_to( resource_type => 'CUFTS::Schema::ResourceTypes',   'resource_type',    { join_type => 'left' } );
 
-__PACKAGE__->has_many( local_journals    => 'CUFTS::Schema::LocalJournals',          'resource' );
+__PACKAGE__->has_many( local_journals    => 'CUFTS::Schema::LocalJournals', 'resource' );
+__PACKAGE__->has_many( jobs              => 'CUFTS::Schema::JobQueue',      'local_resource_id', { cascade_delete => 0 } );
 
 before 'delete' => sub {
     shift->delete_titles();
@@ -198,6 +199,11 @@ sub do_module {
     }
 
     $module = $CUFTS::Config::CUFTS_MODULE_PREFIX . $module;
+
+    eval "require $module";
+    if ($@) {
+        die("Error requiring class = \"$@\"");
+    }
 
     return $module->$method(@args);
 }

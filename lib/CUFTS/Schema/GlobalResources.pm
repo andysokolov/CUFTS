@@ -115,9 +115,9 @@ __PACKAGE__->set_primary_key( 'id' );
 
 __PACKAGE__->belongs_to( resource_type => 'CUFTS::Schema::ResourceTypes',   'resource_type',    { join_type => 'left' } );
 
-__PACKAGE__->has_many( global_journals   => 'CUFTS::Schema::GlobalJournals',            'resource' );
-__PACKAGE__->has_many( local_resources   => 'CUFTS::Schema::LocalResources',            'resource' );
-__PACKAGE__->has_many( jobs              => 'CUFTS::Schema::JobQueue',                  'global_resource_id' );
+__PACKAGE__->has_many( global_journals   => 'CUFTS::Schema::GlobalJournals', 'resource' );
+__PACKAGE__->has_many( local_resources   => 'CUFTS::Schema::LocalResources', 'resource' );
+__PACKAGE__->has_many( jobs              => 'CUFTS::Schema::JobQueue',       'global_resource_id', { cascade_delete => 0 } );
 
 
 sub delete_titles {
@@ -151,6 +151,9 @@ sub do_module {
 
     $module = $CUFTS::Config::CUFTS_MODULE_PREFIX . $module;
     eval "require $module";
+    if ($@) {
+        die("Error requiring class = \"$@\"");
+    }
 
     return $module->$method(@args);
 }
