@@ -34,7 +34,7 @@ sub load_resource :Chained('base') :PathPart('') :CaptureArgs(1) {
     };
 
     if ( !defined $c->account || ( defined $c->account && !$c->account->has_role('staff') ) ) {
-        $search->{public} = 't';
+        $search->{public} = [ 't', undef ];
     }
 
     my $erm = $c->model('CUFTS::ERMMain')->search($search)->first;
