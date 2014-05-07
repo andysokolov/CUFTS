@@ -56,7 +56,7 @@ sub load_resources :Chained('base') :PathPart('') :CaptureArgs(2) {
             $c->detach;
             return;
         }
-        $c->stash->{local_resource} = $c->model('CUFTS::LocalResources')->find({ site => $c->site->id, resource => $resource_id });
+        $c->stash->{local_resource} = $c->model('CUFTS::LocalResources')->search({ site => $c->site->id, resource => $resource_id })->first;
 
     }
 }
@@ -140,6 +140,11 @@ sub list :Chained('base') :PathPart('') :Args(0) {
 sub view :Chained('load_resources') :PathPart('view') :Args(0) {
     my ( $self, $c ) = @_;
 
+    # Get recent jobs
+
+    my @jobs = $c->stash->{local_resource}->jobs->search( {}, { order_by => { -desc => 'id' }, rows => 10 } )->all;
+
+    $c->stash->{jobs}      = \@jobs;
     $c->stash->{lr_page}   = $c->request->params->{lr_page};
     $c->stash->{template}  = 'local_resources/view.tt';
 }
@@ -191,7 +196,9 @@ sub edit :Chained('load_resources') :PathPart('edit') :Args(0) {
                         push @{$c->flash->{results}}, $c->loc('Created new local resource.');
                     }
 
-                    $local_resource->activate_titles() if $local_resource->auto_activate;
+                    if ( defined $global_resource && $local_resource->auto_activate ) {
+                        $local_resource->do_module('activate_local_titles', $c->model('CUFTS')->schema, $local_resource);
+                    }
                 });
 
             };
@@ -207,7 +214,7 @@ sub edit :Chained('load_resources') :PathPart('edit') :Args(0) {
     }
 
     if ( $c->stash->{resource_id} eq 'new' && $local_resource ) {
-        return $c->redirect( $c->uri_for( $c->controller('LocalResources')->action_for('edit'), ['local', $local_resource->id ], { page => $c->req->params->{lr_page} } ) );
+        return $c->redirect( $c->uri_for( $c->controller('LocalResources')->action_for('edit'), ['local', $local_resource->id ], { lr_page => $c->req->params->{lr_page} } ) );
     }
 
     $c->stash->{lr_page}           = $c->form->valid->{lr_page};
@@ -217,15 +224,24 @@ sub edit :Chained('load_resources') :PathPart('edit') :Args(0) {
 }
 
 
+##
+## Mark resource for deleting, then return to local list
+##
 
 sub delete :Chained('load_resources') :PathPart('delete') :Args(0) {
-    my ($self, $c) = @_;
+    my ( $self, $c ) = @_;
+
+    my $resource = $c->stash->{local_resource};
 
     if ( $c->req->params->{do_delete} ) {
-        # TODO: This should chain delete titles, CJDB records, etc.  Should probably be a
-        #       DBIC trigger, or at the database level though.
+        my $job = $c->job_queue->add_job({
+            info               => 'Delete local resource (' . $resource->id . '): ' . ( $resource->name || $resource->resource->name ),
+            type               => 'local resources',
+            class              => 'local resource delete',
+            local_resource_id  => $resource->id,
+        });
 
-        $c->stash->{local_resource}->delete();
+        push @{$c->flash->{results}}, $c->loc('Created deletion job for local resource: ') . $job->id;
 
         return $c->redirect( $c->uri_for( $c->controller('LocalResources')->action_for('list'), { page => $c->req->params->{lr_page} } ) );
     }
@@ -233,8 +249,6 @@ sub delete :Chained('load_resources') :PathPart('delete') :Args(0) {
     $c->stash->{lr_page}  = $c->req->params->{lr_page};
     $c->stash->{template} = 'local_resources/delete.tt';
 }
-
-
 
 
 =head1 AUTHOR

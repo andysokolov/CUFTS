@@ -72,7 +72,7 @@
   [% IF resource.is_global AND resource.do_module('has_title_list') %]
    [%- SET local_title_count = resource.auto_activate ? resource.global_resource.title_count : ( resource.local_resource.record_count('active', 'true') || 0 ) %]
    [% IF local_title_count > 0 %]
-    <a href="[% c.uri_for( c.controller('LocalResources::Titles').action_for('list_global'), [ link_type, link_id ], { lr_page => page, show_active => 'active', apply_filter => 1, filter => '' } ) | html %]">[% resource.auto_activate ? resource.global_resource.title_count : ( resource.local_resource.record_count('active', 'true') || 0 ) | html %]</a>
+    <a href="[% c.uri_for( c.controller('LocalResources::Titles').action_for('list_global'), [ link_type, link_id ], { lr_page => page, show_active => 'active', apply_filter => 1, filter => '' } ) | html %]">[% local_title_count | html %]</a>
    [% ELSE %]
     0
    [% END %]

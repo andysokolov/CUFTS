@@ -1,0 +1,62 @@
+[%- SET header_section = c.loc('Jobs') -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('Jobs').action_for('list'), { page => jobs_page } ), c.loc('Jobs List') ] ) -%]
+[%- breadcrumbs.push([ '', job.id ] ) -%]
+[%- SET page_id = 'jobs-view' -%]
+
+<div class="form-inline" style="margin: 0 0 2px 14px;">
+ <h1 style="width: 50%; margin: 0; padding: 0; display: inline">[% job.id | html %]</h1>
+
+[% IF job.can_terminate %]
+<div class="span4" style="float: right; text-align: right;">
+  <a class="btn btn-danger" href="[% c.uri_for( c.controller('Jobs').action_for('terminate'), [job.id], { jobs_page => jobs_page } ) | html %]">[% c.loc('terminate job') %]</a>
+</div>
+[% END %]
+
+</div>
+
+<div id="job-details" class="container-fluid well">
+<h2>[% c.loc('job details') %]</h2>
+<table class="properties">
+<tr><th>[% c.loc('type') %]</th><td>[% job.type | html %]</td></tr>
+<tr><th>[% c.loc('info') %]</th><td>[% job.info | html %]</td></tr>
+<tr><th>[% c.loc('priority') %]</th><td>[% job.priority | html %]</td></tr>
+<tr><th>[% c.loc('completion') %]</th><td>[% job.completion | html %]%</td></tr>
+<tr><th>[% c.loc('created by') %]</th><td>[% job.account.name | html %]</td></tr>
+<tr><th>[% c.loc('created') %]</th><td>[% job.created.ymd | html %] [% job.created.hms | html %]</td></tr>
+<tr><th>[% c.loc('modified') %]</th><td>[% job.modified.ymd | html %] [% job.modified.hms | html %]</td></tr>
+<tr><th>[% c.loc('site') %]</th><td>[% job.site.name | html %]</td></tr>
+<tr><th>[% c.loc('raw log') %]</th><td><a href="[% c.uri_for_static('logs/jobs/' _ job.id _ '.log') | html %]">view file</a></td></tr>
+<tr><th>[% c.loc('debug output') %]</th><td><a href="[% c.uri_for_static('logs/jobs/' _ job.id _ '.out') | html %]">view file</a></td></tr>
+[% IF job.local_resource_id && job.local_resource.name %]
+ <tr><th>[% c.loc('local resource') %]</th><td><a href="[% c.uri_for( c.controller('LocalResources').action_for('view'), [ 'local', job.local_resource_id ] ) | html %]">[% job.local_resource.name | html %]</a></td></tr>
+[% END %]
+[% IF job.global_resource_id && job.global_resource.name %]
+ <tr><th>[% c.loc('global resource') %]</th><td><a href="[% c.uri_for( c.controller('GlobalResources').action_for('view'), [ job.global_resource_id ] ) | html %]">[% job.global_resource.name | html %]</a></td></tr>
+[% END %]
+<tr><th>[% c.loc('status') %]</th><td>[% job.status | html %]</td></tr>
+[% IF job.claimed_by %]
+ <tr><th>[% c.loc('claimed by') %]</th><td>[% job.claimed_by | html %]</td></tr>
+[% END %]
+</table>
+</div>
+
+<div id="job-log" class="container-fluid well">
+<h2>[% c.loc('job log') | html %]</h2>
+<table class="grid zebra" style="width: 100%;">
+<tr>
+ <th style="width: 10em;">[% c.loc('timestamp') | html %]</th>
+ <th style="width: 12em;">[% c.loc('account') | html %]</th>
+ <th style="width: 12em;">[% c.loc('type') | html %]</th>
+ <th class="expand">[% c.loc('message') | html %]</th>
+</tr>
+[% FOREACH log IN logs %]
+<tr>
+ <td class="text-right nowrap">[% log.timestamp.ymd | html %] [% log.timestamp.hms | html %]</td>
+ <td>[% log.account.name | html %]</td>
+ <td>[% log.type | html %]</td>
+ <td class="expand">[% log.message | html_line_break %]</td>
+</tr>
+[% END %]
+</table>
+[% PROCESS paging.tt %]
+</div>

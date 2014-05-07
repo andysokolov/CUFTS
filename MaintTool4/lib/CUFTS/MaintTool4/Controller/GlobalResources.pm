@@ -239,7 +239,6 @@ sub delete :Chained('load_global_resource') :PathPart('delete') :Args(0) {
     }
 
     $c->stash->{gr_page}  = $c->req->params->{gr_page} || 1;
-    $c->stash->{resource} = $resource;
     $c->stash->{template} = 'global_resources/delete.tt';
 }
 

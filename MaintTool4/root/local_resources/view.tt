@@ -45,7 +45,7 @@
 <tr><th>[% c.loc('module') %]</th><td>[% resource.module | html %]</td></tr>
 <tr><th>[% c.loc('proxy') %]</th><td>[% local_resource.proxy ? yes : no| html %]</td></tr>
 <tr><th>[% c.loc('dedupe') %]</th><td>[% local_resource.dedupe ? yes : no | html %]</td></tr>
-<tr><th>[% c.loc('auto_activate') %]</th><td>[% local_resource.auto_activate ? yes : no | html %]</td></tr>
+[% IF global_resource.defined %]<tr><th>[% c.loc('auto_activate') %]</th><td>[% local_resource.auto_activate ? yes : no | html %]</td></tr>[% END %]
 <tr><th>[% c.loc('active') %]</th><td>[% local_resource.active ? yes : no | html %]</td></tr>
 
 [% SET details = resource.do_module(global_resource.defined ? 'global_resource_details' : 'local_resource_details') %]
@@ -62,4 +62,32 @@
 [% END %]
 
 </table>
+</div>
+
+<div id="recent-jobs" class="container-fluid well">
+ <h2 class="legend">[% c.loc('recent jobs') %]</h2>
+ <table class="properties zebra">
+  <tr class="header compact">
+   <th>&nbsp;</th>
+   <th class="text-right">[% c.loc('id') | html %]</th>
+   <th class="expand">[% c.loc('info') | html %]</th>
+   <th class="">[% c.loc('type') | html %]</th>
+   <th class="">[% c.loc('status') | html %]</th>
+   <th class="text-right">[% c.loc('run after') %]</th>
+  </tr>
+
+  [% FOREACH job IN jobs %]
+   <tr>
+    <td class="nowrap">
+     <a href="[% c.uri_for( c.controller('Jobs').action_for('view'), [job.id], { jobs_page => page } ) | html %]">[% c.loc('view') %]</a>
+    </td>
+    <td class="text-right nowrap">[% job.id | html %]</td>
+    <td>[% job.info | html %]</td>
+    <td>[% job.type | html %]</td>
+    <td>[% job.status | html %]</td>
+    <td class="nowrap text-right">[% job.run_after | html %]</td>
+   </tr>
+  [% END %]
+
+ </table>
 </div>

@@ -1,0 +1,46 @@
+[%- SET header_section = c.loc('Jobs') -%]
+[%- breadcrumbs.push([ '', c.loc('Jobs List') ] ) -%]
+[%- SET page_id = 'jobs-list' -%]
+
+
+<div>
+<form method="GET" class="span6 form-inline control-bar">
+  <label for="filter">[% c.loc('Filter') %]: <input type="text" name="filter" value="[% filter | html %]" style="width: 13em;"> <input type="submit" class="btn" name="apply_filter" value="[% c.loc('filter') %]"></label>
+</form>
+</div>
+
+<table class="grid zebra" style="width: 100%;">
+<tr class="header compact">
+ <th>&nbsp;</th>
+ <th class="text-right">[% c.loc('id') | html %]</th>
+ <th class="expand">[% c.loc('info') | html %]</th>
+ <th class="">[% c.loc('type') | html %]</th>
+ <th class="">[% c.loc('status') | html %]</th>
+ <th class="text-right">[% c.loc('run after') %]</th>
+ <th class="text-right">[% c.loc('completion') %]</th>
+ <th class="text-right">[% c.loc('updated') %]</th>
+</tr>
+
+[% FOREACH job IN jobs %]
+<tr>
+ <td class="nowrap">
+  <a href="[% c.uri_for( c.controller('Jobs').action_for('view'), [job.id], { jobs_page => page } ) | html %]">[% c.loc('view') %]</a>
+ </td>
+
+ <td class="text-right nowrap">[% job.id | html %]</td>
+ <td>[% job.info | html %]</td>
+ <td>[% job.type | html %]</td>
+ <td>[% job.status | html %]</td>
+ <td class="nowrap text-right">[% job.run_after | html %]</td>
+ <td class="nowrap text-right">[% job.completion | html %]%</td>
+ <td class="nowrap text-right">[% job.modified.ymd | html %] [% job.modified.hms | html %]</td>
+</tr>
+[% END %]
+
+</table>
+
+[% PROCESS paging.tt pager %]
+
+[% BLOCK show_arrow %]
+ [% IF sort == down_flag %]<i class="icon-chevron-down"></i>[% ELSIF sort == up_flag %]<i class="icon-chevron-up"></i>[% END %]
+[% END %]

@@ -78,13 +78,6 @@
     </select>[% PROCESS field_error.tt field='dedupe' %]
 </div>
 <div class="control-group">
-    <label for="auto_activate">[% c.loc('auto activate') %]:</label>
-    <select name="auto_activate" style="width: 10em;">
-        <option value="1" [% 'selected="selected"' IF ( params.defined ? params.auto_activate : resource.auto_activate ) == 1 %]>[% c.loc('yes') %]</option>
-        <option value="0" [% 'selected="selected"' IF ( params.defined ? params.auto_activate : resource.auto_activate ) == 0 %]>[% c.loc('no') %]</option>
-    </select>[% PROCESS field_error.tt field='auto_activate' %]
-</div>
-<div class="control-group">
     <label for="active">[% c.loc('active') %]:</label>
     <select name="active" style="width: 10em;">
         <option value="1" [% 'selected="selected"' IF ( params.defined ? params.active : resource.active ) == 1 %]>[% c.loc('yes') %]</option>
