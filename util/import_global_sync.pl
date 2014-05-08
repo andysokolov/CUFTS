@@ -136,21 +136,9 @@ sub create_resource {
     # Update new resource record with other fields (including details fields)
 
     foreach my $field ( keys %$resource_node ) {
-        next if grep { $field eq $_ } ( 'services', 'resource_type', 'module', 'name' );
+        next if grep { $field eq $_ } ( 'resource_type', 'module', 'name' );
 
         $resource->$field( $resource_node->{$field} );
-    }
-
-    foreach my $service ( ref($resource_node->{services}) eq 'ARRAY' ? @{$resource_node->{services}} : ( $resource_node->{services} ) ) {
-
-        # Get service record for id
-
-        my $service_record = $schema->resultset('Services')->find({ name => $service->{service} });
-        defined $service_record or
-            die("Unable to find matching service name: " . $service->{service});
-
-        $resource->add_to_resource_services({ service => $service_record->id });
-
     }
 
     $resource->update;

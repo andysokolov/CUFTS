@@ -254,28 +254,11 @@ sub create_resource_xml {
     ## Resource type - linked table
     ##
 
-    my $value = defined($local_resource->resource_type) 
+    my $value = defined($local_resource->resource_type)
                 ? $local_resource->resource_type->type
                 : $resource->resource_type->type;
 
     $output .= "<resource_type>" . encode_entities($value) . "</resource_type>\n";
-
-    ##
-    ## Services - linked table
-    ##
-
-    $output .= "<services>\n";
-
-    my @services = $local_resource->services;
-    if ( !scalar(@services) ) {
-        @services = $resource->services;
-    }
-
-    foreach my $service ( @services ) {
-        $output .= "<service>" . encode_entities($service->name) . "</service>\n";
-    }
-
-    $output .= "</services>\n";
 
     $output .= "</resource>\n";
 
