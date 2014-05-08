@@ -8,7 +8,7 @@ use String::Util qw(hascontent trim);
 use CUFTS::Util::Simple qw(dashed_issn clean_issn);
 use CUFTS::Resources::Base::Journals;
 
-use base qw/DBIx::Class::Core/;
+extends qw/DBIx::Class::Core/;
 
 __PACKAGE__->load_components(qw/ FromValidatorsCUFTS InflateColumn::DateTime TimeStamp /);
 
@@ -256,27 +256,7 @@ sub _date_display {
     return defined $date ? $date->ymd : undef;
 }
 
-
-# sub store_column {
-#     my ( $self, $name, $value ) = @_;
-
-#     return $self->next::method($name, $value) if !hascontent($value);  # Short circuit empty data here and avoid all the validation below.
-
-#     if ( $name eq 'issn' || $name eq 'e_issn' ) {
-#         $value = CUFTS::Util::Journal::valid_issn($value)
-#             or die("Invalid ISSN: $value");
-#     }
-#     elsif ( $name eq 'ft_start_date' || $name eq 'cit_start_date' ) {
-#         $value = CUFTS::Util::Journal::default_date( $value, 0 );
-#     }
-#     elsif ( $name eq 'ft_end_date' || $name eq 'cit_end_date' ) {
-#         $value = CUFTS::Util::Journal::default_date( $value, 1 );
-#     }
-
-#     return $self->next::method($name, $value);
-# }
-
 no Moose;
-__PACKAGE__->meta->make_immutable;
+__PACKAGE__->meta->make_immutable(inline_constructor => 0);
 
 1;
