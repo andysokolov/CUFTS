@@ -136,7 +136,7 @@ sub create_resource {
     # Update new resource record with other fields (including details fields)
 
     foreach my $field ( keys %$resource_node ) {
-        next if grep { $field eq $_ } ( 'resource_type', 'module', 'name' );
+        next if grep { $field eq $_ } ( 'services', 'resource_type', 'module', 'name' );
 
         $resource->$field( $resource_node->{$field} );
     }
