@@ -211,7 +211,7 @@ around update => sub {
         my $data = $_[0];
 
         # Expand YYYY and YYYY-MM dates
-        CUFTS::Resources::Base::Journal->_clean_data_dates($data);
+        CUFTS::Resources::Base::Journals->_clean_data_dates($data);
 
         $data->{issn}   = clean_issn( $data->{issn} )   if exists $data->{issn};
         $data->{e_issn} = clean_issn( $data->{e_issn} ) if exists $data->{e_issn};
