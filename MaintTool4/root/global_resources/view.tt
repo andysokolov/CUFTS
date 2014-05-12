@@ -9,7 +9,8 @@
 <div class="span4" style="float: right; text-align: right;">
   <a class="btn" href="[% c.uri_for( c.controller('GlobalResources').action_for('edit'), resource.id, { gr_page => gr_page } ) | html %]">[% c.loc('edit') %]</a>
  [% IF resource.do_module('has_title_list') %]
-  <a class="btn" href="[% c.uri_for( c.controller('GlobalResources').action_for('titles_list'), [resource.id], { gr_page => gr_page } ) | html %]">[% c.loc('Titles: ') | html %][% resource.title_count %]</a>
+  <a class="btn" href="[% c.uri_for( c.controller('GlobalResources').action_for('bulk'), [resource.id], { gr_page => gr_page } ) | html %]">[% c.loc('bulk') | html %]</a>
+  <a class="btn" href="[% c.uri_for( c.controller('GlobalResources').action_for('titles_list'), [resource.id], { gr_page => gr_page } ) | html %]">[% c.loc('titles: ') | html %][% resource.title_count %]</a>
  [% END %]
  <a class="btn btn-danger" href="[% c.uri_for( c.controller('GlobalResources').action_for('delete'), [resource.id], { gr_page => gr_page } ) | html %]">[% c.loc('delete') %]</a>
 </div>

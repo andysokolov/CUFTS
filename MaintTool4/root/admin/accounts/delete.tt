@@ -1,0 +1,19 @@
+[%- SET header_section = c.loc('Account Administration') -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('Admin::Accounts').action_for('list'), { page => admin_ac_page } ), c.loc('Administer Accounts') ] ) -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('Admin::Accounts').action_for('edit'), [ account.id ], { admin_ac_page => admin_ac_page } ), account.name ] ) -%]
+[%- breadcrumbs.push([ '', c.loc('Delete')] ) -%]
+[%- SET page_id = 'admin-account-delete' -%]
+
+<h1 class="well-inset">[% account.name | html %]</h1>
+
+<form action="[% c.uri_for( c.controller.action_for('delete'), [ account.id ] ) | html %]" method="post">
+<input type="hidden" name="admin_ac_page" value="[% admin_ac_page | html %]" />
+<fieldset class="container-fluid well">
+<h2 class="legend">[% c.loc('delete account') | html %]</h2>
+
+<div class="control-group">
+ <label>[% c.loc('Delete this account?') | html %]</label>
+ <input class="btn btn-danger" type="submit" name="do_delete" value="[% c.loc('delete') | html %]" />
+</div>
+</fieldset>
+</form>

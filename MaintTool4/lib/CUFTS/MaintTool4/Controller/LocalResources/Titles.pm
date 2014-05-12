@@ -4,6 +4,7 @@ use namespace::autoclean;
 
 use String::Util    qw( trim hascontent );
 use List::MoreUtils qw( uniq );
+use CUFTS::Config;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
@@ -529,6 +530,8 @@ sub bulk_local :Chained('load_resources') :PathPart('bulk/local') :Args(0) {
     defined $local_resource or
         die( $c->loc('Unable to find local resource.') );
 
+    my $resource_id = $local_resource->id;
+
     if ( $c->req->params->{upload} || $c->req->params->{export} ) {
 
         $c->stash->{form_submitted} = 1;
@@ -536,31 +539,37 @@ sub bulk_local :Chained('load_resources') :PathPart('bulk/local') :Args(0) {
 
             if ( $c->form->valid('export') ) {
                 $c->stash(
-                    filename      => 'local_titles_' . $local_resource->id,
                     data          => $self->_build_export_data($c),
-                    current_view  => 'CSV',
+                    current_view  => 'Tab',
                 );
+                $c->response->header( 'Content-Disposition' => 'attachment; filename="local_titles_' . $resource_id . '_' . DateTime->now->iso8601 . '.txt"');
                 return $c->detach();
             }
             elsif ( my $upload = $c->req->upload('file') ) {
 
-                my $jq = $c->job_queue;
-                my $job = $jq->add_job({
-                    type       => 'local title list load',
-                    class      => 'title list',
-                    account_id => $self->user->id,
-                    site_id    => $self->site->id,
-                    data       => { local_resource_id => $local_resource->id },
+                # Grab the title list upload and copy it to the right place
+
+                my $upload_dir = $CUFTS::Config::CUFTS_TITLE_LIST_UPLOAD_DIR;
+
+                my ($sec, $min, $hour, $mday, $mon, $year, $wday) = localtime(time);
+                $mon += 1;
+                $year += 1900;
+
+                my $filename = $upload_dir . "/titles_${resource_id}_${year}-${mon}-${mday}_${hour}-${min}-${sec}";
+
+                $upload->copy_to($filename) or
+                    die("Unable to copy title list file '$filename': $!");
+
+                my $job = $c->job_queue->add_job({
+                    info              => "Local title list load  ($resource_id): " . $local_resource->name,
+                    class             => 'local title list load',
+                    type              => 'local resource',
+                    local_resource_id => $resource_id,
+                    data              => { file => $filename, },
                 });
                 if ( !defined $job ) {
-                    die( $c->loc('Unable to create JQ job.') );
+                    die( $c->loc('Unable to create job.') );
                 }
-
-                my $upload_dir = $CUFTS::Config::CUFTS_JQ_UPLOAD_DIR;
-                my $filename = $job->id; # . '-local_titles-' . $local_resource->id;
-
-                $upload->copy_to("${upload_dir}/${filename}") or
-                    die("Unable to copy title list file '${upload_dir}/${filename}': $!");
 
                 push @{$c->stash->{results}}, $c->loc('Title list uploaded and submitted to job queue.');
             }
@@ -577,13 +586,11 @@ sub bulk_local :Chained('load_resources') :PathPart('bulk/local') :Args(0) {
 sub bulk_global :Chained('load_resources') :PathPart('bulk/global') :Args(0) {
     my ($self, $c) = @_;
 
-    my $global_resource     = $c->stash->{global_resource};
-    my $local_resource      = $c->stash->{local_resource};
-    my $local_titles_model  = $c->stash->{local_titles_model};
-    my $global_titles_model = $c->stash->{global_titles_model};
+    my $global_resource = $c->stash->{global_resource};
+    my $local_resource  = $c->stash->{local_resource};
 
     $c->form({
-        optional => [ qw( file upload export format type deactivate lr_page ) ],
+        optional => [ qw( file match upload export format type deactivate lr_page ) ],
     });
 
     if ( $c->req->params->{upload} || $c->req->params->{export} ) {
@@ -592,28 +599,57 @@ sub bulk_global :Chained('load_resources') :PathPart('bulk/global') :Args(0) {
 
         unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
 
+            my $resource_id = $local_resource->id;
+
             if ( $c->form->valid('export') ) {
-                $c->stash->{csv}->{data} = $self->_build_export_data($c);
-                $c->stash->{current_view} = 'CSV';
+                $c->stash(
+                    data         => $self->_build_export_data($c),
+                    current_view => 'Tab'
+                );
+                $c->response->header( 'Content-Disposition' => 'attachment; filename="local_titles_' . $resource_id . '_' . DateTime->now->iso8601 . '.txt"');
+                return $c->detach();
             }
             elsif (my $upload = $c->req->upload('file')) {
 
                 eval {
-                    if ( !defined $local_resource ) {
-                        $local_resource = $c->stash->{local_resource} = CUFTS::DB::LocalResources->create({ resource => $global_resource->id, site => $c->stash->{current_site}->id, auto_activate => 0 });
+
+                    # Grab the title list upload and copy it to the right place
+
+                    my $upload_dir = $CUFTS::Config::CUFTS_TITLE_LIST_UPLOAD_DIR;
+
+                    my ($sec, $min, $hour, $mday, $mon, $year, $wday) = localtime(time);
+                    $mon += 1;
+                    $year += 1900;
+
+                    my $filename = $upload_dir . "/overlay_${resource_id}_${year}-${mon}-${mday}_${hour}-${min}-${sec}";
+
+                    $upload->copy_to($filename) or
+                        die("Unable to copy title list file '$filename': $!");
+
+
+                    my $job = $c->job_queue->add_job({
+                        info              => "Local title list overlay ($resource_id): " . $global_resource->name,
+                        class             => 'local title list overlay',
+                        type              => 'local resource',
+                        local_resource_id => $resource_id,
+                        data              => {
+                            file       => $filename,
+                            type       => $c->form->valid('type'),
+                            match      => $c->form->valid('match'),
+                            deactivate => $c->form->valid('deactivate') ? 1 : 0,
+                        },
+                    });
+                    if ( !defined $job ) {
+                        die( $c->loc('Unable to create job.') );
                     }
-                    my $method = $c->form->valid->{type} . '_title_list';
-                    $c->stash->{bulk_results} = $global_resource->do_module($method, $local_resource, $upload->tempname, $c->form->valid->{match}, $c->form->valid->{deactivate});
+
+                    push @{$c->stash->{results}}, $c->loc('Title list uploaded and submitted to job queue.');
                 };
                 if ($@) {
                     $c->stash->{errors} = [ $@ ];
                     warn( $c->loc('Transaction failed: ') . $@ );
-                } else {
-                    $c->stash->{template} = 'local_resources/titles/bulk_global_results.tt';
                 }
-
             }
-
         }
     }
 
@@ -629,21 +665,47 @@ sub _build_export_data {
     my $global_resource     = $c->stash->{global_resource};
     my $local_titles_rs     = $c->stash->{local_titles_rs};
     my $global_titles_rs    = $c->stash->{global_titles_rs};
+    my $ltg_field           = $global_resource->do_module('local_to_global_field');
 
-    my ( @columns, $titles_rs );
-    if ( defined($global_resource) ) {
+    my ( @columns, $titles_rs, @data );
+    if ( defined $global_resource && defined $local_resource ) {
         @columns = grep { $_ ne 'id' } @{$global_resource->do_module('title_list_fields')};
-        $titles_rs = $global_titles_rs->search({ resource => $global_resource->id });
+        $titles_rs = $local_titles_rs->search(
+            {
+                'me.resource' => $local_resource->id,
+                'me.active'   => 't',
+            },
+            {
+                prefetch => [ $ltg_field ],
+            }
+        );
+
+        @data = [ @columns ];
+        while ( my $title = $titles_rs->next ) {
+            push @data, [ map {
+                my $cd = $_ . '_display';
+                ( $title->can($cd) ? $title->$cd : $title->$_ ) || ( $title->$ltg_field->can($cd) ? $title->$ltg_field->$cd : $title->$ltg_field->$_ ) || '';
+            } @columns ];
+        }
+
     }
     else {
-        @columns = grep { $_ ne 'id' } @{$local_resource->do_module('title_list_fields')};
-        $titles_rs = $local_titles_rs->search({ resource => $local_resource->id });
+        if ( defined $global_resource ) {
+            @columns = grep { $_ ne 'id' } @{$global_resource->do_module('title_list_fields')};
+            $titles_rs = $global_titles_rs->search({ resource => $global_resource->id });
+        }
+        else {
+            @columns = grep { $_ ne 'id' } @{$local_resource->do_module('title_list_fields')};
+            $titles_rs = $local_titles_rs->search({ resource => $local_resource->id });
+
+        }
+
+        @data = [ @columns ];
+        while ( my $title = $titles_rs->next ) {
+            push @data, [ map { my $cd = $_ . '_display'; $title->can($cd) ? $title->$cd : $title->$_ } @columns ];
+        }
     }
 
-    my @data = [ @columns ];
-    while ( my $title = $titles_rs->next ) {
-        push @data, [ map { my $cd = $_ . '_display'; $title->can($cd) ? $title->$cd : $title->$_ } @columns ];
-    }
 
     return \@data;
 }

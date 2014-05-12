@@ -1,13 +1,10 @@
 package CUFTS::MaintTool4::View::CSV;
 
 use strict;
-use base 'Catalyst::View::CSV';
+use base 'Catalyst::View::Download::CSV';
 
-__PACKAGE__->config( {
-    sep_char    => "\t",
-    quote_char  => '',
-    suffix => 'txt',
-} );
+__PACKAGE__->config(
+);
 
 =head1 NAME
 

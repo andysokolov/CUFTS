@@ -1,4 +1,4 @@
-[%- SET header_section = 'Account Settings' -%]
+[%- SET header_section = c.loc('Account Settings') -%]
 [%- breadcrumbs.push([ '', c.loc('Account Settings') ] ) -%]
 [%- SET page_id = 'account-settings' -%]
 
@@ -33,4 +33,3 @@
   <input class="span8" type="text" id="[% field %]" name="[% field %]" value="[% value | html %]" maxlength="[% maxlength %]" />[% PROCESS field_error.tt %]
   </div>
 [% END %]
-

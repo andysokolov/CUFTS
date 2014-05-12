@@ -86,6 +86,7 @@ sub login :Chained('/') :PathPart('login') :Args(0) {
         else {
 
             $c->set_authenticated($user);
+            $user->update_last_login();
 
             my @sites = $user->sites->all;
             if ( scalar @sites == 1 ) {
@@ -111,6 +112,20 @@ sub logout :Chained('/loggedin') :PathPart('logout') :Args(0) {
 sub index :Chained('/loggedin') :PathPart('') :Args(0) {
     my ( $self, $c ) = @_;
 
+    my ( $jobs, $pager ) = $c->job_queue->list_jobs(
+        {
+            -or => {
+                site_id => $c->site->id,
+                account_id => $c->user->id,
+            }
+        },
+        {
+            rows => 10,
+        }
+    );
+
+    $c->stash->{jobs}     = $jobs;
+    $c->stash->{pager}    = $pager;
     $c->stash->{template} = 'index.tt'
 }
 
@@ -176,6 +191,13 @@ sub _setup_menu {
         push @menu, [ $c->loc('Jobs'), $c->uri_for( $c->controller('Jobs')->action_for('list') ) ];
 
         push @menu, [ $c->loc('Account Settings'), $c->uri_for( $c->controller('Account')->action_for('edit') ) ];
+
+        if ( $user->administrator ) {
+            push @menu, [ $c->loc('Administration'), [
+                [ $c->loc('Accounts'), $c->uri_for( $c->controller('Admin::Accounts')->action_for('list') ) ],
+                [ $c->loc('Sites'),    $c->uri_for( $c->controller('Admin::Sites')->action_for('list') ) ],
+            ] ];
+        }
 
         push @menu, [ $c->loc('Logout'), $c->uri_for( $c->controller('Root')->action_for('logout') ) ];
     }

@@ -1,0 +1,60 @@
+[%- SET header_section = c.loc('Account Administration') -%]
+[%- SET account_name = account.name || c.loc('New Acccount') %]
+[%- breadcrumbs.push([ c.uri_for( c.controller('Admin::Accounts').action_for('list'), { page => admin_ac_page } ), c.loc('Administer Accounts') ] ) -%]
+[%- breadcrumbs.push([ '', account_name ]) -%]
+[%- SET page_id = 'admin-account-settings' -%]
+
+[%- PROCESS form_results.tt -%]
+
+<div class="form-inline" style="margin: 0 0 2px 14px;">
+ <h1 style="width: 50%; margin: 0; padding: 0; display: inline">[% account_name | html %]</h1>
+
+[% IF account %]
+ <div class="span4" style="float: right; text-align: right;">
+  <a class="btn btn-danger" href="[% c.uri_for( c.controller('Admin::Accounts').action_for('delete'), [account.id], { admin_ac_page => admin_ac_page } ) | html %]">[% c.loc('delete') %]</a>
+ </div>
+[% END %]
+
+</div>
+
+<form method="post">
+<input type="hidden" name="admin_ac_page" value="[% admin_ac_page | html %]">
+<fieldset class="well legend container-fluid">
+<h2 class="legend">[% c.loc('account settings') %]</h2>
+
+  [% INCLUDE show_textfield field='key', required=1 %]
+  [% INCLUDE show_textfield field='name', required=1 %]
+  [% INCLUDE show_textfield field='email', required=1 %]
+  [% INCLUDE show_textfield field='phone' %]
+  [% INCLUDE show_textfield field='password', value='' %]
+  [% INCLUDE show_textfield field='verify_password', value='' %]
+  [% INCLUDE show_boolfield field='administrator' %]
+  [% INCLUDE show_boolfield field='edit_global' %]
+  [% INCLUDE show_boolfield field='journal_auth' %]
+  [% INCLUDE show_boolfield field='active' %]
+
+  <button type="submit" class="btn btn-primary" value="submit" name="submit">[% c.loc('submit') %]</button>
+
+</fieldset>
+</form>
+
+[% BLOCK show_textfield %]
+  [% SET maxlength = maxlength OR 255 %]
+  [% SET label = label OR field.replace('_', ' ') %]
+  [% SET value = value.defined ? value : params.defined ? params.$field : account.$field %]
+  <div class="control-group [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]">
+  <label for="[% field | html %]" [% IF required %]class="required"[% END %]>[% c.loc(label) %]:</label>
+  <input class="span8" type="text" id="[% field %]" name="[% field %]" value="[% value | html %]" maxlength="[% maxlength %]" />[% PROCESS field_error.tt %]
+  </div>
+[% END %]
+
+[% BLOCK show_boolfield %]
+ [% SET label = label OR field.replace('_', ' ') %]
+ <div class="control-group">
+  <label for="[% field | html %]">[% c.loc(label) %]:</label>
+  <select name="[% field | html %]">
+   <option value="1" [% 'selected="selected"' IF ( params.defined ? params.$field : account.$field ) == 1 %]>[% c.loc('yes') %]</option>
+   <option value="0" [% 'selected="selected"' IF ( params.defined ? params.$field : account.$field ) == 0 %]>[% c.loc('no') %]</option>
+  </select>[% PROCESS field_error.tt %]
+ </div>
+[% END %]

@@ -5,7 +5,19 @@
 
 [% PROCESS form_results.tt %]
 
-<h1 class="well-inset">[% resource.name | html %]</h1>
+<div class="form-inline" style="margin: 0 0 2px 14px;">
+ <h1 style="width: 50%; margin: 0; padding: 0; display: inline">[% resource.name | html %]</h1>
+
+<div class="span4" style="float: right; text-align: right;">
+ <a class="btn" href="[% c.uri_for( c.controller('GlobalResources').action_for('view'), resource.id, { gr_page => gr_page } ) | html %]">[% c.loc('view') %]</a>
+ <a class="btn" href="[% c.uri_for( c.controller('GlobalResources').action_for('edit'), resource.id, { gr_page => gr_page } ) | html %]">[% c.loc('edit') %]</a>
+ [% IF resource.do_module('has_title_list') %]
+  <a class="btn" href="[% c.uri_for( c.controller('GlobalResources').action_for('titles_list'), [resource.id], { gr_page => gr_page } ) | html %]">[% c.loc('titles: ') | html %][% resource.title_count %]</a>
+ [% END %]
+ <a class="btn btn-danger" href="[% c.uri_for( c.controller('GlobalResources').action_for('delete'), [resource.id], { gr_page => gr_page } ) | html %]">[% c.loc('delete') %]</a>
+</div>
+
+</div>
 
 [% PROCESS global_resources/subview.tt %]
 
