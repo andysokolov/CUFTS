@@ -12,7 +12,7 @@ CREATE TABLE resources (
     active           BOOLEAN NOT NULL DEFAULT TRUE,
 
     title_list_scanned    TIMESTAMP,
-    title_count           INTEGER,
+    title_count           INTEGER DEFAULT 0,
     update_months         INTEGER,
     next_update           DATE,
 

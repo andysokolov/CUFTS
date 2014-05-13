@@ -12,9 +12,9 @@ CREATE TABLE accounts (
 	journal_auth    BOOLEAN DEFAULT FALSE,
 
 	active		BOOLEAN DEFAULT TRUE,
+	last_login	TIMESTAMP,
 	created		TIMESTAMP NOT NULL DEFAULT NOW(),
 	modified	TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE UNIQUE INDEX accounts_key_idx on accounts(key);
-
