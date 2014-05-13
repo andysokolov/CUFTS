@@ -387,6 +387,7 @@ sub selected_export : Local {
         foreach my $record ( @flattened_records ) {
             push @{$c->stash->{csv}->{data}}, [ map { $record->{$_} } @columns ];
         }
+        $c->response->header( 'Content-Disposition' => 'attachment; filename="erm_export_' . DateTime->now->iso8601 . '.csv"');
         $c->forward('V::CSV');
     }
     else {
