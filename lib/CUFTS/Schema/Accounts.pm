@@ -5,7 +5,7 @@ use strict;
 
 use base qw/DBIx::Class::Core/;
 
-__PACKAGE__->load_components(qw/ TimeStamp /);
+__PACKAGE__->load_components(qw/ FromValidatorsCUFTS InflateColumn::DateTime TimeStamp /);
 
 __PACKAGE__->table('accounts');
 
@@ -60,6 +60,9 @@ __PACKAGE__->add_columns(
         is_nullable => 0,
         default_value => 'true',
     },
+    last_login => {
+        data_type => 'datetime',
+    },
     created => {
         data_type => 'datetime',
         set_on_create => 1,
@@ -81,6 +84,14 @@ sub check_password {
     my ( $self, $password ) = @_;
 
     return $self->password eq crypt( $password, $self->key );
+}
+
+sub update_last_login {
+    my $self = shift;
+    $self->update({
+        last_login => $self->result_source->schema->get_now,
+    });
+
 }
 
 1;

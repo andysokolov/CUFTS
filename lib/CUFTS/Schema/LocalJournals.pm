@@ -189,6 +189,7 @@ __PACKAGE__->set_primary_key( 'id' );
 
 __PACKAGE__->belongs_to( local_resource => 'CUFTS::Schema::LocalResources',  'resource' );
 __PACKAGE__->belongs_to( global_journal => 'CUFTS::Schema::GlobalJournals',  'journal',       { join_type => 'left' } );
+__PACKAGE__->belongs_to( journal        => 'CUFTS::Schema::GlobalJournals',  'journal',       { join_type => 'left' } ); # Alias of above
 __PACKAGE__->belongs_to( journal_auth   => 'CUFTS::Schema::JournalsAuth',    'journal_auth',  { join_type => 'left' } );
 __PACKAGE__->belongs_to( erm_main       => 'CUFTS::Schema::ERMMain',         'erm_main',      { join_type => 'left' } );
 
