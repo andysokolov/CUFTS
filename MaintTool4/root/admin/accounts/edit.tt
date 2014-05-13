@@ -3,6 +3,7 @@
 [%- breadcrumbs.push([ c.uri_for( c.controller('Admin::Accounts').action_for('list'), { page => admin_ac_page } ), c.loc('Administer Accounts') ] ) -%]
 [%- breadcrumbs.push([ '', account_name ]) -%]
 [%- SET page_id = 'admin-account-settings' -%]
+[%- SET account_id = account.id || 'new' %]
 
 [%- PROCESS form_results.tt -%]
 
@@ -17,7 +18,7 @@
 
 </div>
 
-<form method="post">
+<form method="post" action="[% c.uri_for( c.controller.action_for('delete'), [ account_id ] ) | html %]">
 <input type="hidden" name="admin_ac_page" value="[% admin_ac_page | html %]">
 <fieldset class="well legend container-fluid">
 <h2 class="legend">[% c.loc('account settings') %]</h2>

@@ -1,0 +1,40 @@
+[%- SET header_section = c.loc('Site Administration') -%]
+[%- breadcrumbs.push([ '', c.loc('Sites List') ] ) -%]
+[%- SET page_id = 'admin-sites-list' -%]
+
+[%- PROCESS form_results.tt -%]
+
+<div>
+<form method="GET" class="span6 form-inline control-bar">
+  <label for="filter">[% c.loc('Filter') %]: <input type="text" name="filter" value="[% filter | html %]" style="width: 13em;"> <input type="submit" class="btn" name="apply_filter" value="[% c.loc('filter') %]"></label>
+</form>
+<form method="GET" class="form-inline control-bar" action="[% c.uri_for( c.controller('Admin::Sites').action_for('edit'), ['new'] ) | html %]">
+    <button style="float: right;" class="btn"><i class="icon-plus"></i> [% c.loc('New Site') %]</button>
+</form>
+</div>
+
+<table class="grid zebra" style="width: 100%;">
+<tr class="header compact">
+ <th>&nbsp;</th>
+ <th class="text-right">[% c.loc('id') %]</th>
+ <th class="expand">[% c.loc('key') | html %]</th>
+ <th class="expand">[% c.loc('name') | html %]</th>
+ <th class="text-right">[% c.loc('last login') | html %]</th>
+</tr>
+
+[% WHILE ( site = sites_rs.next ) %]
+<tr>
+ <td class="nowrap">
+  <a href="[% c.uri_for( c.controller('Admin::Sites').action_for('edit'), [site.id], { admin_site_page => page } ) | html %]">[% c.loc('edit') %]</a>
+ </td>
+
+ <td class="text-right nowrap">[% site.id %]</td>
+ <td>[% site.key | html %]</td>
+ <td>[% site.name | html %]</td>
+ <td class="nowrap">[% site.last_login.ymd | html %]</td>
+</tr>
+[% END %]
+
+</table>
+
+[% PROCESS paging.tt pager = sites_rs.pager %]

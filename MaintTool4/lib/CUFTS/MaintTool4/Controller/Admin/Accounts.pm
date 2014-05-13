@@ -94,13 +94,12 @@ sub edit :Chained('load_account') :PathPart('edit') :Args(0) {
                 params => [ 'password', 'verify_password' ],
             },
         },
-    defaults => {
-        active        => 'false',
-        edit_global   => 'false',
-        administrator => 'false',
-        journal_auth  => 'false',
-        account_sites => []
-    },
+        defaults => {
+            active        => 'false',
+            edit_global   => 'false',
+            administrator => 'false',
+            journal_auth  => 'false',
+        },
         missing_optional_valid => 1,
     });
 

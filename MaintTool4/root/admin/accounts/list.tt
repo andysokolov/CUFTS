@@ -8,7 +8,7 @@
 <form method="GET" class="span6 form-inline control-bar">
   <label for="filter">[% c.loc('Filter') %]: <input type="text" name="filter" value="[% filter | html %]" style="width: 13em;"> <input type="submit" class="btn" name="apply_filter" value="[% c.loc('filter') %]"></label>
 </form>
-<form method="GET" class="form-inline control-bar" action="[% c.uri_for( c.controller('Admin::Accounts').action_for('edit'), 'new' ) | html %]">
+<form method="GET" class="form-inline control-bar" action="[% c.uri_for( c.controller('Admin::Accounts').action_for('edit'), ['new'] ) | html %]">
     <button style="float: right;" class="btn"><i class="icon-plus"></i> [% c.loc('New Account') %]</button>
 </form>
 </div>

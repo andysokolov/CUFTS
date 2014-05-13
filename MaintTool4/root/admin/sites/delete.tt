@@ -1,0 +1,19 @@
+[%- SET header_section = c.loc('Site Administration') -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('Admin::Sites').action_for('list'), { page => admin_site_page } ), c.loc('Administer Sites') ] ) -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('Admin::Sites').action_for('edit'), [ site.id ], { admin_site_page => admin_site_page } ), site.name ] ) -%]
+[%- breadcrumbs.push([ '', c.loc('Delete')] ) -%]
+[%- SET page_id = 'admin-site-delete' -%]
+
+<h1 class="well-inset">[% site.name | html %]</h1>
+
+<form action="[% c.uri_for( c.controller.action_for('delete'), [ site.id ] ) | html %]" method="post">
+<input type="hidden" name="admin_site_page" value="[% admin_site_page | html %]" />
+<fieldset class="container-fluid well">
+<h2 class="legend">[% c.loc('delete site') | html %]</h2>
+
+<div class="control-group">
+ <label>[% c.loc('Delete this site?') | html %]</label>
+ <input class="btn btn-danger" type="submit" name="do_delete" value="[% c.loc('delete') | html %]" />
+</div>
+</fieldset>
+</form>
