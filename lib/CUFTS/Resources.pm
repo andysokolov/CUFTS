@@ -200,8 +200,7 @@ sub load_title_list {
     my $duplicate_records = $class->find_duplicates_for_loading(*IN, $field_headings);
 
     $job->terminate_possible() if defined $job;
-
-    my $timestamp = $schema->get_now();
+    $job->checkpoint( 0, 'Beginning read from title list file' ) if defined $job;
 
     my $count = 0;
     my $error_count = 0;
@@ -211,9 +210,9 @@ sub load_title_list {
     my $modified_count = 0;
     my $local_resouces_auto_activated = 0;
 
-    $job->checkpoint( 0, 'Beginning read from title list file' ) if defined $job;
-
     $schema->txn_do( sub {
+
+        my $timestamp = $schema->get_now();
 
         while ( my $row = $class->title_list_parse_row(*IN) ) {
 
@@ -303,7 +302,6 @@ sub load_title_list {
         modified_count                 => $modified_count,
         deleted_count                  => $deleted_count,
         local_resources_auto_activated => $local_resouces_auto_activated,
-        timestamp                      => $timestamp,
     };
 
     return $results;
@@ -646,7 +644,9 @@ sub delete_title_list {
 
 
 sub activation_title_list {
-    my ($class, $schema, $local_resource, $title_list, $match_on, $deactivate) = @_;
+    my ($class, $schema, $local_resource, $title_list, $match_on, $deactivate, $job) = @_;
+
+    $job->terminate_possible() if defined $job;
 
     hascontent($title_list) or
         CUFTS::Exception::App->throw('No title list passed into activation_title_list');
@@ -659,8 +659,7 @@ sub activation_title_list {
 
     open(IN, $title_list) or
         CUFTS::Exception::App->throw("Unable to open title list for reading: $!");
-
-    no strict 'refs';
+    my $filesize = (stat(*IN))[7] || 1;  # avoid divide by zero
 
     my $local_rs        = $class->local_rs($schema);
     my $global_rs       = $class->global_rs($schema);
@@ -670,60 +669,67 @@ sub activation_title_list {
     defined($field_headings) && (ref($field_headings) eq 'ARRAY') && (scalar(@$field_headings) > 0) or
         CUFTS::Exception::App->throw("title_list_get_field_headings did not return an array ref or did not contain any fields");
 
-
     my @match_on = split /,/, $match_on;
     my $map_field = $class->local_to_global_field;
 
-    $schema->txn_begin();
-
-    my $timestamp = $schema->get_now();
-
     my $errors;
-    my $count = 0;
-    my $error_count = 0;
-    my $processed_count = 0;
-    my $new_count = 0;
-    while (my $row = CUFTS::Resources->title_list_parse_row(*IN)) {
-        $count++;
-        my $record = CUFTS::Resources->title_list_build_record($field_headings, $row);
-        defined($record) && (ref($record) eq 'HASH') or
-            CUFTS::Exception::App->throw("title_list_build_record did not return a hash ref");
+    my $count             = 0;
+    my $error_count       = 0;
+    my $processed_count   = 0;
+    my $deactivated_count = 0;
+    my $new_count         = 0;
 
-        $processed_count++;
+    $job->checkpoint( 0, 'Beginning read from title list file' ) if defined $job;
 
-        my $global_rs = $class->_match_on_rs($global_resource->id, $global_rs, \@match_on, $record);
-        next if !defined $global_rs;
+    $schema->txn_do( sub {
 
-        while ( my $global_record = $global_rs->next ) {
+        my $timestamp = $schema->get_now();
 
-            # Find or create local records
+        while (my $row = CUFTS::Resources->title_list_parse_row(*IN)) {
+            $count++;
 
-            my $record = {
-                resource   => $local_resource->id,
-                $map_field => $global_record->id,
-            };
+            $job->terminate_possible() if defined $job;
+            $class->running_checkpoint( $job, tell(*IN), $filesize, 0, 90, "Reading from title list, row $count" );
 
-            if ( my $existing_record = $local_rs->find($record) ) {
-                $existing_record->update({ active => 'true', scanned => $timestamp });
-            }
-            else {
-                $record->{active} = 'true';
-                $record->{scanned} = $timestamp;
-                $local_rs->create($record);
-                $new_count++;
+            my $record = CUFTS::Resources->title_list_build_record($field_headings, $row);
+            defined($record) && (ref($record) eq 'HASH') or
+                CUFTS::Exception::App->throw("title_list_build_record did not return a hash ref");
+
+            $processed_count++;
+
+            my $global_rs = $class->_match_on_rs($global_resource->id, $global_rs, \@match_on, $record);
+            next if !defined $global_rs;
+
+            while ( my $global_record = $global_rs->next ) {
+
+                # Find or create local records
+
+                my $record = {
+                    resource   => $local_resource->id,
+                    $map_field => $global_record->id,
+                };
+
+                if ( my $existing_record = $local_rs->find($record) ) {
+                    $existing_record->update({ active => 'true', scanned => $timestamp });
+                }
+                else {
+                    $record->{active} = 'true';
+                    $record->{scanned} = $timestamp;
+                    $local_rs->create($record);
+                    $new_count++;
+                }
+
             }
 
         }
+        close(IN);
 
-    }
-    close(IN);
+        if ( $deactivate ) {
+            $job->checkpoint( 95, "Deactivating old records" ) if $job;
+            $deactivated_count = $class->_deactivate_old_records($schema, $local_resource->id, $timestamp, 1);
+        }
 
-    my $deactivated_count = 0;
-    if ( $deactivate ) {
-        $deactivated_count = $class->_deactivate_old_records($schema, $local_resource->id, $timestamp, 1);
-    }
-
-    $schema->txn_commit();
+    });
 
     return {
         errors            => $errors,
@@ -736,7 +742,9 @@ sub activation_title_list {
 
 
 sub overlay_title_list {
-    my ($class, $schema, $local_resource, $title_list, $match_on, $deactivate) = @_;
+    my ($class, $schema, $local_resource, $title_list, $match_on, $deactivate, $job) = @_;
+
+    $job->terminate_possible() if defined $job;
 
     hascontent($title_list) or
         CUFTS::Exception::App->throw('No title list passed into overlay_title_list');
@@ -749,8 +757,7 @@ sub overlay_title_list {
 
     open(IN, $title_list) or
         CUFTS::Exception::App->throw("Unable to open title list ($title_list) for reading: $!");
-
-    no strict 'refs';
+    my $filesize = (stat(*IN))[7] || 1;  # avoid divide by zero
 
     my $local_rs        = $class->local_rs($schema);
     my $global_rs       = $class->global_rs($schema);
@@ -762,84 +769,91 @@ sub overlay_title_list {
 
     my @match_on = split /,/, $match_on;
 
-    $schema->txn_begin();
-
-    my $timestamp = $schema->get_now();
-
     my $errors;
     my $count = 0;
     my $error_count = 0;
     my $processed_count = 0;
+    my $deactivated_count = 0;
     my $new_count = 0;
 
-    # Create a map of all the existing local records instead of searching them each time. Memory vs. Speed
+    $job->checkpoint( 0, 'Beginning read from title list file' ) if defined $job;
 
-    my @local_records = $local_rs->search({ resource => $local_resource->id })->all;
-    my $map_field = $class->local_to_global_field;
-    my %lmap = map { $_->$map_field => $_ } @local_records;
+    $schema->txn_do( sub {
 
-    # Go through each row and update or create a matching record
+        my $timestamp = $schema->get_now();
 
-    while ( my $row = CUFTS::Resources->title_list_parse_row(*IN) ) {
-        $count++;
-        my $record = CUFTS::Resources->title_list_build_record($field_headings, $row);
-        if ( !defined $record || ref $record ne 'HASH' ) {
-            CUFTS::Exception::App->throw("title_list_build_record did not return a hash ref");
+        # Create a map of all the existing local records instead of searching them each time. Memory vs. Speed
+
+        my @local_records = $local_rs->search({ resource => $local_resource->id })->all;
+        my $map_field = $class->local_to_global_field;
+        my %lmap = map { $_->$map_field => $_ } @local_records;
+
+        # Go through each row and update or create a matching record
+
+        while ( my $row = CUFTS::Resources->title_list_parse_row(*IN) ) {
+            $count++;
+
+            $job->terminate_possible() if defined $job;
+            $class->running_checkpoint( $job, tell(*IN), $filesize, 0, 90, "Reading from title list, row $count" );
+
+            my $record = CUFTS::Resources->title_list_build_record($field_headings, $row);
+            if ( !defined $record || ref $record ne 'HASH' ) {
+                CUFTS::Exception::App->throw("title_list_build_record did not return a hash ref");
+            }
+
+            $processed_count++;
+
+            my $global_rs = $class->_match_on_rs($global_resource->id, $global_rs, \@match_on, $record);
+            next if !defined $global_rs;
+
+            my @global_records = $global_rs->all;
+            my $global_record;
+
+            if ( scalar @global_records == 0 ) {
+                my $err = "record $count: Could not match global records on ";
+                $err .= join ', ', map { "$_: $record->{$_}" } @match_on;
+                push @$errors, $err;
+                next;
+            }
+            elsif ( scalar @global_records == 1 ) {
+                $global_record = $global_records[0];
+            }
+            else {
+                my $err = "record $count: Matched multiple global records on ";
+                $err .= join ', ', map { "$_: $record->{$_}" } @match_on;
+                push @$errors, $err;
+                next;
+            }
+
+            # Find an existing cached local title, or create a new one
+
+            my $local_record = $lmap{$global_record->id};
+            if ( !defined $local_record ) {
+                $local_record = $local_rs->create({ resource => $local_resource->id, $map_field => $global_record->id });
+                $new_count++;
+            }
+
+            $local_record->active('true');
+            $local_record->scanned($timestamp);
+            foreach my $column (keys %$record) {
+                next if $column =~ /^___/;
+                next unless defined $record->{$column};
+                next if grep {$_ eq $column} @match_on;
+                next unless $local_record->can( $column );
+
+               $local_record->$column($record->{$column});
+            }
+
+            $local_record->update;
+        }
+        close(IN);
+
+        if ( $deactivate ) {
+            $job->checkpoint( 95, "Deactivating old records" ) if $job;
+            $deactivated_count = $class->_deactivate_old_records($schema, $local_resource->id, $timestamp, 1);
         }
 
-        $processed_count++;
-
-        my $global_rs = $class->_match_on_rs($global_resource->id, $global_rs, \@match_on, $record);
-        next if !defined $global_rs;
-
-        my @global_records = $global_rs->all;
-        my $global_record;
-
-        if ( scalar @global_records == 0 ) {
-            my $err = "record $count: Could not match global records on ";
-            $err .= join ', ', map { "$_: $record->{$_}" } @match_on;
-            push @$errors, $err;
-            next;
-        }
-        elsif ( scalar @global_records == 1 ) {
-            $global_record = $global_records[0];
-        }
-        else {
-            my $err = "record $count: Matched multiple global records on ";
-            $err .= join ', ', map { "$_: $record->{$_}" } @match_on;
-            push @$errors, $err;
-            next;
-        }
-
-        # Find an existing cached local title, or create a new one
-
-        my $local_record = $lmap{$global_record->id};
-        if ( !defined $local_record ) {
-            $local_record = $local_rs->create({ resource => $local_resource->id, $map_field => $global_record->id });
-            $new_count++;
-        }
-
-        $local_record->active('true');
-        $local_record->scanned($timestamp);
-        foreach my $column (keys %$record) {
-            next if $column =~ /^___/;
-            next unless defined $record->{$column};
-            next if grep {$_ eq $column} @match_on;
-            next unless $local_record->can( $column );
-
-           $local_record->$column($record->{$column});
-        }
-
-        $local_record->update;
-    }
-    close(IN);
-
-    my $deactivated_count = 0;
-    if ( $deactivate ) {
-        $deactivated_count = $class->_deactivate_old_records($schema, $local_resource->id, $timestamp, 1);
-    }
-
-    $schema->txn_commit();
+    });
 
     return {
         errors            => $errors,
