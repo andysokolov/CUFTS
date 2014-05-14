@@ -148,6 +148,59 @@ sub delete :Chained('load_site') :PathPart('delete') :Args(0) {
     $c->stash->{template}        = 'admin/sites/delete.tt';
 }
 
+sub associate_accounts :Chained('load_site') :PathPart('associate_accounts') :Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $site = $c->stash->{site};
+
+    $c->form({
+            optional         => [ qw( submit page admin_site_page ) ],
+            optional_regexp  => qr/^(account|orig)_.+/,
+            filters          => ['trim'],
+    });
+
+    my %search_options = (
+        order_by  => ['name'],
+        page      => int( $c->form->valid('page') || 1 ),
+        rows      => 30
+    );
+
+    my $accounts_rs = $c->model('CUFTS::Accounts')->search(
+        {
+            active => 't',
+        },
+        \%search_options,
+     );
+
+    if ( hascontent($c->form->valid->{submit}) ) {
+        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
+            eval {
+                foreach my $param ( keys %{ $c->form->valid } ) {
+                    next if $param !~ /^orig_(\d+)$/;
+                    my $id = $1;
+                    if ( ($c->form->valid($param) || 0) != ($c->form->valid("account_$id") || 0) ) {
+                        if ( $c->form->valid("account_$id") ) {
+                            $c->model('CUFTS::AccountsSites')->create({ account => $id, site => $site->id });
+                            push @{$c->stash->{results}}, $c->loc('Added account: ') . $c->model('CUFTS::Accounts')->find({ id => $id })->name;
+                        }
+                        else {
+                            $c->model('CUFTS::AccountsSites')->search({ account => $id, site => $site->id })->delete();
+                            push @{$c->stash->{results}}, $c->loc('Removed account: ') . $c->model('CUFTS::Accounts')->find({ id => $id })->name;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    $c->stash->{active_accounts} = { map { $_->id => 1 } $site->accounts->all };
+    $c->stash->{admin_site_page} = $c->form->valid->{admin_site_page};
+    $c->stash->{page}            = $c->form->valid->{page};
+    $c->stash->{accounts_rs}     = $accounts_rs;
+    $c->stash->{template}        = 'admin/sites/associate.tt';
+}
+
+
 
 =encoding utf8
 

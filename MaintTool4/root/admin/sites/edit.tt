@@ -12,6 +12,7 @@
 
 [% IF site %]
  <div class="span4" style="float: right; text-align: right;">
+  <a class="btn" href="[% c.uri_for( c.controller('Admin::Sites').action_for('associate_accounts'), [site.id], { admin_site_page => admin_site_page } ) | html %]">[% c.loc('associate accounts') %]</a>
   <a class="btn btn-danger" href="[% c.uri_for( c.controller('Admin::Sites').action_for('delete'), [site.id], { admin_site_page => admin_site_page } ) | html %]">[% c.loc('delete') %]</a>
  </div>
 [% END %]

@@ -12,9 +12,9 @@
 <h1>[% resource.name | html %]</h1>
 
 <div>
-<form method="GET" class="span12 form-inline control-bar">
+ <form method="GET" class="span12 form-inline control-bar">
   <label for="filter">[% c.loc('Filter') %]: <input type="text" name="filter" value="[% filter | html %]" style="width: 13em;"> <input type="submit" class="btn" name="apply_filter" value="[% c.loc('filter') %]"></label>
-</form>
+ </form>
 </div>
 
 <div style="width: 100%; float: left; margin-bottom: 20px;" class="scrollable">

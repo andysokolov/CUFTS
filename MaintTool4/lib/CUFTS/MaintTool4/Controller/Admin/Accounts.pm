@@ -44,8 +44,8 @@ sub list :Chained('base') :PathPart('') :Args(0) {
     my ( $self, $c ) = @_;
 
     $c->form({
-            optional => [ qw( filter apply_filter page ) ],
-            filters  => ['trim'],
+            optional         => [ qw( filter apply_filter page ) ],
+            filters          => ['trim'],
     });
 
     if ( $c->form->valid->{apply_filter} ) {
@@ -155,10 +155,61 @@ sub delete :Chained('load_account') :PathPart('delete') :Args(0) {
     }
 
     $c->stash->{admin_ac_page} = $c->form->valid->{admin_ac_page};
-    $c->stash->{account}       = $account;
     $c->stash->{template}      = 'admin/accounts/delete.tt';
 }
 
+sub associate_sites :Chained('load_account') :PathPart('associate_sites') :Args(0) {
+    my ( $self, $c ) = @_;
+
+    my $account = $c->stash->{account};
+
+    $c->form({
+            optional => [ qw( submit page admin_ac_page ) ],
+            optional_regexp  => qr/^(site|orig)_.+/,
+            filters  => ['trim'],
+    });
+
+    my %search_options = (
+        order_by  => ['name'],
+        page      => int( $c->form->valid('page') || 1 ),
+        rows      => 30
+    );
+
+
+    my $sites_rs = $c->model('CUFTS::Sites')->search(
+        {
+            active => 't',
+        },
+        \%search_options,
+     );
+
+    if ( hascontent($c->form->valid->{submit}) ) {
+        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
+            eval {
+                foreach my $param ( keys %{ $c->form->valid } ) {
+                    next if $param !~ /^orig_(\d+)$/;
+                    my $id = $1;
+                    if ( ($c->form->valid($param) || 0) != ($c->form->valid("site_$id") || 0) ) {
+                        if ( $c->form->valid("site_$id") ) {
+                            $c->model('CUFTS::AccountsSites')->create({ site => $id, account => $account->id });
+                            push @{$c->stash->{results}}, $c->loc('Added site: ') . $c->model('CUFTS::Sites')->find({ id => $id })->name;
+                        }
+                        else {
+                            $c->model('CUFTS::AccountsSites')->search({ site => $id, account => $account->id })->delete();
+                            push @{$c->stash->{results}}, $c->loc('Removed site: ') . $c->model('CUFTS::Sites')->find({ id => $id })->name;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    $c->stash->{active_sites}  = { map { $_->id => 1 } $account->sites->all };
+    $c->stash->{admin_ac_page} = $c->form->valid->{admin_ac_page};
+    $c->stash->{page}          = $c->form->valid->{page};
+    $c->stash->{sites_rs}      = $sites_rs;
+    $c->stash->{template}      = 'admin/accounts/associate.tt';
+}
 
 =encoding utf8
 

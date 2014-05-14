@@ -1,0 +1,43 @@
+[%- SET header_section = c.loc('Account Administration') -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller('Admin::Accounts').action_for('list'), { page => admin_ac_page } ), c.loc('Administer Accounts') ] ) -%]
+[%- breadcrumbs.push([ '', account.name ]) -%]
+[%- SET page_id = 'admin-account-associate' -%]
+
+[%- PROCESS form_results.tt -%]
+
+<h1>[% account.name | html %]</h1>
+
+<form method="post" class="" action="[% c.uri_for( c.controller('Admin::Accounts').action_for('associate_sites'), [ account.id ] ) | html %]">
+ <input type="hidden" name="page" value="[% page | html %]">
+ <input type="hidden" name="admin_ac_page" value="[% admin_ac_page | html %]">
+ <div>
+  <div class="span4">
+   <button type="submit" class="btn btn-primary" value="submit" name="submit">[% c.loc('save associations') %]</button>
+  </div>
+  <div style="float: right; text-align: right; margin-bottom: 8px;">
+   <a class="btn" href="[% c.uri_for( c.controller('Admin::Accounts').action_for('edit'), [account.id], { admin_ac_page => admin_ac_page } ) | html %]">[% c.loc('edit account') %]</a>
+  </div>
+ </div>
+
+<div>
+ <table class="grid zebra" style="width: 100%;">
+  <tr class="header compact">
+   <th>&nbsp;</th>
+   <th class="expand">[% c.loc('key') | html %]</th>
+   <th class="expand">[% c.loc('name') | html %]</th>
+  </tr>
+
+  [% WHILE ( site = sites_rs.next ) %]
+   [%- SET site_id = site.id -%]
+   <tr>
+    <td><input type="checkbox" style="margin: 0;" name="site_[% site_id %]" value="1" [% active_sites.$site_id ? 'checked="checked"' : '' %]/><input type="hidden" name="orig_[% site_id %]" value="[% active_sites.$site_id ? 1 : 0 %]"></td>
+    <td>[% site.key | html %]</td>
+    <td>[% site.name | html %]</td>
+   </tr>
+  [% END %]
+ </table>
+
+[% PROCESS paging.tt pager = sites_rs.pager %]
+
+</div>
+</form>
