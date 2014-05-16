@@ -64,7 +64,7 @@ sub login :Chained('/') :PathPart('login') :Args(0) {
         $c->form({
             required => [ 'login_key', 'login_password' ],
             optional => [ 'submit' ],
-            filters  => ['trim'],
+            filters  => [ 'trim' ],
         });
 
         $c->stash->{form_submitted} = 1;
@@ -112,12 +112,12 @@ sub logout :Chained('/loggedin') :PathPart('logout') :Args(0) {
 sub index :Chained('/loggedin') :PathPart('') :Args(0) {
     my ( $self, $c ) = @_;
 
+    my $job_search = { account_id => $c->user->id };
+    $job_search->{site_id} = $c->site->id if defined $c->site;
+
     my ( $jobs, $pager ) = $c->job_queue->list_jobs(
         {
-            -or => {
-                site_id => $c->site->id,
-                account_id => $c->user->id,
-            }
+            -or => $job_search
         },
         {
             rows => 10,
@@ -184,6 +184,8 @@ sub _setup_menu {
         if ( $c->site ) {
             push @menu, [ $c->loc('Site Settings'), [
                 [ $c->loc('General'),           $c->uri_for( $c->controller('Site')->action_for('edit') ) ],
+                [ $c->loc('CJDB Templates'),    $c->uri_for( $c->controller('Site::Templates')->action_for('menu_cjdb4') ) ],
+                [ $c->loc('CRDB Templates'),    $c->uri_for( $c->controller('Site::Templates')->action_for('menu_crdb4') ) ],
                 [ $c->loc('Google Scholar'),    'http://test.com/' ],
             ] ];
         }

@@ -155,6 +155,10 @@ nav.sidebar-nav a:hover, nav a:active { background: #E0EEFE; }
 
 a img { border: none; }
 
+i.icon-inactive {
+    opacity: 0.6;
+}
+
 /* Tweak bootstrap layouts a bit */
 
 #content .well>h1, #content .well>h2, #content .well>h3 {

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CUFTS Maintenance Tool</title>
     <link rel="stylesheet" href="[% c.uri_for_static('bootstrap/css/bootstrap.min.css') | html %]">
+    <link rel="stylesheet" href="[% c.uri_for_static('font-awesome/css/font-awesome.min.css') | html %]">
     <link rel="stylesheet" href="[% c.uri_for_static('css/mainttool.css') | html %]" />
     <!-- <script src="http://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.0.6-development-only.js"></script> -->
     <script src="[% c.uri_for_static('js/jquery-1.11.0.min.js') | html %]"></script>
