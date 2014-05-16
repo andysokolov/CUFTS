@@ -143,6 +143,7 @@ sub load_site {
 
         if ( !defined($ft_end_date) || $ft_end_date gt '2020-01-01' ) {
             $jas_record->{end} = $END_DATE_MAX;
+            $jas_record->{embargo} = 0;
         }
         elsif ( !defined($jas_record->{end}) || $ft_end_date gt $jas_record->{end} ) {
             $jas_record->{end} = $ft_end_date;
