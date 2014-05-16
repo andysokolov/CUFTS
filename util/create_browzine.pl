@@ -97,7 +97,7 @@ sub load_site {
             $count++;
             my @row = ( $local_resource->name_display,
                         $journal_auth->title,
-                        $issns->[0],
+                        $issns[0],
                         exists($issns[1]) ? $issns[1] : undef,
                         defined($start) ? $start->ymd : undef,
                         defined($end)   ? $end->ymd   : undef,
