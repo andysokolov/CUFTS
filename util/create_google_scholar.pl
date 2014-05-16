@@ -141,7 +141,7 @@ sub load_site {
             $jas_record->{start} = $ft_start_date;
         }
 
-        if ( !defined($ft_end_date) || $ft_end_date gt '2030-01-01' ) {
+        if ( !defined($ft_end_date) || $ft_end_date gt '2020-01-01' ) {
             $jas_record->{end} = $END_DATE_MAX;
         }
         elsif ( !defined($jas_record->{end}) || $ft_end_date gt $jas_record->{end} ) {
@@ -156,8 +156,6 @@ sub load_site {
             if ( !defined($jas_record->{embargo}) || $embargo_days < $jas_record->{embargo} ) {
                 $jas_record->{embargo} = $embargo_days;
             }
-        } else {
-            $jas_record->{embargo} = 0;
         }
 
     }
