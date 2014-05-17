@@ -20,9 +20,6 @@ use Unicode::String qw(utf8 latin1);
 
 use strict;
 
-my $START_DATE_MIN = '0000-00-00';
-my $END_DATE_MAX   = '9999-99-99';
-
 Log::Log4perl->easy_init($INFO);
 my $logger = Log::Log4perl->get_logger();
 
@@ -114,49 +111,81 @@ sub load_site {
 
     while ( my $lj = $local_journals_rs->next ) {
 
+        # Merge date and embargo data
+
         my $gj = $lj->global_journal;
         my $ft_start_date  = defined($lj->ft_start_date)  ? $lj->ft_start_date  : defined($gj) ? $gj->ft_start_date  : undef;
         my $ft_end_date    = defined($lj->ft_end_date)    ? $lj->ft_end_date    : defined($gj) ? $gj->ft_end_date    : undef;
         my $embargo_days   = defined($lj->embargo_days)   ? $lj->embargo_days   : defined($gj) ? $gj->embargo_days   : undef;
         my $embargo_months = defined($lj->embargo_months) ? $lj->embargo_months : defined($gj) ? $gj->embargo_months : undef;
 
-        my $ja_id = defined($lj->get_column('journal_auth')) ? $lj->get_column('journal_auth') : defined($gj) ? $gj->get_column('journal_auth') : undef;
-
-        next if !defined($ja_id);
-
-        next if    !hascontent($ft_start_date  )
-                && !hascontent($ft_end_date    )
-                && !hascontent($embargo_days   )
-                && !hascontent($embargo_months );
-
-        my $jas_record = $jas{$ja_id};
-        if ( !defined($jas_record) ) {
-            $jas_record = $jas{$ja_id} = {};
-        }
-
-        if ( !defined($ft_start_date) ) {
-            $jas_record->{start} = $START_DATE_MIN;
-        }
-        elsif ( !defined($jas_record->{start}) || $ft_start_date lt $jas_record->{start} ) {
-            $jas_record->{start} = $ft_start_date;
-        }
-
-        if ( !defined($ft_end_date) || $ft_end_date gt '2020-01-01' ) {
-            $jas_record->{end} = $END_DATE_MAX;
-            $jas_record->{embargo} = 0;
-        }
-        elsif ( !defined($jas_record->{end}) || $ft_end_date gt $jas_record->{end} ) {
-            $jas_record->{end} = $ft_end_date;
-        }
+        # Set embargo_days based on 30 day month
 
         if ( hascontent($embargo_months) && !hascontent($embargo_days) ) {
             $embargo_days = $embargo_months * 30;
         }
 
-        if ( hascontent($embargo_days) ) {
-            if ( !defined($jas_record->{embargo}) || $embargo_days < $jas_record->{embargo} ) {
+        # Clear future end dates and treat as not set ("current")
+
+        if ( hascontent($ft_end_date) && $ft_end_date gt '2020-01-01' ) {
+            $ft_end_date = undef;
+        }
+
+        # Skip if there's no fulltext start date. TODO - add "current" support
+
+        next if !hascontent($ft_start_date);
+
+        # Get appropriate journal auth id or skip
+
+        my $ja_id = defined($lj->get_column('journal_auth')) ? $lj->get_column('journal_auth') : defined($gj) ? $gj->get_column('journal_auth') : undef;
+        next if !defined($ja_id);
+
+        # Grab the working record, or create a blank one with flags set to false
+
+        my $jas_record = $jas{$ja_id};
+        if ( !defined $jas_record ) {
+            $jas_record = $jas{$ja_id} = {
+                start        => $ft_start_date,
+                current_flag => 0,
+                embargo_flag => 0,
+            };
+        }
+
+        # Check if the start date is lower than the existing one.
+
+        if ( $ft_start_date lt $jas_record->{start} ) {
+            $jas_record->{start} = $ft_start_date;
+        }
+
+        # If we already have a "current" flag, then skip all further end date calculating
+
+        next if $jas_record->{current_flag};
+
+        # If there's no end date or embargo info, set the current flag and skip
+
+        if ( !hascontent($ft_end_date) && !hascontent($embargo_days) ) {
+            $jas_record->{current_flag} = 1;
+            next;
+        }
+
+        # Not current, so check for embargos and update if they're less. Skip further processing of end dates, since we're going to ignore them later anyway.
+
+        if ( $jas_record->{embargo_flag} ) {
+            if ( hascontent($embargo_days) && $embargo_days < $jas_record->{embargo} ) {
                 $jas_record->{embargo} = $embargo_days;
             }
+            next;
+        }
+        elsif ( hascontent($embargo_days) ) {
+            $jas_record->{embargo} = $embargo_days;
+            $jas_record->{embargo_flag} = 1;
+            next;
+        }
+
+        # Check end dates and go with the largest one, if we've fallen through to here.
+
+        if ( !defined($jas_record->{end}) || $ft_end_date gt $jas_record->{end} ) {
+            $jas_record->{end} = $ft_end_date;
         }
 
     }
@@ -186,28 +215,25 @@ sub load_site {
         }
 
         $output .=  "<coverage>\n";
-        if ( $jas{$ja_id}->{start} ne $START_DATE_MIN ) {
-            my ($year, $month, $day) = split '-', $jas{$ja_id}->{start};
-            $output .=  "<from>\n";
-            $output .=  "<year>$year</year>\n";
-            $output .=  "<month>$month</month>\n";
-            $output .=  "</from>\n";
-        }
 
-        if ( $jas{$ja_id}->{end} ne $END_DATE_MAX ) {
+        my ($year, $month, $day) = split '-', $jas{$ja_id}->{start};
+        $output .=  "<from>\n";
+        $output .=  "<year>$year</year>\n";
+        $output .=  "<month>$month</month>\n";
+        $output .=  "</from>\n";
+
+        if ( $jas{$ja_id}->{embargo_flag} ) {
+            $output .=  "<embargo>\n";
+            $output .=  "<days_not_available>" . $jas{$ja_id}->{embargo} ."</days_not_available>\n";
+            $output .=  "</embargo>\n";
+        }
+        elsif ( !$jas{$ja_id}->{current_flag} ) {
             my ($year, $month, $day) = split '-', $jas{$ja_id}->{end};
             $output .=  "<to>\n";
             $output .=  "<year>$year</year>\n";
             $output .=  "<month>$month</month>\n";
             $output .=  "</to>\n";
         }
-
-        if ( hascontent($jas{$ja_id}->{embargo}) && $jas{$ja_id}->{embargo} > 0 ) {
-            $output .=  "<embargo>\n";
-            $output .=  "<days_not_available>" . $jas{$ja_id}->{embargo} ."</days_not_available>\n";
-            $output .=  "</embargo>\n";
-        }
-
 
         $output .=  "</coverage>\n";
         $output .=  "</item>\n";
