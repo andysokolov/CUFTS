@@ -1,0 +1,126 @@
+[%- SET header_section = section_text _ ' ' _ c.loc('Templates') -%]
+[%- breadcrumbs.push([ '', header_section ] ) -%]
+[%- SET page_id = 'site-template-menu-' _ section -%]
+
+[%- PROCESS form_results.tt -%]
+
+<div class="well">
+ <h2 class="legend">[% c.loc('test links') | html %]</h2>
+ <a href="[% sandbox_url | html %]" target="_blank">[% c.loc('sandbox') | html %]</a><br />
+ <a href="[% active_url | html %]" target="_blank">[% c.loc('active') | html %]</a>
+</div>
+
+<div class="well">
+ <h2 class="legend">[% c.loc('templates') | html %]</h2>
+
+ <table class="grid zebra">
+  <tr class="header">
+   <th class="text-left">template</th>
+   <th class="text-center">active</th>
+   <th class="text-center">transfer</th>
+   <th class="text-center">sandbox</th>
+  </tr>
+
+  [% FOREACH template IN templates %]
+   [%- SET active = active_templates.in(template) -%]
+   [%- SET sandbox = sandbox_templates.in(template) -%]
+
+ <tr>
+  <td class="">[% template %]</td>
+
+  <td class="text-center">
+   [% IF active %]
+    <a href="[% c.uri_for( c.controller.action_for('view'), [ section, 'template', template, 'active' ] ) | html %]"><i class="fa fa-search" title="[% c.loc('view active template') | html %]"></i></a>
+    <a href="[% c.uri_for( c.controller.action_for('delete'), [ section, 'template', template, 'active' ] ) | html %]"><i class="fa fa-times" title="[% c.loc('delete active template') | html %]"></i></a>
+   [% ELSE %]
+    <i class="fa fa-search icon-inactive"></i>
+    <i class="fa fa-times icon-inactive"></i>
+   [% END %]
+  </td>
+
+  <td class="text-center">
+   [% IF sandbox %]
+    <a href="[% c.uri_for( c.controller.action_for('transfer'), [ section, 'template', template ] ) | html %]"><i class="fa fa-arrow-left" title="[% c.loc('transfer template') | html %]"></i></a>
+   [% ELSE %]
+    <i class="fa fa-arrow-left icon-inactive"></i>
+   [% END %]
+  </td>
+
+  <td class="text-center">
+
+    [% IF sandbox %]
+     <a href="[% c.uri_for( c.controller.action_for('view'), [ section, 'template', template, 'sandbox' ] ) | html %]"><i class="fa fa-search" title="[% c.loc('view sandbox template') | html %]"></i></a>
+    [% ELSE %]
+     <i class="fa fa-search icon-inactive"></i>
+    [% END %]
+
+    <a href="[% c.uri_for( c.controller.action_for('edit'), [ section, 'template', template ] ) | html %]"><i class="fa fa-pencil"></i></a>
+
+    [% IF sandbox %]
+     <a href="[% c.uri_for( c.controller.action_for('delete'), [ section, 'template', template, 'sandbox' ] ) | html %]"><i class="fa fa-times" title="[% c.loc('delete sandbox template') | html %]"></i></a>
+    [% ELSE %]
+     <i class="fa fa-times icon-inactive"></i>
+    [% END %]
+
+   </td></tr>
+[% END %]
+</table>
+</div>
+
+<div class="well">
+
+<h2>[% c.loc('CSS') | html %]</h2>
+<table class="grid zebra">
+ <tr class="header">
+  <th class="">[% c.loc('template') | html %]</th>
+  <th class="text-center">[% c.loc('active') | html %]</th>
+  <th class="text-center">[% c.loc('transfer') | html %]</th>
+  <th class="text-center">[% c.loc('sandbox') | html %]</th>
+ </tr>
+
+[% FOREACH css IN csses %]
+ [% SET active = active_csses.in(css) %]
+ [% SET sandbox = sandbox_csses.in(css) %]
+
+<tr>
+ <td class="">[% css %]</td>
+
+ <td class="text-center">
+  [% IF active %]
+   <a href="[% c.uri_for( c.controller.action_for('view'), [ section, 'css', css, 'active' ] ) | html %]"><i class="fa fa-search" title="[% c.loc('view active template') | html %]"></i></a>
+   <a href="[% c.uri_for( c.controller.action_for('delete'), [ section, 'css', css, 'active' ] ) | html %]"><i class="fa fa-times" title="[% c.loc('delete active template') | html %]"></i></a>
+  [% ELSE %]
+   <i class="fa fa-search icon-inactive"></i>
+   <i class="fa fa-times icon-inactive"></i>
+  [% END %]
+ </td>
+
+ <td class="text-center">
+  [% IF sandbox %]
+   <a href="[% c.uri_for( c.controller.action_for('transfer'), [ section, 'css', css ] ) | html %]"><i class="fa fa-arrow-left" title="[% c.loc('transfer template') | html %]"></i></a>
+  [% ELSE %]
+   <i class="fa fa-arrow-left icon-inactive"></i>
+  [% END %]
+ </td>
+
+ <td class="text-center">
+
+   [% IF sandbox %]
+    <a href="[% c.uri_for( c.controller.action_for('view'), [ section, 'css', css, 'sandbox' ] ) | html %]"><i class="fa fa-search" title="[% c.loc('view sandbox template') | html %]"></i></a>
+   [% ELSE %]
+    <i class="fa fa-search icon-inactive"></i>
+   [% END %]
+
+   <a href="[% c.uri_for( c.controller.action_for('edit'), [ section, 'css', css ] ) | html %]"><i class="fa fa-pencil"></i></a>
+
+   [% IF sandbox %]
+    <a href="[% c.uri_for( c.controller.action_for('delete'), [ section, 'css', css, 'sandbox' ] ) | html %]"><i class="fa fa-times" title="[% c.loc('delete sandbox template') | html %]"></i></a>
+   [% ELSE %]
+    <i class="fa fa-times icon-inactive"></i>
+   [% END %]
+
+  </td></tr>
+[% END %]
+</table>
+
+</div>

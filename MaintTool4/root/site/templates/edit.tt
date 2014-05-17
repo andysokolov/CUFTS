@@ -1,0 +1,14 @@
+[%- SET header_section = section_text _ ' ' _ c.loc('Templates') -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller.action_for('menu'), [section] ), header_section ] ) -%]
+[%- breadcrumbs.push([ '', template_name ] ) -%]
+[%- SET page_id = 'site-template-menu-' _ section -%]
+
+[%- PROCESS form_results.tt -%]
+
+<h2>[% c.loc(state) %]: [% template_name | html %]</h2>
+
+<div class="well">
+<form method="post" action="[% c.uri_for( c.controller.action_for('save'), [ section, type, template_name ] ) | html %]">
+<textarea name="template_contents" style="width: 100%; height: 40em;">[% template_contents | html %]</textarea>
+<input class="btn btn-primary" name="submit" value="submit" type="submit" />
+</form>

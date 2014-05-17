@@ -1,0 +1,17 @@
+[% USE HTML %]
+
+[%- SET header_section = section_text _ ' ' _ c.loc('Templates') -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller.action_for('menu'), [section] ), header_section ] ) -%]
+[%- breadcrumbs.push([ '', template_name ] ) -%]
+[%- SET page_id = 'site-template-menu-' _ section -%]
+
+[% SET template_contents = HTML.escape(template_contents) %]
+[% SET template_contents = template_contents.replace(" ", "&nbsp;") %]
+[% SET template_contents = template_contents.replace("\n", "<br />\n") %]
+[% SET template_contents = template_contents.replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;") %]
+
+[%- PROCESS form_results.tt -%]
+
+<h2>[% c.loc(state) %]: [% template_name | html %]</h2>
+
+<pre class="well" style="overflow: scroll; white-space: nowrap;">[% template_contents %]</pre>
