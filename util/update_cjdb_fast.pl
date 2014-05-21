@@ -15,6 +15,8 @@ use Getopt::Long;
 use String::Util qw(hascontent trim);
 use List::MoreUtils qw(any uniq);
 
+use CHI;
+
 use Log::Log4perl qw(:easy);
 Log::Log4perl->easy_init($INFO);
 
@@ -29,6 +31,15 @@ sub load {
     my ( $schema ) = @_;
 
     my $logger = Log::Log4perl->get_logger();
+
+    # Use a file cache here and make sure it doesn't expire things. This is to cut memory
+    # usage a bit. If we're losing things from the cache, then this should be rewritten to
+    # use a temporary database table.
+    my $MARC_cache = CHI->new(
+        driver     => 'File',
+        root_dir   => '/tmp/cjdb_load_temp_cache',
+    );
+    $MARC_cache->clear();
 
     my %options;
     GetOptions( \%options, 'site_key=s@', 'site_id=i@', 'print_file=s', 'force' );
@@ -57,7 +68,6 @@ SITE:
 
         build_local_journal_auths($logger, $site, $schema);
 
-        my $MARC_cache = {};
         my $count;
         eval {
             $schema->txn_do( sub {
@@ -81,6 +91,8 @@ SITE:
         eval {
             email_site( $logger, $site, 'CJDB update completed for ' . $site->name . '. ' . $count . ' CJDB journals were loaded.' );
         };
+
+        $MARC_cache->clear();
     }
 
     $logger->info('Finished CJDB rebuilds.');
@@ -126,7 +138,7 @@ sub load_print_data {
             next;
         }
 
-        $MARC_cache->{$journal_auth_id}->{MARC} = $record;
+        $MARC_cache->set( "$journal_auth_id-MARC", $record );
 
         # Print records are used to populate both links and "journal auth" data
 
@@ -331,7 +343,7 @@ sub load_journal_auths {
 
         if ( my $marc = $journal_auth->marc_object ) {
             ja_augment_with_marc( $loader, $logger, $journal_auths->{$ja_id}, $marc, $site_id );
-            $MARC_cache->{ja}->{$ja_id} = $marc;
+            $MARC_cache->set( "${ja_id}-ja", $marc );
         }
 
     }
@@ -1000,16 +1012,16 @@ CJDB_RECORD:
         my $journals_auth_id = $cjdb_record->get_column('journals_auth');
 
         my $MARC_record;
-        if ( defined $MARC_cache->{$journals_auth_id}->{MARC} ) {
+        if ( my $cached_marc = $MARC_cache->get("$journals_auth_id-MARC") ) {
             if ( !$loader->preserve_print_MARC ) {
-                $MARC_record = strip_print_MARC( $logger, $site, $MARC_cache->{$journals_auth_id}->{MARC} );
+                $MARC_record = strip_print_MARC( $logger, $site, $cached_marc );
             }
             else {
-                $MARC_record = $MARC_cache->{$journals_auth_id}->{MARC};
+                $MARC_record = $cached_marc;
             }
         }
-        elsif ( exists $MARC_cache->{ja}->{$journals_auth_id} ) {
-            $MARC_record = $MARC_cache->{ja}->{$journals_auth_id};
+        elsif ( my $cached_marc = $MARC_cache->get("$journals_auth_id-ja") ) {
+            $MARC_record = $cached_marc;
             $MARC_record->leader('00000nas  22001577a 4500');   # was "nai"
         }
         else {
