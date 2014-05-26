@@ -3,6 +3,8 @@ package CUFTS::MaintTool::C::Site::CJDB;
 use strict;
 use base 'Catalyst::Base';
 
+use CJDB::DB::Accounts;
+
 use CUFTS::Util::Simple;
 
 my @valid_states = ( 'active', 'sandbox' );
@@ -37,7 +39,7 @@ my $form_settings_validate = {
             marc_dump_holdings_subfield
             marc_dump_medium_text
             marc_dump_direct_links
-            
+
             }
     ],
     required => [
@@ -401,28 +403,28 @@ sub account : Local {
             }
 
             if ( !scalar( $c->stash->{errors} ) ) {
-                
+
                 if ( not_empty_string( $c->form->{valid}->{new_password} ) ) {
                     $c->form->{valid}->{password} = crypt( $c->form->{valid}->{new_password}, $c->form->{valid}->{key} );
                 }
-                
+
                 eval {
                     $account->update_from_form( $c->form );
-                    
+
                     ##
                     ## Handle role updates
                     ##
 
-                    
+
                     # Build role id lookup table
-                    
+
                     my @role_objects = CJDB::DB::Roles->retrieve_all;
                     my %roles_map;
                     foreach my $role_object ( @role_objects ) {
                         $roles_map{$role_object->role} = $role_object->id;
                     }
-                    
-                    
+
+
                     foreach my $role ( @handled_roles ) {
 
                         my $role_id = $roles_map{$role};
@@ -436,7 +438,7 @@ sub account : Local {
 
                             CJDB::DB::AccountsRoles->find_or_create( {
                                 role => $role_id,
-                                account => $account_id 
+                                account => $account_id
                             } );
 
                         }
@@ -446,13 +448,13 @@ sub account : Local {
 
                             CJDB::DB::AccountsRoles->search( {
                                 role => $role_id,
-                                account => $account_id 
+                                account => $account_id
                             } )->delete_all;
-    
+
                         }
                     }
-                    
-                    
+
+
                 };
                 if ($@) {
                     my $err = $@;
@@ -489,10 +491,9 @@ Todd Holbrook
 
 =head1 LICENSE
 
-This library is free software . You can redistribute it and/or modify 
+This library is free software . You can redistribute it and/or modify
 it under the same terms as perl itself.
 
 =cut
 
 1;
-
