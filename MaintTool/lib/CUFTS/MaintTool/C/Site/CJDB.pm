@@ -4,6 +4,7 @@ use strict;
 use base 'Catalyst::Base';
 
 use CJDB::DB::Accounts;
+use CJDB::DB::Tags;
 
 use CUFTS::Util::Simple;
 
