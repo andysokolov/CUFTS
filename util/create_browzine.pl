@@ -13,6 +13,8 @@ use Getopt::Long;
 use IO::File;
 use String::Util qw(hascontent);
 
+use Encode;
+
 use CUFTS::Config;
 use CUFTS::Schema;
 use CUFTS::Util::Simple;
@@ -95,8 +97,8 @@ sub load_site {
             next if !hascontent($start) && !hascontent($end);
 
             $count++;
-            my @row = ( $local_resource->name_display,
-                        $journal_auth->title,
+            my @row = ( encode( 'utf8', $local_resource->name_display ),
+                        encode( 'utf8', $journal_auth->title ),
                         $issns[0],
                         exists($issns[1]) ? $issns[1] : undef,
                         defined($start) ? $start->ymd : undef,
