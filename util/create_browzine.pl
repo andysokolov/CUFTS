@@ -25,15 +25,15 @@ my $term = new Term::ReadLine 'CUFTS Browzine Dump';
 $| = 1;
 
 my %options;
-GetOptions( \%options, 'site_key=s', 'site_id=i', 'all' );
+GetOptions( \%options, 'site_keys=s@', 'site_id=i', 'all' );
 
 my $sites_rs;
 if ( $options{all} ) {
     $sites_rs = $schema->resultset('Sites');
 }
-elsif ( $options{site_id} || $options{site_key} ) {
-    my $site_search =   $options{site_id}   ? { id => int($options{site_id}) }
-                      : $options{site_key}  ? { key => $options{site_key} }
+elsif ( $options{site_id} || $options{site_keys} ) {
+    my $site_search =   $options{site_id}   ? { id  => int($options{site_id}) }
+                      : $options{site_keys} ? { key => { '-in' => $options{site_keys} } }
                                             : {};
 
     $sites_rs = $schema->resultset('Sites')->search($site_search);
