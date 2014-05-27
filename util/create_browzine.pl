@@ -32,7 +32,7 @@ if ( $options{all} ) {
 elsif ( $options{site_id} || $options{site_key} ) {
     my $site_search =   $options{site_id}   ? { id => int($options{site_id}) }
                       : $options{site_key}  ? { key => $options{site_key} }
-                      : {};
+                                            : {};
 
     $sites_rs = $schema->resultset('Sites')->search($site_search);
 }
@@ -54,7 +54,7 @@ print "Done!\n";
 sub load_site {
     my ($site) = @_;
 
-    my $OUT = get_output_fh($site);
+    my ( $OUT, $filename ) = get_output_fh($site);
 
 	my $site_id = $site->id;
 
@@ -114,6 +114,9 @@ sub load_site {
     }
 
     close $OUT;
+
+    `zip $filename.zip $filename`;
+
     return;
 }
 
@@ -135,7 +138,7 @@ sub get_output_fh {
     -d $dir
         or die("No directory for the CUFTS resolver site files: $dir");
 
-    $dir .= '/' . $site->id;
+    $dir .= '/';
     -d $dir
         or mkdir $dir
             or die("Unable to create directory $dir: $!");
@@ -151,21 +154,12 @@ sub get_output_fh {
             or die("Unable to create directory $dir: $!");
 
     opendir BZDIR, $dir
-        or die("Unable to open GS dir: $!");
-
-    # Delete all files in Browzine directory that do not start with '.'
-
-    my @unlink_files = map { "$dir/$_" } grep !/^\./, readdir BZDIR;
-    closedir BZDIR;
-    my @unlink_errs = grep {not unlink} @unlink_files;
-    if (@unlink_errs) {
-        die("Unable to remove exising Browzine files: @unlink_errs\n")
-    }
+        or die("Unable to open Browzine dir: $!");
 
     my $file = "$dir/browzine_" . $site->key . ".txt";
 
     my $fh = new IO::File(">$file")
         or die("Unable to open file ($file) for writing: $!");
 
-    return $fh;
+    return ( $fh, $file );
 }
