@@ -48,7 +48,9 @@ sub trim_string :Export( :DEFAULT ) {
     return $string;
 }
 
-sub clean_issn :Export( :DEFAULT ) {
+# Do not export by default, it conflicts with some existing code
+
+sub clean_issn :Export {
     my ($string) = @_;
     my $string = uc($string);
     $string =~ tr/0-9X//cd;
