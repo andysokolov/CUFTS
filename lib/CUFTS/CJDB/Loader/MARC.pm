@@ -6,7 +6,8 @@ use Business::ISSN;
 use MARC::Record;
 use MARC::Batch;
 use CUFTS::CJDB::Util;
-use CUFTS::Util::Simple;
+use String::Util qw( hascontent trim );
+#use CUFTS::Util::Simple;
 
 use Data::Dumper;
 
@@ -36,8 +37,8 @@ sub get_title {
     foreach my $subfield ( @$fields ) {
         my @subfield_data = $field245->subfield( $subfield );
         push @data, @subfield_data;
-    } 
-    
+    }
+
     my $title = join ' ', @data;
     eval {
         $title = $self->encode_to_latin1( $self->clean_title( $title ) );
@@ -47,9 +48,9 @@ sub get_title {
         warn("Skipping title \"$title\" due to MARC8->latin1 translation error.");
         return undef;
     }
-    
+
     $title = substr( $title, 0, 1024 );
-    
+
     return $title;
 }
 
@@ -81,7 +82,7 @@ sub get_sort_title {
         warn("Skipping title \"$title\" due to MARC8->latin1 translation error.");
         return undef;
     }
-    
+
     $title = $self->clean_title($title);
 
     return $title;
@@ -93,13 +94,9 @@ sub get_issns {
     my @issns;
     foreach my $issn_field ( $record->field('022') ) {
         foreach my $issn ( split / /, $issn_field->as_string ) {
-
-            $issn = $self->clean_issn($issn);
-
+            my $issn = $self->clean_issn($issn);
             next if !$self->test_issn($issn);
-
             $issn = $self->strip_issn_dash($issn);
-
             push @issns, $issn;
         }
     }
@@ -137,7 +134,7 @@ ALT_TITLE:
             $title .= ' ' . $alt_title->subfield('p');
         }
 
-        $title = trim_string( $title );
+        $title = trim( $title );
 
         # Drop articles
 
@@ -159,15 +156,15 @@ ALT_TITLE:
         }
 
         # Trim title to 1024 characters
-        
+
         $title = substr( $title, 0, 1024 );
 
         my $stripped_title = $self->strip_title($title);
 
         # Make sure we have a non-empty title
 
-        next ALT_TITLE if    is_empty_string($title)
-                          || is_empty_string($stripped_title);
+        next ALT_TITLE if    !hascontent($title)
+                          || !hascontent($stripped_title);
 
         # Skip weird titles like "Membership..."
 
@@ -211,7 +208,7 @@ sub get_MARC_subjects {
     my @subjects;
 
     my @marc_subjects = $record->field('6..');
-    
+
     foreach my $subject_field (@marc_subjects) {
 
         my @data;
@@ -219,7 +216,7 @@ sub get_MARC_subjects {
         foreach my $subfield ( @$fields ) {
             my @subfield_data = $subject_field->subfield( $subfield );
             push @data, @subfield_data;
-        } 
+        }
 
         my $subject = join ' ', @data;
         eval {
@@ -273,7 +270,7 @@ sub get_call_numbers {
     }
 
     # Try the Canadian specific call number field
-    
+
     if ( !scalar(@call_numbers) ) {
         @call_number_fields = $record->field('055');
         foreach my $call_number_field (@call_number_fields) {
@@ -347,7 +344,7 @@ sub _get_relation {
         warn("Skipping relation \"$title\" due to MARC8->latin1 translation error.");
         return undef;
     }
-    
+
     $title = $self->clean_title( $title );
     my $stripped_sort_title = $self->strip_title($title);
 
@@ -359,7 +356,7 @@ sub _get_relation {
                    . $self->clean_title( $self->encode_to_latin1( $field->subfield('a') ) );
         }
 
-        $relation->{title} = $title 
+        $relation->{title} = $title
                              || $self->clean_title( $self->encode_to_latin1( $field->subfield('a') ) );
     };
     if ( $@ ) {
@@ -367,9 +364,9 @@ sub _get_relation {
         warn("Skipping relation \"" . $field->subfield('a') . "\" due to MARC8->latin1 translation error.");
         return undef;
     }
-    
 
-    if ( not_empty_string( $field->subfield('b') ) ) {
+
+    if ( hascontent( $field->subfield('b') ) ) {
         $relation->{title} .= ' ' . $field->subfield('b');
     }
 
@@ -406,7 +403,7 @@ sub get_ceding_fields_issns {
 sub clean_issn {
     my ( $self, $issn ) = @_;
 
-    $issn =  uc($issn);
+    $issn = uc($issn);
 
     if ( $issn =~ / ( \d{4} \-? \d{3}[\dX] ) /xsm ) {
         return $1;
@@ -446,13 +443,13 @@ sub clean_subject {
     my ( $self, $subject ) = @_;
 
     $subject =~ s/ \. $//xsm;
-    $subject = trim_string($subject);
+    $subject = trim($subject);
 
     if ( $self->strip_subject_periodicals ) {
         $subject =~ s/ \s+ periodicals $//xsmi;
     }
 
-    return trim_string($subject);
+    return trim($subject);
 }
 
 sub clean_association {
