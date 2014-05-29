@@ -706,7 +706,7 @@ sub compare_title_words {
     }
 
     foreach my $key ( keys %title1 ) {
-        if ( $title1{$key} == $title2{$key} ) {
+        if ( exists $title2{$key} && $title1{$key} == $title2{$key} ) {
             delete $title1{$key};
             delete $title2{$key};
         }
@@ -715,7 +715,7 @@ sub compare_title_words {
         }
     }
 
-    if ( scalar( keys(%title1) ) == 0 && scalar( keys(%title2) ) == 0 ) {
+    if ( scalar(keys(%title1)) == 0 && scalar(keys(%title2)) == 0 ) {
         return 1;
     }
     else {
