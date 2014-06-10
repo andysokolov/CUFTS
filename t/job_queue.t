@@ -3,7 +3,7 @@ use warnings;
 
 use IO::File;
 
-use Test::More tests => 42;
+use Test::More tests => 43;
 
 use Test::DBIx::Class {
     schema_class => 'CUFTS::Schema',
@@ -85,6 +85,7 @@ my $job1 = $client->add_job({
     site_id            => $site->id,
     account_id         => $account->id,
     global_resource_id => $global_resource->id,
+    data               => { note => 'data note' },
 });
 isa_ok($job1, 'CUFTS::JQ::Job', 'created a new JQ job1');
 
@@ -110,14 +111,16 @@ my $job3 = $client->add_job({
     site_id           => $site->id,
     account_id        => $account->id,
     local_resource_id => $local_resource->id,
-    data              => { note => 'Here\'s a data note!' },
+    data              => { note => 'data note' },
 });
 isa_ok($job3, 'CUFTS::JQ::Job', 'created a new JQ job2');
+
 
 # Load jobs by id
 
 my $job1_match = $client->get_job( $job1->id );
 is( $job1_match->id, $job1->id, 'loaded job 1 by id');
+is( $job1_match->data->{note}, 'data note', 'data stored from passed in hashref');
 
 my $job2_match = $client->get_job( $job2->id );
 is( $job2_match->id, $job2->id, 'loaded job 2 by id');
