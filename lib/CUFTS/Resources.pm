@@ -528,37 +528,39 @@ sub find_duplicates_for_loading {
     my ($class, $IN, $field_headings) = @_;
 
     my $start_pos = tell $IN;
-    my $duplicates = {};
+    my %duplicates;
     my $duplicate_for_loading_fields = $class->duplicate_for_loading_fields();
 
 ROW:
     while (my $row = $class->title_list_parse_row($IN)) {
-        my $record = $class->title_list_build_record($field_headings, $row);
+        my $record      = $class->title_list_build_record($field_headings, $row);
         my $data_errors = $class->clean_data($record);
-        next if defined($data_errors) &&
-                ref($data_errors) eq 'ARRAY' &&
-                scalar(@$data_errors) > 0;
+
+        next ROW if    defined $data_errors
+                    && ref $data_errors eq 'ARRAY'
+                    && scalar @$data_errors > 0;
 
         my $identifier;
 FIELD:
         foreach my $field (@$duplicate_for_loading_fields) {
-            if (defined($record->{$field})) {
+            if ( hascontent($record->{$field}) ) {
                 $identifier = $record->{$field};
                 last FIELD;
             }
         }
 
-        if ( !defined($identifier) ) {
-            warn('NO IDENTIFIER');
+        if ( !defined $identifier ) {
+            warn('No valid identifier found in find_duplicates_for_loading');
             next ROW;
         }
 
-        $duplicates->{$identifier}++;
+        $duplicates{$identifier}++;
     }
 
-    seek $IN, $start_pos, 0;
+    seek $IN, $start_pos, 0;  # Reset input file to beginning
 
-    return $duplicates;
+    # Clean out single title entries to save space
+    return { map { $_ => 1 } grep { $duplicates{$_} > 1 } keys %duplicates };
 }
 
 
@@ -569,15 +571,15 @@ sub is_duplicate {
     my $identifier;
 
     foreach my $field (@$duplicate_for_loading_fields) {
-        if (defined($record->{$field})) {
+        if ( hascontent($record->{$field}) ) {
             $identifier = $record->{$field};
             last;
         }
     }
 
-    return 0 if !defined($identifier);
+    return 0 if !defined $identifier;
 
-    return $duplicates->{$identifier} > 1 ? 1 : 0;
+    return $duplicates->{$identifier} ? 1 : 0;
 }
 
 # Deletes all titles attached to a resource, manually cascading to delete from local resource title lists as well.
@@ -786,7 +788,7 @@ sub overlay_title_list {
 
         my @local_records = $local_rs->search({ resource => $local_resource->id })->all;
         my $map_field = $class->local_to_global_field;
-        my %lmap = map { $_->$map_field => $_ } @local_records;
+        my %lmap = map { $_->get_column($map_field) => $_ } @local_records;
 
         # Go through each row and update or create a matching record
 
