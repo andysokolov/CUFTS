@@ -789,6 +789,7 @@ sub overlay_title_list {
         my @local_records = $local_rs->search({ resource => $local_resource->id })->all;
         my $map_field = $class->local_to_global_field;
         my %lmap = map { $_->get_column($map_field) => $_ } @local_records;
+        my %created;
 
         # Go through each row and update or create a matching record
 
@@ -831,6 +832,10 @@ sub overlay_title_list {
 
             my $local_record = $lmap{$global_record->id};
             if ( !defined $local_record ) {
+                if ( $created{$global_record->id}++ ) {
+                     push @$errors, "Multiple lines match to single journal: " . $global_record->id;
+                     next;
+                }
                 $local_record = $local_rs->create({ resource => $local_resource->id, $map_field => $global_record->id });
                 $new_count++;
             }
