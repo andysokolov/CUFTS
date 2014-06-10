@@ -932,12 +932,16 @@ sub _match_on_rs {
     my $search = { resource => $resource_id };
     my $can_search = 0;
     foreach my $field (@$fields) {
-        next if $field eq 'id' || $field eq 'journal_auth';
+        next if grep { $field eq $_ } qw( id journal_auth );
         next if !hascontent($data->{$field});
 
         # Special case ISSN to search both issn and e_issn fields
         if ( $field eq 'issn' || $field eq 'e_issn' ) {
-            push @{$search->{-or}}, [ { issn => $data->{$field} }, { e_issn => $data->{$field} } ]
+            # if ( hascontent($data->{e_issn}) ) {
+            #     # We have both so search records that have both, but in either order.
+            #     push @{search->{-or}},
+            # }
+            push @{$search->{-and}}, [ { issn => $data->{$field} }, { e_issn => $data->{$field} } ]
         }
         else {
             $search->{$field} = $data->{$field};
