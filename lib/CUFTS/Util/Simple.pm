@@ -52,7 +52,8 @@ sub trim_string :Export( :DEFAULT ) {
 
 sub clean_issn :Export {
     my ($string) = @_;
-    my $string = uc($string);
+    return undef if !defined $string;
+    $string = uc($string);
     $string =~ tr/0-9X//cd;
     return $string;
 }
