@@ -48,7 +48,7 @@ BEGIN {
         EBSCO_Generic
         EBSCO_II
         EBSCO
-        eLibrary
+		eLibrary
         Elsevier_CNSLP
         Elsevier
         ElsevierEurope
@@ -66,6 +66,7 @@ BEGIN {
         GenericJournalDOI
         GenericPrintJournal
         Google::GoogleSearch
+        GeoScienceWorld
         Hein
         Highwire
         HighwireFree
