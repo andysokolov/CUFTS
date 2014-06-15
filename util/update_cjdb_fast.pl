@@ -1012,7 +1012,7 @@ CJDB_RECORD:
         my $journals_auth_id = $cjdb_record->get_column('journals_auth');
 
         my $MARC_record;
-        if ( my $cached_marc = $MARC_cache->get("$journals_auth_id-MARC") ) {
+        if ( my $cached_marc = $MARC_cache->get("${journals_auth_id}-MARC") ) {
             if ( !$loader->preserve_print_MARC ) {
                 $MARC_record = strip_print_MARC( $logger, $site, $cached_marc );
             }
@@ -1020,7 +1020,7 @@ CJDB_RECORD:
                 $MARC_record = $cached_marc;
             }
         }
-        elsif ( my $cached_marc = $MARC_cache->get("$journals_auth_id-ja") ) {
+        elsif ( my $cached_marc = $MARC_cache->get("${journals_auth_id}-ja") ) {
             $MARC_record = $cached_marc;
             $MARC_record->leader('00000nas  22001577a 4500');   # was "nai"
         }
@@ -1028,27 +1028,25 @@ CJDB_RECORD:
             $MARC_record = create_brief_MARC( $logger, $site, $cjdb_record->journals_auth );
         }
 
-        next if !defined $MARC_record;
+        next CJDB_RECORD if !defined $MARC_record;
 
         # Make sure ISSNs are 1234-4321 format
 
-       my @issn_fields = $MARC_record->field( '022' );
-       my @new_issn_fields;
-       foreach my $orig_field ( @issn_fields ) {
-           my $field = $orig_field->clone();
-           foreach my $subfield ( ('a' .. 'z') ) {
+        my @issn_fields = $MARC_record->field( '022' );
+        my @new_issn_fields;
+        foreach my $orig_field ( @issn_fields ) {
+            my $field = $orig_field->clone();
+            foreach my $subfield ( ('a' .. 'z') ) {
                 if ( my $sf = $field->subfield($subfield) ) {
                     next unless $sf =~ s/^(\d{4})(\d{3}[\dxX])$/$1-$2/;
                     $field->delete_subfield( code => $subfield );
                     $field->add_subfields( $subfield, $sf );
                 }
-           }
-           push @new_issn_fields, $field;
-           $MARC_record->delete_field($orig_field);
-       }
-       $MARC_record->insert_fields_ordered( @new_issn_fields );
-
-
+            }
+            push @new_issn_fields, $field;
+            $MARC_record->delete_field($orig_field);
+        }
+        $MARC_record->insert_fields_ordered( @new_issn_fields );
 
         # Add holdings statements, skip if no electronic so we don't duplicate print only journals uselessly
 
@@ -1087,19 +1085,13 @@ CJDB_RECORD:
                 $site_marc_dump_holdings_indicator2 || ' ',
                 $site_marc_dump_holdings_subfield => latin1_to_marc8($logger, $holdings)
             );
-            $MARC_record->append_fields( $holdings_field );
+            $MARC_record->insert_fields_ordered( $holdings_field );
 
             $has_holdings = 1;
-
         }
 
         if ( !$has_holdings ) {
             $logger->debug("Skipping MARC dump of record due to missing holdings.");
-            next CJDB_RECORD;
-        }
-
-        if ( !defined $MARC_record ) {
-            $logger->debug("Unable to create MARC record.");
             next CJDB_RECORD;
         }
 
@@ -1109,7 +1101,7 @@ CJDB_RECORD:
         if ( defined $existing_005 ) {
                 $MARC_record->delete_field( $existing_005 );
         }
-        $MARC_record->append_fields(
+        $MARC_record->insert_fields_ordered(
                 MARC::Field->new( '005', $datestamp )
         );
 
@@ -1159,7 +1151,7 @@ CJDB_RECORD:
                 my @title_fields = $MARC_record->field( $field_num );
                 foreach my $title_field ( @title_fields ) {
                     my @subfields = map { @{ $_ } } $title_field->subfields;  # Flatten subfields
-                    my $new_field = MARC::Field->new( $site_marc_dump_duplicate_title_field, $title_field->indicator(1), $title_field->indicator(2), @subfields );
+                    my $new_field = MARC::Field->new( $site_marc_dump_duplicate_title_field, $field_num ne '222' ? $title_field->indicator(1) : ' ', $title_field->indicator(2), @subfields );
                     $MARC_record->insert_fields_ordered( $new_field );
                 }
             }
@@ -1169,7 +1161,7 @@ CJDB_RECORD:
         if ( $MARC_record->field('210') && !$MARC_record->field('222') ) {
             my $title_field = ($MARC_record->field('245'))[0];
             my @subfields = map { @{ $_ } } $title_field->subfields;  # Flatten subfields
-            my $new_field = MARC::Field->new( '222', $title_field->indicator(1), $title_field->indicator(2), @subfields );
+            my $new_field = MARC::Field->new( '222', ' ', $title_field->indicator(2), @subfields );
             $MARC_record->insert_fields_ordered( $new_field );
         }
 
@@ -1191,7 +1183,7 @@ CJDB_RECORD:
         print ASCII_OUTPUT $MARC_record->as_formatted(), "\n\n";
     }
 
-    close(MARC_OUTPUT );
+    close(MARC_OUTPUT);
     close(ASCII_OUTPUT);
 
     $logger->info('Finished MARC dump: ', format_duration(time-$start_time));
@@ -1266,9 +1258,9 @@ sub create_brief_MARC {
 
     foreach my $title_field ($journals_auth->titles) {
         next if $seen{title}{ lc($title_field->title) }++;
-        my $title8 = latin1_to_marc8($logger, $title_field->title);
-        next if !defined($title8);
-        $MARC_record->append_fields( MARC::Field->new( '246', '0', '#', 'a' => $title8 ) );
+        my $title_marc8 = latin1_to_marc8($logger, $title_field->title);
+        next if !hascontent($title_marc8);
+        $MARC_record->append_fields( MARC::Field->new( '246', '0', '#', 'a' => $title_marc8 ) );
     }
 
     return $MARC_record;
