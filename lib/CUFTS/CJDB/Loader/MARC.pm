@@ -7,7 +7,9 @@ use MARC::Record;
 use MARC::Batch;
 use CUFTS::CJDB::Util;
 use String::Util qw( hascontent trim );
-#use CUFTS::Util::Simple;
+
+use MARC::Field;
+MARC::Field->allow_controlfield_tags('FMT', 'LDX');
 
 use Data::Dumper;
 
