@@ -249,7 +249,9 @@ __PACKAGE__->add_columns(
 );
 __PACKAGE__->set_primary_key( 'id' );
 
-# __PACKAGE__->has_many( 'accounts', [ 'CUFTS::DB::Accounts_Sites' => 'account' ], 'site' );
+__PACKAGE__->has_many( 'accounts_sites' => 'CUFTS::Schema::AccountsSites', 'site' );
+
+__PACKAGE__->many_to_many( 'accounts' => 'accounts_sites', 'account' );
 
 __PACKAGE__->has_many( ips               => 'CUFTS::Schema::SiteIPs',          'site' );
 __PACKAGE__->has_many( domains           => 'CUFTS::Schema::SiteDomains',      'site' );
