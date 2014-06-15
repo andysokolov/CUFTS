@@ -418,10 +418,11 @@ COLUMN:
         push @matched_titles, $title;
     }
 
-    scalar(@matched_titles) > 1
-        and CUFTS::Exception::App->throw('Multiple matching title rows found while updating: ' . $record->{title} );
+    if ( scalar @matched_titles > 1 ) {
+        warn('Multiple matching title rows found while updating: ' . $record->{title} );
+    }
 
-    return scalar(@matched_titles) == 1 ? $matched_titles[0] : undef;
+    return shift @matched_titles;
 }
 
 sub _find_partial_match {
