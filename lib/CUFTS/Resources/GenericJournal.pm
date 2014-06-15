@@ -88,32 +88,6 @@ sub title_list_field_map {
     };
 }
 
-sub build_linkJournal {
-    my ( $class, $schema, $records, $resource, $site, $request ) = @_;
-
-    defined($records) && scalar(@$records) > 0
-        or return [];
-    defined($resource)
-        or CUFTS::Exception::App->throw('No resource defined in build_linkJournal');
-    defined($site)
-        or CUFTS::Exception::App->throw('No site defined in build_linkJournal');
-    defined($request)
-        or CUFTS::Exception::App->throw('No request defined in build_linkJournal');
-
-    my @results;
-
-    foreach my $record (@$records) {
-        next if is_empty_string( $record->journal_url );
-
-        my $result = new CUFTS::Result( $record->journal_url );
-        $result->record($record);
-
-        push @results, $result;
-    }
-
-    return \@results;
-}
-
 sub can_getFulltext {
     return 0;
 }
