@@ -74,8 +74,7 @@ sub edit :Chained('base') :PathPart('edit') :Args(0) {
         unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
 
             eval {
-                my $site = $c->model('CUFTS::Sites')->find({id => $c->site->id});
-                $site->update_from_fv($c->form);
+                $c->site->update_from_fv($c->form);
             };
             if ($@) {
                 my $err = $@;
@@ -188,6 +187,50 @@ sub ips :Chained('base') :PathPart('ips') :Args(0)  {
 
     $c->stash->{template} = 'site/ips.tt';
 }
+
+
+
+sub google_scholar :Chained('base') :PathPart('google_scholar') Args(0) {
+    my ($self, $c) = @_;
+
+
+    my $form_validate = {
+        optional => [qw{
+            submit
+            google_scholar_keywords
+            google_scholar_e_link_label
+            google_scholar_other_link_label
+            google_scholar_openurl_base
+            google_scholar_other_xml
+
+        }],
+        required => [qw{
+            google_scholar_on
+        }],
+        missing_optional_valid => 1,
+        filters  => ['trim'],
+    };
+
+    if ($c->req->params->{submit}) {
+        $c->form($form_validate);
+
+        unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
+
+            eval {
+                $c->site->update_from_fv($c->form);
+            };
+            if ($@) {
+                my $err = $@;
+                die($err);
+            }
+
+            push @{$c->stash->{results}}, $c->loc('Site data updated.');
+        }
+    }
+
+    $c->stash->{template} = 'site/google_scholar.tt';
+}
+
 
 
 

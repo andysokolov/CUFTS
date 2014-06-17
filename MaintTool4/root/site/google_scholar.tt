@@ -1,0 +1,42 @@
+[%- SET header_section = c.loc('Google Scholar Holdings Settings') -%]
+[%- breadcrumbs.push([ '', c.loc('Google Scholar Holdings Settings') ] ) -%]
+[%- SET page_id = 'site-google-scholar-settings' -%]
+
+[%- PROCESS form_results.tt -%]
+
+<form method="post">
+ <fieldset class="well span12">
+  <h2 class="legend">general settings</h2>
+
+  <div class="control-group">
+   <label for="google_scholar_on">[% c.loc('Google Scholar export active') | html %]</label>
+   <select name="google_scholar_on" id="google_scholar_on">
+    <option value="1" [% IF c.site.google_scholar_on %]selected="selected"[% END %]>[% c.loc('Yes') | html %]</option>
+    <option value="0" [% IF !c.site.google_scholar_on.defined OR !c.site.google_scholar_on %]selected="selected"[% END %]>[% c.loc('No') | html %]</option>
+   </select>
+  </div>
+
+  [% INCLUDE show_textfield field='google_scholar_keywords',         label='Site name' %]
+  [% INCLUDE show_textfield field='google_scholar_e_link_label',     label='Electronic link label' %]
+  [% INCLUDE show_textfield field='google_scholar_other_link_label', label='Other link label' %]
+  [% INCLUDE show_textfield field='google_scholar_openurl_base',     label='OpenURL base' %]
+
+  <div class="control-group">
+   <label for="google_scholar_other_xml">[% c.loc('Google Scholar extra XML') | html %]</label>
+   <textarea name="google_scholar_other_xml" id="google_scholar_other_xml" class="span8" style="height: 7em;">[% params.defined ? params.google_scholar_other_xml : c.site.google_scholar_other_xml | html %]</textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary" value="submit" name="submit">[% c.loc('submit') %]</button>
+
+</fieldset>
+</form>
+
+
+[% BLOCK show_textfield %]
+  [% SET maxlength = maxlength OR 255 %]
+  [% SET label = label OR field.replace('_', ' ') %]
+  <div class="control-group [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]">
+  <label for="[% field %]" [% IF required %]class="required"[% END %]>[% c.loc(label) %]:</label>
+  <input class="span8" type="text" id="[% field %]" name="[% field %]" value="[% params.defined ? params.$field : c.site.$field | html %]" maxlength="[% maxlength %]" />[% PROCESS field_error.tt %]
+  </div>
+[% END %]

@@ -1,0 +1,153 @@
+[% USE url %]
+[% USE num_format = format('%0.03f') %]
+
+[%- SET header_section = c.loc('CJDB Data') -%]
+[%- breadcrumbs.push([ '', c.loc('CJDB Data') ] ) -%]
+[%- SET page_id = 'site-settings' -%]
+
+[% PROCESS form_results.tt %]
+
+<div class="row-fluid"><div class="span12">
+
+ <ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#rebuild">[% c.loc('Rebuilds') | html %]</a></li>
+  <li><a data-toggle="tab" href="#export">[% c.loc('Exported Data') | html %]</a><li>
+  <li><a data-toggle="tab" href="#lccn">[% c.loc('Call Number Mapping') | html %]</a></li>
+ </ul>
+
+
+ <div class="tab-content">
+
+  <div class="tab-pane active" id="rebuild">
+
+  <div class="well span12">
+   <h2 class="legend">[% c.loc('upcoming CJDB job') | html %]</h2>
+   [% INCLUDE jobs/embedded_list.tt jobs = upcoming_jobs %]
+  </div>
+
+  <div class="well span12" style="margin-left: 0;">
+   <h2 class="legend">[% c.loc('previous CJDB job') | html %]</h2>
+   [% INCLUDE jobs/embedded_list.tt jobs = previous_jobs %]
+  </div>
+
+  <form method="post">
+   <fieldset class="well span12">
+
+    <h2 class="legend">[% c.loc('print MARC record files') | html %]</h2>
+    <table class="grid zebra" style="width: 100%;">
+     <tr class="header">
+      <th class="compact text-center">[% c.loc('delete') %]</th>
+      <th class="compact text-center">[% c.loc('rebuild with print') %]</th>
+      <th class="compact text-center">[% c.loc('rebuild electronic only') %]</th>
+      <th class="text-left expand">[% c.loc('file') %]</th>
+      <th class="compact text-right">[% c.loc('uploaded') %]</th>
+      <th class="compact text-right">[% c.loc('size') %]</th>
+     </tr>
+
+     [% IF print_files.size %]
+      [% FOREACH print_file IN print_files %]
+       [%- SET index = loop.count - 1 -%]
+       [%- SET file_size = print_file_sizes.$index / 1048576 -%]
+       [%- SET file_timestamp = print_file_timestamps.$index -%]
+       <tr>
+        <td class="text-center compact"><input type="checkbox" name="delete" value="[% print_file | html %]" /></td>
+        <td class="text-center compact"><input id="rebuild[% loop.count %]" type="checkbox" name="rebuild" value="[% print_file | html %]" [% IF current_site.rebuild_cjdb.split('\|').in(print_file) %]checked="checked"[% END %] /></td>
+        <td class="text-center compact"><input id="marc[% loop.count %]"type="checkbox" name="MARC" value="[% print_file %]" [% IF current_site.rebuild_MARC.split('\|').in(print_file) %]checked="checked"[% END %] /></td>
+        <td>[% print_file | html %]</td>
+        <td class="text-right compact nowrap">[% file_timestamp %]</td>
+        <td class="text-right compact nowrap">[% num_format(file_size) %] MB</td>
+       </tr>
+      [% END %]
+     [% ELSE %]
+      <tr>
+       <td class="text-center compact">&nbsp;</td>
+       <td class="text-center compact">&nbsp;</td>
+       <td class="text-center compact"><input type="checkbox" name="rebuild_ejournals_only" value="1" [% IF current_site.rebuild_ejournals_only %]checked="checked"[% END %] /></td>
+       <td colspan="3">No print files available, rebuild from CUFTS data only</td>
+      </tr>
+     [% END %]
+    </table>
+
+    <input style="margin-top: 10px;" class="btn btn-primary" type="submit" name="submit" value="submit" />
+   </fieldset>
+  </form>
+
+  <form enctype="multipart/form-data" method="post">
+  <fieldset class="well span12">
+    <h2>[% c.loc('upload print MARC file') | html %]</h2>
+
+    <div class="control-group [% IF form_submitted AND (c.form.missing('upload_label') OR c.form.invalid('upload_label')) %]error[% END %]">
+     <label for="upload_label">[% c.loc('label') | html %]</label>
+     <input class="span8" type="text" id="upload_label" name="upload_label" value="[% params.defined ? params.upload_label : site.upload_label | html %]" />[% PROCESS field_error.tt field='upload_label' %]
+    </div>
+
+    <div class="control-group [% IF form_submitted AND (c.form.missing('cjdb_data_upload') OR c.form.invalid('cjdb_data_upload')) %]error[% END %]">
+     <label for="cjdb_data_upload">[% c.loc('file') | html %]</label>
+     <input class="span8" type="file" id="cjdb_data_upload" name="cjdb_data_upload" />[% PROCESS field_error.tt field='cjdb_data_upload' %]
+    </div>
+
+    <input type="submit" class="btn" name="upload_data" value="upload" />
+  </fieldset>
+  </form>
+
+ </div>
+
+ <div class="tab-pane" id="export">
+
+  <div class="well span12" style="margin-left: 0">
+   <h2 class="legend">[% c.loc('dumped MARC data from last CJDB load') | html %]</h2>
+
+   <label>[% c.loc('readable') | html %]</label>
+   <a href="[% url("${MARC_url}marc_dump.txt") %]">marc_data.txt</a>
+
+   <label>[% c.loc('transmission') | html %]</label>
+   <a href="[% url("${MARC_url}marc_dump.mrc") %]">marc_data.mrc</a>
+  </div>
+
+ </div>
+
+ <div class="tab-pane" id="lccn">
+
+  <form method="post">
+   <fieldset class="well span12">
+
+   <table class="grid outlined" style="width: 100%;">
+    <tr class="header">
+     <th class="text-center compact">delete</th>
+     <th class="text-left expand">file</th>
+    </tr>
+    [% IF call_number_file.defined %]
+     <tr><td style="width: 1%; text-align: center"><input name="delete_lccn" type="checkbox" value="1" /></td><td>[% call_number_file | html %]</td></tr>
+    [% ELSE %]
+     <tr><td colspan="2">No call number file uploaded.</td></tr>
+    [% END %]
+   </table>
+
+  [% IF call_number_file.defined %]
+   <input style="margin-top: 10px;" class="btn btn-primary" type="submit" name="submit" value="submit" />
+  [% END %]
+
+  </fieldset>
+  </form>
+
+  <form enctype="multipart/form-data" method="post">
+  <fieldset class="well span12">
+  [% IF call_number_file.defined %]
+   <h2>[% c.loc('replace LCCN file') | html %]</h2>
+  [% ELSE %]
+   <h2>[% c.loc('upload LCCN file') | html %]</h2>
+  [% END %]
+
+   <div class="control-group [% IF form_submitted AND (c.form.missing('lccn_data_upload') OR c.form.invalid('lccn_data_upload')) %]error[% END %]">
+    <label for="lccn_data_upload">[% c.loc('file') | html %]</label>
+    <input type="file" id="lccn_data_upload" name="lccn_data_upload" />[% PROCESS field_error.tt field='lccn_data_upload' %]
+   </div>
+
+   <input type="submit" class="btn" name="upload_lccn" value="upload" />
+
+   </fieldset>
+  </form>
+ </div>
+</div>
+
+</div>

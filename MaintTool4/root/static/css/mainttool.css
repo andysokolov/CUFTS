@@ -161,7 +161,7 @@ i.icon-inactive {
 
 /* Tweak bootstrap layouts a bit */
 
-#content .well>h1, #content .well>h2, #content .well>h3 {
+#content .well>h1:first-child, #content .well>h2:first-child, #content .well>h3:first-child {
     margin-top: -10px;
 }
 
@@ -182,16 +182,21 @@ form.form-inline.control-bar {
     margin-bottom: 5px;
 }
 
-fieldset.well label {
-    margin-top: 5px;
+form {
+    margin: 0;
 }
 
-fieldset.well button[type=submit] {
+.well label {
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+.well button[type=submit] {
     display: block;
 }
 
-fieldset.well label {
-    font-weight: bold;
+.row-fluid form fieldset.well {
+    margin-left: 0;
 }
 
 .row-fluid fieldset.well input, fieldset.well input {
