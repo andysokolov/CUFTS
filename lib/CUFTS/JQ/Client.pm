@@ -67,6 +67,7 @@ has 'job_log_dir' => (
 #
 
 Readonly my $class_map => {
+    'cjdb rebuild'             => 'CJDBRebuild',
     'global title list load'   => 'GlobalTitleListLoad',
     'global resource delete'   => 'GlobalResourceDelete',
     'local resource delete'    => 'LocalResourceDelete',

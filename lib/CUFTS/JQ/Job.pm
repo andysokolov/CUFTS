@@ -223,13 +223,13 @@ sub checkpoint {
 }
 
 sub running_checkpoint {
-    my ( $self, $count, $max, $start, $range, $message ) = @_;
+    my ( $self, $count, $max, $start, $range, $message, $force_checkpoint ) = @_;
 
     return if $max == 0; # Avoid divide by 0
 
     my $checkpoint = int( ( $count / $max ) * $range ) + $start;  # start to ($start+range)
 
-    if ( $checkpoint > $self->completion ) {
+    if ( $force_checkpoint || $checkpoint > $self->completion ) {
         $self->checkpoint( $checkpoint, $message );
     }
 
