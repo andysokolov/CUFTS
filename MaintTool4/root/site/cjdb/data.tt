@@ -10,15 +10,15 @@
 <div class="row-fluid"><div class="span12">
 
  <ul class="nav nav-tabs">
-  <li class="active"><a data-toggle="tab" href="#rebuild">[% c.loc('Rebuilds') | html %]</a></li>
-  <li><a data-toggle="tab" href="#export">[% c.loc('Exported Data') | html %]</a><li>
-  <li><a data-toggle="tab" href="#lccn">[% c.loc('Call Number Mapping') | html %]</a></li>
+  <li[% IF active_tab == 'rebuild' %] class="active"[% END %]><a data-toggle="tab" href="#rebuild">[% c.loc('Rebuilds') | html %]</a></li>
+  <li[% IF active_tab == 'export' %] class="active"[% END %]><a data-toggle="tab" href="#export">[% c.loc('Exported Data') | html %]</a><li>
+  <li[% IF active_tab == 'lccn' %] class="active"[% END %]><a data-toggle="tab" href="#lccn">[% c.loc('Call Number Mapping') | html %]</a></li>
  </ul>
 
 
  <div class="tab-content">
 
-  <div class="tab-pane active" id="rebuild">
+  <div class="tab-pane[% IF active_tab == 'rebuild' %] active[% END %]" id="rebuild">
 
   <div class="well span12">
    <h2 class="legend">[% c.loc('upcoming CJDB job') | html %]</h2>
@@ -51,8 +51,8 @@
        [%- SET file_timestamp = print_file_timestamps.$index -%]
        <tr>
         <td class="text-center compact"><input type="checkbox" name="delete" value="[% print_file | html %]" /></td>
-        <td class="text-center compact"><input id="rebuild[% loop.count %]" type="checkbox" name="rebuild" value="[% print_file | html %]" [% IF current_site.rebuild_cjdb.split('\|').in(print_file) %]checked="checked"[% END %] /></td>
-        <td class="text-center compact"><input id="marc[% loop.count %]"type="checkbox" name="MARC" value="[% print_file %]" [% IF current_site.rebuild_MARC.split('\|').in(print_file) %]checked="checked"[% END %] /></td>
+        <td class="text-center compact"><input id="rebuild[% loop.count %]" type="checkbox" name="rebuild" value="[% print_file | html %]" /></td>
+        <td class="text-center compact"><input id="marc[% loop.count %]"type="checkbox" name="MARC" value="[% print_file | html %]" /></td>
         <td>[% print_file | html %]</td>
         <td class="text-right compact nowrap">[% file_timestamp %]</td>
         <td class="text-right compact nowrap">[% num_format(file_size) %] MB</td>
@@ -62,13 +62,13 @@
       <tr>
        <td class="text-center compact">&nbsp;</td>
        <td class="text-center compact">&nbsp;</td>
-       <td class="text-center compact"><input type="checkbox" name="rebuild_ejournals_only" value="1" [% IF current_site.rebuild_ejournals_only %]checked="checked"[% END %] /></td>
+       <td class="text-center compact"><input type="checkbox" name="rebuild_ejournals_only" value="1" [% IF c.site.rebuild_ejournals_only %]checked="checked"[% END %] /></td>
        <td colspan="3">No print files available, rebuild from CUFTS data only</td>
       </tr>
      [% END %]
     </table>
 
-    <input style="margin-top: 10px;" class="btn btn-primary" type="submit" name="submit" value="submit" />
+    <input style="margin-top: 10px;" class="btn btn-primary" type="submit" name="submit_rebuild" value="submit" />
    </fieldset>
   </form>
 
@@ -78,7 +78,7 @@
 
     <div class="control-group [% IF form_submitted AND (c.form.missing('upload_label') OR c.form.invalid('upload_label')) %]error[% END %]">
      <label for="upload_label">[% c.loc('label') | html %]</label>
-     <input class="span8" type="text" id="upload_label" name="upload_label" value="[% params.defined ? params.upload_label : site.upload_label | html %]" />[% PROCESS field_error.tt field='upload_label' %]
+     <input class="span8" type="text" id="upload_label" name="upload_label" value="[% params.defined ? params.upload_label : c.site.upload_label | html %]" />[% PROCESS field_error.tt field='upload_label' %]
     </div>
 
     <div class="control-group [% IF form_submitted AND (c.form.missing('cjdb_data_upload') OR c.form.invalid('cjdb_data_upload')) %]error[% END %]">
@@ -92,7 +92,49 @@
 
  </div>
 
- <div class="tab-pane" id="export">
+ <div class="tab-pane[% IF active_tab == 'export' %] active[% END %]" id="export">
+
+  <form method="post">
+   <fieldset class="well span12">
+    <h2 class="legend">[% c.loc('MARC record dump settings') | html %]</h2>
+
+    [% INCLUDE show_textfield field='marc_dump_856_link_label', label='856 link label' %]
+
+    <div class="control-group [% IF form_submitted AND (c.form.missing(marc_dump_duplicate_title_field) OR c.form.invalid(marc_dump_duplicate_title_field)) %]error[% END %]">
+     <label for="marc_dump_duplicate_title_field">[% c.loc('duplicate title field') | html %]:</label>
+     <input style="width: 5em;" type="text" id="marc_dump_duplicate_title_field" name="marc_dump_duplicate_title_field" value="[% params.defined ? params.marc_dump_duplicate_title_field : c.site.marc_dump_duplicate_title_field | html %]" maxlength="3" />[% PROCESS field_error.tt, field='marc_dump_duplicate_title_field' %]
+    </div>
+
+    <div class="control-group [% IF form_submitted AND (c.form.missing(marc_dump_holdings_field) OR c.form.invalid(marc_dump_holdings_field) OR c.form.missing(marc_dump_holdings_indicator1) OR c.form.invalid(marc_dump_holdings_indicator1) OR c.form.missing(marc_dump_holdings_indicator2) OR c.form.invalid(marc_dump_holdings_indicator2) OR c.form.missing(marc_dump_holdings_subfield) OR c.form.invalid(marc_dump_holdings_subfield) ) %]error[% END %]">
+     <label for="marc_dump_holdings_field">[% c.loc('holdings field') | html %]:</label>
+     <input style="width: 5em;" type="text" id="marc_dump_holdings_field" name="marc_dump_holdings_field" value="[% params.defined ? params.marc_dump_holdings_field : c.site.marc_dump_holdings_field | html %]" maxlength="3" />[% PROCESS field_error.tt, field='marc_dump_holdings_field' %]
+     <input style="width: 1em;" type="text" id="marc_dump_holdings_indicator1" name="marc_dump_holdings_indicator1" value="[% params.defined ? params.marc_dump_holdings_indicator1 : c.site.marc_dump_holdings_indicator1 | html %]" maxlength="1" />[% PROCESS field_error.tt, field='marc_dump_holdings_indicator1' %]
+     <input style="width: 1em;" type="text" id="marc_dump_holdings_indicator2" name="marc_dump_holdings_indicator2" value="[% params.defined ? params.marc_dump_holdings_indicator2 : c.site.marc_dump_holdings_indicator2 | html %]" maxlength="1" />[% PROCESS field_error.tt, field='marc_dump_holdings_indicator2' %]
+     <input style="width: 1em;" type="text" id="marc_dump_holdings_subfield" name="marc_dump_holdings_subfield" value="[% params.defined ? params.marc_dump_holdings_subfield : c.site.marc_dump_holdings_subfield | html %]" maxlength="1" />[% PROCESS field_error.tt, field='marc_dump_holdings_subfield' %]
+    </div>
+
+    <div class="control-group [% IF form_submitted AND (c.form.missing(marc_dump_cjdb_id_field) OR c.form.invalid(marc_dump_cjdb_id_field) OR c.form.missing(marc_dump_cjdb_id_indicator1) OR c.form.invalid(marc_dump_cjdb_id_indicator1) OR c.form.missing(marc_dump_cjdb_id_indicator2) OR c.form.invalid(marc_dump_cjdb_id_indicator2) OR c.form.missing(marc_dump_cjdb_id_subfield) OR c.form.invalid(marc_dump_cjdb_id_subfield) ) %]error[% END %]">
+     <label for="marc_dump_cjdb_id_field">[% c.loc('cjdb identifier field') | html %]:</label>
+     <input style="width: 5em;" type="text" id="marc_dump_cjdb_id_field" name="marc_dump_cjdb_id_field" value="[% params.defined ? params.marc_dump_cjdb_id_field : c.site.marc_dump_cjdb_id_field | html %]" maxlength="3" />[% PROCESS field_error.tt, field='marc_dump_cjdb_id_field' %]
+     <input style="width: 1em;" type="text" id="marc_dump_cjdb_id_indicator1" name="marc_dump_cjdb_id_indicator1" value="[% params.defined ? params.marc_dump_cjdb_id_indicator1 : c.site.marc_dump_cjdb_id_indicator1 | html %]" maxlength="1" />[% PROCESS field_error.tt, field='marc_dump_cjdb_id_indicator1' %]
+     <input style="width: 1em;" type="text" id="marc_dump_cjdb_id_indicator2" name="marc_dump_cjdb_id_indicator2" value="[% params.defined ? params.marc_dump_cjdb_id_indicator2 : c.site.marc_dump_cjdb_id_indicator2 | html %]" maxlength="1" />[% PROCESS field_error.tt, field='marc_dump_cjdb_id_indicator2' %]
+     <input style="width: 1em;" type="text" id="marc_dump_cjdb_id_subfield" name="marc_dump_cjdb_id_subfield" value="[% params.defined ? params.marc_dump_cjdb_id_subfield : c.site.marc_dump_cjdb_id_subfield | html %]" maxlength="1" />[% PROCESS field_error.tt, field='marc_dump_cjdb_id_subfield' %]
+    </div>
+
+    [% INCLUDE show_textfield field='marc_dump_medium_text', label='medium text' %]
+
+    <div class="control-group">
+     <label for="marc_dump_direct_links">[% c.loc('use direct links') | html %]</label>
+     <select name="marc_dump_direct_links" id="marc_dump_direct_links">
+      <option value="1" [% IF c.site.marc_dump_direct_links %]selected="selected"[% END %]>[% c.loc('Yes') | html %]</option>
+      <option value="0" [% IF !c.site.marc_dump_direct_links.defined OR !c.site.marc_dump_direct_links %]selected="selected"[% END %]>[% c.loc('No') | html %]</option>
+     </select>
+    </div>
+
+    <input type="submit" class="btn btn-primary" name="marc_settings" value="submit" />
+
+   </fieldset>
+  </form>
 
   <div class="well span12" style="margin-left: 0">
    <h2 class="legend">[% c.loc('dumped MARC data from last CJDB load') | html %]</h2>
@@ -106,7 +148,7 @@
 
  </div>
 
- <div class="tab-pane" id="lccn">
+ <div class="tab-pane[% IF active_tab == 'lccn' %] active[% END %]" id="lccn">
 
   <form method="post">
    <fieldset class="well span12">
@@ -124,7 +166,7 @@
    </table>
 
   [% IF call_number_file.defined %]
-   <input style="margin-top: 10px;" class="btn btn-primary" type="submit" name="submit" value="submit" />
+   <input style="margin-top: 10px;" class="btn btn-primary" type="submit" name="lccn_delete_submit" value="submit" />
   [% END %]
 
   </fieldset>
@@ -151,3 +193,13 @@
 </div>
 
 </div>
+
+
+[% BLOCK show_textfield %]
+  [% SET maxlength = maxlength OR 255 %]
+  [% SET label = label OR field.replace('_', ' ') %]
+  <div class="control-group [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]">
+  <label for="[% field %]" [% IF required %]class="required"[% END %]>[% c.loc(label) %]:</label>
+  <input class="span8" type="text" id="[% field %]" name="[% field %]" value="[% params.defined ? params.$field : c.site.$field | html %]" maxlength="[% maxlength %]" />[% PROCESS field_error.tt %]
+  </div>
+[% END %]

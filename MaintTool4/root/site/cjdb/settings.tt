@@ -1,85 +1,72 @@
+[%- SET header_section = c.loc('CJDB Settings') -%]
+[%- breadcrumbs.push([ '', c.loc('CJDB Settings') ] ) -%]
+[%- SET page_id = 'site-cjdb-settings' -%]
+
+[%- PROCESS form_results.tt -%]
 
 <form method="post">
-<table class="outlined">
-<tr><td class="heading-bar" colspan="2">CJDB display options</td></tr>
-<tr><td class="label0">unified journal display</td><td class="field0"><select name="cjdb_unified_journal_list">
-<option value="standard" [% IF !current_site.cjdb_unified_journal_list.defined OR current_site.cjdb_unified_journal_list == 'standard' %]selected="selected"[% END %]>standard</option>
-<option value="unified" [% IF current_site.cjdb_unified_journal_list == 'unified' %]selected="selected"[% END %]>unified</option>
-</select></td></tr>
-<tr><td class="label1">show citation coverage</td><td class="field1"><select name="cjdb_show_citations">
-<option value="1" [% IF current_site.cjdb_show_citations %]selected="selected"[% END %]>Yes</option>
-<option value="0" [% IF !current_site.cjdb_show_citations.defined OR !current_site.cjdb_show_citations %]selected="selected"[% END %]>No</option>
-</select></td></tr>
-<tr><td class="label0">display resource name only</td><td class="field0"><select name="cjdb_display_db_name_only">
-<option value="1" [% IF cjdb_display_db_name_only %]selected="selected"[% END %]>Yes</option>
-<option value="0" [% IF !current_site.cjdb_display_db_name_only.defined OR !current_site.cjdb_display_db_name_only %]selected="selected"[% END %]>No</option>
-</select></td></tr>
-<tr><td class="label1">print name</td><td class="field1">
-<input type="text" name="cjdb_print_name" value="[% current_site.cjdb_print_name %]" maxlength="1024" size="30"/>
-</td></tr>
-<tr><td class="label0">print label</td><td class="field0">
-<input type="text" name="cjdb_print_link_label" value="[% current_site.cjdb_print_link_label %]" maxlength="1024" size="30"/>
-</td></tr>
-</table>
-<br />
 
-<table class="outlined">
-<tr><td class="heading-bar" colspan="2">CJDB authentication options</td></tr>
-<tr><td class="label0">authentication module</td><td class="field0"><select name="cjdb_authentication_module">
-<option value="" [% IF !current_site.cjdb_authentication_module.defined  %]selected="selected"[% END %]>internal</option>
-<option value="LDAP" [% IF current_site.cjdb_authentication_module == 'LDAP' %]selected="selected"[% END %]>LDAP</option>
-</select></td></tr>
-<tr><td class="label1">server</td><td class="field1">
-<input type="text" name="cjdb_authentication_server" value="[% current_site.cjdb_authentication_server %]" maxlength="1024" size="30"/>
-</td></tr>
-<tr><td class="label0">setting 1</td><td class="field0">
-<input type="text" name="cjdb_authentication_string1" value="[% current_site.cjdb_authentication_string1 %]" maxlength="1024" size="30"/>
-</td></tr>
-<tr><td class="label1">setting 2</td><td class="field1">
-<input type="text" name="cjdb_authentication_string2" value="[% current_site.cjdb_authentication_string2 %]" maxlength="1024" size="30"/>
-</td></tr>
-<tr><td class="label0">setting 3</td><td class="field0">
-<input type="text" name="cjdb_authentication_string3" value="[% current_site.cjdb_authentication_string3 %]" maxlength="1024" size="30"/>
-</td></tr>
-<tr><td class="label1">level 100</td><td class="field1">
-<input type="text" name="cjdb_authentication_level100" value="[% current_site.cjdb_authentication_level100 %]" maxlength="1024" size="30"/>
-</td></tr>
-<tr><td class="label0">level 50</td><td class="field0">
-<input type="text" name="cjdb_authentication_level50" value="[% current_site.cjdb_authentication_level50 %]" maxlength="1024" size="30"/>
-</td></tr>
-</table>
-<br />
+ <fieldset class="well span12">
+  <h2 class="legend">[% c.loc('display options') | html %]</h2>
 
-<table class="outlined">
-<tr><td class="heading-bar" colspan="2">MARC record dump settings</td></tr>
-<tr><td class="label0">856 link label</td><td class="field0">
-<input type="text" name="marc_dump_856_link_label" value="[% current_site.marc_dump_856_link_label %]" maxlength="1024" size="30"/>
-</td></tr>
-<tr><td class="label1">Duplicate title field</td><td class="field1">
-<input type="text" name="marc_dump_duplicate_title_field" value="[% current_site.marc_dump_duplicate_title_field %]" maxlength="3" size="5"/>
-</td></tr>
-<tr><td class="label0">Holdings field, indicators, and subfield</td><td class="field0">
-<input type="text" name="marc_dump_holdings_field" value="[% current_site.marc_dump_holdings_field %]" maxlength="3" size="5"/>
-<input type="text" name="marc_dump_holdings_indicator1" value="[% current_site.marc_dump_holdings_indicator1 %]" maxlength="1" size="3"/>
-<input type="text" name="marc_dump_holdings_indicator2" value="[% current_site.marc_dump_holdings_indicator2 %]" maxlength="1" size="3"/>
-<input type="text" name="marc_dump_holdings_subfield" value="[% current_site.marc_dump_holdings_subfield %]" maxlength="1" size="3"/>
-</td></tr>
-<tr><td class="label1">CJDB id field, indicators, and subfield</td><td class="field1">
-<input type="text" name="marc_dump_cjdb_id_field" value="[% current_site.marc_dump_cjdb_id_field %]" maxlength="3" size="5"/>
-<input type="text" name="marc_dump_cjdb_id_indicator1" value="[% current_site.marc_dump_cjdb_id_indicator1 %]" maxlength="1" size="3"/>
-<input type="text" name="marc_dump_cjdb_id_indicator2" value="[% current_site.marc_dump_cjdb_id_indicator2 %]" maxlength="1" size="3"/>
-<input type="text" name="marc_dump_cjdb_id_subfield" value="[% current_site.marc_dump_cjdb_id_subfield %]" maxlength="1" size="3"/>
-</td></tr>
-<tr><td class="label0">Medium text</td><td class="field0">
-<input type="text" name="marc_dump_medium_text" value="[% current_site.marc_dump_medium_text %]" maxlength="1024" size="30"/>
-</td></tr>
-<tr><td class="label1">Dump direct 856 links</td><td class="field1"><select name="marc_dump_direct_links">
-<option value="1" [% IF current_site.marc_dump_direct_links %]selected="selected"[% END %]>Yes</option>
-<option value="0" [% IF !current_site.marc_dump_direct_links.defined OR !current_site.marc_dump_direct_links %]selected="selected"[% END %]>No</option>
-</select></td></tr>
-</table>
-<br />
+  <div class="control-group">
+   <label for="cjdb_unified_journal_list">[% c.loc('show holdings in browse') | html %]</label>
+   <select name="cjdb_unified_journal_list" id="cjdb_unified_journal_list">
+    <option value="unified" [% IF !c.site.cjdb_unified_journal_list.defined OR c.site.cjdb_unified_journal_list == 'unified' %]selected="selected"[% END %]>[% c.loc('Yes') | html %]</option>
+    <option value="standard" [% IF c.site.cjdb_unified_journal_list == 'standard' %]selected="selected"[% END %]>[% c.loc('No') | html %]</option>
+   </select>
+  </div>
 
+  <div class="control-group">
+   <label for="cjdb_show_citations">[% c.loc('show citation coverage') | html %]</label>
+   <select name="cjdb_show_citations" id="cjdb_show_citations">
+    <option value="1" [% IF c.site.cjdb_show_citations %]selected="selected"[% END %]>[% c.loc('Yes') | html %]</option>
+    <option value="0" [% IF !c.site.cjdb_show_citations.defined OR !c.site.cjdb_show_citations %]selected="selected"[% END %]>[% c.loc('No') | html %]</option>
+   </select>
+  </div>
 
-<input type="submit" name="submit" value="submit" /> <input type="submit" name="cancel" value="cancel" />
+  <div class="control-group">
+   <label for="cjdb_display_db_name_only">[% c.loc('show database name only') | html %]</label>
+   <select name="cjdb_display_db_name_only" id="cjdb_display_db_name_only">
+    <option value="1" [% IF c.site.cjdb_display_db_name_only %]selected="selected"[% END %]>[% c.loc('Yes') | html %]</option>
+    <option value="0" [% IF !c.site.cjdb_display_db_name_only.defined OR !c.site.cjdb_display_db_name_only %]selected="selected"[% END %]>[% c.loc('No') | html %]</option>
+   </select>
+  </div>
+
+  [% INCLUDE show_textfield field='cjdb_print_name',       label='print indicator' %]
+  [% INCLUDE show_textfield field='cjdb_print_link_label', label='print link label' %]
+
+ </fieldset>
+
+ <fieldset class="well span12">
+  <h2 class="legend">[% c.loc('authentication options') | html %]</h2>
+
+  <div class="control-group">
+   <label for="cjdb_authentication_module">[% c.loc('authentication module') | html %]</label>
+   <select name="cjdb_authentication_module" id="cjdb_authentication_module">
+    <option value="internal" [% IF !c.site.cjdb_authentication_module.defined OR c.site.cjdb_authentication_module == 'internal' %]selected="selected"[% END %]>[% c.loc('internal') | html %]</option>
+    <option value="LDAP" [% IF c.site.cjdb_authentication_module == 'LDAP' %]selected="selected"[% END %]>[% c.loc('LDAP') | html %]</option>
+   </select>
+  </div>
+
+  [% INCLUDE show_textfield field='cjdb_authentication_server',   label='authentication server' %]
+  [% INCLUDE show_textfield field='cjdb_authentication_string1',  label='authentication string 1' %]
+  [% INCLUDE show_textfield field='cjdb_authentication_string2',  label='authentication string 2' %]
+  [% INCLUDE show_textfield field='cjdb_authentication_string3',  label='authentication string 3' %]
+  [% INCLUDE show_textfield field='cjdb_authentication_level100', label='level 100 indicator' %]
+  [% INCLUDE show_textfield field='cjdb_authentication_level50',  label='level 50 indicator' %]
+
+ </fieldset>
+
+ <button type="submit" class="btn btn-primary" value="submit" name="submit">[% c.loc('submit') %]</button>
+
 </form>
+
+[% BLOCK show_textfield %]
+  [% SET maxlength = maxlength OR 255 %]
+  [% SET label = label OR field.replace('_', ' ') %]
+  <div class="control-group [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]">
+  <label for="[% field | html %]" [% IF required %]class="required"[% END %]>[% c.loc(label) | html %]:</label>
+  <input class="span8" type="text" id="[% field | html %]" name="[% field | html %]" value="[% params.defined ? params.$field : c.site.$field | html %]" maxlength="[% maxlength %]" />[% PROCESS field_error.tt %]
+  </div>
+[% END %]

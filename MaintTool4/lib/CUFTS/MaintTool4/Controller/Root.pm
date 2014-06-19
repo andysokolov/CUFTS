@@ -185,6 +185,7 @@ sub _setup_menu {
             push @menu, [ $c->loc('Site Settings'), [
                 [ $c->loc('General'),           $c->uri_for( $c->controller('Site')->action_for('edit') ) ],
                 [ $c->loc('CJDB Templates'),    $c->uri_for( $c->controller('Site::Templates')->action_for('menu'), ['cjdb4'] ) ],
+                [ $c->loc('CJDB Settings'),     $c->uri_for( $c->controller('Site::CJDB')->action_for('settings') ) ],
                 [ $c->loc('CJDB Data'),         $c->uri_for( $c->controller('Site::CJDB')->action_for('data') ) ],
                 [ $c->loc('CRDB Templates'),    $c->uri_for( $c->controller('Site::Templates')->action_for('menu'), ['crdb4'] ) ],
                 [ $c->loc('Google Scholar'),    $c->uri_for( $c->controller('Site')->action_for('google_scholar') ) ],

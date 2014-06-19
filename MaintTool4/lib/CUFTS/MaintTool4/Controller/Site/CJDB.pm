@@ -2,6 +2,7 @@ package CUFTS::MaintTool4::Controller::Site::CJDB;
 use Moose;
 use namespace::autoclean;
 
+use DateTime;
 use String::Util qw( hascontent trim );
 
 BEGIN { extends 'Catalyst::Controller'; }
@@ -25,7 +26,7 @@ my @valid_types  = ( 'css',    'cjdb_template' );
 
 my $form_settings_validate = {
     optional => [
-        qw{
+        qw(
             submit
 
             cjdb_print_name
@@ -38,20 +39,7 @@ my $form_settings_validate = {
             cjdb_authentication_string3
             cjdb_authentication_level100
             cjdb_authentication_level50
-
-            marc_dump_856_link_label
-            marc_dump_duplicate_title_field
-            marc_dump_cjdb_id_field
-            marc_dump_cjdb_id_indicator1
-            marc_dump_cjdb_id_indicator2
-            marc_dump_cjdb_id_subfield
-            marc_dump_holdings_field
-            marc_dump_holdings_indicator1
-            marc_dump_holdings_indicator2
-            marc_dump_holdings_subfield
-            marc_dump_medium_text
-            marc_dump_direct_links
-        }
+        )
     ],
     required => [
         qw(
@@ -64,33 +52,56 @@ my $form_settings_validate = {
     missing_optional_valid => 1,
 };
 
-my $form_data_validate = {
+my $form_data_validate_marc_settings = {
     optional => [
         qw(
-            submit
-            delete
-            rebuild
-            test
-            delete_lccn
-            MARC
-            rebuild_ejournals_only
-            upload_data
-            cjdb_data_upload
-            upload_label
-            lccn_data_upload
-            upload_lccn
+            marc_dump_856_link_label
+            marc_dump_duplicate_title_field
+            marc_dump_cjdb_id_field
+            marc_dump_cjdb_id_indicator1
+            marc_dump_cjdb_id_indicator2
+            marc_dump_cjdb_id_subfield
+            marc_dump_holdings_field
+            marc_dump_holdings_indicator1
+            marc_dump_holdings_indicator2
+            marc_dump_holdings_subfield
+            marc_dump_medium_text
+            marc_dump_direct_links
+            marc_settings
         )
     ],
-    dependency_groups => {
-        'data_upload' => [ 'upload_data',      'cjdb_data_upload' ],
-        'lccn_upload' => [ 'lccn_data_upload', 'upload_lccn' ],
-    },
+    filters => ['trim'],
+    missing_optional_valid => 1,
+};
+
+my $form_data_validate_rebuild = {
+    optional => [
+        qw(
+            delete
+            MARC
+            rebuild
+            rebuild_ejournals_only
+            submit_rebuild
+        )
+    ],
     constraints => {
         delete  => qr/^[^&\|:;'"\\\/]+$/,
-        test    => qr/^[^&\|:;'"\\\/]+$/,
-        rebuild => qr/^[^&\|:;'"\\\/]+$/,       #"
+        MARC    => qr/^[^&\|:;'"\\\/]+$/,
     },
-    filters => ['trim'],
+};
+
+my $form_data_validate_delete_lccn = {
+    required => [ qw( delete_lccn lccn_delete_submit ) ],
+};
+
+my $form_data_validate_upload_lccn = {
+    required => [ qw( upload_lccn lccn_data_upload ) ],
+};
+
+my $form_data_validate_upload_data = {
+    optional => [ qw( upload_label ) ],
+    required => [ qw( upload_data cjdb_data_upload ) ],
+    filters  => [ 'trim' ],
 };
 
 my $form_accounts_validate = {
@@ -134,26 +145,26 @@ my $form_account_validate = {
     filters                => ['trim'],
 };
 
-# sub settings :Chained('../base') :PathPart('cjdb_settings') :Args(0) {
-#     my ( $self, $c ) = @_;
-#
-#     $c->form($form_settings_validate);
-#
-#     if ( hascontent($c->form->valid->{submit}) ) {
-#         unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
-#
-#             eval { $c->site->update_from_fv($c->form); };
-#             if ($@) {
-#                 my $err = $@;
-#                 die($err);
-#             }
-#
-#             push @{ $c->stash->{results} }, 'Site data updated.';
-#         }
-#     }
-#
-#     $c->stash->{template} = 'site/cjdb_settings.tt';
-# }
+sub settings :Chained('../base') :PathPart('cjdb_settings') :Args(0) {
+    my ( $self, $c ) = @_;
+
+    $c->form($form_settings_validate);
+
+    if ( hascontent($c->form->valid->{submit}) ) {
+        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
+
+            eval { $c->site->update_from_fv($c->form); };
+            if ($@) {
+                my $err = $@;
+                die($err);
+            }
+
+            push @{ $c->stash->{results} }, $c->loc('Site data updated.');
+        }
+    }
+
+    $c->stash->{template} = 'site/cjdb/settings.tt';
+}
 
 
 # Converts a list to a list convertable hash { val => 1 }. Can take a listref or single value
@@ -166,33 +177,53 @@ sub listref_to_list {
 sub data :Chained('../base') :PathPart('cjdb/data') :Args(0) {
     my ( $self, $c ) = @_;
 
+    $c->stash->{active_tab} = 'rebuild';
     my $upload_dir = $CUFTS::Config::CJDB_SITE_DATA_DIR . '/' . $c->site->id;
 
-    if ( $c->req->params->{submit} ) {
+    if ( hascontent($c->request->params->{marc_settings}) ) {
+        $c->form($form_data_validate_marc_settings);
+        $c->stash->{active_tab} = 'export';
+        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
+            eval { $c->site->update_from_fv($c->form); };
+            if ($@) {
+                push @{ $c->stash->{errors} }, $@;
+            }
+            else {
+                push @{ $c->stash->{results} }, $c->loc('Site data updated.');
+            }
+        }
+    }
+    elsif ( hascontent($c->request->params->{lccn_delete_submit}) ) {
+        $c->form($form_data_validate_delete_lccn);
+        $c->stash->{active_tab} = 'lccn';
+        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
+            my $file = 'lccn_subjects';
+            -e "$upload_dir/$file" and unlink "$upload_dir/$file"
+                or die("Unable to unlink file '$file': $!");
 
-        $c->stash->{form_submitted} = 1;
-        $c->form($form_data_validate);
+            push @{ $c->stash->{results} }, ( 'LCCN subject mapping file deleted' );
+        }
+    }
+    elsif ( hascontent($c->request->params->{submit_rebuild}) ) {
+        $c->form($form_data_validate_rebuild);
+        $c->stash->{active_tab} = 'rebuild';
         unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
 
             my %delete = map { $_ => 1 } listref_to_list( $c->form->valid->{delete} );
+            my @delete = keys %delete;
 
             my @rebuild = grep { !exists $delete{$_} } listref_to_list( $c->form->valid->{rebuild} );
             my @marc    = grep { !exists $delete{$_} } listref_to_list( $c->form->valid->{MARC} );
 
-            $c->form->valid->{delete_lccn}
-                and $delete{lccn_subjects} = 1;
-
-            my @delete = keys %delete;
-
-            foreach my $file (@delete) {
-                -e "$upload_dir/$file" and unlink "$upload_dir/$file"
-                    or die("Unable to unlink file '$file': $!");
+            if ( scalar @delete ) {
+                foreach my $file (@delete) {
+                    -e "$upload_dir/$file" and unlink "$upload_dir/$file"
+                        or die("Unable to unlink file '$file': $!");
+                }
+                push @{ $c->stash->{results} }, ( 'Files deleted: ' . ( join ', ', @delete ) );
             }
 
-            scalar @delete
-                and push @{ $c->stash->{results} }, ( 'Files deleted: ' . ( join ', ', @delete ) );
-
-            if ( scalar @rebuild || scalar @marc || $c->form->valid->{rebuild_ejournals_only} ) {
+            if ( scalar @marc || scalar @rebuild || $c->form->valid->{rebuild_ejournals_only} ) {
 
                 my ( $jobs, $pager ) = $c->job_queue->list_jobs(
                     {
@@ -220,21 +251,13 @@ sub data :Chained('../base') :PathPart('cjdb/data') :Args(0) {
                 }
 
             }
-
         }
     }
-    elsif ( $c->req->params->{upload_data} ) {
-        $c->form($form_data_validate);
-
-        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown )
-        {
-            my $filename = $c->form->valid->{upload_label};
-            unless ($filename) {
-                my ( $sec, $min, $hour, $mday, $mon, $year, $wday ) = localtime(time);
-                $mon  += 1;
-                $year += 1900;
-                $filename = sprintf( "%04i%02i%02i_%02i-%02i-%02i", $year, $mon, $mday, $hour, $min, $sec );
-            }
+    elsif ( hascontent($c->request->params->{upload_data}) ) {
+        $c->form($form_data_validate_upload_data);
+        $c->stash->{active_tab} = 'rebuild';
+        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
+            my $filename = $c->form->valid->{upload_label} || DateTime->now->iso8601;
 
             -d $upload_dir
                 or mkdir $upload_dir
@@ -257,9 +280,9 @@ sub data :Chained('../base') :PathPart('cjdb/data') :Args(0) {
             push @{ $c->stash->{results} }, 'Uploaded data file.';
         }
     }
-    elsif ( $c->req->params->{upload_lccn} ) {
-        $c->form($form_data_validate);
-
+    elsif ( hascontent($c->request->params->{upload_lccn}) ) {
+        $c->form($form_data_validate_upload_lccn);
+        $c->stash->{active_tab} = 'lccn';
         unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
             my $filename = 'lccn_subjects';
 
@@ -278,6 +301,7 @@ sub data :Chained('../base') :PathPart('cjdb/data') :Args(0) {
             push @{ $c->stash->{results} }, 'Uploaded LCCN data file.';
         }
     }
+
 
     if ( -d $upload_dir && opendir FILES, $upload_dir ) {
         my @file_list = grep !/^lccn_subjects$/, grep !/^\./, readdir FILES;

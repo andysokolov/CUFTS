@@ -6,7 +6,7 @@
 
 <form method="post">
 <fieldset class="well span12">
-<h2 class="legend">general settings</h2>
+<h2 class="legend">[% c.loc('general settings') | html %]</h2>
 
   <label for="key">[% c.loc('key') %]:</label>
   <span>[% site.key | html %]</span>

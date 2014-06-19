@@ -6,7 +6,7 @@
 
 <form method="post">
  <fieldset class="well span12">
-  <h2 class="legend">general settings</h2>
+  <h2 class="legend">[% c.loc('Google Scholar settings') | html %]</h2>
 
   <div class="control-group">
    <label for="google_scholar_on">[% c.loc('Google Scholar export active') | html %]</label>
