@@ -37,7 +37,7 @@ sub load_resources :Chained('base') :PathPart('') :CaptureArgs(2) {
 
     return if $resource_id eq 'new';
 
-    if ($type eq 'local' ) {
+    if ( $type eq 'local' ) {
 
         $c->stash->{local_resource} = $c->model('CUFTS::LocalResources')->search({ site => $c->site->id, id => $resource_id })->first;
         if ( !$c->stash->{local_resource} ) {
@@ -155,11 +155,11 @@ sub edit :Chained('load_resources') :PathPart('edit') :Args(0) {
     my $local_resource  = $c->stash->{local_resource};
     my $global_resource = $c->stash->{global_resource};
 
-    my $form_fields = {
+    my $form_validate = {
         required => [],
         optional => [ qw(
-            lr_page
-            provider proxy dedupe rank auto_activate active submit
+            lr_page submit
+            provider proxy dedupe rank auto_activate active
             resource_identifier database_url title_list_url update_months auth_name auth_passwd url_base notes_for_local cjdb_note proxy_suffix erm_main
         ) ],
         defaults => {
@@ -173,14 +173,13 @@ sub edit :Chained('load_resources') :PathPart('edit') :Args(0) {
         missing_optional_valid => 1,
     };
     if ( !$global_resource ) {
-        push @{$form_fields->{required}}, qw( name resource_type module );
+        push @{$form_validate->{required}}, qw( name resource_type module );
     }
 
-    $c->form($form_fields);
 
-    if ( hascontent($c->form->valid->{submit}) ) {
+    if ( hascontent($c->request->params->{submit}) ) {
 
-        $c->stash->{form_submitted} = 1;
+        $c->form($form_validate);
         my $params = $c->request->params;  # Put params in stash so they can be re-displayed in case of error
 
         unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {

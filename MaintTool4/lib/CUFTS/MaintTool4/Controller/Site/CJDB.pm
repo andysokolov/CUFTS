@@ -21,36 +21,62 @@ Catalyst Controller.
 
 use CUFTS::Util::Simple;
 
-my @valid_states = ( 'active', 'sandbox' );
-my @valid_types  = ( 'css',    'cjdb_template' );
+sub base :Chained('../base') :PathPart('cjdb') :CaptureArgs(0) {}
 
-my $form_settings_validate = {
-    optional => [
-        qw(
-            submit
+sub settings :Chained('base') :PathPart('settings') :Args(0) {
+    my ( $self, $c ) = @_;
 
-            cjdb_print_name
-            cjdb_print_link_label
+    my $form_settings_validate = {
+        optional => [
+            qw(
+                submit
 
-            cjdb_authentication_module
-            cjdb_authentication_server
-            cjdb_authentication_string1
-            cjdb_authentication_string2
-            cjdb_authentication_string3
-            cjdb_authentication_level100
-            cjdb_authentication_level50
-        )
-    ],
-    required => [
-        qw(
-            cjdb_unified_journal_list
-            cjdb_show_citations
-            cjdb_display_db_name_only
-        )
-    ],
-    filters                => ['trim'],
-    missing_optional_valid => 1,
-};
+                cjdb_print_name
+                cjdb_print_link_label
+
+                cjdb_authentication_server
+                cjdb_authentication_string1
+                cjdb_authentication_string2
+                cjdb_authentication_string3
+                cjdb_authentication_level100
+                cjdb_authentication_level50
+            )
+        ],
+        required => [
+            qw(
+                cjdb_authentication_module
+                cjdb_unified_journal_list
+                cjdb_show_citations
+                cjdb_display_db_name_only
+            )
+        ],
+        filters                => ['trim'],
+        missing_optional_valid => 1,
+    };
+
+
+    if ( $c->has_param('submit') ) {
+
+        $c->form($form_settings_validate);
+        $c->stash_params();
+
+        unless ( $c->form_has_errors ) {
+
+            eval { $c->site->update_from_fv($c->form); };
+            if ($@) {
+                $c->stash_errors($@);
+            }
+            else {
+                $c->stash_results( $c->loc('CJDB settings updated.') );
+                delete $c->stash->{params}; # Use the updated record instead of any saved parameters
+            }
+        }
+    }
+
+    $c->stash->{template} = 'site/cjdb/settings.tt';
+}
+
+
 
 my $form_data_validate_marc_settings = {
     optional => [
@@ -104,110 +130,47 @@ my $form_data_validate_upload_data = {
     filters  => [ 'trim' ],
 };
 
-my $form_accounts_validate = {
-    required => [
-        qw (
-            search_field
-            search_value
-            submit
-        )
-    ],
-    filters => ['trim'],
-};
-
-my @handled_roles = ( qw(
-    edit_erm_records
-    staff
-) );
-
-my $form_account_validate = {
-    required => [
-        qw(
-            id
-            key
-            name
-            email
-        )
-    ],
-    optional => [
-        qw(
-            new_password
-            level
-            active
-            submit
-        ),
-        map { 'role-' . $_ } @handled_roles,
-    ],
-    defaults => {
-        active => 'false',
-    },
-    missing_optional_valid => 1,
-    filters                => ['trim'],
-};
-
-sub settings :Chained('../base') :PathPart('cjdb_settings') :Args(0) {
-    my ( $self, $c ) = @_;
-
-    $c->form($form_settings_validate);
-
-    if ( hascontent($c->form->valid->{submit}) ) {
-        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
-
-            eval { $c->site->update_from_fv($c->form); };
-            if ($@) {
-                my $err = $@;
-                die($err);
-            }
-
-            push @{ $c->stash->{results} }, $c->loc('Site data updated.');
-        }
-    }
-
-    $c->stash->{template} = 'site/cjdb/settings.tt';
-}
-
-
-# Converts a list to a list convertable hash { val => 1 }. Can take a listref or single value
-sub listref_to_list {
-    my $list = shift;
-    return () if !defined $list;
-    return ref($list) ? @$list : ($list);
-}
-
-sub data :Chained('../base') :PathPart('cjdb/data') :Args(0) {
+sub data :Chained('base') :PathPart('data') :Args(0) {
     my ( $self, $c ) = @_;
 
     $c->stash->{active_tab} = 'rebuild';
     my $upload_dir = $CUFTS::Config::CJDB_SITE_DATA_DIR . '/' . $c->site->id;
 
-    if ( hascontent($c->request->params->{marc_settings}) ) {
-        $c->form($form_data_validate_marc_settings);
+    if ( $c->has_param('marc_settings') ) {
+
         $c->stash->{active_tab} = 'export';
-        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
+        $c->form($form_data_validate_marc_settings);
+        $c->stash_params();
+
+        unless ( $c->form_has_errors ) {
             eval { $c->site->update_from_fv($c->form); };
             if ($@) {
-                push @{ $c->stash->{errors} }, $@;
+                $c->stash_errors($@);
             }
             else {
-                push @{ $c->stash->{results} }, $c->loc('Site data updated.');
+                $c->stash_results( $c->loc('CJDB MARC export settings updated.') );
             }
         }
     }
-    elsif ( hascontent($c->request->params->{lccn_delete_submit}) ) {
-        $c->form($form_data_validate_delete_lccn);
+    elsif ( $c->has_param('lccn_delete_submit') ) {
+
         $c->stash->{active_tab} = 'lccn';
-        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
+        $c->form($form_data_validate_delete_lccn);
+
+        unless ( $c->form_has_errors ) {
             my $file = 'lccn_subjects';
             -e "$upload_dir/$file" and unlink "$upload_dir/$file"
                 or die("Unable to unlink file '$file': $!");
 
-            push @{ $c->stash->{results} }, ( 'LCCN subject mapping file deleted' );
+            $c->stash_results( $c->loc( 'LCCN subject mapping file deleted' ) );
         }
     }
-    elsif ( hascontent($c->request->params->{submit_rebuild}) ) {
-        $c->form($form_data_validate_rebuild);
+    elsif ( $c->has_param('submit_rebuild') ) {
+
         $c->stash->{active_tab} = 'rebuild';
-        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
+        $c->form($form_data_validate_rebuild);
+
+        unless ( $c->form_has_errors ) {
 
             my %delete = map { $_ => 1 } listref_to_list( $c->form->valid->{delete} );
             my @delete = keys %delete;
@@ -220,7 +183,7 @@ sub data :Chained('../base') :PathPart('cjdb/data') :Args(0) {
                     -e "$upload_dir/$file" and unlink "$upload_dir/$file"
                         or die("Unable to unlink file '$file': $!");
                 }
-                push @{ $c->stash->{results} }, ( 'Files deleted: ' . ( join ', ', @delete ) );
+                $c->stash_results( $c->loc('Files deleted: ') . join ', ', @delete );
             }
 
             if ( scalar @marc || scalar @rebuild || $c->form->valid->{rebuild_ejournals_only} ) {
@@ -244,19 +207,21 @@ sub data :Chained('../base') :PathPart('cjdb/data') :Args(0) {
                         class => 'cjdb rebuild',
                         data  => $data,
                     });
-                    push @{ $c->stash->{results} }, ( 'CJDB rebuild job created: ' . $job->id );
+                    $c->stash_results( $c->loc('CJDB rebuild job created: ') . $job->id );
                 }
                 else {
-                    push @{ $c->stash->{errors} }, ( 'A CJDB delete job already exists. Delete it before scheduleing another.' );
+                    $c->stash_errors( $c->loc('A CJDB delete job already exists. Delete it before scheduleing another.') );
                 }
 
             }
         }
     }
-    elsif ( hascontent($c->request->params->{upload_data}) ) {
-        $c->form($form_data_validate_upload_data);
+    elsif ( $c->has_param('upload_data') ) {
+
         $c->stash->{active_tab} = 'rebuild';
-        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
+        $c->form($form_data_validate_upload_data);
+
+        unless ( $c->form_has_errors ) {
             my $filename = $c->form->valid->{upload_label} || DateTime->now->iso8601;
 
             -d $upload_dir
@@ -272,18 +237,19 @@ sub data :Chained('../base') :PathPart('cjdb/data') :Args(0) {
             $c->site->rebuild_ejournals_only(undef);
             eval { $c->site->update };
             if ($@) {
-                my $err = $@;
-                CUFTS::DB::DBI->dbi_rollback;
-                die($err);
+                $c->stash_errors($@);
             }
-
-            push @{ $c->stash->{results} }, 'Uploaded data file.';
+            else {
+                $c->stash_results( $c->loc('Uploaded data file.') );
+            }
         }
     }
-    elsif ( hascontent($c->request->params->{upload_lccn}) ) {
-        $c->form($form_data_validate_upload_lccn);
+    elsif ( $c->has_param('upload_lccn') ) {
+
         $c->stash->{active_tab} = 'lccn';
-        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
+        $c->form($form_data_validate_upload_lccn);
+
+        unless ( $c->form_has_errors ) {
             my $filename = 'lccn_subjects';
 
             -d $upload_dir
@@ -298,7 +264,7 @@ sub data :Chained('../base') :PathPart('cjdb/data') :Args(0) {
             $c->request->upload('lccn_data_upload')->copy_to("$upload_dir/$filename")
                 or die("Unable to copy uploaded file to:  ($upload_dir/$filename): $!");
 
-            push @{ $c->stash->{results} }, 'Uploaded LCCN data file.';
+            $c->stash_results( $c->loc('Uploaded LCCN data file.') );
         }
     }
 
@@ -346,7 +312,7 @@ sub data :Chained('../base') :PathPart('cjdb/data') :Args(0) {
     );
     $c->stash->{upcoming_jobs} = $upcoming_jobs;
 
-    my ( $previous_jobs, $previouspager ) = $c->job_queue->list_jobs(
+    my ( $previous_jobs, $previous_pager ) = $c->job_queue->list_jobs(
         {
             site_id => $c->site->id,
             class   => 'cjdb rebuild',
@@ -359,142 +325,157 @@ sub data :Chained('../base') :PathPart('cjdb/data') :Args(0) {
     );
     $c->stash->{previous_jobs} = $previous_jobs;
 
-
     $c->stash->{MARC_url} = $CUFTS::Config::CJDB_URL;
-    if ( $c->stash->{MARC_url} !~ m{/$} ) {
-        $c->stash->{MARC_url} .= '/';
-    }
-
+    $c->stash->{MARC_url} .= '/' if !$c->stash->{MARC_url} =~ m{/$};
     $c->stash->{MARC_url} .= $c->site->key . '/sites/' . $c->site->id . '/static/';
 
     $c->stash->{template} = 'site/cjdb/data.tt';
 }
 
-sub accounts :Chained('../base') :BasePath('cjdb/accounts') :Args(0) {
+sub accounts :Chained('base') :BasePath('accounts') :Args(0) {
     my ( $self, $c ) = @_;
 
-    if ( $c->req->params->{submit} ) {
-        $c->form($form_accounts_validate);
-        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown )
-        {
+    my $form_validate = {
+        required => [ qw (
+                search_field
+                search_value
+                submit
+        ) ],
+        optional => [ qw( page ) ],
+        filters => ['trim'],
+    };
+
+    if ( $c->has_param('submit') ) {
+
+        $c->form($form_validate);
+
+        unless ( $c->form_has_errors ) {
 
             my $search_value = $c->form->valid->{search_value};
             my $search_field = $c->form->valid->{search_field};
 
-            my @accounts = CJDB::DB::Accounts->search(
-                {   $search_field => { ilike => "\%$search_value\%" },
-                    site => $c->site->id,
+            $c->stash->{accounts_rs} = $c->model('CUFTS::CJDBAccounts')->search(
+                {
+                    $search_field => { ilike => "\%$search_value\%" },
+                    site          => $c->site->id,
                 },
-                { order_by => $search_field }
+                {
+                    order_by => $search_field,
+                    rows     => 30,
+                    page     => $c->form->valid->{page} || 1,
+                }
             );
-
-            $c->stash->{accounts} = \@accounts;
-
         }
     }
 
+    $c->stash->{page}         = $c->form->valid('page');
     $c->stash->{search_field} = $c->req->params->{search_field};
     $c->stash->{search_value} = $c->req->params->{search_value};
-
-    $c->stash->{header_section} = 'Site Settings : C*DB Accounts';
-    $c->stash->{template}       = 'site/cjdb/accounts.tt';
+    $c->stash->{template}     = 'site/cjdb/accounts.tt';
 }
 
-sub account :Chained('../base') :BasePath('cjdb/account') :Args(1) {
+sub account :Chained('base') :BasePath('account') :Args(1) {
     my ( $self, $c, $account_id ) = @_;
 
-    my $account = CJDB::DB::Accounts->retrieve($account_id);
-    if ( $account->site != $c->site->id ) {
+    my $form_validate = {
+        required => [
+            qw(
+                key
+                name
+                email
+            )
+        ],
+        optional => [
+            qw(
+                new_password
+                level
+                active
+                submit
+                staff
+                edit_erm_records
+            ),
+        ],
+        defaults => {
+            active => 'false',
+        },
+        filters => ['trim'],
+        missing_optional_valid => 1,
+    };
+
+    my @handled_roles = ( qw(
+        edit_erm_records
+        staff
+    ) );
+
+    my $account = $c->model('CUFTS::CJDBAccounts')->find($account_id);
+    if ( $account->site->id != $c->site->id ) {
         die("Error: Attempting to access a user who is not associated with the current site.");
     }
 
-    if ( $c->req->params->{submit} ) {
+    if ( $c->has_param('submit') ) {
 
-        $c->form($form_account_validate);
-        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
+        $c->form($form_validate);
+        $c->stash_params();
+
+        unless ( $c->form_has_errors ) {
 
             # Check for duplicate key
 
-            if ( $c->form->valid->{key} != $account->key ) {
-                my @key_check = CJDB::DB::Accounts->search(
-                    {   key  => $c->form->valid->{key},
-                        site => $c->site->id,
-                    }
-                );
-                if ( scalar(@key_check) ) {
-                    $c->stash->{errors} = [ 'Login "' . $c->form->valid->{key} . '" already in use for this site.' ];
+            if ( $c->form->valid->{key} ne $account->key ) {
+                my $key_check = $c->model('CUFTS::CJDBAccounts')->search({
+                    key  => $c->form->valid->{key},
+                    site => $c->site->id,
+                })->count;
+                if ( $key_check ) {
+                    $c->stash_errors( $c->loc('Login already in use for this site: ') . $c->form->valid->{key} );
                 }
             }
 
-            if ( !scalar( $c->stash->{errors} ) ) {
+            if ( !(defined $c->stash->{errors} && scalar @{$c->stash->{errors}}) ) {
 
-                if ( not_empty_string( $c->form->{valid}->{new_password} ) ) {
-                    $c->form->{valid}->{password} = crypt( $c->form->{valid}->{new_password}, $c->form->{valid}->{key} );
+                if ( hascontent( $c->form->valid->{new_password} ) ) {
+                    $c->form->valid->{password} = crypt( $c->form->valid->{new_password}, $c->form->valid->{key} );
                 }
 
                 eval {
-                    $account->update_from_form( $c->form );
 
-                    ##
-                    ## Handle role updates
-                    ##
+                    $c->model('CUFTS')->schema->txn_do( sub {
 
+                        $account->update_from_fv( $c->form );
 
-                    # Build role id lookup table
-
-                    my @role_objects = CJDB::DB::Roles->retrieve_all;
-                    my %roles_map;
-                    foreach my $role_object ( @role_objects ) {
-                        $roles_map{$role_object->role} = $role_object->id;
-                    }
-
-
-                    foreach my $role ( @handled_roles ) {
-
-                        my $role_id = $roles_map{$role};
-                        if ( !defined($role_id) ) {
-                            die("Attempting to process a role which does not exist in the database: $role");
+                        foreach my $role ( qw( staff edit_erm_records) ) {
+                            if ( $c->form->valid->{$role} ) {
+                                $account->add_role($role);
+                            }
+                            else {
+                                $account->remove_role($role);
+                            }
                         }
 
-                        if ( $c->form->{valid}->{"role-${role}"} ) {
-
-                            # Add a role
-
-                            CJDB::DB::AccountsRoles->find_or_create( {
-                                role => $role_id,
-                                account => $account_id
-                            } );
-
-                        }
-                        else {
-
-                            # Remove a role
-
-                            CJDB::DB::AccountsRoles->search( {
-                                role => $role_id,
-                                account => $account_id
-                            } )->delete_all;
-
-                        }
-                    }
-
+                    });
 
                 };
                 if ($@) {
-                    my $err = $@;
-                    CUFTS::DB::DBI->dbi_rollback;
-                    die($err);
+                    $c->stash_errors($@);
                 }
-                CUFTS::DB::DBI->dbi_commit;
-                push @{ $c->stash->{results} }, 'CJDB account updated.';
+                else {
+                    $c->stash_results($c->loc('CJDB account updated.') );
+                    delete $c->stash->{params}; # Use the updated record instead of any saved parameters
+                }
             }
         }
     }
 
-    $c->stash->{account}        = $account;
-    $c->stash->{tags}           = CJDB::DB::Tags->get_mytags_list($account_id);
-    $c->stash->{header_section} = 'Site Settings : C*DB Accounts';
-    $c->stash->{template}       = 'site/cjdb/account.tt';
+    $c->stash->{account}       = $account;
+    $c->stash->{tags}          = $account->tag_summary;
+    $c->stash->{template}      = 'site/cjdb/account.tt';
+}
+
+# Converts a list to a list convertable hash { val => 1 }. Can take a listref or single value
+sub listref_to_list {
+    my $list = shift;
+    return () if !defined $list;
+    return ref($list) ? @$list : ($list);
 }
 
 

@@ -43,8 +43,9 @@ sub change :Chained('base') :PathPart('change') :Args(0) {
             $c->site($check_list[0]);
             $c->session->{current_site_id} = $check_list[0]->id;
             return $c->redirect( $c->uri_for( $c->controller('Root')->action_for('index') ) );
-        } else {
-            $c->stash->{errors} = [ $c->loc('You do not have permission to change to that site.') ];
+        }
+        else {
+            $c->stash_errors( $c->loc('You do not have permission to change to that site.') );
         }
 
     }
@@ -59,29 +60,30 @@ sub change :Chained('base') :PathPart('change') :Args(0) {
 sub edit :Chained('base') :PathPart('edit') :Args(0) {
     my ($self, $c) = @_;
 
-    $c->form({
+    my $form_validate = {
         required => [ qw( name email ) ],
         optional => [ qw( erm_notification_email proxy_prefix proxy_prefix_alternate proxy_WAM show_ERM submit ) ],
         filters  => [ qw( trim ) ],
         missing_optional_valid => 1,
-    });
+    };
 
-    if ( hascontent($c->form->valid->{submit}) ) {
+    if ( $c->has_param('submit') ) {
 
-        $c->stash->{form_submitted} = 1;
-        $c->stash->{params} = $c->request->params;
+        $c->stash_params();
+        $c->form($form_validate);
 
-        unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
+        unless ( $c->form_has_errors ) {
 
             eval {
                 $c->site->update_from_fv($c->form);
             };
             if ($@) {
-                my $err = $@;
-                die($err);
+                $c->stash_errors($@);
+            }
+            else {
+                $c->stash_results( $c->loc('Site data updated.') );
             }
 
-            push @{$c->stash->{results}}, $c->loc('Site data updated.');
         }
 
     }
@@ -94,7 +96,7 @@ sub edit :Chained('base') :PathPart('edit') :Args(0) {
 sub ips :Chained('base') :PathPart('ips') :Args(0)  {
     my ( $self, $c ) = @_;
 
-    $c->form({
+    my $form_validate = {
         optional => [ 'submit' ],
         optional_regexp => qr/^(ip|domain)/,
         filters => ['trim'],
@@ -105,18 +107,18 @@ sub ips :Chained('base') :PathPart('ips') :Args(0)  {
         constraint_regexp_map => {
           qr/^domain/ => qr/^[-\w\.]+$/,  # /
         },
-    });
-
+    };
     $c->stash->{field_messages} = {
         generic => {
             ip => $c->loc('Must be in 1.2.3.4 format.'),
         }
     };
 
-    if ( hascontent($c->form->valid->{submit}) ) {
+    if ( $c->has_param('submit') ) {
 
-        $c->stash->{form_submitted} = 1;
-        my $params = $c->request->params;  # Put params in stash so they can be re-displayed in case of error
+        $c->form($form_validate);
+        $c->stash_params();
+        my $params = $c->request->params;
 
         $c->stash->{domains} = [ map { { name => $_, domain => $params->{$_} } } sort grep {/^domain/} keys %{$params} ];
 
@@ -127,7 +129,7 @@ sub ips :Chained('base') :PathPart('ips') :Args(0)  {
         }
         $c->stash->{ips} = \@ips;
 
-        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
+        unless ( $c->form_has_errors ) {
 
             # Remove ips/domains and recreate links, then update and save the site
 
@@ -138,7 +140,7 @@ sub ips :Chained('base') :PathPart('ips') :Args(0)  {
                     $c->site->domains->delete_all();
                     $c->site->ips->delete_all();
 
-                    foreach my $param ( keys(%{$c->form->valid}) ) {
+                    foreach my $param ( keys %{$c->form->valid} ) {
 
                         my $value = $c->form->valid->{$param};
                         next if !hascontent($value);
@@ -161,7 +163,7 @@ sub ips :Chained('base') :PathPart('ips') :Args(0)  {
                                 next;
                             }
 
-                            $c->site->add_to_ips( { ip_low => $low, ip_high => $high } );
+                            $c->site->add_to_ips({ ip_low => $low, ip_high => $high });
                         }
 
                     }
@@ -170,20 +172,18 @@ sub ips :Chained('base') :PathPart('ips') :Args(0)  {
 
             if ( !$err_flag ) {
                 if ($@) {
-                    my $err = $@;
-                    die($err);
+                    $c->stash_errors($@);
                 }
-
-                push @{$c->flash->{results}}, $c->loc('Site data updated.');
-                return $c->redirect( $c->uri_for( $c->controller('Site')->action_for('ips') ) );
+                else {
+                    $c->flash_results( $c->loc('Site data updated.') );
+                    return $c->redirect( $c->uri_for( $c->controller('Site')->action_for('ips') ) );
+                }
             }
         }
+    }
 
-    }
-    else {
-        $c->stash->{domains}  = [ $c->site->domains({}, { order_by => 'domain' }) ];
-        $c->stash->{ips}      = [ $c->site->ips({}, { order_by => 'ip_low' }) ];
-    }
+    $c->stash->{domains}  = [ $c->site->domains({}, { order_by => 'domain' }) ];
+    $c->stash->{ips}      = [ $c->site->ips({},     { order_by => 'ip_low' }) ];
 
     $c->stash->{template} = 'site/ips.tt';
 }
@@ -211,20 +211,20 @@ sub google_scholar :Chained('base') :PathPart('google_scholar') Args(0) {
         filters  => ['trim'],
     };
 
-    if ($c->req->params->{submit}) {
+    if ( $c->has_param('submit') ) {
         $c->form($form_validate);
 
-        unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
+        unless ( $c->form_has_errors ) {
 
             eval {
                 $c->site->update_from_fv($c->form);
             };
             if ($@) {
-                my $err = $@;
-                die($err);
+                $c->stash_errors($@);
             }
-
-            push @{$c->stash->{results}}, $c->loc('Site data updated.');
+            else {
+                $c->stash_results( $c->loc('Site data updated.') );
+            }
         }
     }
 

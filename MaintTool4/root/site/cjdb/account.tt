@@ -1,0 +1,94 @@
+[%- SET header_section = c.loc('C*DB Account') -%]
+[%- breadcrumbs.push([ c.uri_for( c.controller.action_for('accounts') ), c.loc('C*DB Accounts') ] ) -%]
+[%- breadcrumbs.push([ '', account.key ] ) -%]
+[%- SET page_id = 'site-cjdb-account' -%]
+
+[%- PROCESS form_results.tt -%]
+
+<form method="post" class="form-horizontal">
+
+ <fieldset class="well span12">
+  <h2 class="legend">[% c.loc('account details') | html %]</h2>
+
+  <div class="control-group">
+   <label>[% c.loc('id') | html %]:</label>
+   [% account.id %]
+  </div>
+
+  [% INCLUDE show_textfield field='key' %]
+  [% INCLUDE show_textfield field='name' %]
+  [% INCLUDE show_textfield field='email' %]
+  [% INCLUDE show_textfield field='level' %]
+  [% INCLUDE show_textfield field='new_password', password=1 %]
+
+  <div class="control-group">
+   <label for="active">[% c.loc('active') | html %]</label>
+   <select name="active" id="active">
+    <option value="1" [% IF account.active %]selected[% END %]>[% c.loc('yes') | html %]</option>
+    <option value="0" [% IF !account.active.defined OR !account.active %]selected[% END %]>[% c.loc('no') | html %]</option>
+   </select>
+  </div>
+
+</fieldset>
+
+<fieldset class="span12 well">
+
+ <h2 class="legend">[% c.loc('CRDB account roles') | html %]</h2>
+
+<div class="control-group">
+ <label for="edit_erm_records">[% c.loc('edit_erm_records') | html %]</label>
+ <select name="edit_erm_records" id="edit_erm_records">
+  <option value="1" [% IF  account.has_role('edit_erm_records') %]selected[% END %]>[% c.loc('yes') | html %]</option>
+  <option value="0" [% IF !account.has_role('edit_erm_records') %]selected[% END %]>[% c.loc('no')  | html %]</option>
+ </select>
+</div>
+
+<div class="control-group">
+ <label for="staff">[% c.loc('staff') | html %]</label>
+ <select name="staff" id="staff">
+  <option value="1" [% IF  account.has_role('staff') %]selected[% END %]>[% c.loc('yes') | html %]</option>
+  <option value="0" [% IF !account.has_role('staff') %]selected[% END %]>[% c.loc('no')  | html %]</option>
+ </select>
+</div>
+
+</fieldset>
+
+<button type="submit" class="btn btn-primary" value="submit" name="submit">[% c.loc('submit') %]</button>
+
+</form>
+
+
+<div class="span12 well" style="margin: 20px 0;">
+ <h2 class="legend">[% c.loc('account tags') | html %]</h2>
+ <table class="grid zebra">
+  <tr><th>[% c.loc('tag') | html %]</th><th>[% c.loc('type') | html %]</th><th>[% c.loc('count') | html %]</th></tr>
+  [% FOREACH tag IN tags %]
+   <tr>
+    <td>[% tag.0 | html %]</a></td>
+    <td>
+     [%- SWITCH tag.1 -%]
+      [%- CASE 0 -%]
+       [% c.loc('private') | html %]
+      [%- CASE 1 -%]
+       [% c.loc('public') | html %]
+      [%- CASE 2 -%]
+       [% c.loc('local public') | html %]
+      [%- CASE -%]
+       [% c.loc('error') | html %]
+     [%- END -%]
+    </td>
+    <td class="[% class %]">[% tag.2 | html %]</td>
+   </tr>
+  [% END %]
+ </table>
+</div>
+
+
+[% BLOCK show_textfield %]
+  [% SET maxlength = maxlength OR 255 %]
+  [% SET label = label OR field.replace('_', ' ') %]
+  <div class="control-group [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]">
+  <label for="[% field | html %]" [% IF required %]class="required"[% END %]>[% c.loc(label) | html %]:</label>
+  <input class="span8" type="[% password ? 'password' : 'text' %]" id="[% field | html %]" name="[% field | html %]" value="[% (!password AND params.defined) ? params.$field : account.$field | html %]" maxlength="[% maxlength %]" />[% PROCESS field_error.tt %]
+  </div>
+[% END %]

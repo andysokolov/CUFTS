@@ -23,7 +23,7 @@ sub base :Chained('/loggedin') :PathPart('account') :CaptureArgs(0) {}
 sub edit :Chained('base') :PathPart('edit') :Args(0) {
     my ( $self, $c ) = @_;
 
-    $c->form({
+    my $form_validate = {
         required => [ 'name', 'email' ],
         optional => [ 'phone', 'submit' ],
         filters  => [ 'trim' ],
@@ -31,37 +31,37 @@ sub edit :Chained('base') :PathPart('edit') :Args(0) {
         constraints       => {
             password => {
                 constraint => sub { $_[0] eq $_[1] },
-                params => [ 'password', 'verify_password' ],
+                params     => [ 'password', 'verify_password' ],
             },
         },
         missing_optional_valid => 1,
-    });
+    };
 
     $c->stash->{field_messages} = {
         password => $c->loc('Passwords must match.')
     };
 
+    if ( $c->has_param('submit') ) {
 
-    if ( hascontent($c->form->valid->{submit}) ) {
+        $c->form($form_validate);
+        $c->stash_params();
 
-        $c->stash->{form_submitted} = 1;
-        $c->stash->{params} = $c->request->params;
+        unless ( $c->form_has_errors ) {
 
-		# Set the 'password' field to the crypted value before saving if it is set
-        if ( hascontent( $c->form->valid('password') ) ) {
-            $c->form->valid( 'password', crypt($c->form->valid('password'), $c->user->key) );
-        }
+            # Set the 'password' field to the crypted value before saving if it is set
+            if ( hascontent( $c->form->valid('password') ) ) {
+                $c->form->valid( 'password', crypt($c->form->valid('password'), $c->user->key) );
+            }
 
-        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
             eval {
                 my $user = $c->user;
                 $user->update_from_fv( $c->form );
             };
             if ($@) {
-                push @{$c->stash->{errors}}, $@;
+                $c->stash_errors($@);
             }
             else {
-                push @{$c->stash->{results}}, $c->loc('Account data updated.');
+                $c->stash_results( $c->loc('Account data updated.') );
                 delete $c->stash->{params}; # Use the updated record instead of any saved parameters
             }
 

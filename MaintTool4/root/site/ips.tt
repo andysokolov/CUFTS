@@ -14,9 +14,9 @@
 [% SET domain_count = 0 %]
 [% FOREACH domain IN domains %]
  [% SET domain_id = domain.name || 'domain' _ loop.count %]
- <div class="control-group  [% IF form_submitted AND ( c.form.missing(domain_id) OR c.form.invalid(domain_id) ) %]error[% END %]">
+ <div class="control-group  [% IF c.form.missing(domain_id) OR c.form.invalid(domain_id) %]error[% END %]">
 
-  <input class="inline" id="[% domain_id %]" type="text" size="40" maxlength="255" name="[% domain_id %]" value="[% domain.domain | html %]"> <button class="btn btn-danger delete-domain" data-delete="[% domain_id %]"><i class="icon-minus"></i> [% c.loc('delete') %]</button> [% PROCESS field_error.tt field=domain_id %]
+  <input class="inline" id="[% domain_id %]" type="text" size="40" maxlength="255" name="[% domain_id %]" value="[% params.$domain_id || domain.domain | html %]"> <button class="btn btn-danger delete-domain" data-delete="[% domain_id %]"><i class="icon-minus"></i> [% c.loc('delete') %]</button> [% PROCESS field_error.tt field=domain_id %]
  </div>
  [% SET domain_count = loop.count + 1 %]
 [% END %]
@@ -42,9 +42,9 @@
      SET ip_high_id = 'ip_high' _ id;
      IF id > ip_count; ip_count = id; END;
  -%]
- <div class="control-group [% IF form_submitted AND ( c.form.missing(ip_low_id) OR c.form.invalid(ip_low_id) OR c.form.missing(ip_high_id) OR c.form.invalid(ip_high_id) ) %]error[% END %]">
-  <input class="inline" type="text" data-to-delete="ip_[% id %]" name="[% ip_low_id %]" value="[% ip.ip_low %]" maxlength="15" /> -
-  <input class="inline" type="text" data-to-delete="ip_[% id %]" name="[% ip_high_id %]" value="[% ip.ip_high %]" maxlength="15" /> <button class="btn btn-danger delete-ips" data-delete="ip_[% id %]"><i class="icon-minus"></i> [% c.loc('delete') %]</button>[% PROCESS field_error.tt field=ip_low_id, type='ip' %][% PROCESS field_error.tt field=ip_high_id, type='ip' %]
+ <div class="control-group [% IF c.form.missing(ip_low_id) OR c.form.invalid(ip_low_id) OR c.form.missing(ip_high_id) OR c.form.invalid(ip_high_id) %]error[% END %]">
+  <input class="inline" type="text" data-to-delete="ip_[% id %]" name="[% ip_low_id %]" value="[% params.$ip_low_id || ip.ip_low %]" maxlength="15" /> -
+  <input class="inline" type="text" data-to-delete="ip_[% id %]" name="[% ip_high_id %]" value="[% params.$ip_high_id || ip.ip_high %]" maxlength="15" /> <button class="btn btn-danger delete-ips" data-delete="ip_[% id %]"><i class="icon-minus"></i> [% c.loc('delete') %]</button>[% PROCESS field_error.tt field=ip_low_id, type='ip' %][% PROCESS field_error.tt field=ip_high_id, type='ip' %]
  </div>
  [% SET ip_count = ip_count + 1 %]
 [% END %]

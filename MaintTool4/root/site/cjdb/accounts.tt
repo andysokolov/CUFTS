@@ -1,0 +1,43 @@
+[%- SET header_section = c.loc('C*DB Accounts') -%]
+[%- breadcrumbs.push([ '', c.loc('C*DB Accounts') ] ) -%]
+[%- SET page_id = 'site-cjdb-accounts' -%]
+
+[%- PROCESS form_results.tt -%]
+
+<form class="form-inline">
+ <fieldset>
+  <h2 class="legend">[% c.loc('C*DB account search') | html %]</h2>
+   [% c.loc('Search') | html %]
+   <select name="search_field" class="span2">
+    <option value="key" [% IF search_field == 'key' %]selected[% END %]>[% c.loc('login') | html %]</option>
+    <option value="name" [% IF search_field == 'name' %]selected[% END %]>[% c.loc('name') | html %]</option>
+    <option value="email" [% IF search_field == 'email' %]selected[% END %]>[% c.loc('email') | html %]</option>
+   </select>
+   [% c.loc('for') | html %]
+   <input type="text" class="span3" name="search_value" maxlength="255" size="30" value="[% search_value %]" />
+   <input class="btn" type="submit" name="submit" value="submit" />
+ </fieldset>
+</form>
+
+[% IF accounts_rs %]
+ <table class="grid zebra" style="width: 100%; margin-top: 15px;">
+  <tr>
+   <th class="text-left">[% c.loc('login') | html %]</th>
+   <th class="text-left">[% c.loc('name') | html %]</th>
+   <th class="text-left">[% c.loc('email') | html %]</th>
+   <th class="text-left">[% c.loc('level') | html %]</th>
+   <th class="text-left">[% c.loc('active') | html %]</th>
+  </tr>
+  [% WHILE ( account = accounts_rs.next ) %]
+   <tr>
+    <td><a href="[% c.uri_for( c.controller.action_for('account'), [ account.id ] ) %]">[% account.key | html %]</a></td>
+    <td>[% account.name | html %]</td>
+    <td>[% account.email | html %]</td>
+    <td>[% account.level | html %]</td>
+    <td>[% account.active ? c.loc('yes') : c.loc('no') | html %]</td>
+   </tr>
+  [% END %]
+ </table>
+
+ [% PROCESS paging.tt pager = accounts_rs.pager %]
+[% END %]

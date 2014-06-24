@@ -3,6 +3,7 @@ use Moose;
 use namespace::autoclean;
 
 use CUFTS::JQ::Client;
+use String::Util qw( trim hascontent );
 
 use Catalyst::Runtime 5.80;
 
@@ -57,6 +58,37 @@ has 'site' => (
     isa => 'Object',
 );
 
+sub stash_errors {
+    push @{shift->stash->{errors}}, @_;
+}
+
+sub stash_results {
+    push @{shift->stash->{results}}, @_;
+}
+
+sub flash_errors {
+    push @{shift->flash->{errors}}, @_;
+}
+
+sub flash_results {
+    push @{shift->flash->{results}}, @_;
+}
+
+sub form_has_errors {
+    my ( $c ) = @_;
+    return $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown;
+}
+
+sub stash_params {
+    my $c = shift;
+    $c->stash->{params} = $c->request->params;
+}
+
+sub has_param {
+    my ( $c, $param ) = @_;
+    return hascontent( $c->request->params->{$param} );
+}
+
 sub job_queue {
     my ( $c ) = @_;
     my $log_fh = IO::File->new(">> $CUFTS::Config::CUFTS_JQ_LOG");
@@ -69,7 +101,7 @@ sub job_queue {
         log_fh      => $log_fh,
     };
     $jq_data->{site_id} = $c->site->id if defined $c->site;
-    
+
     return CUFTS::JQ::Client->new($jq_data);
 }
 

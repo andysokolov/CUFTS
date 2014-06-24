@@ -19,7 +19,7 @@
 
 </div>
 
-<form method="post" action="[% c.uri_for( c.controller.action_for('delete'), [ account_id ] ) | html %]">
+<form method="post" action="[% c.uri_for( c.controller.action_for('edit'), [ account_id ] ) | html %]">
 <input type="hidden" name="admin_ac_page" value="[% admin_ac_page | html %]">
 <fieldset class="well legend container-fluid">
 <h2 class="legend">[% c.loc('account settings') %]</h2>
@@ -44,9 +44,9 @@
   [% SET maxlength = maxlength OR 255 %]
   [% SET label = label OR field.replace('_', ' ') %]
   [% SET value = value.defined ? value : params.defined ? params.$field : account.$field %]
-  <div class="control-group [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]">
+  <div class="control-group [% IF c.form.missing(field) OR c.form.invalid(field) %]error[% END %]">
   <label for="[% field | html %]" [% IF required %]class="required"[% END %]>[% c.loc(label) %]:</label>
-  <input class="span8" type="text" id="[% field %]" name="[% field %]" value="[% value | html %]" maxlength="[% maxlength %]" />[% PROCESS field_error.tt %]
+  <input class="span8" type="text" id="[% field | html %]" name="[% field | html %]" value="[% value | html %]" maxlength="[% maxlength %]" />[% PROCESS field_error.tt %]
   </div>
 [% END %]
 
@@ -55,8 +55,8 @@
  <div class="control-group">
   <label for="[% field | html %]">[% c.loc(label) %]:</label>
   <select name="[% field | html %]">
-   <option value="1" [% 'selected="selected"' IF ( params.defined ? params.$field : account.$field ) == 1 %]>[% c.loc('yes') %]</option>
-   <option value="0" [% 'selected="selected"' IF ( params.defined ? params.$field : account.$field ) == 0 %]>[% c.loc('no') %]</option>
+   <option value="1" [% 'selected' IF ( params.defined ? params.$field : account.$field ) == 1 %]>[% c.loc('yes') %]</option>
+   <option value="0" [% 'selected' IF ( params.defined ? params.$field : account.$field ) == 0 %]>[% c.loc('no') %]</option>
   </select>[% PROCESS field_error.tt %]
  </div>
 [% END %]

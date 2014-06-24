@@ -83,7 +83,7 @@ sub edit :Chained('load_account') :PathPart('edit') :Args(0) {
 
     my $account = $c->stash->{account};
 
-    $c->form({
+    my $form_validate = {
         required => [ qw( key name email  )],
         optional => [ qw( phone submit active edit_global journal_auth administrator account_sites admin_ac_page ) ],
         filters  => [ 'trim' ],
@@ -101,38 +101,51 @@ sub edit :Chained('load_account') :PathPart('edit') :Args(0) {
             journal_auth  => 'false',
         },
         missing_optional_valid => 1,
-    });
+    };
 
     $c->stash->{field_messages} = {
         password => $c->loc('Passwords must match.')
     };
 
-    if ( hascontent($c->form->valid->{submit}) ) {
+    if ( $c->has_param('submit') ) {
 
-        $c->stash->{form_submitted} = 1;
-        $c->stash->{params} = $c->request->params;
+        $c->form($form_validate);
+        $c->stash_params();
 
-        # Set the 'password' field to the crypted value before saving if it is set
-        if ( hascontent( $c->form->valid('password') ) ) {
-            $c->form->valid( 'password', crypt($c->form->valid('password'), $c->user->key) );
-        }
+        my $new_account = 0;
+        unless ( $c->form_has_errors ) {
 
-        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
-            eval {
-                if ( defined $account ) {
-                    $account->update_from_fv( $c->form );
-                }
-                else {
-                    $account = $c->model('CUFTS::Accounts')->create_from_fv($c->form);
-                }
-            };
-            if ($@) {
-                push @{$c->stash->{errors}}, $@;
+            # Set the 'password' field to the crypted value before saving if it is set
+            if ( hascontent( $c->form->valid('password') ) ) {
+                $c->form->valid( 'password', crypt($c->form->valid('password'), $c->user->key) );
+            }
+
+            if ( ( !defined $account || $c->form->valid->{key} ne $account->key ) && $c->model('CUFTS::Accounts')->find({ key => $c->form->valid->{key} }) ) {
+                $c->stash_errors( $c->loc('An account with this key already exists.') );
             }
             else {
-                push @{$c->stash->{results}}, $c->loc('Account data updated.');
-                delete $c->stash->{params}; # Use the updated record instead of any saved parameters
+                eval {
+                    if ( defined $account ) {
+                        $account->update_from_fv( $c->form );
+                    }
+                    else {
+                        $account = $c->model('CUFTS::Accounts')->create_from_fv($c->form);
+                        $new_account = 1;
+                    }
+                };
+                if ($@) {
+                    $c->stash_errors($@);
+                }
+                else {
+                    if ( $new_account ) {
+                        $c->flash_results( $c->loc('Account created.') );
+                        return $c->redirect( $c->uri_for( $c->controller('Admin::Accounts')->action_for('edit'), [ $account->id ] ) );
+                    }
+                    delete $c->stash->{params}; # Use the updated record instead of any saved parameters
+                    $c->stash_results( $c->loc('Account data updated.') );
+                }
             }
+
 
         }
     }
@@ -163,18 +176,17 @@ sub associate_sites :Chained('load_account') :PathPart('associate_sites') :Args(
 
     my $account = $c->stash->{account};
 
-    $c->form({
+    my $form_validate = {
             optional => [ qw( submit page admin_ac_page ) ],
             optional_regexp  => qr/^(site|orig)_.+/,
             filters  => ['trim'],
-    });
+    };
 
     my %search_options = (
         order_by  => ['name'],
         page      => int( $c->form->valid('page') || 1 ),
         rows      => 30
     );
-
 
     my $sites_rs = $c->model('CUFTS::Sites')->search(
         {
@@ -183,23 +195,32 @@ sub associate_sites :Chained('load_account') :PathPart('associate_sites') :Args(
         \%search_options,
      );
 
-    if ( hascontent($c->form->valid->{submit}) ) {
-        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
+    if ( $c->has_param('submit') ) {
+
+        $c->form($form_validate);
+
+        unless ( $c->form_has_errors ) {
             eval {
-                foreach my $param ( keys %{ $c->form->valid } ) {
-                    next if $param !~ /^orig_(\d+)$/;
-                    my $id = $1;
-                    if ( ($c->form->valid($param) || 0) != ($c->form->valid("site_$id") || 0) ) {
-                        if ( $c->form->valid("site_$id") ) {
-                            $c->model('CUFTS::AccountsSites')->create({ site => $id, account => $account->id });
-                            push @{$c->stash->{results}}, $c->loc('Added site: ') . $c->model('CUFTS::Sites')->find({ id => $id })->name;
-                        }
-                        else {
-                            $c->model('CUFTS::AccountsSites')->search({ site => $id, account => $account->id })->delete();
-                            push @{$c->stash->{results}}, $c->loc('Removed site: ') . $c->model('CUFTS::Sites')->find({ id => $id })->name;
+                $c->model('CUFTS')->txn_do( sub {
+                    foreach my $param ( keys %{ $c->form->valid } ) {
+                        next if $param !~ /^orig_(\d+)$/;
+                        my $id = $1;
+                        if ( ($c->form->valid($param) || 0) != ($c->form->valid("site_$id") || 0) ) {
+                            if ( $c->form->valid("site_$id") ) {
+                                $c->model('CUFTS::AccountsSites')->create({ site => $id, account => $account->id });
+                                $c->stash_results( $c->loc('Added site: ') . $c->model('CUFTS::Sites')->find({ id => $id })->name );
+                            }
+                            else {
+                                $c->model('CUFTS::AccountsSites')->search({ site => $id, account => $account->id })->delete();
+                                $c->stash_results( $c->loc('Removed site: ') . $c->model('CUFTS::Sites')->find({ id => $id })->name );
+                            }
                         }
                     }
-                }
+                });
+            };
+            if ($@) {
+                $c->stash_errors($@);
+                delete $c->stash->{results};
             }
         }
     }

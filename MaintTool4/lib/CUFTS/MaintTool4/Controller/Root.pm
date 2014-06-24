@@ -188,6 +188,7 @@ sub _setup_menu {
                 [ $c->loc('CJDB Settings'),     $c->uri_for( $c->controller('Site::CJDB')->action_for('settings') ) ],
                 [ $c->loc('CJDB Data'),         $c->uri_for( $c->controller('Site::CJDB')->action_for('data') ) ],
                 [ $c->loc('CRDB Templates'),    $c->uri_for( $c->controller('Site::Templates')->action_for('menu'), ['crdb4'] ) ],
+                [ $c->loc('C*DB Accounts'),     $c->uri_for( $c->controller('Site::CJDB')->action_for('accounts') ) ],
                 [ $c->loc('Google Scholar'),    $c->uri_for( $c->controller('Site')->action_for('google_scholar') ) ],
             ] ];
         }

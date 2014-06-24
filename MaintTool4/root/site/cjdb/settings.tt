@@ -13,7 +13,7 @@
    <label for="cjdb_unified_journal_list">[% c.loc('show holdings in browse') | html %]</label>
    <select name="cjdb_unified_journal_list" id="cjdb_unified_journal_list">
     <option value="unified" [% IF !c.site.cjdb_unified_journal_list.defined OR c.site.cjdb_unified_journal_list == 'unified' %]selected="selected"[% END %]>[% c.loc('Yes') | html %]</option>
-    <option value="standard" [% IF c.site.cjdb_unified_journal_list == 'standard' %]selected="selected"[% END %]>[% c.loc('No') | html %]</option>
+    <option value="standard" [% IF c.site.cjdb_unified_journal_list == 'standard' %]selected[% END %]>[% c.loc('No') | html %]</option>
    </select>
   </div>
 
@@ -21,15 +21,15 @@
    <label for="cjdb_show_citations">[% c.loc('show citation coverage') | html %]</label>
    <select name="cjdb_show_citations" id="cjdb_show_citations">
     <option value="1" [% IF c.site.cjdb_show_citations %]selected="selected"[% END %]>[% c.loc('Yes') | html %]</option>
-    <option value="0" [% IF !c.site.cjdb_show_citations.defined OR !c.site.cjdb_show_citations %]selected="selected"[% END %]>[% c.loc('No') | html %]</option>
+    <option value="0" [% IF !c.site.cjdb_show_citations.defined OR !c.site.cjdb_show_citations %]selected[% END %]>[% c.loc('No') | html %]</option>
    </select>
   </div>
 
   <div class="control-group">
    <label for="cjdb_display_db_name_only">[% c.loc('show database name only') | html %]</label>
    <select name="cjdb_display_db_name_only" id="cjdb_display_db_name_only">
-    <option value="1" [% IF c.site.cjdb_display_db_name_only %]selected="selected"[% END %]>[% c.loc('Yes') | html %]</option>
-    <option value="0" [% IF !c.site.cjdb_display_db_name_only.defined OR !c.site.cjdb_display_db_name_only %]selected="selected"[% END %]>[% c.loc('No') | html %]</option>
+    <option value="1" [% IF c.site.cjdb_display_db_name_only %]selected[% END %]>[% c.loc('Yes') | html %]</option>
+    <option value="0" [% IF !c.site.cjdb_display_db_name_only.defined OR !c.site.cjdb_display_db_name_only %]selected[% END %]>[% c.loc('No') | html %]</option>
    </select>
   </div>
 
@@ -44,8 +44,8 @@
   <div class="control-group">
    <label for="cjdb_authentication_module">[% c.loc('authentication module') | html %]</label>
    <select name="cjdb_authentication_module" id="cjdb_authentication_module">
-    <option value="internal" [% IF !c.site.cjdb_authentication_module.defined OR c.site.cjdb_authentication_module == 'internal' %]selected="selected"[% END %]>[% c.loc('internal') | html %]</option>
-    <option value="LDAP" [% IF c.site.cjdb_authentication_module == 'LDAP' %]selected="selected"[% END %]>[% c.loc('LDAP') | html %]</option>
+    <option value="internal" [% IF !c.site.cjdb_authentication_module.defined OR c.site.cjdb_authentication_module == 'internal' %]selected[% END %]>[% c.loc('internal') | html %]</option>
+    <option value="LDAP" [% IF c.site.cjdb_authentication_module == 'LDAP' %]selected[% END %]>[% c.loc('LDAP') | html %]</option>
    </select>
   </div>
 

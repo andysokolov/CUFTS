@@ -72,10 +72,10 @@ sub list :Chained('base') :PathPart('') :Args(0) {
 
     my $sites_rs = $c->model('CUFTS::Sites')->search( \%search, \%search_options );
 
-    $c->stash->{page}           = $c->form->valid('page');
-    $c->stash->{filter}         = $c->session->{admin_sites_filter};
-    $c->stash->{sites_rs}    = $sites_rs;
-    $c->stash->{template}       = 'admin/sites/list.tt';
+    $c->stash->{page}     = $c->form->valid('page');
+    $c->stash->{filter}   = $c->session->{admin_sites_filter};
+    $c->stash->{sites_rs} = $sites_rs;
+    $c->stash->{template} = 'admin/sites/list.tt';
 }
 
 sub edit :Chained('load_site') :PathPart('edit') :Args(0) {
@@ -83,42 +83,51 @@ sub edit :Chained('load_site') :PathPart('edit') :Args(0) {
 
     my $site = $c->stash->{site};
 
-    $c->form({
+    my $form_validate = {
         required => [ qw( key name )],
         optional => [ qw( email erm_notification_email proxy_prefix proxy_prefix_alternate proxy_wam active submit admin_site_page ) ],
         filters  => [ 'trim' ],
         defaults => {
-            active        => 'false',
+            active => 'false',
         },
         missing_optional_valid => 1,
-    });
+    };
 
-    if ( hascontent($c->form->valid->{submit}) ) {
+    if ( $c->has_param('submit') ) {
 
-        $c->stash->{form_submitted} = 1;
-        $c->stash->{params} = $c->request->params;
+        $c->form($form_validate);
+        $c->stash_params();
 
-        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
-            eval {
-                if ( defined $site ) {
-                    $site->update_from_fv($c->form);
-                }
-                else {
-                    $site = $c->model('CUFTS::Sites')->create_from_fv($c->form);
-                }
-            };
-            if ($@) {
-                push @{$c->stash->{errors}}, $@;
+        my $new_site = 0;
+        unless ( $c->form_has_errors ) {
+            if ( ( !defined $site || $c->form->valid->{key} ne $site->key ) && $c->model('CUFTS::Sites')->find({ key => $c->form->valid->{key} }) ) {
+                $c->stash_errors( $c->loc('A site with this key already exists.') );
             }
             else {
-                push @{$c->stash->{results}}, $c->loc('Site data updated.');
-                delete $c->stash->{params}; # Use the updated record instead of any saved parameters
+                eval {
+                    if ( defined $site ) {
+                        $site->update_from_fv($c->form);
+                    }
+                    else {
+                        $site = $c->model('CUFTS::Sites')->create_from_fv($c->form);
+                    }
+                };
+                if ($@) {
+                    $c->stash_erorrs($@);
+                }
+                else {
+                    if ( $new_site ) {
+                        $c->flash_results( $c->loc('Site created.') );
+                        return $c->redirect( $c->uri_for( $c->controller('Admin::Sites')->action_for('edit'), [ $site->id ] ) );
+                    }
+                    delete $c->stash->{params}; # Use the updated record instead of any saved parameters
+                    $c->stash_results( $c->loc('Site data updated.') );
+                }
             }
-
         }
     }
 
-    $c->stash->{admin_site_page} = $c->form->valid->{admin_site_page};
+    $c->stash->{admin_site_page} = $c->request->params->{admin_site_page};
     $c->stash->{site}            = $site;
     $c->stash->{template}        = 'admin/sites/edit.tt';
 }
@@ -133,17 +142,17 @@ sub delete :Chained('load_site') :PathPart('delete') :Args(0) {
         # Create a new job to load this title
 
         my $job = $c->job_queue->add_job({
-            info               => 'Delete site (' . $site->id . '): ' . $site->name,
-            class              => 'site delete',
-            type               => 'site',
-            data               => { site_id => $site->id },
+            info   => 'Delete site (' . $site->id . '): ' . $site->name,
+            class  => 'site delete',
+            type   => 'site',
+            data   => { site_id => $site->id },
         });
 
-        push @{$c->flash->{results}}, $c->loc( 'Created delete job for site: ') . $job->id;
+        $c->flash_results( $c->loc( 'Created delete job for site: ') . $job->id );
         return $c->redirect( $c->uri_for( $c->controller('Admin::Sites')->action_for('list'), { page => $c->req->params->{admin_site_page} } ) );
     }
 
-    $c->stash->{admin_site_page} = $c->form->valid->{admin_site_page};
+    $c->stash->{admin_site_page} = $c->request->params->{admin_site_page};
     $c->stash->{site}            = $site;
     $c->stash->{template}        = 'admin/sites/delete.tt';
 }
@@ -153,11 +162,11 @@ sub associate_accounts :Chained('load_site') :PathPart('associate_accounts') :Ar
 
     my $site = $c->stash->{site};
 
-    $c->form({
+    my $form_validate = {
             optional         => [ qw( submit page admin_site_page ) ],
             optional_regexp  => qr/^(account|orig)_.+/,
             filters          => ['trim'],
-    });
+    };
 
     my %search_options = (
         order_by  => ['name'],
@@ -172,30 +181,39 @@ sub associate_accounts :Chained('load_site') :PathPart('associate_accounts') :Ar
         \%search_options,
      );
 
-    if ( hascontent($c->form->valid->{submit}) ) {
-        unless ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
+    if ( $c->has_param('submit') ) {
+
+        $c->form($form_validate);
+
+        unless ( $c->form_has_errors ) {
             eval {
-                foreach my $param ( keys %{ $c->form->valid } ) {
-                    next if $param !~ /^orig_(\d+)$/;
-                    my $id = $1;
-                    if ( ($c->form->valid($param) || 0) != ($c->form->valid("account_$id") || 0) ) {
-                        if ( $c->form->valid("account_$id") ) {
-                            $c->model('CUFTS::AccountsSites')->create({ account => $id, site => $site->id });
-                            push @{$c->stash->{results}}, $c->loc('Added account: ') . $c->model('CUFTS::Accounts')->find({ id => $id })->name;
-                        }
-                        else {
-                            $c->model('CUFTS::AccountsSites')->search({ account => $id, site => $site->id })->delete();
-                            push @{$c->stash->{results}}, $c->loc('Removed account: ') . $c->model('CUFTS::Accounts')->find({ id => $id })->name;
+                $c->model('CUFTS')->txn_do( sub {
+                    foreach my $param ( keys %{ $c->form->valid } ) {
+                        next if $param !~ /^orig_(\d+)$/;
+                        my $id = $1;
+                        if ( ($c->form->valid($param) || 0) != ($c->form->valid("account_$id") || 0) ) {
+                            if ( $c->form->valid("account_$id") ) {
+                                $c->model('CUFTS::AccountsSites')->create({ account => $id, site => $site->id });
+                                $c->stash_results( $c->loc('Added account: ') . $c->model('CUFTS::Accounts')->find({ id => $id })->name );
+                            }
+                            else {
+                                $c->model('CUFTS::AccountsSites')->search({ account => $id, site => $site->id })->delete();
+                                $c->stash_results( $c->loc('Removed account: ') . $c->model('CUFTS::Accounts')->find({ id => $id })->name );
+                            }
                         }
                     }
-                }
+                });
+            };
+            if ($@) {
+                $c->stash_errors($@);
+                delete $c->stash->{results};
             }
         }
     }
 
     $c->stash->{active_accounts} = { map { $_->id => 1 } $site->accounts->all };
-    $c->stash->{admin_site_page} = $c->form->valid->{admin_site_page};
-    $c->stash->{page}            = $c->form->valid->{page};
+    $c->stash->{admin_site_page} = $c->request->params->{admin_site_page};
+    $c->stash->{page}            = $c->request->params->{page};
     $c->stash->{accounts_rs}     = $accounts_rs;
     $c->stash->{template}        = 'admin/sites/associate.tt';
 }

@@ -42,7 +42,7 @@
   [% SET maxlength = maxlength OR 255 %]
   [% SET label = label OR field.replace('_', ' ') %]
   [% SET value = value.defined ? value : params.defined ? params.$field : site.$field %]
-  <div class="control-group [% IF form_submitted AND (c.form.missing(field) OR c.form.invalid(field)) %]error[% END %]">
+  <div class="control-group [% IF c.form.missing(field) OR c.form.invalid(field) %]error[% END %]">
   <label for="[% field | html %]" [% IF required %]class="required"[% END %]>[% c.loc(label) %]:</label>
   <input class="span8" type="text" id="[% field %]" name="[% field %]" value="[% value | html %]" maxlength="[% maxlength %]" />[% PROCESS field_error.tt %]
   </div>
