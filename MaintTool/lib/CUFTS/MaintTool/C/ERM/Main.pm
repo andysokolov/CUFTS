@@ -342,7 +342,8 @@ sub selected_marc : Local {
 
         # Update records from "on order" to "ordered" and add an order date if there isn't one.
         if ( $c->req->params->{update} ) {
-            if ( $erm_record->subscription_status eq $c->stash->{subscription_statuses}->[3] ) {
+            my @updatable_statuses = ( 2, 3 );
+            if ( grep { $erm_record->subscription_status eq $c->stash->{subscription_statuses}->[$_] } @updatable_statuses ) {
                 $erm_record->subscription_status( $c->stash->{subscription_statuses}->[4] );
             }
             if ( is_empty_string($erm_record->order_date ) ) {
