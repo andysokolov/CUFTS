@@ -24,6 +24,7 @@ use base qw(CUFTS::Resources::GenericJournalDOI);
 use CUFTS::Exceptions;
 use CUFTS::Util::Simple;
 use URI::Escape;
+use String::Util qw( hascontent trim );
 
 use strict;
 
@@ -40,38 +41,32 @@ sub title_list_fields {
             ft_start_date
             vol_ft_start
             iss_ft_start
+            ft_end_date
+            vol_ft_end
+            iss_ft_end
             abbreviation
             journal_url
         )
     ];
 }
 
-# sub title_list_extra_requires {
-#     require Text::CSV;
-# }
-# 
-# sub title_list_split_row {
-#     my ( $class, $row ) = @_;
-# 
-#     my $csv = Text::CSV->new();
-#     $csv->parse($row)
-#         or CUFTS::Exception::App->throw('Error parsing CSV line: ' . $csv->error_input() );
-# 
-#     my @fields = $csv->fields;
-#     return \@fields;
-# }
 
 ## title_list_field_map - Hash ref mapping fields from the raw title lists to
 ## internal field names
 
 sub title_list_field_map {
     return {
-        'Journal Title'        => 'title',
-        'Print ISSN'           => 'issn',
-        'Online ISSN'          => 'e_issn',
-        'Short title'          => 'abbreviation',
-        'Homepage URL'         => 'journal_url',
-        'ft_end_date'          => 'ft_end_date',
+        'Journal Title' => 'title',
+        'Print ISSN'    => 'issn',
+        'Online ISSN'   => 'e_issn',
+        'Short title'   => 'abbreviation',
+        'Homepage URL'  => 'journal_url',
+        'ft_start_date' => 'ft_start_date',
+        'vol_ft_start'  => 'vol_ft_start',
+        'iss_ft_start'  => 'iss_ft_start',
+        'ft_end_date'   => 'ft_end_date',
+        'vol_ft_end'    => 'vol_ft_end',
+        'iss_ft_end'    => 'iss_ft_end',
     };
 }
 
@@ -79,35 +74,35 @@ sub title_list_field_map {
 sub clean_data {
     my ( $class, $record ) = @_;
 
-    if ( not_empty_string($record->{'___Prefix'}) && $record->{'___Prefix'} ne '-' ) {
+    if ( hascontent($record->{'___Prefix'}) && $record->{'___Prefix'} ne '-' ) {
         $record->{title} = $record->{'___Prefix'} . ' ' . $record->{title};
     }
-    
-    if ( not_empty_string($record->{issn}) && $record->{issn} eq '-' ) {
+
+    if ( hascontent($record->{issn}) && $record->{issn} eq '-' ) {
         delete $record->{issn};
     }
 
-    if ( not_empty_string($record->{e_issn}) && $record->{e_issn} eq '-' ) {
+    if ( hascontent($record->{e_issn}) && $record->{e_issn} eq '-' ) {
         delete $record->{e_issn};
     }
-    
-    if ( not_empty_string($record->{'___PDF Starts'}) ) {
-        
+
+    if ( !hascontent($record->{ft_start_date}) && hascontent($record->{'___PDF Starts'}) ) {
+
         if ( $record->{'___PDF Starts'} =~ / (\d+) : (\d*) /xsm ) {
 
             $record->{vol_ft_start} = $1;
-            if ( not_empty_string($2) ) {
+            if ( hascontent($2) ) {
                 $record->{iss_ft_start} = $2;
             }
-            
+
         }
-    
+
         if ( $record->{'___PDF Starts'} =~ / \( (\d{4}) \) /xsm ) {
             $record->{ft_start_date} = $1 . '-01-01';
         }
-        
+
     }
- 
+
     return $class->SUPER::clean_data($record);
 }
 
