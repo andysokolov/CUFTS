@@ -450,18 +450,16 @@ sub _modify_record {
 
     $class->log_modified_title( $schema, $resource, $old_record, $new_record, $timestamp, $local );
 
-    $^W = 0; # Turn off warnings because of the large number of eq matches against undef fields below.
-
     foreach my $column ( $old_record->columns ) {
 
         next if grep { $column eq $_ } qw( id created modified scanned resource active journal_auth );
 
-        if ( $old_record->$column ne $new_record->{$column} ) {
+        if (    ( !defined $old_record->$column && defined $new_record->{$column} )
+             || ( defined $old_record->$column && !defined $new_record->{$column} )
+             || $old_record->$column ne $new_record->{$column} ) {
             $old_record->$column( hascontent($new_record->{$column}) ? $new_record->{$column} : undef );
         }
     }
-
-    $^W = 1;
 
     $old_record->active('t') if $class->check_is_local($local);
     $old_record->modified($timestamp);

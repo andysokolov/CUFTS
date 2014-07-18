@@ -467,8 +467,8 @@ sub title_list_build_record {
         $value = trim_string($value);
         $field = trim_string($field);
 
-        next if $value eq '';
-        next if $field eq '';
+        next if !hascontent($value);
+        next if !hascontent($field);
 
         if ( $field eq 'issn' || $field eq 'e_issn' ) {
             $value = $class->_clean_issn($value);
@@ -976,7 +976,7 @@ sub log_new_title {
     my $resource_id = $resource->id;
 
     my $log_dir = $CUFTS::Config::CUFTS_TTILES_LOG_DIR || '/tmp';
-    my $log_file = "$log_dir/new_titles_${resource_id}_" . substr($timestamp, 0, 19);
+    my $log_file = "$log_dir/new_titles_${resource_id}_" . _clean_timestamp($timestamp);
 
     my $file_exists = -e $log_file && -s $log_file;
 
@@ -986,7 +986,7 @@ sub log_new_title {
     # it's been written to before and already has the header line.
 
     unless ($file_exists) {
-        print LOG 'CUFTS UPDATE: New titles in ', $resource->name, ' loaded ', substr($timestamp, 0,19 ), "\n";
+        print LOG 'CUFTS UPDATE: New titles in ', $resource->name, ' loaded ', _clean_timestamp($timestamp), "\n";
         print LOG join "\t", @{$class->title_list_fields};
         print LOG "\n";
     }
@@ -1009,7 +1009,7 @@ sub log_deleted_title {
         $class->log_deleted_local_title($schema, $resource, $db_record, $timestamp);
 
     my $log_dir = $CUFTS::Config::CUFTS_TTILES_LOG_DIR || '/tmp';
-    my $log_file = "$log_dir/deleted_titles_${local}_${resource_id}_" . substr($timestamp, 0, 19);
+    my $log_file = "$log_dir/deleted_titles_${local}_${resource_id}_" . _clean_timestamp($timestamp);
 
     my $file_exists = -e $log_file && -s $log_file;
 
@@ -1019,7 +1019,7 @@ sub log_deleted_title {
     # it's been written to before and already has the header line.
 
     unless ($file_exists) {
-        print LOG 'CUFTS UPDATE: Deleted titles from ', $resource->name, ' loaded ', substr($timestamp, 0, 19), "\n";
+        print LOG 'CUFTS UPDATE: Deleted titles from ', $resource->name, ' loaded ', _clean_timestamp($timestamp), "\n";
         print LOG join "\t", @{$class->title_list_fields};
         print LOG "\n";
     }
@@ -1061,7 +1061,7 @@ sub log_deleted_local_title {
         my $site_id = $site->id;
 
         my $log_dir = $CUFTS::Config::CUFTS_TTILES_LOG_DIR || '/tmp';
-        my $log_file = "$log_dir/deleted_titles_local_${local_resource_id}_${site_id}_" . substr($timestamp, 0, 19);
+        my $log_file = "$log_dir/deleted_titles_local_${local_resource_id}_${site_id}_" . _clean_timestamp($timestamp);
 
         my $file_exists = -e $log_file && -s $log_file;
 
@@ -1071,7 +1071,7 @@ sub log_deleted_local_title {
         # it's been written to before and already has the header line.
 
         unless ($file_exists) {
-            print LOG 'CUFTS UPDATE: Deleted titles from ', $resource->name, ' loaded ', substr($timestamp, 0, 19), "\n";
+            print LOG 'CUFTS UPDATE: Deleted titles from ', $resource->name, ' loaded ', _clean_timestamp($timestamp), "\n";
             print LOG join "\t", @title_list_fields;
             print LOG "\n";
         }
@@ -1107,7 +1107,7 @@ sub log_modified_title {
     # it's been written to before and already has the header line.
 
     unless ($file_exists) {
-        print LOG 'CUFTS UPDATE: Modified titles in ', $resource->name, ' loaded ', substr($timestamp, 0, 19), "\n";
+        print LOG 'CUFTS UPDATE: Modified titles in ', $resource->name, ' loaded ', _clean_timestamp($timestamp), "\n";
         print LOG join "\t", @{$class->title_list_fields};
         print LOG "\n";
     }
@@ -1149,7 +1149,7 @@ sub log_modified_local_title {
         my $site_id = $site->id;
 
         my $log_dir = $CUFTS::Config::CUFTS_TTILES_LOG_DIR || '/tmp';
-        my $log_file = "$log_dir/modified_titles_local_${local_resource_id}_${site_id}_" . substr($timestamp, 0, 19);
+        my $log_file = "$log_dir/modified_titles_local_${local_resource_id}_${site_id}_" . _clean_timestamp($timestamp);
 
         my $file_exists = -e $log_file && -s $log_file;
 
@@ -1159,7 +1159,7 @@ sub log_modified_local_title {
         # it's been written to before and already has the header line.
 
         unless ($file_exists) {
-            print LOG 'CUFTS UPDATE: Modified titles in ', $resource->name, ' loaded ', substr($timestamp, 0, 19), "\n";
+            print LOG 'CUFTS UPDATE: Modified titles in ', $resource->name, ' loaded ', _clean_timestamp($timestamp), "\n";
             print LOG join "\t", @title_list_fields;
             print LOG "\n";
         }
@@ -1186,7 +1186,6 @@ sub log_modified_local_title {
 
     return 1;
 }
-
 
 sub activate_all {
     my ($class, $schema, $resource, $commit) = @_;
@@ -1302,36 +1301,36 @@ sub email_changes {
                     'Deleted: ' . $results->{'deleted_count'} . "\n"
             ) or CUFTS::Exception::App->throw("Unable to attach text message to MIME::Lite object: $!");
 
-            my $filename = ($CUFTS::Config::CUFTS_TTILES_LOG_DIR || '/tmp/') . "new_titles_${resource_id}_" . substr($results->{timestamp}, 0, 19);
+            my $filename = ($CUFTS::Config::CUFTS_TTILES_LOG_DIR || '/tmp/') . "new_titles_${resource_id}_" . _clean_timestamp($results->{timestamp});
             if (-e "$filename") {
                 $msg->attach(
                     Type => 'text/plain',
                     Path => $filename,
-                    Filename => "new_titles_${resource_id}_" . substr($results->{timestamp}, 0, 19),
+                    Filename => "new_titles_${resource_id}_" . _clean_timestamp($results->{timestamp}),
                     Disposition => 'attachment'
                 ) or CUFTS::Exception::App->throw("Unable to attach new titles file to MIME::Lite object: $!");
             }
 
-            $filename = ($CUFTS::Config::CUFTS_TTILES_LOG_DIR || '/tmp/') . "modified_titles_local_${local_resource_id}_${site_id}_" . substr($results->{'timestamp'}, 0, 19);
+            $filename = ($CUFTS::Config::CUFTS_TTILES_LOG_DIR || '/tmp/') . "modified_titles_local_${local_resource_id}_${site_id}_" . _clean_timestamp($results->{timestamp});
             print "$filename\n";
             if (-e "$filename") {
                 print "found\n";
                 $msg->attach(
                     Type => 'text/plain',
                     Path => $filename,
-                    Filename => "modified_titles_local_${local_resource_id}_${site_id}_" . substr($results->{timestamp}, 0, 19),
+                    Filename => "modified_titles_local_${local_resource_id}_${site_id}_" . _clean_timestamp($results->{timestamp}),
                     Disposition => 'attachment'
                 ) or CUFTS::Exception::App->throw("Unable to attach modified titles file to MIME::Lite object: $!");
             }
 
-            $filename = ($CUFTS::Config::CUFTS_TTILES_LOG_DIR || '/tmp/') . "deleted_titles_local_${local_resource_id}_${site_id}_" . substr($results->{'timestamp'}, 0, 19);
+            $filename = ($CUFTS::Config::CUFTS_TTILES_LOG_DIR || '/tmp/') . "deleted_titles_local_${local_resource_id}_${site_id}_" . _clean_timestamp($results->{timestamp});
             print STDERR "$filename\n";
             if (-e "$filename") {
                 print STDERR "found\n";
                 $msg->attach(
                     Type => 'text/plain',
                     Path => $filename,
-                    Filename => "deleted_titles_local_${local_resource_id}_${site_id}_" . substr($results->{timestamp}, 0, 19),
+                    Filename => "deleted_titles_local_${local_resource_id}_${site_id}_" . _clean_timestamp($results->{timestamp}),
                     Disposition => 'attachment'
                 ) or CUFTS::Exception::App->throw("Unable to attach deleted titles file to MIME::Lite object: $!");
             }
@@ -1360,6 +1359,19 @@ sub running_checkpoint {
     my ( $class, $job, $count, $max, $start, $range, $message ) = @_;
     return if !defined $job;
     $job->running_checkpoint( $count, $max, $start, $range, $message );
+}
+
+sub _clean_timestamp {
+    my $timestamp = shift;
+
+    if ( ref $timestamp && $timestamp->can('ymd') ) {
+        return $timestamp->ymd('-') . '_' . $timestamp->hms('-')
+    }
+    else {
+        my $ts = substr( $timestamp, 0, 19 );
+        $ts =~ tr/: /-_/;
+        return $ts;
+    }
 }
 
 
