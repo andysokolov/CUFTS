@@ -209,10 +209,9 @@ sub load_title_list {
     my $new_count = 0;
     my $modified_count = 0;
     my $local_resouces_auto_activated = 0;
+    my $timestamp = $schema->get_now();
 
     $schema->txn_do( sub {
-
-        my $timestamp = $schema->get_now();
 
         while ( my $row = $class->title_list_parse_row(*IN) ) {
 
@@ -302,6 +301,7 @@ sub load_title_list {
         modified_count                 => $modified_count,
         deleted_count                  => $deleted_count,
         local_resources_auto_activated => $local_resouces_auto_activated,
+        timestamp                      => $timestamp,
     };
 
     return $results;
