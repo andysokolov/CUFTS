@@ -8,7 +8,7 @@
 ## the terms of the GNU General Public License as published by the Free
 ## Software Foundation; either version 2 of the License, or (at your option)
 ## any later version.
-## 
+##
 ## CUFTS is distributed in the hope that it will be useful, but WITHOUT ANY
 ## WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 ## FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -119,7 +119,7 @@ __PACKAGE__->columns(All => qw(
     subscription
     price_cap
     license_start_date
-    
+
     stats_available
     stats_url
     stats_frequency
@@ -150,10 +150,10 @@ __PACKAGE__->columns(All => qw(
     access_notes
     breaches
     admin_notes
-    
+
     alert
     alert_expiry
-    
+
     provider_name
     local_provider_name
     provider_contact
@@ -165,7 +165,7 @@ __PACKAGE__->columns(All => qw(
 
     cancellation_cap
     cancellation_cap_notes
-));                                                                                                        
+));
 
 __PACKAGE__->columns( Essential => __PACKAGE__->columns );
 __PACKAGE__->columns( TEMP => qw( result_name rank ) );
@@ -206,7 +206,7 @@ sub to_hash {
     my %hash;
     foreach my $column ( __PACKAGE__->columns ) {
         next if !defined($self->$column);
-        
+
         # Handle has-a relationship columns
         if ( grep { $_ eq $column } qw( consortia pricing_model resource_medium resource_type ) ) {
             $hash{$column} = $self->$column->$column;
@@ -220,15 +220,15 @@ sub to_hash {
         else {
             $hash{$column} = $self->$column();
         }
-        
+
     }
 
     # Add flattened has-many/many-to-many columns
-    
+
     $hash{subjects}      = join ', ', sort map { $_->subject }      $self->subjects;
     $hash{content_types} = join ', ', sort map { $_->content_type } $self->content_types;
     $hash{names}         = join ', ', sort map { $_->name }         $self->names;
-    
+
     return \%hash;
 }
 
@@ -239,7 +239,7 @@ sub clone {
     my %hash;
     foreach my $column ( __PACKAGE__->columns ) {
         next if !defined($self->$column) or $column eq 'id';
-        
+
         # Handle has-a relationship columns
         if ( grep { $_ eq $column } qw( consortia pricing_model resource_medium resource_type license provider ) ) {
             $hash{$column} = $self->$column->id;
@@ -304,7 +304,7 @@ my @fast_columns = qw(
 
 sub main_name {
     my ( $self, $new_name ) = @_;
-    
+
     my $name_record = CUFTS::DB::ERMNames->search({
         erm_main => $self->id,
         main     => 1,
@@ -372,7 +372,7 @@ sub retrieve_all_for_site {
 
 sub name {
     my ( $self ) = @_;
-    
+
     if ( defined($self->result_name) ) {
         return $self->result_name;
     }
@@ -397,7 +397,7 @@ sub facet_search {
             'erm_main.site' => $site,
         },
     };
-    
+
     my $sql = qq{
         SELECT *
         FROM (
@@ -424,16 +424,16 @@ sub facet_search {
         }
 
     }
-    
+
     my $SQLAbstract = SQL::Abstract->new;
     my ( $where, @bind ) = $SQLAbstract->where( $config->{search} );
 
     # Untaint $where
     $where =~ /(.*)/s or die;
     $where = $1;
-    
+
     # Build column list
-    
+
     my @columns;
     foreach my $column ( $no_objects ? @fast_columns : __PACKAGE__->columns ) {
         if ( exists($config->{replace_columns}->{$column} ) ) {
@@ -480,7 +480,7 @@ sub facet_search {
 
 sub facet_count {
     my ( $class, $site, $fields ) = @_;
-    
+
     my $config = {
         joins  => {},
         order  => [ 'sort_name' ],    # Default order by resource name
@@ -494,7 +494,7 @@ sub facet_count {
             'erm_main.site' => $site,
         },
     };
-    
+
     my $sql = qq{
         SELECT count(*)
         FROM (
@@ -564,7 +564,7 @@ sub _facet_search_subject {
     my ( $class, $field, $data, $config, $sql ) = @_;
 
     $config->{joins}->{subject} = ' JOIN erm_subjects_main ON ( erm_subjects_main.erm_main = erm_main.id )';
-    
+
     unshift( @{ $config->{order} }, 'rank' );
     $config->{extra_columns}->{rank} = 'erm_subjects_main.rank';
     $config->{replace_columns}->{description_brief} = 'COALESCE( erm_subjects_main.description, erm_main.description_brief ) AS description_brief';
@@ -575,7 +575,7 @@ sub _facet_search_content_type {
     my ( $class, $field, $data, $config, $sql ) = @_;
 
     $config->{joins}->{content_type} = ' JOIN erm_content_types_main ON ( erm_content_types_main.erm_main = erm_main.id )';
-    
+
     $config->{search}->{'erm_content_types_main.content_type'} = $data;
 }
 
@@ -594,7 +594,7 @@ my ( $class, $field, $data, $config, $sql ) = @_;
     if ( !exists( $config->{joins}->{keywords} ) ) {
         $config->{joins}->{keywords} = ' LEFT JOIN erm_keywords ON ( erm_main.id = erm_keywords.erm_main )';
     }
-    
+
     my $escaped = $data;
     $escaped =~ s/([^\w])/'\x' . unpack('H*', $1) /gsemx;
 
@@ -607,6 +607,7 @@ my ( $class, $field, $data, $config, $sql ) = @_;
        'erm_main.vendor'            => { '~*' => $escaped },
        'erm_main.publisher'         => { '~*' => $escaped },
        'erm_main.internal_name'     => { '~*' => $escaped },
+       'erm_main.public_message'    => { '~*' => $escaped },
        'erm_names.search_name'      => { '~'  => CUFTS::DB::ERMNames->strip_name( $data ) },
        'erm_keywords.keyword'       => { '~'  => CUFTS::DB::ERMKeywords->strip_keyword( $data ) },
     ];
@@ -684,14 +685,14 @@ sub as_marc {
     ];
 
     my @subfields;
-    
+
     my $MARC = MARC::Record->new();
 
     while ( my ( $field_num, $field_conf ) = splice( @$configuration, 0, 2 ) ) {
 
-        
+
         my $extra_conf = shift(@$field_conf);
-        
+
         my @values = (undef);
         if ( $extra_conf->{repeats} ) {
             my $repeat_field = $extra_conf->{repeat_field};
@@ -721,18 +722,18 @@ sub as_marc {
                         my $method = $content_conf->{call_method};
                         $value = $value->$method();
                     }
-                    
+
                     if ( is_empty_string($value) ) {
                         $value = '';
                     }
                     else {
-                        $keep_contents = 1;                        
+                        $keep_contents = 1;
                     }
 
                     if ( $content_conf->{boolean} ) {
                         $value = $value ? 'yes' : 'no';
                     }
-                    
+
                     $value =~ s/[\r\n]+/: /g;
 
                     push @contents, "${label}${prepend}${value}${append}";
