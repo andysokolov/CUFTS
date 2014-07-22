@@ -470,8 +470,22 @@ sub _journal_object_to_hash {
         title               => $journal->result_title,
         url                 => $c->uri_for_site( $c->controller('Journal')->action_for('view'), $journal->get_column('journals_auth') )->as_string,
         journal_auth        => $journal->get_column('journals_auth'),
-        issns               => defined($journal->issns) ? [ map { $_->issn } $journal->issns ] : undef,
-        fulltext_coverages  => [ map { $_->fulltext_coverage } $journal->links ],
+        issns               => defined($journal->issns) ? [ map { $_->issn } $journal->issns->all ] : undef,
+        fulltext_coverages  => [ map { $_->fulltext_coverage } $journal->links->all ],
+        links               => [
+            map {
+                {
+                    resource          => $c->stash->{resources_display}->{ $_->resource }->{name},
+                    rank              => $_->rank,
+                    print_coverage    => $_->print_coverage,
+                    fulltext_coverage => $_->fulltext_coverage,
+                    citation_coverage => $_->citation_coverage,
+                    embargo           => $_->embargo,
+                    current           => $_->current,
+                    url               => $_->url,
+                }
+            } $journal->links->all
+        ],
     };
 }
 
