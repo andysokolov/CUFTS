@@ -5,7 +5,7 @@ use strict;
 
 use Data::Dumper;
 
-use CUFTS::Schema;
+use CUFTS::Config;
 use Date::Manip;
 use Unicode::String qw(utf8);
 use CUFTS::CJDB::Util;
