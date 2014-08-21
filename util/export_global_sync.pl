@@ -40,7 +40,7 @@ if ( defined $prev_days ) {
         $prev_days--;
     }
     $exact_timestamp = sprintf( "%4i%02i%02i", @dc );
-
+    print "Matching timestamp: $exact_timestamp\n";
 }
 elsif ( defined $after_timestamp ) {
 
