@@ -141,7 +141,7 @@ sub build_linkFulltext {
 
     foreach my $record (@$records) {
 
-        my $url = 'https://global.factiva.com/redir/default.aspx?p=ou&cookie=on&XSID=' . uri_escape($resource->auth_name);
+        my $url = 'https://global.factiva.com/redir/default.aspx?p=ou&XSID=' . uri_escape($resource->auth_name);
 
         if ( hascontent($record->issn) ) {
             $url .= '&issn=' . dashed_issn( $record->issn );
@@ -187,7 +187,7 @@ sub build_linkJournal {
     my @results;
 
     foreach my $record (@$records) {
-        my $url = 'https://global.factiva.com/en/du/headlines.asp?cookie=on&searchText=rst%3D' . uri_escape($record->db_identifier) . '&XSID=' . uri_escape($resource->auth_name);
+        my $url = 'https://global.factiva.com/en/du/headlines.asp?searchText=rst%3D' . uri_escape($record->db_identifier) . '&XSID=' . uri_escape($resource->auth_name);
         my $result = new CUFTS::Result($url);
         $result->record($record);
 
