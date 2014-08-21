@@ -56,10 +56,13 @@ sub titles :Chained('base') :PathPart('titles') :Args(0) {
     }
     else {
         if ( $search_type eq 'startswith' ) {
-            $cleaned_search_term = '^' . quotemeta $cleaned_search_term;
+            $cleaned_search_term = '^' . quotemeta($cleaned_search_term);
         }
         elsif ( $search_type eq 'advstartswith' ) {  # !!! No regex quoting, this is used internally
             $cleaned_search_term = '^' . lc(CUFTS::CJDB::Util::strip_articles($search_term)) . '.*';
+        }
+        if ( $search_type eq 'exact' ) {
+            $cleaned_search_term = '^' . quotemeta($cleaned_search_term) . '$';
         }
 
         $c->stash->{journals_rs} = $c->model('CUFTS::CJDBJournals')->search_distinct_title_by_journal_main( $site_id, $cleaned_search_term, $page, $rows );
