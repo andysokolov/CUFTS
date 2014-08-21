@@ -35,10 +35,12 @@ my $exact_timestamp  = $options{exact};
 if ( defined $prev_days ) {
 
     my @dc = Date::Calc::Today();
-    while ( $prev_days > 0 || Date::Calc::Day_of_Week(@dc) > 5 ) {
-        @dc = Date::Calc::Add_Delta_Days( @dc, -1 );
-        $prev_days--;
-    }
+	while ( $prev_days > 0 || Date::Calc::Day_of_Week(@dc) > 5 ) {
+	    if ( Date::Calc::Day_of_Week(@dc) <= 5 ) {
+	    	$prev_days--;
+	    }
+	    @dc = Date::Calc::Add_Delta_Days( @dc, -1 );
+	}
     $exact_timestamp = sprintf( "%4i%02i%02i", @dc );
     print "Matching timestamp: $exact_timestamp\n";
 }
