@@ -112,8 +112,8 @@ sub menu : Local {
         $search{active} = 'true';
 
     my @local_resources = $c->session->{local_menu_filter}
-                          ? CUFTS::DB::LocalResources->search_where({ -nest => [\%search, {resource => { '!=' => undef }}], site => $c->{stash}->{current_site}->id })
-                          : CUFTS::DB::LocalResources->search_where({ %search, site => $c->{stash}->{current_site}->id });
+                          ? CUFTS::DB::LocalResources->search_where({ -nest => [\%search, {resource => { '!=' => undef }}], site => $c->stash->{current_site}->id })
+                          : CUFTS::DB::LocalResources->search_where({ %search, site => $c->stash->{current_site}->id });
 
     # Merge resources into a resource that we can treat like a real CDBI resource except for DB interaction.
 

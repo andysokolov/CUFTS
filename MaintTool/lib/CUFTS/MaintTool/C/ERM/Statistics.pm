@@ -44,7 +44,7 @@ sub auto : Private {
     my %resources_map    = map { $_->id => $_ } @resources;
 
     my @standard_fields = qw( start_date end_date granularity format );
-    
+
     $c->stash->{report_config} = {
         clickthroughs => {
             id     => 'clickthroughs',
@@ -88,15 +88,15 @@ sub auto : Private {
 
 sub default : Private {
     my ( $self, $c ) = @_;
-    
+
     $c->stash->{template} = "erm/statistics/menu.tt";
 }
 
 
 
 sub clickthroughs : Local {
-    my ( $self, $c ) = @_;   
-    
+    my ( $self, $c ) = @_;
+
     $c->form({
         optional => [ qw( run_report ) ],
         required => [ qw( selected_resources start_date end_date granularity format ) ],
@@ -105,7 +105,7 @@ sub clickthroughs : Local {
             end_date    => qr/^\d{4}-\d{1,2}-\d{1,2}/,
         },
     });
-    
+
     if ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
         return $c->forward('default');
     }
@@ -114,9 +114,9 @@ sub clickthroughs : Local {
     my $granularity = $c->form->{valid}->{granularity};
     my $start_date  = $c->form->{valid}->{start_date};
     my $end_date    = $c->form->{valid}->{end_date};
-        
+
     my @resource_ids = split(',', $c->form->{valid}->{selected_resources} );
-    
+
     my $uses = CUFTS::DB::ERMUses->count_grouped( $granularity, $start_date, $end_date, \@resource_ids );
 
     my @resource_names = CUFTS::DB::ERMNames->search( { erm_main => {'-in' => \@resource_ids}, main => 1 }, { order_by => 'search_name'} );
@@ -144,7 +144,7 @@ sub clickthroughs : Local {
     $c->stash->{dates}         = $dates;
     $c->stash->{start_date}    = $c->form->valid->{start_date};
     $c->stash->{end_date}      = $c->form->valid->{end_date};
-    
+
     if ( $format eq 'html' ) {
         $c->stash->{template} = 'erm/statistics/clickthroughs/html.tt';
     }
@@ -175,7 +175,7 @@ sub clickthrough_ofc : Private {
     );
 
     my @dates = map { $_->{date} } @{$stash->{dates}};
-    
+
     my @chart_data;
     my $count = 0;
     foreach my $resource ( @{$stash->{resources}} ) {
@@ -186,20 +186,20 @@ sub clickthrough_ofc : Private {
             values      => [ map { $stash->{resources_hash}->{$resource->{id}}->{$_} } @dates ],
         );
     }
-    
+
     my $grid = Chart::OFC::Grid->new(
         title       => 'ERM Clickthroughs',
         datasets    => \@chart_data,
         x_axis      => $x_axis,
         y_axis      => $y_axis,
     );
-    
+
     $c->flash->{ofc} = $grid->as_ofc_data;
 
     # Calculate a width/height that will allow all data points to be seen (hopefully)
-    
+
     $c->stash->{chart_width} = 250 + scalar( @{$stash->{dates}} ) * 50;
-    
+
     $c->stash->{template} = 'erm/statistics/ofc.tt';
     $c->stash->{data_url} = $c->uri_for('ofc_flash');
 }
@@ -208,7 +208,7 @@ sub clickthrough_ofc : Private {
 # types is an array ref of types to match on.  Typically ['requests'] for journals and ['searches', 'sessions'] for databases
 
 sub _counter_usage_generic {
-    my ( $self, $c, $types, $report_dir ) = @_;   
+    my ( $self, $c, $types, $report_dir ) = @_;
 
     $c->form({
         optional => [ qw( run_report selected_resources counter_sources ) ],
@@ -218,14 +218,14 @@ sub _counter_usage_generic {
             end_date    => qr/^\d{4}-\d{1,2}-\d{1,2}/,
         },
     });
-    
+
     if ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
         return $c->forward('default');
     }
 
     my $format      = $c->form->{valid}->{format};
-    my $start_date  = $c->{stash}->{start_date} = $c->form->{valid}->{start_date};
-    my $end_date    = $c->{stash}->{end_date}   = $c->form->{valid}->{end_date};
+    my $start_date  = $c->stash->{start_date} = $c->form->{valid}->{start_date};
+    my $end_date    = $c->stash->{end_date}   = $c->form->{valid}->{end_date};
 
     my $dates = _build_granulated_dates( $start_date, $end_date, 'month', 1 );
 
@@ -255,7 +255,7 @@ sub _counter_usage_generic {
     # TODO: This stuff can be rewritten to be hopefully much faster under DBIC by
     #       not going through all the object generation stuff when really we're just after
     #       a couple of numbers
-    
+
     # Build two hashes of the results, one keyed on date the other on record
 
     my $records = CUFTS::DB::ERMCounterCounts->search(
@@ -296,7 +296,7 @@ sub _counter_usage_generic {
     }
     @sorted_titles = sort { $a->[1] cmp $b->[1] } @sorted_titles;
 
-    # 
+    #
     # use Data::Dumper;
     # warn(Dumper(\%record_hash));
     # warn(Dumper($dates));
@@ -320,20 +320,20 @@ sub _counter_usage_generic {
 }
 
 sub counter_journal_usage : Local {
-    my ( $self, $c ) = @_;   
+    my ( $self, $c ) = @_;
 
     return $self->_counter_usage_generic( $c, [ 'requests' ], 'counter_journal_usage' )
 }
 
 sub counter_database_usage : Local {
-    my ( $self, $c ) = @_;   
+    my ( $self, $c ) = @_;
     return $self->_counter_usage_generic( $c, [ 'sessions', 'searches', 'sessions federated', 'searches federated' ], 'counter_database_usage' )
 }
 
 
 sub counter_database_usage_from_jr : Local {
-    my ( $self, $c ) = @_;   
-    
+    my ( $self, $c ) = @_;
+
     $c->form({
         optional => [ qw( run_report ) ],
         required => [ qw( selected_resources start_date end_date granularity format ) ],
@@ -342,7 +342,7 @@ sub counter_database_usage_from_jr : Local {
             end_date    => qr/^\d{4}-\d{1,2}-\d{1,2}/,
         },
     });
-    
+
     if ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
         return $c->forward('default');
     }
@@ -354,13 +354,13 @@ sub counter_database_usage_from_jr : Local {
 
     my @resource_ids = split(',', $c->form->{valid}->{selected_resources} );
 
-    
+
     my %sources_used;
     my %counts_by_resource;
     foreach my $erm ( @{$c->stash->{resources}} ) {
         foreach my $source ( $erm->counter_sources ) {
             next if $source->type ne 'j';
-            
+
             push @{$sources_used{$erm->id}}, $source->name;
             my $records = $source->database_usage_from_jr1( $start_date, $end_date );
             foreach my $record ( @$records ) {
@@ -369,7 +369,7 @@ sub counter_database_usage_from_jr : Local {
             }
         }
     }
-    
+
     my $dates = _build_granulated_dates( $start_date, $end_date, $granularity, 1 );
 
     $c->stash->{dates}              = $dates;
@@ -377,7 +377,7 @@ sub counter_database_usage_from_jr : Local {
     $c->stash->{end_date}           = $c->form->valid->{end_date};
     $c->stash->{counts_by_resource} = \%counts_by_resource;
     $c->stash->{sources_used}       = \%sources_used;
-    
+
     if ( $format eq 'html' ) {
         $c->stash->{template} = 'erm/statistics/counter_database_usage_from_jr/html.tt';
     }
@@ -395,7 +395,7 @@ sub counter_database_usage_from_jr : Local {
 # This assumes you'll be using it against sets of individual journal subscriptions
 
 sub counter_database_cost_per_use : Local {
-    my ( $self, $c ) = @_;   
+    my ( $self, $c ) = @_;
 
     $c->form({
         optional => [ qw( run_report ) ],
@@ -405,14 +405,14 @@ sub counter_database_cost_per_use : Local {
             end_date    => qr/^\d{4}-\d{1,2}-\d{1,2}/,
         },
     });
-    
+
     if ( $c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown ) {
         return $c->forward('default');
     }
 
     my $format      = $c->form->{valid}->{format};
-    my $start_date  = $c->{stash}->{start_date} = $c->form->{valid}->{start_date};
-    my $end_date    = $c->{stash}->{end_date}   = $c->form->{valid}->{end_date};
+    my $start_date  = $c->stash->{start_date} = $c->form->{valid}->{start_date};
+    my $end_date    = $c->stash->{end_date}   = $c->form->{valid}->{end_date};
 
     my $dates = _build_granulated_dates( $start_date, $end_date, 'year', 1 );
 
@@ -423,14 +423,14 @@ sub counter_database_cost_per_use : Local {
             id => { '-in' => \@resource_ids },
         }
     );
-    
+
     my %sources_used;
     my %counts_by_resource;
     my %costs;
     foreach my $erm ( @{$c->stash->{resources}} ) {
 
         # Calculate costs data
-        
+
         my @adv_costs = map { {
             start => DateTime::Format::ISO8601->parse_datetime($_->period_start),
             end   => DateTime::Format::ISO8601->parse_datetime($_->period_end),
@@ -438,24 +438,24 @@ sub counter_database_cost_per_use : Local {
          } } $erm->costs;
 
         # Cheat for now and just use generic cost field
-        
+
         foreach my $date ( @$dates ) {
             my $cost_total = 0;
             my $period_end = DateTime->new( year => $date->{dt}->year, month => 12, day => 31 );
             foreach my $cost ( @adv_costs ) {
-                if (    ( $date->{dt} >= $cost->{start} && $date->{dt} <= $cost->{end} ) 
+                if (    ( $date->{dt} >= $cost->{start} && $date->{dt} <= $cost->{end} )
                      || ( $period_end >= $cost->{start} && $period_end <= $cost->{end} ) ) {
-                    
+
                     # Calculate percentage applied to this period
-                    
+
                     my $start = $cost->{start} < $date->{dt} ? $date->{dt} : $cost->{start};
                     my $end = $cost->{end} < $period_end ? $cost->{end} : $period_end;
                     my $days = $start->delta_days( $end )->in_units('days') + 1;
                     my $days_in_year = Date::Calc::Days_in_Year( $date->{dt}->year, 12 );
                     my $pct = $days / $days_in_year;
-                
+
                     warn( "$start\n$end\n$days\n$days_in_year\n$pct\n");
-                    
+
                     $cost_total += $cost->{paid} * $pct;
                 }
             }
@@ -466,7 +466,7 @@ sub counter_database_cost_per_use : Local {
 
         foreach my $source ( $erm->counter_sources ) {
             next if $source->type ne 'j';
-            
+
             push @{$sources_used{$erm->id}}, $source->name;
             my $records = $source->database_usage_from_jr1( $start_date, $end_date );
             foreach my $record ( @$records ) {
@@ -509,7 +509,7 @@ sub ofc_flash : Local {
 
 sub _build_granulated_dates {
     my ( $start_date, $end_date, $granularity, $date_only ) = @_;
-    
+
     my $add_granularity = "${granularity}s";  # week => weeks.  make this more complex if we hit something that's not a trivial map
     my $start_dt = DateTime::Format::ISO8601->parse_datetime($start_date);
     my $end_dt   = DateTime::Format::ISO8601->parse_datetime($end_date);
