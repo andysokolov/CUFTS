@@ -5,7 +5,7 @@
  <form method="post" action="[% url("$url_base/erm/counter/delete/") %]">
   <input style="margin-left: 10px;" type="submit" name="delete" value="delete" />
   <input type="hidden" name="source_id" value="[% source.id %]" />
- </form> 
+ </form>
 </div>
 
 
@@ -79,6 +79,20 @@
 
 <div class="field">
  <div class="data">
+  <label for="counter-edit-input-version">COUNTER version</label>
+  <select id="counter-edit-input-version" name="version" style="width: 19em">
+   [% FOREACH version_option IN [ '3', '4' ] %]
+    <option value="[% version_option %]" [% 'selected="selected"' IF source.version == version_option %]>[% version_option | html %]</option>
+   [% END %]
+  </select>
+ </div>
+ <div class="help">
+  Which COUNTER version number to send to the SUSHI server.
+ </div>
+</div>
+
+<div class="field">
+ <div class="data">
   <label for="counter-edit-input-reference">reference</label>
   <input id="counter-edit-input-reference" name="reference" value="[% source.reference | html %]" style="width: 15em;" />
   [% PROCESS form_results.tt frf='reference' %]
@@ -91,7 +105,7 @@
 </fieldset>
 
 <fieldset>
-    
+
 <legend>SUSHI Scheduling</legend>
 
 <div class="field">
@@ -130,7 +144,7 @@
 </fieldset>
 
 <fieldset>
-    
+
 <legend>File Upload</legend>
 
 <div class="field">
@@ -153,5 +167,3 @@
 
 
 </form>
-
-

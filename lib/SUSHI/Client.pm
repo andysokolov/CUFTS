@@ -38,7 +38,7 @@ sub get_jr1_report {
         proxy => $url,
         deserializer_args => { strict => 0 },
     });
-    
+
     if ( $debug ) {
         $service->outputxml(1);
     }
@@ -76,19 +76,19 @@ sub get_jr1_report {
     my $request = SUSHI::SUSHIElements::ReportRequest->new( $request_data );
     $request->attr->set_Created( DateTime->now->iso8601 );
     $request->get_ReportDefinition->attr->set_Name( 'JR1' );
-    $request->get_ReportDefinition->attr->set_Release( 3 );
+    $request->get_ReportDefinition->attr->set_Release( $source->version || 3 );
 
     my $result = $service->GetReport($request);
     if ( !$result ) {
         # Try to get a useful error...
-        
+
         if ( $result =~ / Message\s+was:[\s\n]+ (.+?) <\/fault /xsm ) {
             $result = $1;
         }
         $logger->error( "Unable to process 'GetReport': " . substr($result, 0, 2048 ) );
         return [ 'Could not process GetReport, possibly a failure at the remote service.' ];
     }
-    
+
     if ( $debug ) {
         die(Dumper($result));
     }
@@ -96,9 +96,9 @@ sub get_jr1_report {
 
     my $report = $result->get_Report;
     if ( !defined($report) ) {
-        $logger->error( 'get_Report on $result was not defined. Result was: ' . Dumper($result) );        
+        $logger->error( 'get_Report on $result was not defined. Result was: ' . Dumper($result) );
         return [ 'Could not process get_Report, possibly a failure at the remote service.' ];
-    }    
+    }
 
     my $journal_report = $report->get_Report;
 
@@ -286,7 +286,7 @@ sub get_db1_report {
     my $result = $service->GetReport($request);
     if ( !$result ) {
         # Try to get a useful error...
-        
+
         if ( $result =~ / Message\s+was:[\s\n]+ (.+?) <\/fault /xsm ) {
             $result = $1;
         }
@@ -367,13 +367,13 @@ sub get_db1_report {
                 next;
             }
 
-            
+
             my $count;
             foreach my $instance (@$instances) {
                 my $count = $instance->get_Count->as_num;
-                
+
                 my $type = lc($performance->get_Category->get_value);
-                
+
                 my $metric = $instance->get_MetricType;
                 if ( $metric =~ /_fed$/ ) {
                     $type .= ' federated';
@@ -386,7 +386,7 @@ sub get_db1_report {
                     counter_title  => $journal_rec->id,
                     counter_source => $source->id,
                 };
-                
+
                 # Clear any existing data for this date range if it exists.
                 $schema->resultset('ERMCounterCounts')->search($requests_data)->delete();
 

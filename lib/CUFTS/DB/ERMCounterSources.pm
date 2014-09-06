@@ -8,7 +8,7 @@
 ## the terms of the GNU General Public License as published by the Free
 ## Software Foundation; either version 2 of the License, or (at your option)
 ## any later version.
-## 
+##
 ## CUFTS is distributed in the hope that it will be useful, but WITHOUT ANY
 ## WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 ## FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
@@ -31,13 +31,14 @@ __PACKAGE__->columns(All => qw(
     type
     name
     reference
+    version
     erm_sushi
 
     last_run_timestamp
     next_run_date
     run_start_date
     interval_months
-));                                                                                                        
+));
 __PACKAGE__->columns(Essential => __PACKAGE__->columns);
 __PACKAGE__->sequence('erm_counter_sources_id_seq');
 
@@ -53,7 +54,7 @@ sub database_usage_from_jr1 {
     my ( $self, $start_date, $end_date ) = @_;
 
     # Do some date checking here!
-    
+
     my $sth = CUFTS::DB::ERMCounterCounts->sql_sum_counts_by_counter_source();
     $sth->execute($self->id, $start_date, $end_date);
     return $sth->fetchall_arrayref({});
