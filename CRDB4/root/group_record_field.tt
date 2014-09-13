@@ -7,3 +7,4 @@
  [% END %]
  [% SET group_record_text = group_record_text _ fragment %]
 [% END %]
+
