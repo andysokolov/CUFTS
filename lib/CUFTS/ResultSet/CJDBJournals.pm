@@ -21,7 +21,7 @@ sub search_distinct_title_by_journal_main_ft {
             bind     => [ $title, $title, $site ],
             join     => 'journals_titles',
             where    => \"to_tsvector('english', search_title) @@ plainto_tsquery('english', ?) AND site = ?",
-            order_by => [ 'journals_titles.journal', 'rank DESC', 'journals_titles.main DESC' ],
+            order_by => [ 'journals_titles.journal', 'journals_titles.main DESC', 'rank DESC',  ],
         }
     );
 
