@@ -103,7 +103,10 @@ sub get_jr1_report {
     my $journal_report = $report->get_Report;
 
     if ( !$journal_report || !defined($journal_report->attr ) ) {
-        $logger->error("Unable to retrieve report details through get_Report.");
+        if ( $result =~ / Message> (.+?) <\/Message /xsm ) {
+            $result = $1;
+        }
+        $logger->error( "Unable to retrieve report details through get_Report: " . substr($result, 0, 2048 ) );
         return [ 'Could not get report details from SUSHI response.' ];
     }
 
