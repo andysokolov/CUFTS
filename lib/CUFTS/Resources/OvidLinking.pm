@@ -191,7 +191,9 @@ sub build_linkFulltext {
              || is_empty_string( $request->issue  )
              || is_empty_string( $request->spage  ) )
         {
-            $url .= uri_escape( $request->atitle ) . '.TI';
+            my $atitle = $request->atitle;
+            $atitle =~ s/\.$//;
+            $url .= uri_escape($atitle) . '.TI';
         }
         else {
             $url .= $request->volume . '.VO+and+'
