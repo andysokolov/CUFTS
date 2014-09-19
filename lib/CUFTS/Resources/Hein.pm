@@ -20,125 +20,20 @@
 
 package CUFTS::Resources::Hein;
 
-use base qw(CUFTS::Resources::Base::Journals);
-
-use CUFTS::Exceptions;
-use CUFTS::Util::Simple;
-use HTML::Entities;
-use Date::Calc qw(Delta_Days Today);
-
+use base qw(CUFTS::Resources::KBARTJournal);
 
 use strict;
 
-sub title_list_fields {
-    return [
-        qw(
-            title
-            issn
-            ft_start_date
-            vol_ft_start
-            ft_end_date
-            vol_ft_end
-            journal_url
-            publisher
-        )
-    ];
-}
-
-sub title_list_field_map {
-    return {
-        'Title'         => 'title',
-        'ISSN'          => 'issn',
-        'URL'           => 'journal_url',
-        'Publisher'     => 'publisher'
-    };
-}
-
-sub title_list_extra_requires {
-    require Text::CSV;
-}
-
-sub title_list_split_row {
-    my ( $class, $row ) = @_;
-
-    my $csv = Text::CSV->new();
-    $csv->parse($row)
-        or CUFTS::Exception::App->throw('Error parsing CSV line: ' . $csv->error_input() );
-
-    my @fields = $csv->fields;
-    return \@fields;
-}
-
-sub skip_record {
-	my ( $class, $record ) = @_;
-
-	return 1 if ( $record->{title} =~ m/see:/i );
-
-	return 0;
-}
-
 sub clean_data {
     my ( $class, $record ) = @_;
-    
-    if ( $record->{'___Coverage'} =~ /^ (?:Vols|Nos)\. \s+ (\d+)-(\d+) (?:\#\d+)? \s+ \( (\d+)-(\d+) \) /xsm ) {
-        $record->{vol_ft_start} = $1;
-        $record->{vol_ft_end} = $2;
-        $record->{ft_start_date} = $3;
-        $record->{ft_end_date} = $4;
-    }
-    
-    if ( not_empty_string( $record->{ft_start_date} ) ) {
-        if ( $record->{ft_start_date} =~ /(\d+)-(\w+)-(\d{2})/ ) {
-            my ( $day, $month, $year ) = ( $1, $2, $3 );
-            $year += $year > 19 ? 1900 : 2000;
-            $month = get_month($month, 'start');
-            $record->{ft_start_date} = sprintf("%04i-%02i-%02i", $year, $month, $day);
-        }
-    }
-
-    if ( not_empty_string( $record->{ft_end_date} ) ) {
-        if ( $record->{ft_end_date} =~ /(\d+)-(\w+)-(\d{2})/ ) {
-            my ( $day, $month, $year ) = ( $1, $2, $3 );
-            $year += $year > 19 ? 1900 : 2000;
-            $month = get_month($month, 'end');
-        }
-    }
-
-    sub get_month {
-        my ( $month, $period ) = @_;
-
-        if    ( $month =~ /^Jan/i ) { return 1 }
-        elsif ( $month =~ /^Feb/i ) { return 2 }
-        elsif ( $month =~ /^Mar/i ) { return 3 }
-        elsif ( $month =~ /^Apr/i ) { return 4 }
-        elsif ( $month =~ /^May/i ) { return 5 }
-        elsif ( $month =~ /^Jun/i ) { return 6 }
-        elsif ( $month =~ /^Jul/i ) { return 7 }
-        elsif ( $month =~ /^Aug/i ) { return 8 }
-        elsif ( $month =~ /^Sep/i ) { return 9 }
-        elsif ( $month =~ /^Oct/i ) { return 10 }
-        elsif ( $month =~ /^Nov/i ) { return 11 }
-        elsif ( $month =~ /^Dec/i ) { return 12 }
-        elsif ( $month =~ /^Spr/i ) { return $period eq 'start' ? 1 : 6 }
-        elsif ( $month =~ /^Sum/i ) { return $period eq 'start' ? 3 : 9 }
-        elsif ( $month =~ /^Fal/i ) { return $period eq 'start' ? 6 : 12 }
-        elsif ( $month =~ /^Aut/i ) { return $period eq 'start' ? 6 : 12 }
-        elsif ( $month =~ /^Win/i ) { return $period eq 'start' ? 9 : 12 }
-        else {
-            CUFTS::Exception::App->throw("Unable to find month match in fulltext date: $month");
-        }
-    }
 
     my $errs = $class->SUPER::clean_data($record);
 
-    if ( !scalar(@$errs) && defined($record->{ft_end_date}) ) {
-        my ( $year, $month, $day ) = split( '-', $record->{ft_end_date} );
-        if ( Delta_Days( $year, $month, $day, Today() ) < 180 ) {
-            delete $record->{ft_end_date};
-            delete $record->{vol_ft_end};
-        }
+    if ( $record->{___publication_type} eq 'monograph' ) {
+        $record->{ft_start_date} = $record->{___date_monograph_published_print};
+        $record->{ft_end_date}   = $record->{___date_monograph_published_print};
     }
-    
+
     return $errs;
 }
 
