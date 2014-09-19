@@ -88,6 +88,7 @@ $logger->info( 'Done processing SUSHI updates.' );
 sub email_site {
     my ( $logger, $site, $message ) = @_;
 
+    $logger->info('Attempting to send mail to site.');
     my $email = $site->email;
     if ( hascontent($email) ) {
         my $host = defined($CUFTS::Config::CUFTS_SMTP_HOST) ? $CUFTS::Config::CUFTS_SMTP_HOST : 'localhost';

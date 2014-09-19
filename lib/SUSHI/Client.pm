@@ -72,16 +72,23 @@ sub get_jr1_report {
         warn(Dumper($request_data));
     }
 
-
     my $request = SUSHI::SUSHIElements::ReportRequest->new( $request_data );
     $request->attr->set_Created( DateTime->now->iso8601 );
     $request->get_ReportDefinition->attr->set_Name( 'JR1' );
     $request->get_ReportDefinition->attr->set_Release( $source->version || 3 );
 
     my $result = $service->GetReport($request);
+    if ( $debug ) {
+        die(Dumper($result));
+    }
+    
     if ( !$result ) {
-        # Try to get a useful error...
-
+        # Try to get a useful error by re-requesting with outputxml on. This stops processing but lets us look
+        # at the result as a string.
+        
+        $service->outputxml(1);
+        $result = $service->GetReport($request);
+                
         if ( $result =~ / Message\s+was:[\s\n]+ (.+?) <\/fault /xsm ) {
             $result = $1;
         }
@@ -89,24 +96,31 @@ sub get_jr1_report {
         return [ 'Could not process GetReport, possibly a failure at the remote service.' ];
     }
 
-    if ( $debug ) {
-        die(Dumper($result));
-    }
-
-
     my $report = $result->get_Report;
     if ( !defined($report) ) {
-        $logger->error( 'get_Report on $result was not defined. Result was: ' . Dumper($result) );
+        my $message;
+        eval { $message = $result->get_Exception->get_Message; };
+        if ( $message ) {
+            $logger->error( 'get_Report on $result was not defineds: ' . substr($message, 0, 2048 ) );
+        }
+        else {
+            $logger->error( 'get_Report on $result was not defined. Result was: ' . Dumper($result) );
+        }
         return [ 'Could not process get_Report, possibly a failure at the remote service.' ];
     }
 
     my $journal_report = $report->get_Report;
 
-    if ( !$journal_report || !defined($journal_report->attr ) ) {
-        if ( $result =~ / Message> (.+?) <\/Message /xsm ) {
-            $result = $1;
+    if ( !$journal_report || !$journal_report->can('attr') || !defined($journal_report->attr ) ) {
+        my $message;
+        eval { $message = $result->get_Exception->get_Message; };
+        if ( $message ) {
+            $logger->error( "Unable to retrieve report details through get_Report: " . substr($message, 0, 2048 ) );
         }
-        $logger->error( "Unable to retrieve report details through get_Report: " . substr($result, 0, 2048 ) );
+        else {
+            $logger->error( "Unable to retrieve report details through get_Report." );
+        }
+
         return [ 'Could not get report details from SUSHI response.' ];
     }
 
@@ -148,7 +162,7 @@ sub get_jr1_report {
 
         }
 
-        # print(Dumper($journal_data));
+#        print(Dumper($journal_data));
 
         my $journal_rec = $schema->resultset('ERMCounterTitles')->find($journal_data);
         if ( !defined($journal_rec) ) {
