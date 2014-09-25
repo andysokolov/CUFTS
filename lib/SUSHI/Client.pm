@@ -136,7 +136,7 @@ sub get_jr1_report {
         $title = decode_entities(decode_entities($title)); # Necessary for Scholarly Stats, at least - decode &amp; in XML, then decode the result to real characters
         next if !hascontent($title);
 
-        my $journal_data = { title => $title };
+        my $journal_data = { title => $title, issn => undef, e_issn => undef };
 
         my $identifiers = $report_item->get_ItemIdentifier;
         if ( ref($identifiers) ne 'ARRAY' ) {
