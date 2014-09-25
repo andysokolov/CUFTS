@@ -41,7 +41,8 @@ while ( my $site = $sites_rs->next ) {
             my ( $run_start_date, $interval_months ) = ( $source->run_start_date, $source->interval_months );
 
             if ( !defined($run_start_date) || !defined($interval_months) ) {
-                $logger->error('SUSHI download scheduled without start/end dates. ' . 'Site: ' . $source->site->key . ' CounterSource: ' . $source->name );
+                $logger->error('SUSHI download scheduled without start/end dates. ' . 'Site: ' . $source->site->key . ' COUNTER Source: ' . $source->name );
+                $site_message .= 'SUSHI download scheduled without start/end dates. COUNTER Source: ' . $source->name;
                 next;
             }
 
@@ -60,15 +61,16 @@ while ( my $site = $sites_rs->next ) {
                 $source->next_run_date( $source->next_run_date->add( months => $interval_months ) );
                 $source->update;
                 $logger->info( 'Updated next run date to: ', $source->next_run_date->ymd );
-                $site_message .= 'Sucessfully downloaded COUNTER report from ' . $source->name . ' covering ' . $start->ymd . ' to ' . $end->ymd . "\n";
+                $site_message .= 'Sucessfully downloaded COUNTER report from ' . $source->name
+                              . ' covering ' . $start->ymd . ' to ' . $end->ymd . "\n";
             }
             else {
                 $logger->info( 'Error processing SUSHI request, run date was not updated.' );
                 if ( ref($result) eq 'ARRAY' ) {
-                    $site_message .= 'Failed to download COUNTER report from ' . $source->name . ': ' . @$result;
+                    $site_message .= 'Failed to download COUNTER report from ' . $source->name . ': ' . join("\n", @$result);
                 }
             }
-            
+
             $logger->info( "Done processing ", $source->name );
 
         }
