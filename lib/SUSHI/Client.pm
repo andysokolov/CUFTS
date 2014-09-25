@@ -298,7 +298,7 @@ sub get_db1_report {
     my $request = SUSHI::SUSHIElements::ReportRequest->new( $request_data );
     $request->attr->set_Created( DateTime->now->iso8601 );
     $request->get_ReportDefinition->attr->set_Name( 'DB1' );
-    $request->get_ReportDefinition->attr->set_Release( 3 );
+    $request->get_ReportDefinition->attr->set_Release( $source->version || 3 );
 
     my $result = $service->GetReport($request);
     if ( !$result ) {
