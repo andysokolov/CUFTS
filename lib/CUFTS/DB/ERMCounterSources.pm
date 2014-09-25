@@ -32,6 +32,7 @@ __PACKAGE__->columns(All => qw(
     name
     reference
     version
+    email
     erm_sushi
 
     last_run_timestamp

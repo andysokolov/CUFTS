@@ -92,6 +92,17 @@
 </div>
 
 <div class="field">
+<div class="data">
+ <label for="counter-edit-input-email">email</label>
+ <input id="counter-edit-input-email" name="email" value="[% source.email | html %]" style="width: 15em;" />
+ [% PROCESS form_results.tt frf='email' %]
+</div>
+ <div class="help">
+  Email address to override site wide email address if necessary.
+ </div>
+</div>
+
+<div class="field">
  <div class="data">
   <label for="counter-edit-input-reference">reference</label>
   <input id="counter-edit-input-reference" name="reference" value="[% source.reference | html %]" style="width: 15em;" />

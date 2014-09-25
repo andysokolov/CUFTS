@@ -21,6 +21,7 @@ my $form_validate = {
 
             erm_sushi
             reference
+            email
 
             next_run_date
             run_start_date

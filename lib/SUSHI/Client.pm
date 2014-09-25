@@ -52,7 +52,7 @@ sub get_jr1_report {
         Requestor => {
           ID    =>  $sushi->requestor,
           Name  =>  $site->name,
-          Email =>  $site->email,
+          Email =>  $source->email || $site->email,
         },
         CustomerReference => {
           ID    =>  $source->reference,
@@ -81,14 +81,14 @@ sub get_jr1_report {
     if ( $debug ) {
         die(Dumper($result));
     }
-    
+
     if ( !$result ) {
         # Try to get a useful error by re-requesting with outputxml on. This stops processing but lets us look
         # at the result as a string.
-        
+
         $service->outputxml(1);
         $result = $service->GetReport($request);
-                
+
         if ( $result =~ / Message\s+was:[\s\n]+ (.+?) <\/fault /xsm ) {
             $result = $1;
         }
