@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 
+use String::Util qw(trim hascontent);
+
 =head1 NAME
 
 CUFTS::CRDB::Controller::Resource - Catalyst Controller for working with an individual ERM resource
@@ -20,7 +22,7 @@ sub base : Chained('/site') PathPart('resource') CaptureArgs(0) { }
 
 sub load_resource : Chained('base') PathPart('') CaptureArgs(1) {
     my ( $self, $c, $resource_id ) = @_;
-    
+
     $c->stash->{erm} = $c->model('CUFTS::ERMMain')->search({ id => $resource_id, site => $c->site->id })->first();
 }
 
@@ -29,11 +31,9 @@ sub goto : Chained('load_resource') PathPart('goto') Args(0) {
 
     my $erm = $c->stash->{erm};
 
-    # count click
+    $c->model('CUFTS::ERMUses')->create({ erm_main => $erm->id }); # count click
 
-    $c->model('CUFTS::ERMUses')->create({ erm_main => $erm->id });
-
-    $c->response->redirect( $erm->proxied_url( $c->site ) );
+    $c->response->redirect( hascontent($erm->url) ? $erm->proxied_url( $c->site ) : $c->uri_for_site( $c->controller('Resource')->action_for('default_view'), [ $erm->id ] ) );
     $c->detach();
 }
 
@@ -54,7 +54,7 @@ sub default_view : Chained('load_resource') PathPart('') Args(0) {
     $c->save_current_action();
 
     # Create links to subject searches
-    $c->stash->{subject_links} = [ map { [ $_->subject, $c->uri_for_site( $c->controller('Browse')->action_for('html_facets'), 'subject', $_->id, {} ) ] }  
+    $c->stash->{subject_links} = [ map { [ $_->subject, $c->uri_for_site( $c->controller('Browse')->action_for('html_facets'), 'subject', $_->id, {} ) ] }
                                     sort { $a->subject cmp $b->subject } $c->stash->{erm}->subjects ];
 
     $c->stash->{display_fields} = [ $c->model('CUFTS::ERMDisplayFields')->search( { site => $c->site->id }, { order_by => 'display_order' } )->all ];
@@ -71,7 +71,7 @@ Display a message that this resource is not public
 
 sub not_public : Private {
     my ( $self, $c ) = @_;
-    
+
     $c->stash->{template} = 'resource_not_public.tt';
 }
 
@@ -93,9 +93,9 @@ sub json : Chained('load_resource') PathPart('json') Args(0) {
         subjects => [],
         content_types => [],
     };
-    
+
     # TODO: Get valid staff and patron columns and filter
-    
+
     foreach my $column ( $erm_obj->columns() ) {
         $erm_hash->{$column} = $erm_obj->$column();
     }
