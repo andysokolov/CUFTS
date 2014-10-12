@@ -80,6 +80,7 @@ sub facet_options : Chained('site') PathPart('') CaptureArgs(0) {
         [ 'resource_mediums', 'resource_medium', 'CUFTS::ERMResourceMediums' ],
         [ 'subjects',         'subject',         'CUFTS::ERMSubjects' ],
         [ 'content_types',    'content_type',    'CUFTS::ERMContentTypes' ],
+        [ 'provider',         'provider_name',   'CUFTS::ERMProviders' ],
     );
 
     foreach my $load_option ( @load_options ) {
@@ -104,6 +105,8 @@ sub facet_options : Chained('site') PathPart('') CaptureArgs(0) {
         $c->stash->{"${field}_lookup"} = $c->stash->{$type};  # Alias for looking up when we have the "field" name rather than the type name.
     }
 
+    # Alias provider_name lookup
+    $c->stash->{'provider_lookup'} = $c->stash->{'provider_name_lookup'};
 }
 
 

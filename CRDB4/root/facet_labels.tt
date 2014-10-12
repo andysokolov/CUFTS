@@ -12,6 +12,7 @@
     license_allows_walkins => "Allows Walkins",
     name_exact_keyword     => "Name/Keyword",
     subscription_status    => "Subscription Status",
+    provider               => "Provider",
 } %]
 
 <script type="text/javascript">
