@@ -32,6 +32,7 @@ sub clean_data {
     if ( $record->{___publication_type} eq 'monograph' ) {
         $record->{ft_start_date} = $record->{___date_monograph_published_print};
         $record->{ft_end_date}   = $record->{___date_monograph_published_print};
+        $class->SUPER::clean_data_dates($record); # Re-run this to get YYYY to YYYY-MM-DD
     }
 
     return $errs;
