@@ -136,10 +136,12 @@ sub edit : Local {
 
             if ( $c->form->valid->{file} ) {
 
-                my $upload = $c->req->upload('file');
-                my $fh = $upload->fh;
+                my $upload      = $c->req->upload('file');
+                my $fh          = $upload->fh;
+                my $schema      = $c->model('CUFTS')->schema;
+                my $dbic_source = $c->model('CUFTS::ERMCounterSources')->find({ id => $source->id });
 
-                CUFTS::COUNTER::load_report( $source, $fh );
+                CUFTS::COUNTER::load_report( $dbic_source, $fh, 0, $schema );
 
             }
 
