@@ -1,41 +1,41 @@
-package Biblio::COUNTER::Report::Release3::DatabaseReport1;
+package Biblio::COUNTER::Report::Release4::DatabaseReport1;
 
 use strict;
 use warnings;
 
 use Biblio::COUNTER::Report qw(REQUESTS SEARCHES SESSIONS MAY_BE_BLANK NOT_BLANK EXACT_MATCH);
 
-@Biblio::COUNTER::Report::Release3::DatabaseReport1::ISA = qw(Biblio::COUNTER::Report);
+@Biblio::COUNTER::Report::Release4::DatabaseReport1::ISA = qw(Biblio::COUNTER::Report);
 
-sub canonical_report_name { 'Database Report 1 (R3)' }
+sub canonical_report_name { 'Database Report 1 (R4)' }
 sub canonical_report_description { 'Total Searches and Sessions by Month and Database' }
 sub canonical_report_code { 'DB1' }
-sub release_number { 3 }
+sub release_number { 4 }
 
 sub process_header_rows {
     my ($self) = @_;
-    
+
     # Report name and title
     $self->begin_row
          ->check_report_name
          ->check_report_description
          ->end_row;
-    
+
     # Report criteria
     $self->begin_row
          ->check_report_criteria
          ->end_row;
-    
+
     # Date run label
     $self->begin_row
          ->check_label('Date run:')
          ->end_row;
-    
+
     # Date run
     $self->begin_row
          ->check_date_run
          ->end_row;
-    
+
     # Data column labels
     $self->begin_row
          ->check_blank
@@ -49,7 +49,7 @@ sub process_header_rows {
 
 sub process_record {
     my ($self) = @_;
-    
+
     # First row -- searches run
     $self->begin_row;
     return if $self->_eof;
@@ -60,11 +60,11 @@ sub process_record {
          ->check_count_by_periods(SEARCHES)
          ->check_ytd_total
          ->end_row;
-    
+
     # Fields that must be the same in the second row as in the first
     my $record = $self->{'record'};
     my ($title, $publisher, $platform) = @$record{qw(title publisher platform)};
-    
+
     # Second row -- sessions
     $self->begin_row
          ->check_title(EXACT_MATCH, $title)
@@ -103,7 +103,7 @@ sub process_record {
            ->check_ytd_total
            ->end_row;
 
-    
+
     $self->blank_row unless $self->_eof;
 }
 
@@ -113,11 +113,11 @@ sub process_record {
 
 =head1 NAME
 
-Biblio::COUNTER::Report::Release3::DatabaseReport1 - a DB1 (R3) COUNTER report
+Biblio::COUNTER::Report::Release3::DatabaseReport1 - a DB1 (R4) COUNTER report
 
 =head1 SYNOPSIS
 
-    $report = Biblio::COUNTER::Report::Release3::DatabaseReport1->new(
+    $report = Biblio::COUNTER::Report::Release4::DatabaseReport1->new(
         'file' => $file,
     );
     $report->process;

@@ -10,9 +10,9 @@ use vars qw(@ISA @EXPORT_OK);
 @ISA = qw(Exporter);
 @EXPORT_OK = qw(
     MAY_BE_BLANK
-    NOT_BLANK   
+    NOT_BLANK
     EXACT_MATCH
-    REQUESTS 
+    REQUESTS
     SEARCHES
     SESSIONS
     TURNAWAYS
@@ -25,26 +25,31 @@ use constant REPORT => 'report';
 use constant RECORD => 'record';  # In the records that the report contains
 
 # Field names
-use constant NAME         => 'name';
-use constant CODE         => 'code';
-use constant RELEASE      => 'release';
-use constant DESCRIPTION  => 'description';
-use constant DATE_RUN     => 'date_run';
-use constant CRITERIA     => 'criteria';
-use constant PERIOD_COVERED => 'period_covered';  # JR1a
-use constant LABEL        => 'label';
-use constant PERIOD_LABEL => 'period_label';
-use constant BLANK        => 'blank_field';
-use constant PERIODS      => 'periods';
-use constant COUNT        => 'count';
-use constant TITLE        => 'title';
-use constant PUBLISHER    => 'publisher';
-use constant PLATFORM     => 'platform';
-use constant PRINT_ISSN   => 'print_issn';
-use constant ONLINE_ISSN  => 'online_issn';
-use constant YTD_HTML     => 'ytd_html';
-use constant YTD_PDF      => 'ytd_pdf';
-use constant YTD_TOTAL    => 'ytd';
+use constant NAME           => 'name';
+use constant CODE           => 'code';
+use constant RELEASE        => 'release';
+use constant DESCRIPTION    => 'description';
+use constant DATE_RUN       => 'date_run';
+use constant CRITERIA       => 'criteria';
+use constant PERIOD_COVERED => 'period_covered';
+use constant LABEL          => 'label';
+use constant PERIOD_LABEL   => 'period_label';
+use constant BLANK          => 'blank_field';
+use constant PERIODS        => 'periods';
+use constant COUNT          => 'count';
+use constant TITLE          => 'title';
+use constant PUBLISHER      => 'publisher';
+use constant CUSTOMER       => 'customer';
+use constant INSTITUTION    => 'institution';
+use constant PLATFORM       => 'platform';
+use constant DOI            => 'doi';
+use constant IDENTIFIER     => 'identifier';
+use constant PLATFORM       => 'platform';
+use constant PRINT_ISSN     => 'print_issn';
+use constant ONLINE_ISSN    => 'online_issn';
+use constant YTD_HTML       => 'ytd_html';
+use constant YTD_PDF        => 'ytd_pdf';
+use constant YTD_TOTAL      => 'ytd';
 
 # Metrics
 use constant F_SEARCHES  => 'searches federated';
@@ -273,9 +278,19 @@ sub check_report_criteria {
     $self->_check_free_text_field(CRITERIA, NOT_BLANK)->_next;
 }
 
-sub check_period_covered {
+sub check_report_period_covered {
     my ($self) = @_;
     $self->_check_free_text_field(PERIOD_COVERED, NOT_BLANK)->_next;
+}
+
+sub check_report_customer {
+    my ($self) = @_;
+    $self->_check_free_text_field(CUSTOMER, MAY_BE_BLANK)->_next;
+}
+
+sub check_report_institution {
+    my ($self) = @_;
+    $self->_check_free_text_field(INSTITUTION, MAY_BE_BLANK)->_next;
 }
 
 sub check_title {
@@ -291,6 +306,16 @@ sub check_publisher {
 sub check_platform {
     my ($self, $mode, $str) = @_;
     $self->_check_free_text_field(PLATFORM, $mode, $str);
+}
+
+sub check_doi {
+    my ($self, $mode, $str) = @_;
+    $self->_check_free_text_field(DOI, $mode, $str);
+}
+
+sub check_identifier {
+    my ($self, $mode, $str) = @_;
+    $self->_check_free_text_field(IDENTIFIER, $mode, $str);
 }
 
 sub check_print_issn {
@@ -998,4 +1023,3 @@ Biblio::COUNTER::Report - a COUNTER-compliant (or not) report
 =head1 PUBLIC METHODS
 
 =cut
-
