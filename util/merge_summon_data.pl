@@ -85,6 +85,7 @@ foreach my $filename ( @ARGV ) {
 
     print $out_fh join("\t", $csv_in->column_names), "\n";
 
+    my $count = 0;
     while ( my $row = $csv_in->getline_hr($in_fh) ) {
 
         $row->{Status} = 'Not Tracked';
@@ -98,6 +99,7 @@ foreach my $filename ( @ARGV ) {
                     $logger->info("With:    ", join(', ', $record->title, $record->issn, $record->e_issn, (defined $record->ft_start_date ? $record->ft_start_date->ymd : ''), (defined $record->ft_end_date ? $record->ft_end_date->ymd : '') ) );
                 }
                 $row->{Status} = 'Tracked';
+                $count++;
 
                 if ( scalar @$records == 1 ) {
                     my $record = $records->[0];
@@ -121,6 +123,8 @@ foreach my $filename ( @ARGV ) {
 
     close $in_fh;
     close $out_fh;
+
+    $logger->info("Finished processing. Found $count journals tracked.");
 }
 
 
