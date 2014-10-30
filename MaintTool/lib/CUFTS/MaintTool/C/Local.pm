@@ -10,7 +10,7 @@ my $form_validate_local = {
     required => ['name', 'provider', 'module', 'resource_type'],
     optional => [
         'provider', 'proxy', 'dedupe', 'rank', 'active', 'submit', 'cancel',
-        'resource_identifier', 'database_url', 'auth_name', 'auth_passwd', 'url_base', 'notes_for_local', 'cjdb_note', 'proxy_suffix', 'erm_main'
+        'resource_identifier', 'database_url', 'auth_name', 'auth_passwd', 'url_base', 'notes_for_local', 'cjdb_note', 'proxy_suffix', 'erm_main', 'proquest_identifier'
     ],
     defaults => {
         'active' => 'false',

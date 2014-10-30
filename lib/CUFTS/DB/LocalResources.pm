@@ -58,6 +58,7 @@ __PACKAGE__->columns(All => qw(
 	auth_passwd
 	url_base
 	proxy_suffix
+	proquest_identifier
 
 	active
 

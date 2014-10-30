@@ -55,12 +55,12 @@ __PACKAGE__->add_columns(
     },
     dedupe => {
         data_type => 'boolean',
-        default_value => 0,
+        default_value => 'false',
         is_nullable => 0,
     },
     auto_activate => {
         data_type => 'boolean',
-        default_value => 1,
+        default_value => 'true',
         is_nullable => 0,
     },
     provider => {
@@ -102,9 +102,13 @@ __PACKAGE__->add_columns(
         data_type => 'text',
         is_nullable => 1,
     },
+    proquest_identifier => {
+        data_type => 'text',
+        is_nullable => 1,
+    },
     active => {
         data_type => 'boolean',
-        default_value => 'false',
+        default_value => 'true',
         is_nullable => 0,
     },
     title_list_scanned => {

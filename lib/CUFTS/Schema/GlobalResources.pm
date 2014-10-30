@@ -76,6 +76,10 @@ __PACKAGE__->add_columns(
         data_type => 'text',
         is_nullable => 1,
     },
+    proquest_identifier => {
+        data_type => 'text',
+        is_nullable => 1,
+    },
     active => {
         data_type => 'boolean',
         is_nullable => 0,
@@ -84,6 +88,11 @@ __PACKAGE__->add_columns(
     title_list_scanned => {
         data_type => 'datetime',
         is_nullable => 1,
+    },
+    title_list_url => {
+        data_type => 'varchar',
+        is_nullable => 1,
+        size => 1024,
     },
     update_months => {
         data_type => 'integer',

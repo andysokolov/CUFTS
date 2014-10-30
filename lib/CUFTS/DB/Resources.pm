@@ -49,7 +49,8 @@ __PACKAGE__->columns(All => qw(
 
     cjdb_note
     notes_for_local
-
+	proquest_identifier
+	
 	active
 
 	title_list_scanned

@@ -21,7 +21,8 @@
 </select>
 [% PROCESS form_results.tt frf='module' %]</td>
 </tr>
-<tr><td class="label1" align="right">active</td><td class="field1"><input type="checkbox" name="active" value="true" [% 'checked="checked"' IF resource.active %]></td></tr>
+<tr><td class="label1" align="right">proquest code</td><td class="field1"><input type="text" name="proquest_identifier" size="50" maxlength="256" value="[% resource.proquest_identifier | html %]"></td></tr>
+<tr><td class="label0" align="right">active</td><td class="field0"><input type="checkbox" name="active" value="true" [% 'checked="checked"' IF resource.active %]></td></tr>
 </table>
 </td></tr>
 

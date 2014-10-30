@@ -29,10 +29,11 @@
  [% END %]
 </select>
 [% IF erm_main_id %]<a href="[% url_base %]/erm/main/edit/[% erm_main_id %]">edit record</a>[% END %]</td></tr>
-<tr><td class="label1" align="right">proxy</td><td class="field1"><input type="checkbox" name="proxy" value="true" [% 'checked="checked"' IF local_resource.proxy %]></td></tr>
-<tr><td class="label0" align="right">dedupe</td><td class="field0"><input type="checkbox" name="dedupe" value="true" [% 'checked="checked"' IF local_resource.dedupe %]></td></tr>
-<tr><td class="label1" align="right">rank</td><td class="field1"><input type="text" size="3" name="rank" value="[% HTML.escape(local_resource.rank) %]"></td></tr>
-<tr><td class="label0" align="right">active</td><td class="field0"><input type="checkbox" name="active" value="true" [% 'checked="checked"' IF local_resource.active %]></td></tr>
+<tr><td class="label1" align="right">proquest code</td><td class="field1"><input type="text" name="proquest_identifier" size="50" maxlength="256" value="[% local_resource.proquest_identifier | html %]"></td></tr>
+<tr><td class="label0" align="right">proxy</td><td class="field0"><input type="checkbox" name="proxy" value="true" [% 'checked="checked"' IF local_resource.proxy %]></td></tr>
+<tr><td class="label1" align="right">dedupe</td><td class="field1"><input type="checkbox" name="dedupe" value="true" [% 'checked="checked"' IF local_resource.dedupe %]></td></tr>
+<tr><td class="label0" align="right">rank</td><td class="field0"><input type="text" size="3" name="rank" value="[% HTML.escape(local_resource.rank) %]"></td></tr>
+<tr><td class="label1" align="right">active</td><td class="field1"><input type="checkbox" name="active" value="true" [% 'checked="checked"' IF local_resource.active %]></td></tr>
 </table>
 </td></tr>
 
