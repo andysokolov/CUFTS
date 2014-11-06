@@ -1,6 +1,6 @@
 [% USE url %]
 
-[% SET temp_cols  = local_resource.do_module('title_list_fields') %]
+[% SET temp_cols  = local_resource.do_module('title_list_fields').merge( local_resource.do_module('overridable_title_list_fields') ) %]
 
 
 [%# *********************************************
@@ -14,7 +14,7 @@
  SET columns_check = {};
  SET columns = [];
 %]
-[% FOREACH col IN temp_cols %]
+[% FOREACH col IN temp_cols.unique %]
  [% FOREACH title IN titles %]
   [% IF title.$col.defined %]
    [% SET columns_check.$col = 1 %]
