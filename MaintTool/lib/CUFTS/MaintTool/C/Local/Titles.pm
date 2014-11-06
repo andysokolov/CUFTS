@@ -3,6 +3,8 @@ package CUFTS::MaintTool::C::Local::Titles;
 use strict;
 use base 'Catalyst::Base';
 
+use List::MoreUtils qw(uniq);
+
 use CUFTS::DB::MergedJournals;
 
 my $form_validate_titles = {
@@ -451,7 +453,8 @@ sub edit_local : Local {
 
     my $local_resource = $c->stash->{local_resource};
     my %validate = %$form_validate_edit_local;
-    my $override_fields = $c->stash->{override_fields} = $local_resource->do_module('title_list_fields');
+    my @fields = uniq( @{$local_resource->do_module('title_list_fields')}, @{$local_resource->do_module('overridable_title_list_fields')} );
+    my $override_fields = $c->stash->{override_fields} = \@fields;
     push @{$validate{optional}}, @$override_fields;
 
     $c->form(\%validate);
