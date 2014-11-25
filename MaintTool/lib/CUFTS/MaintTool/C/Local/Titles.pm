@@ -577,36 +577,50 @@ sub bulk_global_export : Local {
 
     my @global_titles;
     unless ($c->form->has_missing || $c->form->has_invalid || $c->form->has_unknown) {
-        if ($c->form->valid->{records} eq 'active') {
-            defined($local_resource) and
-                @global_titles = $global_resource->do_module('active_global_db_module')->search({local_resource => $local_resource->id, resource => $global_resource->id}, {order_by => 'title'});
+        if ( $c->form->valid->{records} eq 'active' || $c->form->valid->{records} eq 'overlay' ) {
+            @global_titles = $global_resource->do_module('active_global_db_module')->search({local_resource => $local_resource->id, resource => $global_resource->id}, {order_by => 'title'});
         } else {
             @global_titles = $global_resource->do_module('global_db_module')->search({resource => $global_resource->id}, {order_by => 'title'});
         }
 
         my @local_titles;
+TITLE:
         foreach my $global_title (@global_titles) {
             if (defined($local_resource)) {
                 my @local_search = $global_resource->do_module('local_db_module')->search($global_resource->do_module('local_to_global_field') => $global_title->id, resource => $local_resource->id);
-                if (scalar(@local_search) == 1) {
+                if ( scalar(@local_search) == 1 && _check_overlay($c->form->valid->{records}, $local_search[0]) ) {
                     push @local_titles, $local_search[0];
-                } else {
-                    push @local_titles, undef;
+                    next TITLE;
                 }
-            } else {
-                push @local_titles, undef;
             }
+
+            push @local_titles, undef;
         }
 
         $c->stash->{global_titles} = \@global_titles;
         $c->stash->{local_titles} = \@local_titles;
 
-        $c->stash->{template} = 'local/titles/export/' . $c->form->valid->{format} . '.tt';
+        if ( $c->form->valid->{records} eq 'overlay' ) {
+            $c->stash->{template} = 'local/titles/export/overlay_' . $c->form->valid->{format} . '.tt';
+        }
+        else {
+            $c->stash->{template} = 'local/titles/export/' . $c->form->valid->{format} . '.tt';
+        }
     } else {
         die("Error in bulk_global_export form.  Validation failed.");
     }
 }
 
+# Check that we are looking at the overlay report type, and if so that the local record has some changes.
+
+sub _check_overlay {
+    my ( $report, $record ) = @_;
+
+    return 1 if $report ne 'overlay'; # Only check for changes if we're in the overlay report
+
+    return $record->has_overlay();
+
+}
 
 sub bulk_local : Local {
     my ($self, $c, $resource_id) = @_;

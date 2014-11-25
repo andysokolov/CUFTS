@@ -1,0 +1,16 @@
+[%- CALL c.response.content_type('text/plain') -%]
+[%- SET no_wrap = 1;
+    SET global_columns = ['title', 'issn', 'e_issn'];
+    SET local_columns  = local_resource.do_module('overridable_title_list_fields').simple_difference(['id']);
+-%]
+[% global_columns.join("\t") %]	[% local_columns.join("\t") %]
+[% FOREACH global_title IN global_titles -%]
+[%- SET local_title = local_titles.shift -%]
+[%- NEXT IF !local_title -%]
+[%- FOREACH column IN global_columns -%]
+[%- global_title.$column _ "\t" -%]
+[% END %]
+[%- FOREACH column IN local_columns -%]
+[%- local_title.$column -%][%- UNLESS loop.last %]	[% END -%]
+[% END %]
+[% END -%]

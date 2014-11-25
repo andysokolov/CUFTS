@@ -60,7 +60,7 @@
  <td class="field0">
   <form method="GET" action="[% url("$url_base/local/titles/bulk_global_export/g$global_resource.id") %]">
    format: <select name="format"><option value="tab">tab delimited</option><option value="xml">XML</option></select>
-   records: <select name="records"><option value="all">all</option><option value="active">active</option></select> 
+   records: <select name="records"><option value="all">all</option><option value="active">active</option><option value="overlay">overlay</option></select> 
    <input type="submit" name="export" value="export" />
   </form>
  </td>
