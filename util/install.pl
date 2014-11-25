@@ -68,6 +68,7 @@ my @modules = qw(
     Date::Calc
     DateTime
     DateTime::Format::ISO8601
+    DateTime::Format::Pg
     DBIx::Class
     DBIx::Class::EncodedColumn
     DBIx::Class::Helpers
@@ -77,6 +78,7 @@ my @modules = qw(
     DBIx::Class::FromValidators
     Exception::Class
     Exception::Class::DBI
+    FormValidator::Simple::Plugin::Trim
     Getopt::Long
     HTML::Entities
     HTML::FillInForm
