@@ -39,7 +39,7 @@
    </tr>
    <tr>
     <td class="field0" style="white-space: nowrap">deactivate other titles</td>
-    <td class="field0" style="white-space: nowrap"><select name="deactivate"><option value="1">yes</option><option value="0">no</option></select></td>
+    <td class="field0" style="white-space: nowrap"><select name="deactivate"><option value="1">yes</option><option value="0" selected>no</option></select></td>
    <tr>
     <td class="field0" style="white-space: nowrap">file</td>
     <td class="field0" style="white-space: nowrap"><input type="file" name="file" /> <input type="submit" name="upload" value="upload" /></td>
