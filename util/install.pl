@@ -57,6 +57,7 @@ my @modules = qw(
     Catalyst::View::JSON
     Catalyst::View::TT
     Chart::OFC
+    CHI
     Class::Accessor
     Class::DBI
     Class::DBI::AbstractSearch
