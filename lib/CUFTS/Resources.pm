@@ -804,6 +804,8 @@ sub overlay_title_list {
                 CUFTS::Exception::App->throw("title_list_build_record did not return a hash ref");
             }
 
+            $local_resource->do_module('clean_data', $record);
+
             $processed_count++;
 
             my $global_rs = $class->_match_on_rs($global_resource->id, $global_rs, \@match_on, $record);
