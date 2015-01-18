@@ -62,19 +62,29 @@ Ext.onReady( function() {
         data: [% $field_type_data %]
     });
     [% END %]
+
+    var addEmptyOption = function(store, records, options) {
+	store.un('load', addEmptyOption);
+ 	store.loadData( { results: [{id: null, key: '&nbsp;'}] }, true );
+        store.sort('key');
+    };
     
     combo_stores.licenses = new Ext.data.JsonStore({
         url: '[% url("$url_base/erm/license/find_json") %]',
         root: 'results',
-        fields: [ 'id', 'key' ]
-        // data: [[ '', '' ]]
+        fields: [ 'id', 'key' ],
+        listeners: {
+            load: addEmptyOption
+        }
     });
 
     combo_stores.providers = new Ext.data.JsonStore({
         url: '[% url("$url_base/erm/provider/find_json") %]',
         root: 'results',
-        fields: [ 'id', 'key' ]
-        // data: [[ '', '' ]]
+        fields: [ 'id', 'key' ],
+        listeners: {
+            load: addEmptyOption
+        }
     });
     
     combo_stores.boolean_type = new Ext.data.SimpleStore({
