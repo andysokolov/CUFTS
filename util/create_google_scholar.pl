@@ -36,7 +36,7 @@ sub load_all_sites {
     $output .= "<institutions>\n";
 
     my $schema   = CUFTS::Config::get_schema();
-    my $sites_rs = $schema->resultset('Sites');
+    my $sites_rs = $schema->resultset('Sites')->search({ active => 't' });
 
 SITE:
     while ( my $site = $sites_rs->next ) {
