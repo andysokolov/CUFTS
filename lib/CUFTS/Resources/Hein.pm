@@ -21,6 +21,7 @@
 package CUFTS::Resources::Hein;
 
 use base qw(CUFTS::Resources::KBARTJournal);
+use String::Util qw(hascontent);
 
 use strict;
 
@@ -33,6 +34,11 @@ sub clean_data {
         $record->{ft_start_date} = $record->{___date_monograph_published_print};
         $record->{ft_end_date}   = $record->{___date_monograph_published_print};
         $class->SUPER::clean_data_dates($record); # Re-run this to get YYYY to YYYY-MM-DD
+    }
+
+    if ( hascontent($record->{ft_end_date}) ) {
+    	delete $record->{embargo_days};
+    	delete $record->{embargo_months};
     }
 
     return $errs;
