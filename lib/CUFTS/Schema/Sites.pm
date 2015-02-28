@@ -15,12 +15,12 @@ __PACKAGE__->add_columns(
     },
     key => {
       data_type => 'varchar',
-      is_nullable => 1,
+      is_nullable => 0,
       size => '64'
     },
     name => {
       data_type => 'varchar',
-      is_nullable => 1,
+      is_nullable => 0,
       size => '256'
     },
     proxy_prefix => {
@@ -55,13 +55,15 @@ __PACKAGE__->add_columns(
     },
     cjdb_unified_journal_list => {
       data_type => 'varchar',
-      is_nullable => 1,
-      size => 1024
+      is_nullable => 0,
+      size => 1024,
+      form_type => 'Select',
+      form_options => [ 'unified', 'standard' ],
     },
     cjdb_show_citations => {
-      data_type => 'varchar',
-      is_nullable => 1,
-      size => 1024
+      data_type => 'boolean',
+      is_nullable => 0,
+      default_value => 'false',
     },
     cjdb_hide_citation_coverage => {
       data_type => 'varchar',
@@ -69,9 +71,9 @@ __PACKAGE__->add_columns(
       size => 1024
     },
     cjdb_display_db_name_only => {
-      data_type => 'varchar',
-      is_nullable => 1,
-      size => 1024
+        data_type => 'boolean',
+        is_nullable => 0,
+        default_value => 'false',
     },
     cjdb_print_name => {
       data_type => 'varchar',
@@ -86,7 +88,9 @@ __PACKAGE__->add_columns(
     cjdb_authentication_module => {
       data_type => 'varchar',
       is_nullable => 1,
-      size => 1024
+      size => 1024,
+      form_type => 'Select',
+      form_options => [ 'internal', 'LDAP' ],
     },
     cjdb_authentication_server => {
       data_type => 'varchar',
@@ -203,9 +207,9 @@ __PACKAGE__->add_columns(
       size => 1024
     },
     google_scholar_on => {
-      data_type => 'varchar',
-      is_nullable => 1,
-      size => 1024
+      data_type => 'boolean',
+      is_nullable => 0,
+      default_value => 'false',
     },
     google_scholar_keywords => {
       data_type => 'varchar',
@@ -234,7 +238,7 @@ __PACKAGE__->add_columns(
     },
     active => {
       data_type => 'boolean',
-      default_value => 'TRUE',
+      default_value => 'true',
       is_nullable => 1,
     },
     created => {
@@ -248,6 +252,7 @@ __PACKAGE__->add_columns(
     },
 );
 __PACKAGE__->set_primary_key( 'id' );
+__PACKAGE__->add_unique_constraint([ 'key' ]);
 
 __PACKAGE__->has_many( 'accounts_sites' => 'CUFTS::Schema::AccountsSites', 'site' );
 
