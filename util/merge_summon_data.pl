@@ -75,7 +75,7 @@ foreach my $filename ( @ARGV ) {
     }
     $logger->info("Loaded resource: " . $resource->name);
 
-    open my $out_fh, ">", "$filename.processed";
+    open my $out_fh, ">:encoding(utf8)", "$filename.processed";
     while ( my $row = $csv_in->getline($in_fh) ) {
         if ( $row->[0] !~ /\(\*/ ) {
             $csv_in->column_names($row);
@@ -141,12 +141,24 @@ sub row_string {
 sub get_resource_from_db_code {
     my ( $schema, $db_code, $site ) = @_;
 
-    if ( $db_code eq 'RIG' ) {
-        my $local_resource = $schema->resultset('LocalResources')->find({ id => 1759 });
-        if ( defined $local_resource ) {
-            return CUFTS::Resolve->overlay_global_resource_data($local_resource);
+    my $local_resource = $schema->resultset('LocalResources')->search(
+        {
+            site => $site->id,
+            -or => {
+                'me.proquest_identifier'       => $db_code,
+                'resource.proquest_identifier' => $db_code,
+            }
+        },
+        {
+            join => [ 'resource' ]
         }
+    )->first;
+
+    if ( defined $local_resource ) {
+        return CUFTS::Resolve->overlay_global_resource_data($local_resource);
     }
+
+
     return undef;
 }
 
