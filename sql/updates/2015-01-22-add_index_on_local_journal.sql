@@ -1,0 +1,1 @@
+CREATE INDEX cjdb_links_local_journal ON cjdb_links (local_journal);
