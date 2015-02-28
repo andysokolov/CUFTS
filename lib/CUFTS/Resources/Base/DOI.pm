@@ -51,7 +51,7 @@ sub build_linkFulltext {
 
 	if ( not_empty_string($request->doi) ) {
 		my $url;
-		$url .= 'http://doi.org/';
+		$url .= 'http://dx.doi.org/';
 		$url .= uri_escape($request->doi, "^A-Za-z0-9\-_.!~*'()\/");
 
 		my $result = new CUFTS::Result($url);
