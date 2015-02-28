@@ -82,8 +82,12 @@ __PACKAGE__->many_to_many( 'sites' => 'accounts_sites', 'site' );
 
 sub check_password {
     my ( $self, $password ) = @_;
-
     return $self->password eq crypt( $password, $self->key );
+}
+
+sub update_password {
+    my ( $self, $password ) = @_;
+    $self->password( crypt( $password, $self->key ) );
 }
 
 sub update_last_login {
