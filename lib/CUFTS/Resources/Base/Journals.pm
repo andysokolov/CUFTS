@@ -133,7 +133,8 @@ sub title_list_fields {
             abbreviation
 
             journal_auth
-
+            local_note
+            cjdb_note
         )
     ];
 }
