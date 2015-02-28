@@ -79,6 +79,10 @@ Readonly my $valid_statuses => [ qw(
     failed
 )];
 
+sub valid_statuses {
+    return $valid_statuses;
+}
+
 sub status {
     my ( $self, $status ) = @_;
 
