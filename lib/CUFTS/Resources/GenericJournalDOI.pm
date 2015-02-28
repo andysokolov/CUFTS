@@ -79,6 +79,7 @@ sub title_list_field_map {
         embargo_days   => 'embargo_days',
         journal_url    => 'journal_url',
         cjdb_note      => 'cjdb_note',
+        local_note     => 'local_note',
         vol_ft_start   => 'vol_ft_start',
         vol_ft_end     => 'vol_ft_end',
         iss_ft_start   => 'iss_ft_start',

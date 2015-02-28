@@ -85,6 +85,7 @@ sub title_list_field_map {
         'journal_url'    => 'journal_url',
         'publisher'      => 'publisher',
         'cjdb_note'      => 'cjdb_note',
+        'local_note'     => 'local_note',
     };
 }
 
