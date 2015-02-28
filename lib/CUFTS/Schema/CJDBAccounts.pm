@@ -5,7 +5,7 @@ use base qw/DBIx::Class::Core/;
 
 use Set::Object;
 
-__PACKAGE__->load_components(qw/ EncodedColumn TimeStamp /);
+__PACKAGE__->load_components(qw/ FromValidatorsCUFTS EncodedColumn TimeStamp /);
 
 __PACKAGE__->table('cjdb_accounts');
 __PACKAGE__->add_columns(
@@ -97,6 +97,28 @@ sub get_account_type {
 sub has_role {
     my ( $self, $role ) = @_;
     return !!scalar grep { $_->role eq $role } $self->roles;
+}
+
+sub remove_role {
+    my ( $self, $role ) = @_;
+    my $role_record = $self->result_source->schema->resultset('CJDBRoles')->find({ role => $role });
+    if ( !$role_record ) {
+        warn("Unable to find role in remove_role: $role");
+        return 0;
+    }
+    $self->accounts_roles({ role => $role_record->id })->delete;
+    return 1;
+}
+
+sub add_role {
+    my ( $self, $role ) = @_;
+    my $role_record = $self->result_source->schema->resultset('CJDBRoles')->find({ role => $role });
+    if ( !$role_record ) {
+        warn("Unable to find role in add_role: $role");
+        return 0;
+    }
+    $self->accounts_roles->find_or_create({ role => $role_record->id });
+    return 1;
 }
 
 sub tag_summary {
