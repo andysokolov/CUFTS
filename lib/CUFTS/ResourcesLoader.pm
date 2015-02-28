@@ -108,6 +108,7 @@ BEGIN {
         Taylor
         Swets
         SwetsALPSP
+        Westlaw
         Wiley
         WileyBackfile
         Wilson
